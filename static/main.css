@@ -1,0 +1,61 @@
+:root {
+  --lightblue: #8ab6f2;
+  --blue: #113f7d;
+  --white: #FFFFFF;
+  --black: #000000;
+}
+
+
+
+h1 {
+    color: #113f7d;
+}
+
+  
+.link {
+    list-style: square;
+}
+  
+
+.btn {
+    border: black;
+    color: var(--white);
+    background-color: var(--blue);
+}
+
+.top{
+    font-family: monospace;
+    font-size: large;
+    font-weight: bold;
+}
+
+.question {
+    margin-left: 50px;
+    font-size: large;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: rgb(5, 139, 206);
+    background-position: 50px;
+}
+
+header h1 {
+    margin: 0;
+    margin-left: 50px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body {
+    margin: 0;
+    padding: 50;
+}
+
+.custom-col {
+    border: white;
+    background-color: #bbd5fa;
+    border-width: 1px;
+    overflow: hidden;
+    border-style: solid;
+    border-radius: 1%;
+}
