@@ -59,3 +59,24 @@ html, body {
     border-style: solid;
     border-radius: 1%;
 }
+
+nav[data-toggle="toc"] {
+    top: 150px;
+  }
+  
+  /* small screens */
+  @media (max-width: 768px) {
+    /* override stickyness so that the navigation does not follow scrolling */
+    nav[data-toggle="toc"] {
+      margin-bottom: 42px;
+      position: static;
+    }
+  
+    /* PICK ONE */
+    /* don't expand nested items, which pushes down the rest of the page when navigating */
+    nav[data-toggle="toc"] .nav .active .nav {
+      display: none;
+    }
+
+  }
+  
