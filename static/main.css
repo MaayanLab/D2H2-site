@@ -1,26 +1,38 @@
-:root {
-  --lightblue: #8ab6f2;
-  --blue: #113f7d;
-  --white: #FFFFFF;
-  --black: #000000;
+
+
+h1 { color: #0f0724; font-family: 'Open Sans', sans-serif; font-size: 34px; font-weight: 300; line-height: 40px; margin: 0 0 16px; }
+
+
+h2 { color: #050a2f; font-family: 'Open Sans', sans-serif; font-size: 24px; font-weight: 300; line-height: 32px; margin: 0 0 14px; }
+
+
+h4 { color: #050a2f; font-family: 'Open Sans', sans-serif; font-size: 22px; font-weight: 310; line-height: 32px; margin: 0 0 14px; }
+
+
+p { color: #222; font-family: 'Open Sans', sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; margin: 0 0 14px; }
+
+
+a {  color: #222; text-decoration: none; }
+
+
+
+.ml-3 {
+    color: white;
 }
-
-
-
-h1 {
-    color: #113f7d;
-}
-
   
 .link {
     list-style: square;
+}
+
+.appyter-link {
+    font-size: 1rem; font-weight: 400; background: rgb(142, 199, 249); border-radius: 4px; border: 1px solid #bddffd; 
 }
   
 
 .btn {
     border: black;
-    color: var(--white);
-    background-color: var(--blue);
+    color: white;
+    background-color:  rgb(117, 190, 255);
 }
 
 .top{
@@ -29,31 +41,30 @@ h1 {
     font-weight: bold;
 }
 
-.question {
-    margin-left: 50px;
-    font-size: large;
-    font-family: Arial, sans-serif;
-}
 
 header {
-    background-color: rgb(5, 139, 206);
-    background-position: 50px;
-}
-
-header h1 {
     margin: 0;
     margin-left: 50px;
-    font-family: Arial, Helvetica, sans-serif;
 }
 
-html, body {
+.border-bottom {
+    color: #000000;
+}
+
+body {
     margin: 0;
     padding: 50;
+    background-image: linear-gradient(to right, white, rgb(179, 213, 223));
+}
+
+
+div {
+    border-bottom-color: black;
 }
 
 .custom-col {
-    border: white;
-    background-color: #bbd5fa;
+    border: rgb(182, 182, 182);
+    /* background-color: #bbd5fa;*/
     border-width: 1px;
     overflow: hidden;
     border-style: solid;
