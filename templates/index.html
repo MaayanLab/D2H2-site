@@ -9,15 +9,16 @@
 
 <title>D2H2</title>
 
-<div class="container mt-5 mb-3 border-bottom justify-content-center">
+<div class="mt-5 mb-3 justify-content-center">
+  <div class="container">
   <div class="col-8 justify-content-center mx-auto">
     <div class="row justify-content-center mb-3">
     
-      <div class="col-10 text-center">
+      <div class="text-center col-lg-12">
         <img class="img-fluid float-left" style="width: 65px; min-height: 65px; min-width: 65px;"
         src="{{ url_for('static', filename='d2h2logo.png') }}"
         alt="D2H2 logo">
-        <h1 style="font-weight: 400;"">Diabetes Data and Hypothesis Hub</h1></div>
+        <h1 class="mt-4">Diabetes Data and Hypothesis Hub</h1></div>
       </div>
       
       <div class="row justify-content-center">
@@ -27,6 +28,7 @@
         </p>
       </div>
     </div>
+  </div>
 </div>
 
 
@@ -36,7 +38,7 @@
 
     <div class="container mt-2">
       <div class="row justify-content-center justify-items-center">
-        <div class="d-flex col-md-12 custom-col justify-content-center justify-items-center"> 
+        <div class="d-flex col-12 custom-col justify-content-center justify-items-center"> 
           <div class="mt-3"> 
             <div class="question ml-2 justify-content-center row"> <h4>In what cells and tissues is my gene expressed?</h4> </div>
 
@@ -55,9 +57,9 @@
                   </div>
   
                   <div class="justify-content-center row text-center mb-3 mt-3">
-                    <a class="appyter-link" id="appyter-url" target="_blank" rel="noopener noreferrer" href="https://maayanlab.cloud/archs4/gene/MAPK3">
+                    <a class="appyter-link" id="archs-url" target="_blank" rel="noopener noreferrer" href="https://maayanlab.cloud/archs4/">
                       <span id="archs4" class="ml-3">Open in</span>
-                      <img src="/static/archs4logo.png" class="img-fluid mr-3" style="width: 110px" alt="Appyters">
+                      <img src="/static/archs4logo.png" class="img-fluid mr-3" style="width: 110px" alt="ARCHS4">
                     </a>
                   </div>
   
@@ -69,17 +71,17 @@
                   </div>
 
                   <div class="justify-content-center row text-center mt-3 mb-3">
-                    <a class="appyter-link" id="appyter-url" 
-                    target="_blank" rel="noopener noreferrer" href="https://gtexportal.org/home/gene/MAPK3">
+                    <a class="appyter-link" id="gtex-url" 
+                    target="_blank" rel="noopener noreferrer" href="https://gtexportal.org/home/">
                     <span id="appyter-action" class="ml-3">Open in</span>
-                    <img src="/static/gtexlogo.png" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
+                    <img src="/static/gtexlogo.png" class="img-fluid mr-3" style="width: 120px" alt="GTEx">
                     </a>
                   </div>
                 </div>
                 
               </div>
 
-              <div class="justify-content-center row ml-1 text-center">
+              <div class="justify-content-center row ml-1 mr-1 text-center">
                 <p class="mt-3">This linked Appyter takes a human gene symbol as the input to produce box plots that display its expression across human cell types and tissue at the mRNA and protein levels.</p>
               </div>
 
@@ -88,7 +90,7 @@
               </div>
 
               <div class="justify-content-center row text-center mb-3">
-                <a class="appyter-link" id="appyter-url" 
+                <a class="appyter-link" id="appyter-url1" 
                 target="_blank" rel="noopener noreferrer" href="https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/"><span id="appyter-action" class="ml-3">Start a new appyter in</span><img src="/static/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters"></a>
               </div>
               
@@ -109,7 +111,7 @@
                   <div class="col col-md-6">
 
                     <div class="row text-center">
-                      <p class="mt-4"> This linked Appyter generates a volcano plot visualization displaying human/mouse signatures for a gene of interest.</p>
+                      <p class="mt-4 ml-1"> This linked Appyter generates a volcano plot visualization displaying human/mouse signatures for a gene of interest.</p>
                     </div>
 
                     <div class="row justify-content-center mt-3 mb-3">
@@ -117,7 +119,7 @@
                     </div>
 
                     <div class="justify-content-center row ml-3 text-center mb-3 mt-3">
-                      <a class="appyter-link" id="appyter-url" target="_blank" rel="noopener noreferrer" href="https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/">
+                      <a class="appyter-link" id="appyter-url2" target="_blank" rel="noopener noreferrer" href="https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/">
                         <span id="appyter-action" class="ml-3">Start a new appyter in</span>
                         <img src="/static/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
                       </a>
@@ -135,7 +137,7 @@
                     </div>
 
                     <div class="justify-content-center row ml-3 text-center mb-3 mr-2">
-                      <a class="appyter-link" id="appyter-url" 
+                      <a class="appyter-link" id="appyter-url3" 
                       target="_blank" rel="noopener noreferrer" href="https://appyters.maayanlab.cloud/L1000_RNAseq_Gene_Search/"><span id="appyter-action" class="ml-3">Start a new appyter in</span><img src="/static/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters"></a>
                     </div>
 
@@ -170,7 +172,7 @@
               </div>
 
               <div class="justify-content-center row ml-3 text-center mb-3">
-                <a class="appyter-link" id="appyter-url" 
+                <a class="appyter-link" id="appyter-url4" 
                 target="_blank" rel="noopener noreferrer" href="https://appyters.maayanlab.cloud/ChEA3_Appyter/"><span id="appyter-action" class="ml-3">Start a new appyter in</span><img src="/static/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters"></a>
               </div>
               
@@ -189,9 +191,11 @@
                 <input class="form-control-sm search" id="search4" type="text">
               </div>
               
-              <div class="justify-content-center row ml-3 text-center  mt-3">
-                <a href="https://appyters.maayanlab.cloud/" target="_blank"> <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Query GWAS Catalog </button> </a>
+              <div class="justify-content-center row text-center  mt-3">
+                <a id="gwas-query"> <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Query GWAS Catalog </button> </a>
               </div>
+
+              <div id="gwas-res"> </div>
               
           </div>
     </div>
@@ -207,9 +211,11 @@
                 <input class="form-control-sm search" id="search5" type="text">
               </div>
               
-              <div class="justify-content-center row ml-3 text-center  mt-3">
-                <a href="https://appyters.maayanlab.cloud/" target="_blank"> <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Query ARCHS4 </button> </a>
+              <div class="justify-content-center row text-center  mt-3">
+                <a id="archs4-query"> <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Query ARCHS4 </button> </a>
               </div>
+
+              <div id="archs4-res"> </div>
               
           </div>
     </div>
@@ -225,9 +231,11 @@
                 <input class="form-control-sm search" id="search6" type="text">
               </div>
               
-              <div class="justify-content-center row ml-3 text-center  mt-3">
-                <a href="https://appyters.maayanlab.cloud/" target="_blank"> <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Query KOMP </button> </a>
+              <div class="justify-content-center row text-center  mt-3">
+                <a id="komp-query"> <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Query KOMP </button> </a>
               </div>
+
+              <div id ="komp-res"></div>
           </div>
     </div>
 

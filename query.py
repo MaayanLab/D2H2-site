@@ -1,12 +1,5 @@
 import json
 import requests
-import pandas as pd
-from bs4 import BeautifulSoup
-from selenium import webdriver
-
-
-
-
 
 
 def query_enricher(gene: str):
@@ -38,58 +31,21 @@ def query_enricher(gene: str):
         raise Exception('Error fetching enrichment results')
 
     data = json.loads(response.text)
-    print(data)
     return data
 
 
 
 ########################## QUERY KOMP API ######################################
 
-g = 'Car4'
+
 
 def query_komp(gene: str):
-    KOMP_URL = "https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_symbol:" + g
+
+    gene =  gene[0].upper() + (gene[1:]).lower()
+    KOMP_URL = "https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_symbol:" + gene
     response = requests.get(KOMP_URL)
-    print(response)
     if not response.ok:
         raise Exception('Error analyzing retrieving information')
     data = json.loads(response.text)
-    print(data)
     return data
 
-
-#query_enricher('HLA-A')
-#query_komp(g)
-
-def query_archs4(gene: str):
-
-    url = 'https://maayanlab.cloud/archs4/search/genepage.php?search=go&gene=' + gene
-    df = pd.read_html(url)
-
-    print(df)
-
-
-
-#query_archs4('HLA-A')
-
-#downloadAnchorElem
-
-r = requests.get("https://maayanlab.cloud/archs4/gene/A2M").content
-
-
-
-driver = webdriver.Chrome()
-
-url = "https://maayanlab.cloud/archs4/gene/A2M"
-
-driver.get(url)
-
-document.querySelector("#downloadAnchorElem")
-
-
-button = driver.find_element_by_path("/html/body/div[1]/h2/span/a")
-
-soup = BeautifulSoup(r, features="lxml")
-print(soup.find("a", { "id" : "downloadAnchorElem" }))
-
-#downloadAnchorElem
