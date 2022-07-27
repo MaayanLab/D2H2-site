@@ -12,7 +12,7 @@ h4 { color: #050a2f; font-family: 'Open Sans', sans-serif; font-size: 22px; font
 p { color: #222; font-family: 'Open Sans', sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; margin: 0 0 14px; }
 
 
-a {  color: #222; text-decoration: none; }
+a {  color: rgb(10, 13, 149); text-decoration: none; }
 
 .title-border {
     border-bottom-style: solid !important;
@@ -31,6 +31,15 @@ a {  color: #222; text-decoration: none; }
 .ui-menu-item .ui-menu-item-wrapper {
     background-color: white;
 }
+
+.ui-autocomplete {
+    max-height: 200px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+    /* add padding to account for vertical scrollbar */
+    padding-right: 20px;
+} 
 
 
 
@@ -72,7 +81,7 @@ header {
 body {
     margin: 0;
     padding: 50;
-    background-image: linear-gradient(to right, white, rgb(161, 214, 239));
+    background-image: linear-gradient(to right, white, rgb(200, 229, 242));
 }
 
 
@@ -93,6 +102,18 @@ div {
     border-color: darkgray;
     width: 300px; 
     height: 155px;
+}
+
+.a {
+    color: darkblue;
+}
+
+.img-logo {
+    height: 155px; 
+    border-color: darkgray; 
+    border-style: solid;
+    border-radius: 2%;
+    border-width: 1px;
 }
 
 .styled-table {
@@ -134,16 +155,16 @@ nav[data-toggle="toc"] {
 @media (max-width: 768px) {
 /* override stickyness so that the navigation does not follow scrolling */
 
-nav[data-toggle="toc"] {
-    margin-bottom: 42px;
-    position: static;
-}
+    nav[data-toggle="toc"] {
+        margin-bottom: 42px;
+        position: static;
+    }
 
-/* PICK ONE */
-/* don't expand nested items, which pushes down the rest of the page when navigating */
-nav[data-toggle="toc"] .nav .active .nav {
-    display: none;
-}
+    /* PICK ONE */
+    /* don't expand nested items, which pushes down the rest of the page when navigating */
+    nav[data-toggle="toc"] .nav .active .nav {
+        display: none;
+    }
 
 }
   

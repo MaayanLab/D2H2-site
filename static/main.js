@@ -24,12 +24,14 @@ $(document).ready(function() {
                         }
                     });
 
-                    response(aSearch.splice(0, 6))
+                    response(aSearch)
                 };
             }
         }); 
        },  
-       minLength: 1
+       minLength: 1,
+       scroll:true,
+       max:5
       });
       
       
@@ -103,7 +105,7 @@ $(document).ready(function() {
             data: {gene:inputvalue}
         }).done(function(response) {
 
-            const data = response['GWAS_Catalog_2019']
+            const data = response['GWAS_Catalog']
  
             if (data.length === 0) {
                 $("#gwas-res").html("<p class='text-center'> No data found </p>");
@@ -112,41 +114,20 @@ $(document).ready(function() {
 
             
             const clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='$(\"#gwas-res\").html(\"\");'> Clear Results </button> </a>"
-            const header = ["Name", "p-value", "Adjusted p-value", "Odds ratio", "Combined score"]
-            const cols = [1, 2, 6, 3, 4]
 
-            var html = "<table class='styled-table' id='table-gwas'><thead><tr>"
 
-            for (val in header) {
-                html += ('<th>' + header[val] + '</th>');
+            var tabletext = "<table id='table-gwas' class='styled-table'><thead><tr><th></th><th>Gene</th><th>Trait</th><th>Count</th></tr><tbody>";
+            for (var k = 0; k < data.length; k++) {
+                tabletext += "<tr><td>"+(k+1)+"</td><td><a href='https://www.ebi.ac.uk/gwas/genes/"+ data[k]['gene']+ "' target='_blank'>"+data[k]['gene']+"</a></td><td><a href='"+ data[k]['mapped_trait_link']+ "' target='_blank'>"+data[k]['trait']+"</a></td><td>"+data[k]['count']+"</td></tr>";
             }
+            tabletext += "</tbody></table>";
 
-            html += ("</tr><tbody>");
-
-            for (i in data) {
-                html += ('<tr>');
-                for (j in cols) {
-
-                    var val = data[i][cols[j]];
-                    if (cols[j] === 2 || cols[j] === 6) {
-                        val = Number(val).toPrecision(4)
-                    }
-
-                    if (cols[j] === 3 || cols[j] === 4) {
-                        val = Number(val).toFixed(2)
-                    }
-
-                    html += '<td>' + val + '</td>';
-                }
-                html += ('</tr>');
-            }
-            html += ("</tbody></table>");
 
             $(document).ready(function(){
                 $('#table-gwas').DataTable();
             });
 
-            document.getElementById("gwas-res").innerHTML = html + clear_button;
+            document.getElementById("gwas-res").innerHTML = tabletext + clear_button;
         });
     });
 
@@ -179,7 +160,7 @@ $(document).ready(function() {
                 genes = "";
                 var tabletext = "<table id='tablecor' class='styled-table'><thead><tr><th>Rank</th><th>Gene Symbol</th><th>Pearson Correlation</th></tr><tbody>";
                 for (var k = 1; k < genesym.length; k++) {
-                    tabletext += "<tr><td>"+k+"</td><td><a href=\"https://maayanlab.cloud/archs4/gene/"+genesym[k]+"\" target=\"_blank\">"+genesym[k]+"</a></td><td>"+correlation[k]+"</td></tr>";
+                    tabletext += "<tr><td>"+k+"</td><td><a href=\"https://maayanlab.cloud/archs4/gene/"+genesym[k]+"\" target=\"_blank\">"+genesym[k]+"</a></td><td>"+Number(correlation[k]).toPrecision(4)+"</td></tr>";
                     genes = genes+genesym[k]+"\n";
                 }
                 tabletext += "</tbody></table>";
@@ -207,6 +188,17 @@ $(document).ready(function() {
 
     // Is there a knockout mouse ==> query komp
 
+    function hideEvidence() { 
+        var table = $('#table-pheno')
+        console.log(table)
+ 
+        // Get the column API object
+        var column = table.column$(3);
+ 
+        // Toggle the visibility
+        column.visible(!column.visible());
+    };
+
     $('#komp-query').click(function() {  
         var inputvalue = $("#search6").val();
         if (!inputvalue) {
@@ -220,23 +212,33 @@ $(document).ready(function() {
             data: {gene:inputvalue}
         }).done(function(response) {
 
-            const num_pheno = response['response']['numFound']
-            const data = response['response']['docs']
+                //row["subject.primaryIdentifier"], row["subject.symbol"], \
+                //row["subject.sequenceOntologyTerm.name"], row["ontologyTerm.identifier"], \
+                //row["ontologyTerm.name"], row["evidence.publications.pubMedId"], \
+                //row["evidence.comments.type"], row["evidence.comments.description"])
 
-            if (num_pheno === 0) {
+            const data = response['data'];
+
+            if (data.length === 0) {
                 $("#komp-res").html("<p class='text-center'> No data found </p>");
                 return;
             }
+            //const toggle = "<a id='toggle-vis' data-column='3'> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='hideEvidence();'> Toggle Evidence Column </button> </a>"
             const clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='$(\"#komp-res\").html(\"\");'> Clear Results </button> </a>"
-            var tabletext = "<table id='table-pheno' class='styled-table'><thead><tr><th>Phenotype</th><th>System</th><th>p-value</th><th>Source</th></tr><tbody>";
-            for (var k = 0; k < num_pheno; k++) {
-                tabletext += "<tr><td><a href='https://www.mousephenotype.org/data/genes/" +data[k]['marker_accession_id'] + "' target='_blank'>"+data[k]['mp_term_name']+"</td><td>"+data[k]['top_level_mp_term_name'].join(" ")+"</td><td>"+data[k]['p_value']+"</td><td>"+data[k]['pipeline_name']+"</td></a></tr>";
+            var tabletext = "<table id='table-pheno' class='styled-table'><thead><tr><th>Gene</th><th>Phenotype</th><th>PM ID</th><th>Comments</th></tr><tbody>";
+            for (var k = 0; k < data.length; k++) {
+                tabletext += "<tr><td><a href='http://www.informatics.jax.org/marker/" + data[k]['OntologyAnnotation.subject.primaryIdentifier'] + "' target='_blank'>"+data[k]['OntologyAnnotation.subject.symbol']+"</a></td>"
+                tabletext += "<td><a href='http://www.informatics.jax.org/vocab/mp_ontology/" + data[k]['OntologyAnnotation.ontologyTerm.identifier'] + "' target='_blank'>" + data[k]['OntologyAnnotation.ontologyTerm.name']+ "</a></td>"
+                tabletext += "<td><a href='https://pubmed.ncbi.nlm.nih.gov/" + data[k]['OntologyAnnotation.evidence.publications.pubMedId'] + "' target='_blank'>" + data[k]['OntologyAnnotation.evidence.publications.pubMedId']+ "</a></td>"
+                tabletext += "<td>" + data[k]['OntologyAnnotation.evidence.comments.description'] +"</td></tr>"
             }
             tabletext += "</tbody></table>";
 
             $(document).ready(function(){
                 $('#table-pheno').DataTable();
             });
+
+            
 
             document.getElementById("komp-res").innerHTML = tabletext + clear_button;
 
