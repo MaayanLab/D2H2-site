@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='d2h2logo.png') }}" type="image/x-icon"/>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/d2h2logo.png') }}" type="image/x-icon"/>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css"/>
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
 
-    <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
     
 
     <!-- ✅ Load CSS file for jQuery ui  -->
@@ -20,26 +20,71 @@
       rel="stylesheet"
     />
 
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CZ20EVL6L9"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { window.dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-CZ20EVL6L9');
+    </script>
+
 
     
     {% block head %}{%endblock%}
 </head>
+
 <body data-spy="scroll" data-target="#toc">
-        <div class="container-fluid pr-5 pl-5">
-          <div class="row">
+  <div class="page-contaier" style="position: relative;">
+      <div id="content-wrap p-0">
+          <!-- Navbar -->
+          <nav class="navbar navbar-expand-md center" style="background-color: #538ac9; font-size: 15px;">
+              <a class="navbar-brand p-0" href="{{ url_for('home') }}"><img class="mr-2" src="{{ url_for('static', filename='img/d2h2logo.png') }}" height=50px></a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                  <ul class="navbar-nav mr-auto menu">
+                      <li class="nav-item menu">
+                          <a class="nav-link hover-underline-animation{% block homebutton %}{% endblock %}" href="{{ url_for('home') }}" style="color: whitesmoke !important;">Home{% block homesr %}{% endblock %}</a>
+                      </li>
+                      <li class="nav-item menu">
+                        <a class="nav-link hover-underline-animation{% block sgbutton %}{% endblock %}" href="{{ url_for('singlegene') }}" style="color: whitesmoke !important;">Single Gene Discovery{% block aboutsr %}{% endblock %}</a>
+                      </li>
+                      <li class="nav-item menu">
+                        <a class="nav-link hover-underline-animation{% block gsbutton %}{% endblock %}" href="{{ url_for('geneset') }}" style="color: whitesmoke !important;"> Gene Set Discovery{% block aboutgs %}{% endblock %}</a>
+                      </li>
+                      <li class="nav-item menu">
+                        <a class="nav-link hover-underline-animation{% block scgbutton %}{% endblock %}" href="{{ url_for('scg') }}" style="color: whitesmoke !important;"> Customized Workflow {% block aboutscg %}{% endblock %}</a>
+                      </li>
+                      <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownOrgan" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  style="color: whitesmoke !important;">
+                            Processed GEO Study Viewer
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownOrgan">
+                            <a class="dropdown-item{%block brainbutton %}{% endblock %}" href="{{ url_for('organ_page', organ_name='human') }}"> Human {% block brainsr %}{% endblock %}</a>
+                            <a class="dropdown-item{%block kidneybutton %}{% endblock %}" href="{{ url_for('organ_page', organ_name='mouse') }}"> Mouse{% block kidneysr %}{% endblock %}</a>
+                      </div>
+                    </li>
+                  </ul>
+              </div>
+          </nav>
+          {% block content %}
+          {% endblock %}
+      </div>
+    
+    
 
-            <div class="col-3">
-              <nav id="toc" data-toggle="toc" class="navbar navbar-light flex-column align-items-stretch p-3 sticky-top" style="font-weight: 350 !important;"></nav>
-            </div>
+    {% block body %}
+    
+    
+    {%endblock%}
 
-            <div class="col-9">
-
-    {% block body %}{%endblock%}
+  </div>
 
 
-    </div>
-    </div>
-    </div>
     <!-- load jQuery -->
     <script
       src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -64,9 +109,52 @@
 
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
 
-    <script src="static/main.js"></script>
-</body>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+
 {% block footer %}
 {% endblock %}
+<footer class="footer">
+
+  <div class="d-flex justify-content-center mt-5">
+      <div class="row justify-content-center">
+          <div class="col-md-4 justify-content-center">
+              <a href="https://icahn.mssm.edu/research/bioinformatics" target="_blank" rel="noreferrer">
+                  <img
+                          class="rounded"
+                          src="{{ url_for('static', filename='img/icahn_cb_logo.png') }}"
+                          style="height: 5rem"
+                          alt="Icahn School of Medicine at Mount Sinai Center of Bioinformatics logo"
+                  />
+              </a>
+          </div>
+          <div class="col-md-4 justify-content-center">
+              <a href="https://labs.icahn.mssm.edu/maayanlab/" target="_blank" rel="noreferrer">
+                  <img
+                          class="rounded ml-5"
+                          src="{{ url_for('static', filename='img/maayanlab_logo.png') }}"
+                          style="height: 5rem"
+                          alt="Ma'ayan lab logo"
+                  />
+              </a>
+          </div>
+          <div class="col-md-4 mt-3 justify-content-center">
+            <a href="https://attielab.biochem.wisc.edu/" target="_blank" rel="noreferrer">
+                <img
+                        class="rounded ml-2"
+                        src="{{ url_for('static', filename='img/UW-logo.png') }}"
+                        style="height: 3.5rem"
+                        alt="Icahn School of Medicine at Mount Sinai Center of Bioinformatics logo"
+                />
+            </a>
+        </div>
+          <div class="row justify-content-center mt-5 mr-5">
+            <p style="font-weight: 200; font-size: 1.1rem; line-height: 1.3;" >Supported by NIDDK (RC2-DK131995)</p>
+        </div>
+  </div>
+
+</div>
+
+</body>
 
 </html>

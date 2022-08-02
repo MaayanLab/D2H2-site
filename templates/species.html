@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block metatitle %}{% if organ_name == 'brain' %}Boxplot Express: Brain{% endif %}{% endblock %}
+{% block metatitle_alt %}{% if organ_name == 'kidney' %}Boxplot Express: Kidney{% endif %}{% endblock %}
+
+{% block brainbutton %}{% if organ_name == 'brain' %} active{% else %}{{ super() }}{% endif %}{% endblock %}
+{% block brainsr %}{% if organ_name == 'brain' %} <span class="sr-only">(current)</span>{% else %}{{ super() }}{% endif %}{% endblock %}
+
+{% block kidneybutton %}{% if organ_name == 'kidney' %} active{% else %}{{ super() }}{% endif %}{% endblock %}
+{% block kidneysr %}{% if organ_name == 'kidney' %} <span class="sr-only">(current)</span>{% else %}{{ super() }}{% endif %}{% endblock %}
+
+            {% block content %}
+            <div class="container px-4 pb-4" style="min-height: 100%;">
+
+                <!-- Title -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="h4 text-center">An Interactive Gene Expression Viewer</div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <!-- Abstract large -->
+                        <div class="d-block">
+                            <div class="custom-col text-center m-2 p-3">
+                                <p>
+                                    Boxplot Express enables interactive visualization of gene expression data from Microarray and RNA-seq experiments from the Gene Expression Omnibus (GEO). The
+                                    user can pick a study from the table below to compare the expression of single genes across experimental groups. The 
+                                    expression of the gene will be displayed as a boxplot, with the conditions on the x-axis and normalized expression levels on the y-axis.
+                                </p>
+                                <p>
+                                    Boxplot Express was developed by the <a class="text-br-red" href="https://labs.icahn.mssm.edu/maayanlab/" target="_blank" rel="noopener noreferrer">Ma'ayan Laboratory</a>, and it is funded by NIH grants <a class="text-br-red" href="https://reporter.nih.gov/search/mr1dDhzzV0ezl5gHT3ip6A/project-details/10364063" target="_blank" rel="noopener noreferrer">R01DK131525</a> and <a class="text-br-red" href="https://reporter.nih.gov/search/S5e0jg4ipkuTqk8o-vkmIw/project-details/10414588" target="_blank" rel="noopener noreferrer">RC2DK131995</a>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container custom-col table-responsive-lg mb-4 p-3">
+                <table class="table table-bordered table-hover" style="background-color: whitesmoke !important; border: black !important;">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">GSE Accession ID</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Organism</th>
+                            <th scope="col">Assay</th>
+                            <th scope="col">Submission Date</th>
+                            <th scope="col">Study Design</th>
+                            <th scope="col">PMID</th>
+                            <th scope="col">Gene Viewer Link</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for gse_id in gse_list %}
+                            <tr>
+                                <th scope="row"><a class="text-br-red" href="{{ gse_metadata[gse_id].get('gse_link', ['#'])[0]|safe }}" target="_blank" rel="noopener noreferrer">{{ gse_id }}</a></th>
+                                <td>{{ gse_metadata[gse_id].get('title', ['No Title'])[0].replace('RTN1 IS A NOVEL MEDIATOR FOR PROGRESSION OF KIDNEY DISEASE', 'RTN1 Is A Novel Mediator For Progression of Kidney Disease')|safe}}</td>
+                                <td>
+                                    {% if gse_metadata[gse_id].get('cur_gpl', ['Single GPL'])[0] != 'Single GPL' %}
+                                        {% for gpl_metadata in gse_metadata[gse_id]['all_gpls'] %}
+                                            {% if gpl_metadata['geo_accession'][0] == gse_metadata[gse_id].get('cur_gpl')[0] %}
+                                                {{ gpl_metadata['organism'][0]|safe }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        {{ gse_metadata[gse_id]['all_gpls'][0].get('organism', ['No Organism'])[0]|safe }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if gse_metadata[gse_id].get('type', ['No Assay'])|length > 1 %}
+                                        {% for assay in gse_metadata[gse_id].get('type', ['No Assay']) %}
+                                            <p>{{ assay|safe }}</p>
+                                        {% endfor %}
+                                    {% else %}
+                                        {{ gse_metadata[gse_id].get('type', ['No Assay'])[0]|safe }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ (gse_metadata[gse_id].get('submission_date')[0][:-5] + ',' + gse_metadata[gse_id].get('submission_date')[0][-5:])|safe }}</td>
+                                <td>
+                                    <button class="btn btn-collapse collapsed d-flex align-items-center text-left" data-toggle="collapse" data-target="#studyDesignCollapse-{{gse_id}}" aria-expanded="false" aria-controls="studyDesignCollapse-{{gse_id}}">
+                                        {{ gse_id }} Study Design
+                                    </button>
+                                    <div class="collapse" id="studyDesignCollapse-{{gse_id}}">
+                                        {{ gse_metadata[gse_id].get('overall_design', ['No Study Design'])[0]|safe }}
+                                    </div>
+                                </td>
+                                <td>
+                                    {% if gse_metadata[gse_id].get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed ID' %}
+                                        <a class="text-br-red" href="{{ gse_metadata[gse_id].get('pubmed_link', ['#'])[0]|safe }}" target="_blank" rel="noopener noreferrer">
+                                            {{ gse_metadata[gse_id].get('pubmed_id', ['No Pubmed ID'])[0]|safe }}
+                                        </a>
+                                    {% else %}
+                                        <p>N/A</p>
+                                    {% endif %}
+                                </td>
+                                <td><a class="btn btn-outline-primary" role="button" href="{{ url_for('gene_explorer', organ_name=organ_name, geo_accession=gse_id) }}">{{ gse_id }} Gene Viewer</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block html %}class='h-100' {% endblock %}
+
+
+            {% block content %}
+            <div class="w-100 viewer-title">
+                <div class="container viewer-title d-flex align-items-center">
+                    <a class="brand px-3 py-3 col-12" href="#" style="text-decoration: none">{{ geo_accession }}: {{ geo_meta.get('title', ["Title Not Found"])[0].replace('RTN1 IS A NOVEL MEDIATOR FOR PROGRESSION OF KIDNEY DISEASE', 'RTN1 Is A Novel Mediator For Progression of Kidney Disease')|safe }}</a>
+                </div>
+            </div>
+
+
+            <div class="container px-4 pb-5" style="min-height: 100%;">
+
+                <!-- Title -->
+                <div class="row mt-4">
+                    
+                    <div class="col-12">
+                        <div class="h4 pl-2 mb-4">
+                            {% if geo_meta.get('type') == ['Expression profiling by array'] %}
+                                Microarray Data Explorer
+                            {% elif geo_meta.get('type') == ['Expression profiling by high throughput sequencing'] %}
+                                RNA-Seq Data Explorer
+                            {% else %}
+                                Gene Expression Data Explorer
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gene Expression Explorer -->
+                <div class="row justify-content-center">
+
+                    <!-- Boxplots -->
+                    <div class="col-lg-8 col-xl-9 mb-4 justify-content-center">
+
+                        <!-- Selector and plot -->
+                        <div class="custom-col justify-content-center text-center">
+                            Enter gene symbol:
+                            <input id="gene-select" class="mt-2 studysearch" data-url-genes="{{ url_for('genes_api', geo_accession=geo_accession, organ_name=organ_name) }}" data-geo-acc = {{geo_accession}}></input>
+                            <div><button type="button" id="generate-plot" class="btn btn-primary btn-group-sm mt-3 mb-3"> Generate Plot </button></div>
+                            <div id="boxplot" class="plotly-plot chart m-4" data-url-plot="{{ url_for('plot_api', geo_accession=geo_accession, organ_name=organ_name) }}"></div>
+                        </div>
+
+                        <!-- Abstract large -->
+                        <div class="d-none d-lg-block">
+                            <div class="h4 pl-2 mt-5 mb-4">Description</div>
+                            <div class="custom-col p-2">
+                                <p class="text-br-red font-weight-bold">Submission Date: <span class="font-weight-normal" style="color:#212529">{{ (geo_meta.get('submission_date')[0][:-5] + ',' + geo_meta.get('submission_date')[0][-5:])|safe }}</span></p>
+                                {% for paragraph in geo_meta.get('summary', ['Summary Not Found']) %}
+                                    {% if loop.first %}
+                                        <p class="text-br-red font-weight-bold">Summary: <span class="font-weight-normal" style="color:#212529">{{ paragraph|safe }}</span></p>
+                                    {% else %}
+                                        <p>{{ paragraph|safe }}</p>
+                                    {% endif %}
+                                {% endfor %}
+                                <p class="text-br-red font-weight-bold">GEO Accession ID: <a class="font-weight-normal" style="color: #0e63c4" href="{{ geo_meta.get('gse_link', ['#'])[0]|safe }}" target="_blank" rel="noopener noreferrer">{{ geo_meta.get('geo_accession', ['GEO Accession ID Not Found'])[0] }}</a></p>
+                                {% if geo_meta.get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed ID' %}
+                                    <p class="text-br-red font-weight-bold">PMID: <a class="font-weight-normal" style="color: #0e63c4" href="{{ geo_meta.get('pubmed_link', ['#'])[0]|safe }}" target="_blank" rel="noopener noreferrer">{{ geo_meta.get('pubmed_id', ['No Pubmed ID'])[0]|safe }}</a></p>
+                                {% else %}
+                                    <p class="text-br-red font-weight-bold">PMID: <span class="font-weight-normal" style="color:#212529">N/A</span></p>
+                                {% endif %}                    
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Table -->
+                    <div class="col-lg-4 col-xl-3">
+                        <div class="custom-col">
+                            <p class="m-3" style="font-size: 0.97rem;">Select conditions below to toggle them from the plot:</p>
+                            <table id="condition-table" class="text-center m-3">
+                                <thead>
+                                    <tr>
+                                        <th>GROUP</th>
+                                        <th>CONDITION</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for group, conditions_dict in metadata_dict.items() %}
+                                        {% set grouploop = loop %}
+                                        {% for condition in conditions_dict.keys() %}
+                                            <tr>
+                                                {% if loop.first %}
+                                                    <td rowspan="{{ conditions_dict.keys()|length }}" class="align-middle">
+                                                        {{ group|safe }}
+                                                    </td>
+                                                {% endif %}
+                                                <td class="p-0 ml-3 border"><button style="background-color: lightblue;" class="btn w-100 m-0 rounded-0 py-0 condition-btn{{' active plotted' if grouploop.first}}" data-toggle="button" aria-pressed="{{ grouploop.first|lower }}" autocomplete="off" data-group_label="{{ condition }}">{{ condition|safe }}</button></td>
+                                                <!-- Can modify this above line to make formatting specific for the conditions/words that I'm working with-->
+                                            </tr>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Abstract small -->
+                <div class="row">
+                    <div class="col-12">
+
+                        <!-- Abstract large -->
+                        <div class="d-block d-lg-none">
+                            <div class="h4 pl-2 mt-5 mb-4">Description</div>
+                            <div class="custom-col p-2">
+                                <p class="text-br-red font-weight-bold">Submission Date: <span class="font-weight-normal" style="color:#212529">{{ (geo_meta.get('submission_date')[0][:-5] + ',' + geo_meta.get('submission_date')[0][-5:])|safe }}</span></p>
+                                {% for paragraph in geo_meta.get('summary', ['Summary Not Found']) %}
+                                    {% if loop.first %}
+                                        <p class="text-br-red font-weight-bold">Summary: <span class="font-weight-normal" style="color:#212529">{{ paragraph|safe }}</span></p>
+                                    {% else %}
+                                        <p>{{ paragraph|safe }}</p>
+                                    {% endif %}
+                                {% endfor %}
+                                <p class="text-br-red font-weight-bold">GEO Accession ID: <a class="font-weight-normal" style="color: #0e63c4" href="{{ geo_meta.get('gse_link', ['#'])[0]|safe }}" target="_blank" rel="noopener noreferrer">{{ geo_meta.get('geo_accession', ['GEO Accession ID Not Found'])[0] }}</a></p>
+                                {% if geo_meta.get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed ID' %}
+                                    <p class="text-br-red font-weight-bold">PMID: <a class="font-weight-normal" style="color: #0e63c4" href="{{ geo_meta.get('pubmed_link', ['#'])[0]|safe }}" target="_blank" rel="noopener noreferrer">{{ geo_meta.get('pubmed_id', ['No Pubmed ID'])[0]|safe }}</a></p>
+                                {% else %}
+                                    <p class="text-br-red font-weight-bold">PMID: <span class="font-weight-normal" style="color:#212529">N/A</span></p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endblock %}

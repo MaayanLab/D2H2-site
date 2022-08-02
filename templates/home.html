@@ -1,0 +1,112 @@
+{% extends 'base.html' %} 
+
+{% block body %}
+<div class="justify-content-center container-fluid">
+    <div class="col-10 justify-content-center mx-auto banner">
+      <div class="row justify-content-center mb-3  mt-4">
+        <div class="text-center col-lg-12">
+          <h1 class="">Diabetes Data and Hypothesis Hub</h1>
+          <img
+            class="p-0 m-0"
+            style="width: 65px"
+            src="{{ url_for('static', filename='img/d2h2logo.png') }}"
+            alt="D2H2 logo"
+          />
+        </div>
+      </div>
+
+      <div class="row justify-content-center">
+        <p
+          style="font-weight: 300; font-size: 1.1rem; line-height: 1.3"
+          class="text-center"
+        >
+          Diabetes Data and Hypothesis Hub (D2H2) is a platform that will
+          facilitate data-driven hypothesis generation for the diabetes and
+          related metabolic disorder research community.
+        </p>
+      </div>
+  </div>
+
+  <div class="custom-col col-9 justify-content-center mx-auto mt-4">
+
+  
+
+    <div class="row justify-content-center mt-3 mb-3 text-center">
+        <p>
+            D2H2 utilzes a variety of resources to display gene and transcript information:
+        </p>
+    </div>
+
+    <div class="row justify-content-center mb-3">
+        <div class="column m-2">
+            <a href="https://appyters.maayanlab.cloud/#/" target="_blank">
+                <img
+                src="{{ url_for('static', filename='img/appyters_logo.svg') }}"
+                alt="Appyters"
+                style="width: 150px;"
+                />
+            </a>
+        </div>
+        <div class="column m-2">
+            <a href="https://maayanlab.cloud/archs4/" target="_blank">
+                <img
+                src="{{ url_for('static', filename='img/archs4logo.png') }}"
+                alt="ARCHS4"
+                style="width: 150px;"
+                />
+            </a>
+        </div>
+        <div class="column m-2">
+            <a href="https://gtexportal.org/home/" target="_blank">
+                <img
+                src="{{ url_for('static', filename='img/gtexlogo.png') }}"
+                alt="GTEx"
+                style="width: 150px;"
+                />
+            </a>
+        </div>
+    </div>
+    <div class="row justify-content-center mb-3">
+        <div class="column m-2 mr-5 mt-4">
+            <a href="http://www.informatics.jax.org/" target="_blank">
+                <img
+                src="{{ url_for('static', filename='img/mgilogo.png') }}"
+                alt="MGI"
+                style="width: 100px;"
+                />
+            </a>
+        </div>
+        <div class="column m-2">
+            <a href="https://www.ebi.ac.uk/gwas/" target="_blank">
+                <img
+                src="{{ url_for('static', filename='img/gwas.png') }}"
+                alt="GWAS"
+                style="width: 80px;"
+                />
+            </a>
+        </div>
+        <div class="column m-2 ml-4">
+          <a href="https://www.ebi.ac.uk/gwas/" target="_blank">
+              <img
+              src="{{ url_for('static', filename='img/sigcom_lincs_logo.png') }}"
+              alt="GWAS"
+              style="width: 80px;"
+              />
+          </a>
+      </div>
+      <div class="column m-2 ml-4">
+        <a href="https://www.ebi.ac.uk/gwas/" target="_blank">
+            <img
+            src="{{ url_for('static', filename='img/enrichrlogo.png') }}"
+            alt="GWAS"
+            style="width: 80px;"
+            />
+        </a>
+    </div>
+    </div>
+</div>
+</div>
+
+
+  {% endblock %}
+</div>

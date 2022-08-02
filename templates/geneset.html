@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+
+
+
+{% block head %}
+
+
+<meta property="og:description"
+      content="Diabetes Data and Hypothesis Hub (D2H2) is a platform that will facilitate 
+      data-driven hypothesis generation for the diabetes and related metabolic disorder research community."/>
+
+<title>D2H2</title>
+
+
+{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid pr-5 pl-5">
+  <div class="row">
+
+    <div class="col-3">
+      <nav id="toc" data-toggle="toc" class="navbar navbar-light flex-column align-items-stretch p-3 sticky-top" style="font-weight: 350 !important;"></nav>
+    </div>
+
+    <div class="col-9">
+      <br>
+      <div class="row justify-content-center mt-2">
+        <span class="page-header">Discovering Knowledge about a Gene Set</span>
+      </div>
+      <div class="row justify-content-center mt-2 text-center">
+        <p> Enter a list of gene symbols or upload a file into the relevant question's input form and the provided information or resource will be shown. </p>
+    </div>
+
+    <div class="container mt-2">
+      <div class="row justify-content-center justify-items-center">
+        <div class="d-flex col-12 custom-col justify-content-center justify-items-center"> 
+          <div class="mt-2"> 
+            <div class="question ml-2 justify-content-center row"> <h4>In which annotated gene sets is my gene set enriched?</h4> </div>
+
+              <div class="row">
+                <div class="col-6 text-right mr-3">
+                  <textarea name="list" rows="8" id="text-area1" placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box" onkeyup="geneCount($(this).val(), 1)" onchange="geneCount($(this).val(), 1)" onfocus="geneCount($(this).val(), 1)"></textarea>
+                  <div class="mt-1">
+                    <span id="gene-count1"> 0 </span> gene(s) entered
+                  </div>
+                </div>
+                <div class="col-3 justify-content-around">
+                  <p>
+                    File formats excepted: csv, tsv, txt file with Entrez gene symbols on each line
+                  </p>
+                  <form action="/action_page.php">
+                    <input type="file" id="gene-file1" name="filename">
+                  </form>
+                  <label class="mt-1 mr-1" for="desc1">Enter gene set description (optional): </label>
+                  <input class="form-control-md" id="desc1" type="text">
+                  
+                </div>
+              </div>
+
+
+              <div class="row text-center justify-content-center mt-2">
+                <p>Perform enrichement analysis through Enricher with the entered or uploaded gene set:</p>
+              </div>
+
+              <div class="row text-center justify-content-center mt-2">
+                <img src="static/img/enrichrthumbnail.png" alt="" class="img-fluid img-thumbnail">
+              </div>
+
+              <div class="justify-content-center row text-center mt-3">
+                <a id="enrichr"> 
+                  <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Submit to Enricher
+                    <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enricher">
+                  </button>
+                </a> 
+              </div>  
+          </div>
+        </div>
+      </div>
+    </div>
+      
+      <div class="container mt-3">
+        <div class="row justify-content-center justify-items-center">
+          <div class="d-flex col-md-12 custom-col justify-content-center justify-items-center"> 
+            <div class="mt-3"> 
+              <div class="question ml-2 justify-content-center row text-center"> <h4>What transcription factors and kinases regulate my gene set?</h4> </div>
+                    
+              <div class="row">
+                <div class="col-6 text-right mr-3">
+                  <textarea name="list" rows="8" id="text-area2" placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box" onkeyup="geneCount($(this).val(), 2)" onchange="geneCount($(this).val(), 2)" onfocus="geneCount($(this).val(), 2)"></textarea>
+                  <div class="mt-1">
+                    <span id="gene-count2"> 0 </span> gene(s) entered
+                  </div>
+                </div>
+                <div class="col-3 justify-content-around">
+                  <p>
+                    File formats excepted: csv, tsv, txt file with Entrez gene symbols on each line
+                  </p>
+                  <form action="/action_page.php">
+                    <input type="file" id="gene-file2" name="filename">
+                  </form>
+                  
+                </div>
+              </div>
+                
+                <div class="row align-bottom">
+                  <div class="col col-md-6">
+
+                    <div class="row text-center">
+                      <p class="mt-4 ml-1"> The ChEA3 Appyter (ChIP-X Enrichment Analysis 3) predicts transcription factors (TFs) 
+                        associated with user-input sets of genes. Discrete query gene sets are compared to ChEA3 libraries of 
+                        \TF target gene sets assembled from multiple orthogonal 'omics' datasets. </p>
+                    </div>
+
+                    <div class="row justify-content-center mt-3 mb-3">
+                      <img src="static/img/chea3-thumbnail.png" alt="" class="img-fluid img-thumbnail">
+                    </div>
+
+
+                    <div class="justify-content-center row text-center mb-3">
+                      <a id="chea3" target="_blank" rel="noopener noreferrer" href="https://appyters.maayanlab.cloud/ChEA3_Appyter/"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3">
+                        <span id="appyter-action" class="ml-3">Start a new appyter in</span>
+                          <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
+                        </button>
+                      </a>
+                    </div>
+
+                  </div>
+
+                  <div class="col col-md-6 align-bottom">
+                    <div class="row text-center mr-2">
+                      <p class="mt-3">Kinase Enrichment Analysis 3 (KEA3) infers upstream kinases 
+                        whose putative substrates are overrepresented in a user-inputted list of genes or differentially 
+                        phosphorylated proteins. The KEA3 database contains putative kinase-substrate interactions 
+                        collected from publicly available datasets.
+                      </p>
+                    </div>
+
+                    <div class="row justify-content-center mb-3">
+                      <img src="static/img/kea3thumbnail.png" alt="" class="img-fluid img-thumbnail">
+                    </div>
+
+                    <div class="justify-content-center row text-center mb-3">
+                      <a id="kea3" target="_blank" rel="noopener noreferrer" href="https://appyters.maayanlab.cloud/KEA3_Appyter/"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3">
+                        <span id="appyter-action" class="ml-3">Start a new appyter in</span>
+                          <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
+                        </button>
+                      </a>
+                    </div>
+                  </div>
+
+                
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-3">
+      <div class="row justify-content-center justify-items-center">
+        <div class="d-flex col-md-12 custom-col justify-content-center justify-items-center"> 
+          <div class="mt-3"> 
+            <div class="question ml-2 justify-content-center row"> <h4>What are the signatures that regulate my gene set?</h4> </div>
+                  
+
+            <div class="row">
+              <div class="col-6 text-right mr-3">
+                <textarea name="list" rows="8" id="text-area3" placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box" onkeyup="geneCount($(this).val(), 3)" onchange="geneCount($(this).val(), 3)" onfocus="geneCount($(this).val(), 3)"></textarea>
+                <div class="mt-1">
+                  <span id="gene-count3"> 0 </span> gene(s) entered
+                </div>
+              </div>
+              <div class="col-3 justify-content-around">
+                <p>
+                  File formats excepted: csv, tsv, txt file with Entrez gene symbols on each line
+                </p>
+                <form action="/action_page.php">
+                  <input type="file" id="gene-file3" name="filename">
+                </form>
+                
+              </div>
+            </div>
+
+              <div class="justify-content-center row ml-1 mr-1 text-center">
+                <p class="mt-3"> Query SigCom LINCS which is a web-based search engine that serves over 1.5 million gene expression signatures processed, analyzed, and visualized from LINCS, GTEx, and GEO.
+                  SigCom LINCS provides rapid signature similarity search for mimickers and reversers given sets of up and down genes.
+                </p>
+              </div>
+
+              <div class="row justify-content-center mb-3">
+                <img src="static/img/sigcoms.png" alt="" class="img-fluid img-thumbnail">
+              </div>
+
+              <div class="justify-content-center row text-center mt-3">
+                <a id="sigcoms"> 
+                  <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Submit to
+                    <img src="/static/img/sigcom_lincs_logo.png" class="img-fluid mr-3" style="width: 60px" alt="SigCom LINCS">
+                  </button>
+                </a> 
+              </div> 
+              
+              
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+</div>
+</div>
+</div>
+</div>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}
+
