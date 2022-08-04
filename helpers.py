@@ -38,8 +38,6 @@ def query_enricher(genes: list):
 
     return data['userListId']
 
-print(query_enricher(['AKT1', 'STAT3']))
-
 ########################## QUERY KOMP API ###############################
 
 
@@ -116,3 +114,108 @@ def query_gwas(gene: str):
     trait_list = list(summerized_data.T.to_dict().values())
 
     return {'GWAS_Catalog': trait_list}
+
+
+########## QUERY SigCom LINCS ###############
+
+
+def sigcom_up_down_genes(up_list, down_list):
+    METADATA_API = "https://maayanlab.cloud/sigcom-lincs/metadata-api/"
+    DATA_API = "https://maayanlab.cloud/sigcom-lincs/data-api/api/v1/"
+
+    input_gene_set = {
+        "up_genes": up_list,
+        "down_genes": down_list 
+    }
+
+    all_genes = input_gene_set["up_genes"] + input_gene_set["down_genes"]
+
+    payload = {
+        "filter": {
+            "where": {
+                "meta.symbol": {
+                    "inq": all_genes
+                }
+            },
+            "fields": ["id", "meta.symbol"]
+        }
+    }
+    res = requests.post(METADATA_API + "entities/find", json=payload)
+    entities = res.json()
+
+    for_enrichment = {
+        "up_entities": [],
+        "down_entities": []
+    }
+
+    for e in entities:
+        symbol = e["meta"]["symbol"]
+        if symbol in input_gene_set["up_genes"]:
+            for_enrichment["up_entities"].append(e["id"])
+        elif symbol in input_gene_set["down_genes"]:
+            for_enrichment["down_entities"].append(e["id"])
+    
+
+    payload = {
+    "meta": {
+        "$validator": "/dcic/signature-commons-schema/v6/meta/user_input/user_input.json",
+        **for_enrichment
+    },
+    "type": "signature"
+    }
+    res = requests.post(METADATA_API + "user_input", json=payload)
+    persistent_id = res.json()["id"]
+
+    return ("https://maayanlab.cloud/sigcom-lincs#/SignatureSearch/Rank/%s"%persistent_id)
+
+
+
+
+def sigcom_gene_set(gene_set):
+    METADATA_API = "https://maayanlab.cloud/sigcom-lincs/metadata-api/"
+
+    input_gene_set = {
+        "genes": gene_set,
+    }
+
+    all_genes = input_gene_set["genes"]
+
+    payload = {
+        "filter": {
+            "where": {
+                "meta.symbol": {
+                    "inq": all_genes
+                }
+            },
+            "fields": ["id", "meta.symbol"]
+        }
+    }
+    res = requests.post(METADATA_API + "entities/find", json=payload)
+    entities = res.json()
+
+    for_enrichment = {
+    "entities": [],
+    "signatures": [],
+    "offset": 0,
+    "limit": 0
+    }
+
+
+    for e in entities:
+        for_enrichment["entities"].append(e["id"])
+    
+
+    payload = {
+    "meta": {
+        "$validator": "/dcic/signature-commons-schema/v6/meta/user_input/user_input.json",
+        **for_enrichment
+    },
+    "type": "signature"
+    }
+    res = requests.post(METADATA_API + "user_input", json=payload)
+
+    persistent_id = res.json()["id"]
+
+    return ("https://maayanlab.cloud/sigcom-lincs/#/SignatureSearch/Set/%s"%persistent_id)
+
+

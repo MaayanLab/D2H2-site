@@ -5,17 +5,10 @@
 {% block head %}
 
 
-<meta property="og:description"
-      content="Diabetes Data and Hypothesis Hub (D2H2) is a platform that will facilitate 
-      data-driven hypothesis generation for the diabetes and related metabolic disorder research community."/>
+<meta property="og:description" content="Diabetes Data and Hypothesis Hub (D2H2) is a platform that will facilitate 
+      data-driven hypothesis generation for the diabetes and related metabolic disorder research community." />
 
 <title>D2H2</title>
-
-
-  
-
-
-
 
 {% endblock %}
 
@@ -25,7 +18,8 @@
   <div class="row">
 
     <div class="col-3">
-      <nav id="toc" data-toggle="toc" class="navbar navbar-light flex-column align-items-stretch p-3 sticky-top" style="font-weight: 350 !important;"></nav>
+      <nav id="toc" data-toggle="toc" class="navbar navbar-light flex-column align-items-stretch p-3 sticky-top"
+        style="font-weight: 350 !important;"></nav>
     </div>
 
     <div class="col-9">
@@ -34,21 +28,24 @@
         <span class="page-header">Discovering Knowledge about Single Genes</span>
       </div>
       <div class="row justify-content-center mt-2 mb-2">
-        <p> Enter a gene symbol into the relevant question input form and the provided information or resource will be shown. </p>
+        <p> Enter a gene symbol into the relevant question input form and the provided information or resource will be
+          shown. </p>
       </div>
       <br>
-      
 
-    <div class="container mt-2">
-      <div class="row justify-content-center justify-items-center">
-        <div class="d-flex col-12 custom-col justify-content-center justify-items-center"> 
-          <div class="mt-3"> 
-            <div class="question ml-2 justify-content-center row"> <h4>In what cells and tissues is my gene expressed?</h4> </div>
 
-            
-                  
+      <div class="container mt-2">
+        <div class="row justify-content-center justify-items-center">
+          <div class="d-flex col-12 custom-col justify-content-center justify-items-center">
+            <div class="mt-3">
+              <div class="question ml-2 justify-content-center row">
+                <h4>In what cells and tissues is my gene expressed?</h4>
+              </div>
+
+
+
               <div class="input-group mt-4 justify-content-center row mb-3">
-                <label class="mt-1 mr-1" for="search1">Enter gene symbol:   </label>
+                <label class="mt-1 mr-1" for="search1">Enter gene symbol: </label>
                 <input class="form-control-sm search" id="search1" type="text">
               </div>
 
@@ -58,36 +55,36 @@
                   <div class="row justify-content-center">
                     <img src="static/img/tissueexpression.png" alt="" class="img-fluid img-thumbnail">
                   </div>
-  
+
                   <div class="justify-content-center row text-center mb-3 mt-3">
                     <a id="archs-url" target="_blank" rel="noopener noreferrer" href="https://maayanlab.cloud/archs4/">
                       <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Open in
-                      <img src="/static/img/archs4logo.png" class="img-fluid mr-3" style="width: 110px" alt="ARCHS4">
+                        <img src="/static/img/archs4logo.png" class="img-fluid mr-3" style="width: 110px" alt="ARCHS4">
                       </button>
                     </a>
                   </div>
-  
+
                 </div>
-  
+
                 <div class="col col-md-6">
                   <div class="row justify-content-center">
                     <img src="static/img/gtex-thumbnail.png" alt="" class="img-fluid img-thumbnail">
                   </div>
 
                   <div class="justify-content-center row text-center mt-3 mb-3">
-                    <a id="gtex-url" 
-                    target="_blank" rel="noopener noreferrer" href="https://gtexportal.org/home/">
-                    <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Open in
-                    <img src="/static/img/gtexlogo.png" class="img-fluid mr-3" style="width: 120px" alt="GTEx">
-                    </button>
+                    <a id="gtex-url" target="_blank" rel="noopener noreferrer" href="https://gtexportal.org/home/">
+                      <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Open in
+                        <img src="/static/img/gtexlogo.png" class="img-fluid mr-3" style="width: 120px" alt="GTEx">
+                      </button>
                     </a>
                   </div>
                 </div>
-                
+
               </div>
 
               <div class="justify-content-center row ml-1 mr-1 text-center">
-                <p class="mt-3">This linked Appyter takes a human gene symbol as the input to produce box plots that display its expression across human cell types and tissue at the mRNA and protein levels.</p>
+                <p class="mt-3">This linked Appyter takes a human gene symbol as the input to produce box plots that
+                  display its expression across human cell types and tissue at the mRNA and protein levels.</p>
               </div>
 
               <div class="row justify-content-center mb-3">
@@ -95,90 +92,110 @@
               </div>
 
               <div class="justify-content-center row text-center mb-3">
-                <a id="appyter-url1" target="_blank" rel="noopener noreferrer" href="https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3">
-                  <span id="appyter-action" class="ml-3">Start a new appyter in</span>
+                <a id="appyter-url1" target="_blank" rel="noopener noreferrer"
+                  href="https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/"><button type="button"
+                    class="btn btn-primary btn-group-sm mt-3 mb-3">
+                    <span id="appyter-action" class="ml-3">Start a new appyter in</span>
                     <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
                   </button>
                 </a>
               </div>
-              
+
+            </div>
           </div>
         </div>
       </div>
-      </div>
       <div class="container mt-3">
         <div class="row justify-content-center justify-items-center">
-          <div class="d-flex col-md-12 custom-col justify-content-center justify-items-center"> 
-            <div class="mt-3"> 
-              <div class="question ml-2 justify-content-center row text-center"> <h4>Under what conditions or perturbations is my gene regulated?</h4> </div>
-                    
-                <div class="input-group mt-4 justify-content-center row">
-                  <label class="mt-1 mr-1" for="search2">Enter gene symbol:   </label>
-                  <input class="form-control-sm search" id="search2" type="text">
-                </div>
-                
-                <div class="row">
-                  <div class="col col-md-6">
+          <div class="d-flex col-md-12 custom-col justify-content-center justify-items-center">
+            <div class="mt-3">
+              <div class="question ml-2 justify-content-center row text-center">
+                <h4>Under what conditions or perturbations is my gene regulated?</h4>
+              </div>
 
-                    <div class="row text-center">
-                      <p class="mt-4 ml-1"> This linked Appyter generates a volcano plot visualization displaying human/mouse signatures for a gene of interest.</p>
-                    </div>
+              <div class="input-group mt-4 justify-content-center row">
+                <label class="mt-1 mr-1" for="search2">Enter gene symbol: </label>
+                <input class="form-control-sm search" id="search2" type="text">
+              </div>
 
-                    <div class="row justify-content-center mt-3 mb-3">
-                      <img src="static/img/genecentric-thumbnail.png" alt="" class="img-fluid img-thumbnail">
-                    </div>
+              <div class="row">
+                <div class="col col-md-6">
 
-
-                    <div class="justify-content-center row text-center mb-3">
-                      <a id="appyter-url2" target="_blank" rel="noopener noreferrer" href="https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3">
-                        <span id="appyter-action" class="ml-3">Start a new appyter in</span>
-                          <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
-                        </button>
-                      </a>
-                    </div>
-
+                  <div class="row text-center">
+                    <p class="mt-4 ml-1"> This linked Appyter generates a volcano plot visualization displaying
+                      human/mouse signatures for a gene of interest.</p>
                   </div>
 
-                  <div class="col col-md-6">
-                    <div class="row text-center mr-2">
-                      <p class="mt-3">This linked Appyter generates a volcano plot visualization displaying the expression of a specific gene in RNA-seq signatures generated from transformed L1000 data.</p>
-                    </div>
+                  <div class="row justify-content-center mt-3 mb-3">
+                    <img src="static/img/genecentric-thumbnail.png" alt="" class="img-fluid img-thumbnail">
+                  </div>
 
-                    <div class="row justify-content-center mb-3">
-                      <img src="static/img/L1000-thumbnail.png" alt="" class="img-fluid img-thumbnail">
-                    </div>
 
-                    <div class="justify-content-center row text-center mb-3">
-                      <a id="appyter-url3" target="_blank" rel="noopener noreferrer" href="https://appyters.maayanlab.cloud/L1000_RNAseq_Gene_Search/"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3">
+                  <div class="justify-content-center row text-center mb-3">
+                    <a id="appyter-url2" target="_blank" rel="noopener noreferrer"
+                      href="https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/"><button type="button"
+                        class="btn btn-primary btn-group-sm mt-3 mb-3">
                         <span id="appyter-action" class="ml-3">Start a new appyter in</span>
-                          <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
-                        </button>
-                      </a>
-                    </div>
-
-                
+                        <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px"
+                          alt="Appyters">
+                      </button>
+                    </a>
+                  </div>
 
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <div class="container mt-3">
-      <div class="row justify-content-center justify-items-center">
-        <div class="d-flex col-md-12 custom-col justify-content-center justify-items-center"> 
-          <div class="mt-3"> 
-            <div class="question ml-2 justify-content-center row"> <h4>What are the transcription factors that regulate my gene?</h4> </div>
-                  
+                <div class="col col-md-6">
+                  <div class="row text-center mr-2">
+                    <p class="mt-3">This linked Appyter generates a volcano plot visualization displaying the expression
+                      of a specific gene in RNA-seq signatures generated from transformed L1000 data.</p>
+                  </div>
+
+                  <div class="row justify-content-center mb-3">
+                    <img src="static/img/L1000-thumbnail.png" alt="" class="img-fluid img-thumbnail">
+                  </div>
+
+                  <div class="justify-content-center row text-center mb-3">
+                    <a id="appyter-url3" target="_blank" rel="noopener noreferrer"
+                      href="https://appyters.maayanlab.cloud/L1000_RNAseq_Gene_Search/"><button type="button"
+                        class="btn btn-primary btn-group-sm mt-3 mb-3">
+                        <span id="appyter-action" class="ml-3">Start a new appyter in</span>
+                        <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px"
+                          alt="Appyters">
+                      </button>
+                    </a>
+                  </div>
+
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container mt-3">
+        <div class="row justify-content-center justify-items-center">
+          <div class="d-flex col-md-12 custom-col justify-content-center justify-items-center">
+            <div class="mt-3">
+              <div class="question ml-2 justify-content-center row">
+                <h4>What are the transcription factors that regulate my gene?</h4>
+              </div>
+
               <div class="input-group mt-4 justify-content-center row">
-                <label class="mt-1 mr-1" for="search3">Enter gene symbol:   </label>
+                <label class="mt-1 mr-1" for="search3">Enter gene symbol: </label>
                 <input class="form-control-sm search" id="search3" type="text">
               </div>
 
               <div class="justify-content-center row ml-1 mr-1 text-center">
-                <p class="mt-3"> The linked ChEA3 Appyter predicts transcription factors (TFs) associated with user-input sets of genes. 
-                  Discrete query gene sets are compared to ChEA3 libraries of TF target gene sets assembled from multiple orthogonal 
-                  'omics' datasets. The Fisher's Exact Test, with a background size of 20,000, is used to compare the input gene set to the 
-                  TF target gene sets in order to determine which TFs may be most closely associated with the input gene set. </p>
+                <p class="mt-3"> The linked ChEA3 Appyter predicts transcription factors (TFs) associated with
+                  user-input sets of genes.
+                  Discrete query gene sets are compared to ChEA3 libraries of TF target gene sets assembled from
+                  multiple orthogonal
+                  'omics' datasets. The Fisher's Exact Test, with a background size of 20,000, is used to compare
+                  the input gene set to the
+                  TF target gene sets in order to determine which TFs may be most closely associated with the input
+                  gene set. </p>
               </div>
 
               <div class="row justify-content-center mb-3">
@@ -186,69 +203,77 @@
               </div>
 
               <div class="justify-content-center row text-center mb-3">
-                <a id="appyter-url4" target="_blank" rel="noopener noreferrer" href="https://appyters.maayanlab.cloud/ChEA3_Appyter/"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3">
-                  <span id="appyter-action" class="ml-3">Start a new appyter in</span>
+                <a id="appyter-url4" target="_blank" rel="noopener noreferrer"
+                  href="https://appyters.maayanlab.cloud/ChEA3_Appyter/"><button type="button"
+                    class="btn btn-primary btn-group-sm mt-3 mb-3">
+                    <span id="appyter-action" class="ml-3">Start a new appyter in</span>
                     <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
                   </button>
                 </a>
               </div>
-              
-              
+
+
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="container mt-3">
-      <div class="row justify-content-center justify-items-center">
-        <div class="d-flex col-md-12 custom-col justify-content-center justify-items-center"> 
-          <div class="mt-3"> 
-            <div class="question ml-2 justify-content-center row"> <h4> Is my gene associated with traits in human GWAS? </h4> </div>
-                  
+      <div class="container mt-3">
+        <div class="row justify-content-center justify-items-center">
+          <div class="d-flex col-md-12 custom-col justify-content-center justify-items-center">
+            <div class="mt-3">
+              <div class="question ml-2 justify-content-center row">
+                <h4> Is my gene associated with traits in human GWAS? </h4>
+              </div>
+
               <div class="input-group mt-4 justify-content-center row">
-                <label class="mt-1 mr-1" for="search4">Enter gene symbol:   </label>
+                <label class="mt-1 mr-1" for="search4">Enter gene symbol: </label>
                 <input class="form-control-sm search" id="search4" type="text">
               </div>
 
               <div class="justify-content-center row ml-1 mr-1 text-center">
-                <p class="mt-3"> Query the GWAS API to find if the input gene symbol is associated with traits from the human GWAS catalog. </p>
+                <p class="mt-3"> Query the GWAS API to find if the input gene symbol is associated with traits from
+                  the human GWAS catalog. </p>
               </div>
 
 
               <div class="row justify-content-center mt-3 mb-3">
                 <img src="static/img/manhattan.png" alt="" class="img-fluid img-thumbnail">
-                
+
               </div>
 
-              
+
               <div class="justify-content-center row text-center  mt-3">
-                <a id="gwas-query"> 
+                <a id="gwas-query">
                   <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Query
                     <img src="/static/img/gwaslogo.png" class="img-fluid mr-3" style="width: 120px" alt="GWAS">
                   </button>
-                </a> 
+                </a>
               </div>
 
               <div id="gwas-res"> </div>
-              
+
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="container mt-3">
-      <div class="row justify-content-center justify-items-center">
-        <div class="d-flex col-md-12 custom-col justify-content-center justify-items-center"> 
-          <div class="mt-3"> 
-            <div class="question ml-2 justify-content-center row"> <h4> Is my gene correlated with other genes? </h4> </div>
-                  
+      <div class="container mt-3">
+        <div class="row justify-content-center justify-items-center">
+          <div class="d-flex col-md-12 custom-col justify-content-center justify-items-center">
+            <div class="mt-3">
+              <div class="question ml-2 justify-content-center row">
+                <h4> Is my gene correlated with other genes? </h4>
+              </div>
+
               <div class="input-group mt-4 justify-content-center row">
-                <label class="mt-1 mr-1" for="search5">Enter gene symbol:   </label>
+                <label class="mt-1 mr-1" for="search5">Enter gene symbol: </label>
                 <input class="form-control-sm search" id="search5" type="text">
               </div>
 
               <div class="justify-content-center row ml-1 mr-1 text-center">
-                <p class="mt-3"> Query the ARCHS4 database to return the top 100 correlated genes with the input gene symbol and their pearson correlations. </p>
+                <p class="mt-3"> Query the ARCHS4 database to return the top 100 correlated genes with the input
+                  gene symbol and their pearson correlations. </p>
               </div>
 
               <div class="row justify-content-center mt-3 mb-3">
@@ -256,35 +281,38 @@
               </div>
 
               <div class="justify-content-center row text-center  mt-3">
-                <a id="archs4-query"> 
+                <a id="archs4-query">
                   <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Query
                     <img src="/static/img/archs4logo.png" class="img-fluid mr-3" style="width: 120px" alt="ARCHS4">
                   </button>
-                </a> 
+                </a>
               </div>
 
               <div id="archs4-res"> </div>
-              
+
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="container mt-3 mb-3">
-      <div class="row justify-content-around">
-        <div class="d-flex col-md-12 custom-col justify-content-center justify-items-center"> 
-          <div class="mt-3"> 
-            <div class="question ml-2 justify-content-center row text-center"> 
-              <h4> Is there a knockout mouse for my gene and does it show any phenotypes? </h4> </div>
-                  
+      <div class="container mt-3 mb-3">
+        <div class="row justify-content-around">
+          <div class="d-flex col-md-12 custom-col justify-content-center justify-items-center">
+            <div class="mt-3">
+              <div class="question ml-2 justify-content-center row text-center">
+                <h4> Is there a knockout mouse for my gene and does it show any phenotypes? </h4>
+              </div>
+
               <div class="input-group mt-4 justify-content-center row">
-                <label class="mt-1 mr-1" for="search6">Enter gene symbol:   </label>
+                <label class="mt-1 mr-1" for="search6">Enter gene symbol: </label>
                 <input class="form-control-sm search" id="search6" type="text">
               </div>
 
               <div class="justify-content-center row ml-1 mr-1 text-center">
-                <p class="mt-3"> Query the MGI database through MouseMine to find phenotypes associated with the knockout of the input gene symbol. 
-                  The produced table also links to the gene page on MGI, the PubMed articles from which they are sourced, and defintions for the returned phenotypes. </p>
+                <p class="mt-3"> Query the MGI database through MouseMine to find phenotypes associated with the
+                  knockout of the input gene symbol.
+                  The produced table also links to the gene page on MGI, the PubMed articles from which they are
+                  sourced, and defintions for the returned phenotypes. </p>
               </div>
 
               <div class="row justify-content-center mb-3 mt-3">
@@ -292,29 +320,24 @@
               </div>
 
               <div class="justify-content-center row text-center  mt-3">
-                <a id="komp-query"> 
+                <a id="komp-query">
                   <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Query
                     <img src="/static/img/mgilogo.png" class="img-fluid mr-1 ml-2 mb-2" style="width: 80px" alt="MGI">
                   </button>
-                </a> 
+                </a>
               </div>
-    
 
-              <div id ="komp-res"></div>
+
+              <div id="komp-res"></div>
+            </div>
           </div>
+        </div>
+      </div>
+
     </div>
-</div>
-</div>
-
-</div>
-</div>
-</div>
-</div>
+  </div>
 </div>
 
 {% endblock %}
 
-{% block footer %}
-
-{% endblock %}
-
+</div>

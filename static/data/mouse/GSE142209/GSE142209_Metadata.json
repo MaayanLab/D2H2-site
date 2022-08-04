@@ -1,6 +1,6 @@
 {
-    "Human Brain": {
-        "Whole Brain" : ["GSM4222742", "GSM4222743", "GSM4222744"],
-        "Brain Microvessels": ["GSM4222739", "GSM4222740", "GSM4222741"]
-        }
+    "Mouse Brain": {
+        "Whole Brain" : ["GSM4222736", "GSM4222737", "GSM4222738"],
+        "Brain Microvessels": ["GSM4222733", "GSM4222734", "GSM4222735"]
+    }
 }

@@ -1,5 +1,4 @@
 from flask import Flask, render_template, url_for, request, session
-from flask_basicauth import BasicAuth
 import os
 import json
 import plotly
@@ -15,22 +14,26 @@ from helpers import *
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
 	return render_template('home.html')
 
+@app.route("/about", methods=['GET', 'POST'])
+def about():
+    return render_template("about.html")
 
-@app.route("/singlegene")
+
+@app.route("/singlegene", methods=['GET', 'POST'])
 def singlegene():
     return render_template("singlegene.html")
 
-@app.route("/geneset", methods=['GET'])
+@app.route("/geneset", methods=['GET', 'POST'])
 def geneset():
     return render_template("geneset.html")
 
-@app.route('/scg')
+@app.route('/scg', methods=['GET', 'POST'])
 def scg():
-	return render_template('scg.html')
+	return render_template('scg.html', methods=['GET', 'POST'])
 
 @app.route('/getgwas', methods=['GET','POST'])
 def get_gwas():
@@ -51,6 +54,20 @@ def get_mgi():
     result = query_mgi(gene)
 
     return result
+
+
+@app.route('/getsigcom',  methods=['GET','POST'])
+def get_sigcom():
+
+	gene_lists = request.get_json()["genes"]
+	if len(gene_lists) == 2:
+		res= {'url': sigcom_up_down_genes(gene_lists[0], gene_lists[1])}
+	elif len(gene_lists) == 1:
+		res= {'url':sigcom_gene_set(gene_lists[0])}
+	else: 
+		res= {'url': "https://maayanlab.cloud/sigcom-lincs/#/"}
+	
+	return res
 
 #############################################
 ########## 2. Data
@@ -107,27 +124,31 @@ def get_metadata(geo_accession, organ_folder):
     
     return gse.metadata
 
+ignore_list = ['mouse_matrix_v11.h5', 'human_matrix_v11.h5', '.DS_Store', 'allgenes.json']
+
 def organs_to_studies(path):
 	organs_mapping = {}
 	for organ_name in os.listdir(path):
-		if organ_name == 'genes.json' or organ_name == '.DS_Store':
+		if organ_name in ignore_list:
 			continue
 		organs_mapping[organ_name] = []
 		
 		for study_name in os.listdir(os.path.join(path, organ_name)):
-			if study_name == 'mouse_matrix_v11.h5' or study_name == 'human_matrix_v11.h5' or study_name == '.DS_Store':
+			if study_name in ignore_list:
 				continue
 			organs_mapping[organ_name].append(study_name)
 	return organs_mapping
 
 def sort_studies(organs_mapping):
 	for organ, studies_list in organs_mapping.items():
+		
 		organs_mapping[organ] = sorted(studies_list, key=lambda x: (int(x.split('-', 1)[0][3:])))
 	return organs_mapping
 
-print(os.listdir('static/data'))
+
 organs_mapping = organs_to_studies('static/data')
 print(organs_mapping)
+
 organs_mapping = sort_studies(organs_mapping)
 
 
@@ -214,7 +235,6 @@ def genes_api(organ_name, geo_accession):
 #############################################
 
 @app.route('/api/plot/<organ_name>/<geo_accession>', methods=['GET', 'POST'])
-
 def plot_api(organ_name, geo_accession):
 	"""
 	Inputs:
@@ -226,10 +246,11 @@ def plot_api(organ_name, geo_accession):
 	"""
 	organ_folder = organ_folder_name[organ_name]
 	assay = gse_metadata[organ_folder][geo_accession].get('type')[0]
-
+	
 	expression_file = 'static/data/' + organ_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
 	metadata_file = 'static/data/' + organ_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.json'
 	expression_dataframe = pd.read_csv(expression_file, index_col = 0, sep='\t')
+
 	with open(metadata_file) as openfile:
 		metadata_dict = json.load(openfile)
 	
@@ -241,12 +262,12 @@ def plot_api(organ_name, geo_accession):
 			for sample in samples_list:
 				samp_to_cond[sample] = condition
 
+
 	# Get data
 	data = request.json
 	gene_symbol = data['gene_symbol']
 	# print(gene_symbol)
 	conditions = data['conditions']
-	# print(conditions)
 
 	# Create a new dataframe that maps each sample to its condition
 	if gene_symbol not in expression_dataframe.index.values:
@@ -262,9 +283,6 @@ def plot_api(organ_name, geo_accession):
 	# Initialize figure
 	fig = go.Figure()
 
-	# print(plot_dataframe)
-	
-	# Loop
 	for condition in conditions:
 		if len(plot_dataframe.loc[condition, 'points']) > 1:
 			fig.add_trace(go.Box(name=condition, y=plot_dataframe.loc[condition, 'points'], boxpoints='all', pointpos=0))
@@ -277,10 +295,6 @@ def plot_api(organ_name, geo_accession):
 
 	if assay == 'Expression profiling by array':
 		y_units = 'Expression<br>RMA Normalized'
-	elif assay == 'Expression profiling by high throughput sequencing' and geo_accession == 'GSE117987':
-		y_units = 'Expression<br>log10 RPKM'
-	elif assay == 'Expression profiling by high throughput sequencing' and geo_accession == 'GSE141756':
-		y_units = 'Expression<br>log2CPM'
 	else:
 		y_units = 'Expression'
 

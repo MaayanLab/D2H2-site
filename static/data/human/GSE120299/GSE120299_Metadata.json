@@ -1,0 +1,9 @@
+
+{
+    "Pancreatic Islet Tissue" : {
+        "Control alpha cells": ["GSM3398188", "GSM3398189", "GSM3398190", "GSM3398191", "GSM3398192"],
+        "Control beta cells": ["GSM3398193", "GSM3398194", "GSM3398195", "GSM3398196", "GSM3398197"],
+        "HNF1A": ["GSM3397934", "GSM3397935"]
+
+    }
+}

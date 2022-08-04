@@ -81,12 +81,15 @@
                                         {% set grouploop = loop %}
                                         {% for condition in conditions_dict.keys() %}
                                             <tr>
-                                                {% if loop.first %}
+                                                <!-- {% if loop.first %} -->
                                                     <td rowspan="{{ conditions_dict.keys()|length }}" class="align-middle">
                                                         {{ group|safe }}
                                                     </td>
-                                                {% endif %}
-                                                <td class="p-0 ml-3 border"><button style="background-color: lightblue;" class="btn w-100 m-0 rounded-0 py-0 condition-btn{{' active plotted' if grouploop.first}}" data-toggle="button" aria-pressed="{{ grouploop.first|lower }}" autocomplete="off" data-group_label="{{ condition }}">{{ condition|safe }}</button></td>
+                                                <!-- {% endif %} -->
+                                                <td class="p-0 ml-3 border"><button style="background-color: rgb(60, 104, 179);" 
+                                                    class="btn w-100 m-0 rounded-0 py-0 condition-btn{{' active plotted '}}" 
+                                                    data-toggle="button" aria-pressed="{{ grouploop.first|lower }}" autocomplete="off" 
+                                                    data-group_label="{{ condition }}">{{ condition|safe }}</button></td>
                                                 <!-- Can modify this above line to make formatting specific for the conditions/words that I'm working with-->
                                             </tr>
                                         {% endfor %}

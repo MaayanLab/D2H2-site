@@ -23,14 +23,10 @@
                     <div class="col-12">
                         <!-- Abstract large -->
                         <div class="d-block">
-                            <div class="custom-col text-center m-2 p-3">
+                            <div class="text-center m-2 p-3">
                                 <p>
-                                    Boxplot Express enables interactive visualization of gene expression data from Microarray and RNA-seq experiments from the Gene Expression Omnibus (GEO). The
-                                    user can pick a study from the table below to compare the expression of single genes across experimental groups. The 
-                                    expression of the gene will be displayed as a boxplot, with the conditions on the x-axis and normalized expression levels on the y-axis.
-                                </p>
-                                <p>
-                                    Boxplot Express was developed by the <a class="text-br-red" href="https://labs.icahn.mssm.edu/maayanlab/" target="_blank" rel="noopener noreferrer">Ma'ayan Laboratory</a>, and it is funded by NIH grants <a class="text-br-red" href="https://reporter.nih.gov/search/mr1dDhzzV0ezl5gHT3ip6A/project-details/10364063" target="_blank" rel="noopener noreferrer">R01DK131525</a> and <a class="text-br-red" href="https://reporter.nih.gov/search/S5e0jg4ipkuTqk8o-vkmIw/project-details/10414588" target="_blank" rel="noopener noreferrer">RC2DK131995</a>.
+                                    This module enables interactive visualization of gene expression data from Microarray and RNA-seq experiments from the Gene Expression Omnibus (GEO). The
+                                    Select a study to compare the expression of single genes across experimental groups as a boxplot, with the conditions on the x-axis and normalized expression levels on the y-axis.
                                 </p>
                             </div>
                         </div>
@@ -39,7 +35,7 @@
             </div>
 
             <div class="container custom-col table-responsive-lg mb-4 p-3">
-                <table class="table table-bordered table-hover" style="background-color: whitesmoke !important; border: black !important;">
+                <table class="table table-bordered table-hover" style="background-color: whitesmoke !important; border: black !important;" id ="studies-table">
                     <thead class="thead-light">
                         <tr>
                             <th scope="col">GSE Accession ID</th>
@@ -100,5 +96,10 @@
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
+            <div class="row text center justify-content-center">
+                <p>
+                    This module was developed by the <a class="text-br-red" href="https://labs.icahn.mssm.edu/maayanlab/" target="_blank" rel="noopener noreferrer">Ma'ayan Laboratory</a>, and it is funded by NIH grants <a class="text-br-red" href="https://reporter.nih.gov/search/mr1dDhzzV0ezl5gHT3ip6A/project-details/10364063" target="_blank" rel="noopener noreferrer">R01DK131525</a> and <a class="text-br-red" href="https://reporter.nih.gov/search/S5e0jg4ipkuTqk8o-vkmIw/project-details/10414588" target="_blank" rel="noopener noreferrer">RC2DK131995</a>.
+                </p>
             </div>
             {% endblock %}

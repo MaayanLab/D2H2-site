@@ -55,12 +55,22 @@ function loadFileAsText(section, delim){
 }
 
 
+function fillPage(event, ui) {
+    console.log(ui.item.label)
+    var gene = ui.item.label;
+    const numSearch = 6
+    for (let i = 1; i < (numSearch +1); i++) {
+        document.getElementById(`search${i}`).value = gene;
+    }
+    
+}
+
 $(document).ready(function() {
 
     $('.search').autocomplete({
     source: function (request, response) {
         $.ajax({
-            url: "/static/data/genes.json",
+            url: "/static/data/allgenes.json",
             dataType: 'json',
             data: request,
             success: function( data ) {
@@ -84,19 +94,23 @@ $(document).ready(function() {
        },  
        minLength: 1,
        scroll:true,
-       max:5
+       max:5,
+       select: fillPage
       });
+
 
 /*       var url = window.location.href
       if (url.split('/')[-1].slice(0,3) == 'GSE') {
         
       } */
 
+      var currURL = window.location.href.split("/");
+      console.log(currURL)
 
       $('.studysearch').autocomplete({
         source: function (request, response) {
             $.ajax({
-                url: "/static/data/genes.json",
+                url: "/static/data/" + currURL[3] + "/" + currURL[4] +"/" + "genes.json",
                 dataType: 'json',
                 data: request,
                 success: function( data ) {
@@ -382,10 +396,13 @@ $(document).ready(function() {
         // Gene
         var gene_symbol = $('#gene-select').val();
         if (!gene_symbol) {
-            gene_symbol = 'A1CF';
-
+            if (currURL[3] === 'human') {
+                gene_symbol = 'A1BG';
+            }
+            if (currURL[3] === 'mouse') {
+                gene_symbol = '0610007P14Rik';
+            }
         }
-        // ^^ Can decide on a standard gene symbol for Mice/Humans depending on what is first? A1BG might work? How to make it auto select first one?-- idk.
 
         // Conditions
         var conditions = [];
@@ -503,13 +520,185 @@ $(document).ready(function() {
             $('#chea3').prop('href', "https://appyters.maayanlab.cloud/ChEA3_Appyter/")
             return;
         }
-        console.log(inputvalue)
 
         $('#chea3').prop('href', "https://appyters.maayanlab.cloud/ChEA3_Appyter/#/?args.paste_gene_input=" +inputvalue + "&submit");
 
     });
 
+    
+    function getSingleEntry(num, genecount) {
+        var single_entry = `<div class="col-6 text-right mr-3">
+            <textarea name="list" rows="8" id="text-area${num}" placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box" onkeyup="geneCount($(this).val(), ${genecount})" onchange="geneCount($(this).val(), ${genecount})" onfocus="geneCount($(this).val(), ${genecount})"></textarea>
+            <div class="mt-1">
+                <span id="gene-count${genecount}"> 0 </span> gene(s) entered
+            </div>
+            </div>
+            <div class="col-3 justify-content-around">
+            <p>
+            File formats excepted: csv, tsv, txt file with Entrez gene symbols on each line
+            </p>
+            <form action="/action_page.php">
+        <input type="file" id="gene-file${num}" name="filename">
+        </form>
         
+        </div>`;
+        return single_entry;
+    }
+
+    function getMultipleEntries(num, genecount) {
+        var multiple_entries = `<div class="col-3 text-right">
+            <textarea name="list" rows="8" id="text-area${num}-up" placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box" onkeyup="geneCount($(this).val(), ${genecount})" onchange="geneCount($(this).val(),  ${genecount})" onfocus="geneCount($(this).val(),  ${genecount})"></textarea>
+            <div class="mt-1">
+                <span id="gene-count${genecount}"> 0 </span> UP gene(s) entered
+            </div>
+            </div>
+            <div class="col-3">
+            <p>
+                File formats excepted: csv, tsv, txt file with Entrez gene symbols on each line
+            </p>
+            <form action="/action_page.php">
+                <input type="file" id="gene-file${num}-up" name="filename">
+            </form>
+            
+            </div>
+            <div class="col-3 text-right">
+            <textarea name="list" rows="8" id="text-area${num}-down" placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box" onkeyup="geneCount($(this).val(), ${genecount + 1})" onchange="geneCount($(this).val(), ${genecount + 1})" onfocus="geneCount($(this).val(), ${genecount + 1})"></textarea>
+            <div class="mt-1">
+                <span id="gene-count${genecount + 1}"> 0 </span> DOWN gene(s) entered
+            </div>
+            </div>
+            <div class="col-3">
+            <p>
+                File formats excepted: csv, tsv, txt file with Entrez gene symbols on each line
+            </p>
+            <form action="/action_page.php">
+                <input type="file" id="gene-file${num}-down" name="filename">
+            </form>
+            
+            </div>`;
+        return multiple_entries;
+    }
+
+    $('#ea3_entries_button').click( function() {  
+        
+        var button = document.getElementById("ea3_entries_button");
+
+        if (button.textContent === "Use Up/Down Gene Sets"){
+            document.getElementById("ea3_entries").innerHTML = getMultipleEntries(2, 2);
+            button.textContent = "Use Single Gene Set"
+        } else {
+            document.getElementById("ea3_entries").innerHTML = getSingleEntry(2, 2);
+            button.textContent = "Use Up/Down Gene Sets"
+        }
+        
+    });
+
+
+    $('#sigcom_entries_button').click( function() {  
+        
+        var button = document.getElementById("sigcom_entries_button");
+
+        if (button.textContent === "Use Up/Down Gene Sets"){
+            document.getElementById("sigcom_entries").innerHTML = getMultipleEntries(3, 4);
+            button.textContent = "Use Single Gene Set"
+        } else {
+            document.getElementById("sigcom_entries").innerHTML = getSingleEntry(3, 4);
+            button.textContent = "Use Up/Down Gene Sets"
+        }
+        
+    });
+
+    $('#sigcoms').click(async function() {  
+        var button = document.getElementById("sigcom_entries_button");
+
+
+        if (button.textContent === "Use Up/Down Gene Sets") {
+
+            var inputvalue = document.getElementById("text-area3").value;
+            var file = document.getElementById("gene-file3").value;
+            var section = "gene-file3";
+
+            if (inputvalue) {
+                inputvalue = inputvalue.split("\n")
+            }
+
+            if (file) {
+                inputvalue = await loadFileAsText(section, "\t").split("\t");
+            }
+
+            var genes = JSON.stringify({'genes': [inputvalue]});
+
+            $.ajax({
+                url: "/getsigcom",
+                contentType: 'application/json',
+                type: "POST",
+                dataType: 'json',
+                data: genes
+            }).done(function(response) {
+    
+                const url = response['url'];
+                window.open(url, '_blank');
+
+            });
+
+        } else {
+            var inputvalueUp = document.getElementById("text-area3-up").value;
+            var inputvalueDown = document.getElementById("text-area3-down").value;
+
+            var fileUp = document.getElementById("gene-file3-up").value;
+            var sectionUp = "gene-file3";
+            var fileDown = document.getElementById("gene-file3-down").value;
+            var sectionDown = "gene-file3";
+
+            if (inputvalueUp) {
+                inputvalueUp = inputvalueUp.split("\n")
+            }
+            if (inputvalueDown) {
+                inputvalueDown = inputvalueDown.split("\n")
+            }
+
+            if (fileUp) {
+                inputvalueUp = await loadFileAsText(section, "\t").split("\t");
+            }
+
+            if (fileDown) {
+                inputvalueDown = await loadFileAsText(section, "\t").split("\t");
+            }
+
+            var genes = JSON.stringify({'genes': [inputvalueUp, inputvalueDown]});
+
+            $.ajax({
+                url: "/getsigcom",
+                contentType: 'application/json',
+                type: "POST",
+                dataType: 'json',
+                data: genes
+            }).done(function(response) {
+    
+                const url = response['url'];
+                window.open(url, '_blank');
+            });
+
+        }
+        
+        
+    });
+
+    $('#studies-table').DataTable();
+
+    $('#scg-link').click( function() {
+
+        var workflow = document.getElementById("workflow").value;
+        
+
+        if (workflow) {
+            console.log(workflow)
+            $('#scg-link').prop('href', workflow);
+            return;
+        }
+        $('#scg-link').prop('href', "https://scg.maayanlab.cloud/");
+    });
+
 
 })
 

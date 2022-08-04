@@ -85,7 +85,7 @@
             <div class="mt-3"> 
               <div class="question ml-2 justify-content-center row text-center"> <h4>What transcription factors and kinases regulate my gene set?</h4> </div>
                     
-              <div class="row">
+              <div class="row" id="ea3_entries">
                 <div class="col-6 text-right mr-3">
                   <textarea name="list" rows="8" id="text-area2" placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box" onkeyup="geneCount($(this).val(), 2)" onchange="geneCount($(this).val(), 2)" onfocus="geneCount($(this).val(), 2)"></textarea>
                   <div class="mt-1">
@@ -102,17 +102,23 @@
                   
                 </div>
               </div>
+
+              <!-- <div class="row justify-content-center"> 
+                <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3" id="ea3_entries_button">Use Up/Down Gene Sets</button>
+              </div> -->
+
+              
                 
                 <div class="row align-bottom">
                   <div class="col col-md-6">
 
                     <div class="row text-center">
-                      <p class="mt-4 ml-1"> The ChEA3 Appyter (ChIP-X Enrichment Analysis 3) predicts transcription factors (TFs) 
+                      <p class="mt-3 ml-1"> The ChEA3 Appyter (ChIP-X Enrichment Analysis 3) predicts transcription factors (TFs) 
                         associated with user-input sets of genes. Discrete query gene sets are compared to ChEA3 libraries of 
                         \TF target gene sets assembled from multiple orthogonal 'omics' datasets. </p>
                     </div>
 
-                    <div class="row justify-content-center mt-3 mb-3">
+                    <div class="row justify-content-center mt-4 mb-3">
                       <img src="static/img/chea3-thumbnail.png" alt="" class="img-fluid img-thumbnail">
                     </div>
 
@@ -136,7 +142,7 @@
                       </p>
                     </div>
 
-                    <div class="row justify-content-center mb-3">
+                    <div class="row justify-content-center mb-3 mt-4">
                       <img src="static/img/kea3thumbnail.png" alt="" class="img-fluid img-thumbnail">
                     </div>
 
@@ -148,6 +154,7 @@
                       </a>
                     </div>
                   </div>
+                </div>
 
                 
 
@@ -160,25 +167,29 @@
       <div class="row justify-content-center justify-items-center">
         <div class="d-flex col-md-12 custom-col justify-content-center justify-items-center"> 
           <div class="mt-3"> 
-            <div class="question ml-2 justify-content-center row"> <h4>What are the signatures that regulate my gene set?</h4> </div>
+            <div class="question ml-2 justify-content-center row text-center"> <h4>What are the LINCS L1000 small molecules and genetic perturbations that likely up- or down-regulate the expression of my gene set?</h4> </div>
                   
 
-            <div class="row">
+            <div class="row" id="sigcom_entries">
               <div class="col-6 text-right mr-3">
-                <textarea name="list" rows="8" id="text-area3" placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box" onkeyup="geneCount($(this).val(), 3)" onchange="geneCount($(this).val(), 3)" onfocus="geneCount($(this).val(), 3)"></textarea>
+                <textarea name="list" rows="8" id="text-area3" placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box" onkeyup="geneCount($(this).val(), 4)" onchange="geneCount($(this).val(), 4)" onfocus="geneCount($(this).val(),4)"></textarea>
                 <div class="mt-1">
-                  <span id="gene-count3"> 0 </span> gene(s) entered
+                    <span id="gene-count4"> 0 </span> gene(s) entered
                 </div>
-              </div>
-              <div class="col-3 justify-content-around">
+                </div>
+                <div class="col-3 justify-content-around">
                 <p>
-                  File formats excepted: csv, tsv, txt file with Entrez gene symbols on each line
+                File formats excepted: csv, tsv, txt file with Entrez gene symbols on each line
                 </p>
                 <form action="/action_page.php">
-                  <input type="file" id="gene-file3" name="filename">
-                </form>
-                
+              <input type="file" id="gene-file3" name="filename">
+              </form>
+            
               </div>
+            </div>
+
+            <div class="row justify-content-center"> 
+              <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3" id="sigcom_entries_button">Use Up/Down Gene Sets</button>
             </div>
 
               <div class="justify-content-center row ml-1 mr-1 text-center">

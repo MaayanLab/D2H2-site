@@ -1,0 +1,6 @@
+{"pancreatic islets cells": 
+    {
+    "healthy (dropseq)": ["GSM2700338", "GSM2700339", "GSM2700340", "GSM2700341", "GSM2700342", "GSM2863188"],
+    "type II diabetic (dropseq)": ["GSM2700343", "GSM2700344", "GSM2863189"]
+    }
+}

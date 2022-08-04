@@ -1,0 +1,6 @@
+{"Human islet graft": {
+    "PBS for 4 weeks": ["GSM4157054", "GSM4157055", "GSM4157056", "GSM4157057", "GSM4157058"], 
+    "TAC for 4 weeks": ["GSM4157059", "GSM4157065", "GSM4157060", "GSM4157061"], 
+    "SIR for 4 weeks": ["GSM4157062", "GSM4157066", "GSM4157063", "GSM4157064"]
+    }
+}
