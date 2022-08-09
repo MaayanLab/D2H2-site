@@ -1,29 +1,35 @@
 
 
-h1 { color: #0f0724; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: 34px; font-weight: 350; line-height: 40px; margin: 0 0 16px; }
+h1 { color: #0f0724; font-family:  "IBM Plex Sans", sans-serif; font-size: 36px; font-weight: 350; line-height: 40px; margin: 0 0 16px; /* border: #d0d0d0; border-left-style: solid; border-right-style: solid; border-width: 2px; */}
 
 
-h2 { color: #050a2f; font-family:  'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: 24px; font-weight: 300; line-height: 32px; margin: 0 0 14px; }
+h2 { color: #050a2f; font-family:  "IBM Plex Sans", sans-serif; font-size: 24px; font-weight: 300; line-height: 32px; margin: 0 0 14px; }
 
 
-h4 { color: #050a2f; font-family:  'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: 22px; font-weight: 340; line-height: 32px; margin: 0 0 14px; }
+h4 { color: #050a2f; font-family:  "IBM Plex Sans", sans-serif; font-size: 22px; font-weight: 340; line-height: 32px; margin: 0 0 14px; }
+
+h5 { color: #050a2f; font-family:  "IBM Plex Sans", sans-serif; font-size: 22px; font-weight: 340; line-height: 32px; margin: 0 0 14px; }
 
 
-p { color: #222; font-family:  'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; margin: 0 0 14px; }
+p { color: #222; font-family: "IBM Plex Sans", sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; margin: 0 0 14px; }
 
 .page-header {
 
-    color: #050a2f; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: 25px; font-weight: 350; line-height: 32px; margin: 0 0 14px; 
+    color: #050a2f; font-family: "IBM Plex Sans", sans-serif; font-size: 25px; font-weight: 350; line-height: 32px; margin: 0 0 14px; 
 
 }
 
-.btn-primary {
+.nav-link {
+    font-family: "IBM Plex Sans", sans-serif;
+}
+
+/* .btn-primary {
     background-color: lightgray !important;
-}
+} */
 
-.btn-secondary {
+/* .btn-secondary {
     background-color: darkgray !important;
-}
+} */
 
 .selectize-dropdown {
     position: absolute !important;
@@ -125,7 +131,7 @@ body {
     margin: 0px;
 
    /*  background-image: linear-gradient(to right, whitesmoke, rgb(166, 217, 241)); */
-   background-color: rgb(212, 206, 206);
+   background-color: #B0BEC5;
 }
 
 
@@ -135,7 +141,7 @@ div {
 
 .custom-col {
     border: rgb(182, 182, 182);
-    background-color: #e9ebb4;
+    background-color: #CFD8DC;
     border-width: 1.5px;
     overflow: hidden;
     border-style: solid;
@@ -195,7 +201,7 @@ header#masthead {
     border-collapse: collapse;
     margin: 25px 0;
     font-size: 0.9em;
-    font-family: 'Open Sans', sans-serif;
+    font-family: "IBM Plex Sans", sans-serif;
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }

@@ -47,7 +47,7 @@
   <div class="page-contaier" style="position: relative;">
     <div id="content-wrap p-0">
       <!-- Navbar -->
-      <nav class="navbar navbar-expand-md center" style="background-color: #ede07f; font-size: 15px;">
+      <nav class="navbar navbar-expand-md center" style="background-color: #ECEFF1; font-size: 15px;">
         <a class="navbar-brand p-0" href="{{ url_for('home') }}"><img class="mr-2"
             src="{{ url_for('static', filename='img/d2h2logo.png') }}" height=50px></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -57,40 +57,40 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto menu">
             <li class="nav-item menu">
-              <a class="nav-link hover-underline-animation{% block homebutton %}{% endblock %}"
-                href="{{ url_for('home') }}" style="color: black !important;">Home{% block homesr %}{% endblock
-                %}</a>
+              <a class="nav-link hover-underline-animation"
+                href="{{ url_for('home') }}" style="color: black !important;">Home
+              </a>
             </li>
             <li class="nav-item menu">
-              <a class="nav-link hover-underline-animation{% block aboutbutton %}{% endblock %}"
-                href="{{ url_for('about') }}" style="color: black !important;">About{% block about %}{% endblock
-                %}</a>
+              <a class="nav-link hover-underline-animation"
+                href="{{ url_for('about') }}" style="color: black !important;">About
+              </a>
             </li>
             <li class="nav-item menu">
-              <a class="nav-link hover-underline-animation{% block sgbutton %}{% endblock %}"
-                href="{{ url_for('singlegene') }}" style="color: black !important;">Single Gene Discovery{% block
-                aboutsr %}{% endblock %}</a>
+              <a class="nav-link hover-underline-animation"
+                href="{{ url_for('singlegene') }}" style="color: black !important;">Single Gene Discovery
+              </a>
             </li>
             <li class="nav-item menu">
-              <a class="nav-link hover-underline-animation{% block gsbutton %}{% endblock %}"
-                href="{{ url_for('geneset') }}" style="color: black !important;"> Gene Set Discovery{% block
-                aboutgs %}{% endblock %}</a>
+              <a class="nav-link hover-underline-animation"
+                href="{{ url_for('geneset') }}" style="color: black !important;"> Gene Set Discovery
+              </a>
             </li>
             <li class="nav-item menu">
-              <a class="nav-link hover-underline-animation{% block scgbutton %}{% endblock %}"
-                href="{{ url_for('scg') }}" style="color: black !important;"> Customized Workflows {% block
-                aboutscg %}{% endblock %}</a>
+              <a class="nav-link hover-underline-animation"
+                href="{{ url_for('scg') }}" style="color: black !important;"> Customized Workflows
+              </a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownOrgan" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false" style="color: black !important;">
                 Processed GEO Study Viewer
               </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdownOrgan" style="width: 235px; background-color:#ede07f; color: white !important;">
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownOrgan" style="width: 235px; background-color:#ECEFF1;">
                 <a class="dropdown-item"
-                  href="{{ url_for('organ_or_viewerpg', organ_or_gse='human') }}" style="color: black;"> Human {% block brainsr %}{% endblock %}</a>
+                  href="{{ url_for('organ_or_viewerpg', organ_or_gse='human') }}" style="color: black;"> Human</a>
                 <a class="dropdown-item"
-                  href="{{ url_for('organ_or_viewerpg', organ_or_gse='mouse') }}" style="color: black;""> Mouse{% block kidneysr %}{% endblock %}</a>
+                  href="{{ url_for('organ_or_viewerpg', organ_or_gse='mouse') }}" style="color: black;""> Mouse</a>
               </div>
             </li>
             <li class="nav-item menu">
