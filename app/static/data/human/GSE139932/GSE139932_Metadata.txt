@@ -1,0 +1,11 @@
+Sample_geo_accession	Condition	Group
+GSM4149721	Untreated	Pancreatic islet-derived exosome
+GSM4149723	Untreated	Pancreatic islet-derived exosome
+GSM4149725	Untreated	Pancreatic islet-derived exosome
+GSM4149727	Untreated	Pancreatic islet-derived exosome
+GSM4149729	Untreated	Pancreatic islet-derived exosome
+GSM4149722	Cytokines IL-1β and IFN-γ	Pancreatic islet-derived exosome
+GSM4149724	Cytokines IL-1β and IFN-γ	Pancreatic islet-derived exosome
+GSM4149726	Cytokines IL-1β and IFN-γ	Pancreatic islet-derived exosome
+GSM4149728	Cytokines IL-1β and IFN-γ	Pancreatic islet-derived exosome
+GSM4149730	Cytokines IL-1β and IFN-γ	Pancreatic islet-derived exosome

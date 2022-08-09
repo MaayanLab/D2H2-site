@@ -1,0 +1,10 @@
+Sample_geo_accession	Condition	Group
+GSM1893650	Redifferentiation Cocktail + control shRNA	Human islet cells
+GSM1893653	Redifferentiation Cocktail + control shRNA	Human islet cells
+GSM1893656	Redifferentiation Cocktail + control shRNA	Human islet cells
+GSM1893651	Redifferentiation Cocktail + ARX shRNA	Human islet cells
+GSM1893655	Redifferentiation Cocktail + ARX shRNA	Human islet cells
+GSM1893657	Redifferentiation Cocktail + ARX shRNA	Human islet cells
+GSM1893652	untreated control	Human islet cells
+GSM1893654	untreated control	Human islet cells
+GSM1893658	untreated control	Human islet cells

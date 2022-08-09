@@ -1,0 +1,9 @@
+Sample_geo_accession	Condition	Group
+GSM4215541	Growth on Matrigel	Differentiated hiPSCs_CTRL
+GSM4215542	Growth on Matrigel	Differentiated hiPSCs_CTRL
+GSM4215543	Growth on Matrigel	Differentiated hiPSCs_CTRL
+GSM4215548	Growth on Matrigel	Differentiated hiPSCs_CTRL
+GSM4215544	Encapsulated in alginate	Differentiated hiPSCs_3D
+GSM4215545	Encapsulated in alginate	Differentiated hiPSCs_3D
+GSM4215546	Encapsulated in alginate	Differentiated hiPSCs_3D
+GSM4215547	Encapsulated in alginate	Differentiated hiPSCs_3D

@@ -1,0 +1,10 @@
+Sample_geo_accession	Condition	Group
+GSM3929497	isolated islets	Human pancreatic islets
+GSM3929498	isolated islets	Human pancreatic islets
+GSM3929499	isolated islets	Human pancreatic islets
+GSM3929500	isolated islets	Human pancreatic islets
+GSM3929501	isolated islets	Human pancreatic islets
+GSM3929502	pseudoislets (reaggregated single-islet cells)	Human pancreatic islets
+GSM3929503	pseudoislets (reaggregated single-islet cells)	Human pancreatic islets
+GSM3929504	pseudoislets (reaggregated single-islet cells)	Human pancreatic islets
+GSM3929505	pseudoislets (reaggregated single-islet cells)	Human pancreatic islets

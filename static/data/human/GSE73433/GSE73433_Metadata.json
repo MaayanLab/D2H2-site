@@ -1,6 +1,0 @@
-{"Human islet cells": {
-    "Redifferentiation Cocktail + control shRNA": ["GSM1893650", "GSM1893653", "GSM1893656"], 
-    "Redifferentiation Cocktail + ARX shRNA": ["GSM1893651", "GSM1893655", "GSM1893657"], 
-    "untreated control": ["GSM1893652", "GSM1893654", "GSM1893658"]
-    }
-}

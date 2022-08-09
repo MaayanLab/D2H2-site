@@ -1,0 +1,19 @@
+Sample_geo_accession	Condition	Group
+GSM3935889	Group 2 (intermediate quality)	Human Islets
+GSM3935894	Group 2 (intermediate quality)	Human Islets
+GSM3935895	Group 2 (intermediate quality)	Human Islets
+GSM3935900	Group 2 (intermediate quality)	Human Islets
+GSM3935901	Group 2 (intermediate quality)	Human Islets
+GSM3935903	Group 2 (intermediate quality)	Human Islets
+GSM3935890	Group 3 (poor quality)	Human Islets
+GSM3935893	Group 3 (poor quality)	Human Islets
+GSM3935896	Group 3 (poor quality)	Human Islets
+GSM3935899	Group 3 (poor quality)	Human Islets
+GSM3935904	Group 3 (poor quality)	Human Islets
+GSM3935905	Group 3 (poor quality)	Human Islets
+GSM3935906	Group 3 (poor quality)	Human Islets
+GSM3935891	Group 1 (high quality)	Human Islets
+GSM3935892	Group 1 (high quality)	Human Islets
+GSM3935897	Group 1 (high quality)	Human Islets
+GSM3935898	Group 1 (high quality)	Human Islets
+GSM3935902	Group 1 (high quality)	Human Islets

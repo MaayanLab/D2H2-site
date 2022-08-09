@@ -1,0 +1,41 @@
+Sample_geo_accession	Condition	Group
+GSM3769106	Serum-Free Control 24h	Pacreatic islets
+GSM3769111	Serum-Free Control 24h	Pacreatic islets
+GSM3769116	Serum-Free Control 24h	Pacreatic islets
+GSM3769125	Serum-Free Control 24h	Pacreatic islets
+GSM3769135	Serum-Free Control 24h	Pacreatic islets
+GSM3769142	Serum-Free Control 24h	Pacreatic islets
+GSM3769107	IL-1B 6h	Pacreatic islets
+GSM3769112	IL-1B 6h	Pacreatic islets
+GSM3769122	IL-1B 6h	Pacreatic islets
+GSM3769131	IL-1B 6h	Pacreatic islets
+GSM3769147	IL-1B 6h	Pacreatic islets
+GSM3769108	Escherichia coli (EC) 6h	Pacreatic islets
+GSM3769113	Escherichia coli (EC) 6h	Pacreatic islets
+GSM3769120	Escherichia coli (EC) 6h	Pacreatic islets
+GSM3769129	Escherichia coli (EC) 6h	Pacreatic islets
+GSM3769137	Escherichia coli (EC) 6h	Pacreatic islets
+GSM3769144	Escherichia coli (EC) 6h	Pacreatic islets
+GSM3769114	Bacteroides dorei (BD) 24h	Pacreatic islets
+GSM3769123	Bacteroides dorei (BD) 24h	Pacreatic islets
+GSM3769132	Bacteroides dorei (BD) 24h	Pacreatic islets
+GSM3769139	Bacteroides dorei (BD) 24h	Pacreatic islets
+GSM3769115	Bacteroides dorei (BD) 6h	Pacreatic islets
+GSM3769124	Bacteroides dorei (BD) 6h	Pacreatic islets
+GSM3769136	Bacteroides dorei (BD) 6h	Pacreatic islets
+GSM3769143	Bacteroides dorei (BD) 6h	Pacreatic islets
+GSM3769117	Ruminococcus gnavus (RG) 24h	Pacreatic islets
+GSM3769126	Ruminococcus gnavus (RG) 24h	Pacreatic islets
+GSM3769134	Ruminococcus gnavus (RG) 24h	Pacreatic islets
+GSM3769141	Ruminococcus gnavus (RG) 24h	Pacreatic islets
+GSM3769118	Ruminococcus gnavus (RG) 6h	Pacreatic islets
+GSM3769127	Ruminococcus gnavus (RG) 6h	Pacreatic islets
+GSM3769138	Ruminococcus gnavus (RG) 6h	Pacreatic islets
+GSM3769145	Ruminococcus gnavus (RG) 6h	Pacreatic islets
+GSM3769119	Escherichia coli (EC) 24h	Pacreatic islets
+GSM3769128	Escherichia coli (EC) 24h	Pacreatic islets
+GSM3769133	Escherichia coli (EC) 24h	Pacreatic islets
+GSM3769140	Escherichia coli (EC) 24h	Pacreatic islets
+GSM3769121	IL-1B 24h	Pacreatic islets
+GSM3769130	IL-1B 24h	Pacreatic islets
+GSM3769146	IL-1B 24h	Pacreatic islets

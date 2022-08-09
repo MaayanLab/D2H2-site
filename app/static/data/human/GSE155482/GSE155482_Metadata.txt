@@ -1,0 +1,7 @@
+Sample_geo_accession	Condition	Group
+GSM4705022	EndoC-BetaH1 Cells	Islets
+GSM4705023	EndoC-BetaH1 Cells	Islets
+GSM4705024	EndoC-BetaH1 Cells	Islets
+GSM4705025	ECN90 Cells	Islets
+GSM4705026	ECN90 Cells	Islets
+GSM4705027	ECN90 Cells	Islets

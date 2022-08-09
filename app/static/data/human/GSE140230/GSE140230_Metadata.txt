@@ -1,0 +1,14 @@
+Sample_geo_accession	Condition	Group
+GSM4157054	PBS for 4 weeks	Human islet graft
+GSM4157055	PBS for 4 weeks	Human islet graft
+GSM4157056	PBS for 4 weeks	Human islet graft
+GSM4157057	PBS for 4 weeks	Human islet graft
+GSM4157058	PBS for 4 weeks	Human islet graft
+GSM4157059	TAC for 4 weeks	Human islet graft
+GSM4157065	TAC for 4 weeks	Human islet graft
+GSM4157060	TAC for 4 weeks	Human islet graft
+GSM4157061	TAC for 4 weeks	Human islet graft
+GSM4157062	SIR for 4 weeks	Human islet graft
+GSM4157066	SIR for 4 weeks	Human islet graft
+GSM4157063	SIR for 4 weeks	Human islet graft
+GSM4157064	SIR for 4 weeks	Human islet graft

@@ -1,0 +1,13 @@
+Sample_geo_accession	Condition	Group
+GSM3398188	Control alpha cells	Pancreatic Islet Tissue
+GSM3398189	Control alpha cells	Pancreatic Islet Tissue
+GSM3398190	Control alpha cells	Pancreatic Islet Tissue
+GSM3398191	Control alpha cells	Pancreatic Islet Tissue
+GSM3398192	Control alpha cells	Pancreatic Islet Tissue
+GSM3398193	Control beta cells	Pancreatic Islet Tissue
+GSM3398194	Control beta cells	Pancreatic Islet Tissue
+GSM3398195	Control beta cells	Pancreatic Islet Tissue
+GSM3398196	Control beta cells	Pancreatic Islet Tissue
+GSM3398197	Control beta cells	Pancreatic Islet Tissue
+GSM3397934	HNF1A	Pancreatic Islet Tissue
+GSM3397935	HNF1A	Pancreatic Islet Tissue

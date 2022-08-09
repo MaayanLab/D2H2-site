@@ -1,0 +1,10 @@
+Sample_geo_accession	Condition	Group
+GSM2700338	healthy (dropseq)	pancreatic islets cells
+GSM2700339	healthy (dropseq)	pancreatic islets cells
+GSM2700340	healthy (dropseq)	pancreatic islets cells
+GSM2700341	healthy (dropseq)	pancreatic islets cells
+GSM2700342	healthy (dropseq)	pancreatic islets cells
+GSM2863188	healthy (dropseq)	pancreatic islets cells
+GSM2700343	type II diabetic (dropseq)	pancreatic islets cells
+GSM2700344	type II diabetic (dropseq)	pancreatic islets cells
+GSM2863189	type II diabetic (dropseq)	pancreatic islets cells

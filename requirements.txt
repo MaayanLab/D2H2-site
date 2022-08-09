@@ -1,0 +1,7 @@
+flask
+plotly
+pandas
+numpy
+GEOparse
+ftfy
+intermine

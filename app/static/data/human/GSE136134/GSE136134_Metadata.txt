@@ -1,0 +1,13 @@
+Sample_geo_accession	Condition	Group
+GSM4041540	With insulin 24hrs	Human Induced Pluripotent Stem Cells
+GSM4041544	With insulin 24hrs	Human Induced Pluripotent Stem Cells
+GSM4041548	With insulin 24hrs	Human Induced Pluripotent Stem Cells
+GSM4041541	Without insulin 24hrs	Human Induced Pluripotent Stem Cells
+GSM4041545	Without insulin 24hrs	Human Induced Pluripotent Stem Cells
+GSM4041549	Without insulin 24hrs	Human Induced Pluripotent Stem Cells
+GSM4041542	With insulin 72hrs	Human Induced Pluripotent Stem Cells
+GSM4041546	With insulin 72hrs	Human Induced Pluripotent Stem Cells
+GSM4041550	With insulin 72hrs	Human Induced Pluripotent Stem Cells
+GSM4041543	Without insulin 72hrs	Human Induced Pluripotent Stem Cells
+GSM4041547	Without insulin 72hrs	Human Induced Pluripotent Stem Cells
+GSM4041551	Without insulin 72hrs	Human Induced Pluripotent Stem Cells
