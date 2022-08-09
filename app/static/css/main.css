@@ -201,7 +201,7 @@ header#masthead {
     border-collapse: collapse;
     margin: 25px 0;
     font-size: 0.9em;
-    font-family: "IBM Plex Sans", sans-serif;
+    font-family: "IBM Plex Sans", sans-serif !important;
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }

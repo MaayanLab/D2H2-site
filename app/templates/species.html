@@ -1,13 +1,5 @@
 {% extends 'base.html' %}
 
-{% block metatitle %}{% if organ_name == 'brain' %}Boxplot Express: Brain{% endif %}{% endblock %}
-{% block metatitle_alt %}{% if organ_name == 'kidney' %}Boxplot Express: Kidney{% endif %}{% endblock %}
-
-{% block brainbutton %}{% if organ_name == 'brain' %} active{% else %}{{ super() }}{% endif %}{% endblock %}
-{% block brainsr %}{% if organ_name == 'brain' %} <span class="sr-only">(current)</span>{% else %}{{ super() }}{% endif %}{% endblock %}
-
-{% block kidneybutton %}{% if organ_name == 'kidney' %} active{% else %}{{ super() }}{% endif %}{% endblock %}
-{% block kidneysr %}{% if organ_name == 'kidney' %} <span class="sr-only">(current)</span>{% else %}{{ super() }}{% endif %}{% endblock %}
 
             {% block content %}
             <div class="container px-4 pb-4" style="min-height: 100%;">
@@ -35,7 +27,7 @@
             </div>
 
             <div class="container custom-col table-responsive-lg mb-4 p-3">
-                <table class="table table-bordered table-hover" style="background-color: whitesmoke !important; border: black !important;" id ="studies-table">
+                <table class="table table-bordered table-hover styled-table" id ="studies-table">
                     <thead class="thead-light">
                         <tr>
                             <th scope="col">GSE Accession ID</th>
