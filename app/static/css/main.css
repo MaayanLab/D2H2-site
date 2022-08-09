@@ -17,6 +17,14 @@ p { color: #222; font-family:  'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Gr
 
 }
 
+.btn-primary {
+    background-color: lightgray !important;
+}
+
+.btn-secondary {
+    background-color: darkgray !important;
+}
+
 .selectize-dropdown {
     position: absolute !important;
     z-index: 10000000000 !important; /* adjust as necessary */
@@ -116,7 +124,8 @@ header {
 body {
     margin: 0px;
 
-    background-image: linear-gradient(to right, whitesmoke, rgb(166, 217, 241));
+   /*  background-image: linear-gradient(to right, whitesmoke, rgb(166, 217, 241)); */
+   background-color: rgb(212, 206, 206);
 }
 
 
@@ -126,7 +135,7 @@ div {
 
 .custom-col {
     border: rgb(182, 182, 182);
-    background-color: #cbe7ff;
+    background-color: #e9ebb4;
     border-width: 1.5px;
     overflow: hidden;
     border-style: solid;
@@ -232,7 +241,7 @@ nav[data-toggle="toc"] {
   
 .menu li:not(:last-child)::after{
     content:""; 
-    border:1px solid #e2e2e2;
+    border:1px solid black;
     border-width: 1px 1px 0 0;
     position:absolute; 
     right:-3px; 
