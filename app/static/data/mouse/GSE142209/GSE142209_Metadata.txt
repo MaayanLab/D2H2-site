@@ -1,0 +1,7 @@
+Sample_geo_accession	Condition	Group
+GSM4222736	Whole Brain	Mouse Brain
+GSM4222737	Whole Brain	Mouse Brain
+GSM4222738	Whole Brain	Mouse Brain
+GSM4222733	Brain Microvessels	Mouse Brain
+GSM4222734	Brain Microvessels	Mouse Brain
+GSM4222735	Brain Microvessels	Mouse Brain

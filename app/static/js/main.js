@@ -74,11 +74,12 @@ function fillPage(event, ui) {
 
 $(document).ready(function() {
 
+    var currURL = window.location.href.split("/");
+
     // autocomplete for singlegene page
 
 
     function createResourcesTable() {
-        console.log('calling')
         $.ajax({
             url: "/getresources",
             type: "POST",
@@ -121,7 +122,8 @@ $(document).ready(function() {
         });
     }
 
-    createResourcesTable();
+    if (currURL[3] == 'resources') {createResourcesTable();}
+    
     
 
     $('.search').autocomplete({
@@ -158,7 +160,7 @@ $(document).ready(function() {
 
       // GET CURRENT URL FOR STUDY SPECIFIC AUTOCOMPLETE
 
-      var currURL = window.location.href.split("/");
+      
 
       // DO STUDY SPECIFIC AUTOCOMPLETE
 
@@ -837,6 +839,11 @@ $(document).ready(function() {
             });
         }
     });
+
+
+
+
+    
 
 
 
