@@ -83,6 +83,16 @@ def resources_api():
 
 	return {'resources': table}
 
+@app.route('/gettfs',  methods=['GET','POST'])
+def gettfs():
+	gene = request.form['gene']
+
+	if gene.strip() == '':
+		return {'data': []}
+	result = query_enricher(gene)
+
+	return {'data': result}
+
 #############################################
 ########## 2. Data
 #############################################ow toow
@@ -371,5 +381,7 @@ def get_study_data():
 #######################################################
 #######################################################
 if __name__ == "__main__":
+	#from waitress import serve
+	#serve(app, host="0.0.0.0", port=5000)
 	app.run(debug=True, host='0.0.0.0')
 

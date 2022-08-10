@@ -1,0 +1,13 @@
+Sample_geo_accession	Condition	Group
+GSM3974492	siNT	Adipose
+GSM3974493	siNT	Adipose
+GSM3974494	siNT	Adipose
+GSM3974495	siNT	Adipose
+GSM3974496	siNT	Adipose
+GSM3974497	siNT	Adipose
+GSM3974498	siRND3	Adipose
+GSM3974499	siRND3	Adipose
+GSM3974500	siRND3	Adipose
+GSM3974501	siRND3	Adipose
+GSM3974502	siRND3	Adipose
+GSM3974503	siRND3	Adipose

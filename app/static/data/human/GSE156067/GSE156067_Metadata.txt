@@ -1,0 +1,19 @@
+Sample_geo_accession	Condition	Group
+GSM4721849	control	subcutaneous adipose tissue
+GSM4721852	control	subcutaneous adipose tissue
+GSM4721854	control	subcutaneous adipose tissue
+GSM4721855	control	subcutaneous adipose tissue
+GSM4721858	control	subcutaneous adipose tissue
+GSM4721860	control	subcutaneous adipose tissue
+GSM4721861	control	subcutaneous adipose tissue
+GSM4721864	control	subcutaneous adipose tissue
+GSM4721866	control	subcutaneous adipose tissue
+GSM4721850	PCOS	subcutaneous adipose tissue
+GSM4721851	PCOS	subcutaneous adipose tissue
+GSM4721853	PCOS	subcutaneous adipose tissue
+GSM4721856	PCOS	subcutaneous adipose tissue
+GSM4721857	PCOS	subcutaneous adipose tissue
+GSM4721859	PCOS	subcutaneous adipose tissue
+GSM4721862	PCOS	subcutaneous adipose tissue
+GSM4721863	PCOS	subcutaneous adipose tissue
+GSM4721865	PCOS	subcutaneous adipose tissue

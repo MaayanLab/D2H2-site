@@ -1,0 +1,11 @@
+{"human islet": 
+{
+    "human islets rep mRNA": ["GSM2909330", "GSM2909331", "GSM2909332", "GSM2909333"],
+    "hESC-beta like cells mRNA": ["GSM2909334", "GSM2909335", "GSM2909336", "GSM2909337"], 
+    "Post Tx hESC-beta like cells mRNA":["GSM2909338", "GSM2909339"],
+    "human islets rep microarray":["GSM2909340", "GSM2909341", "GSM2909342"],
+    "hESC-beta like cells microarray": ["GSM2909343", "GSM2909344", "GSM2909345"], 
+    "Post Tx hESC-beta like cells microarray": ["GSM2909346", "GSM2909347", "GSM2909348"],
+    "iCrLin28 hESC-betalike cells +dox": ["GSM2909349", "GSM2909350", "GSM2909351"], 
+    "iCrLin28 hESC-beta like cells -dox": ["GSM2909352", "GSM2909353"]
+}}

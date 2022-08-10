@@ -1,0 +1,28 @@
+Sample_geo_accession	Condition	Group
+GSM4288318	Type 2 diabetic	Skin
+GSM4288319	Type 2 diabetic	Skin
+GSM4288320	Type 2 diabetic	Skin
+GSM4288321	Type 2 diabetic	Skin
+GSM4288322	Type 2 diabetic	Skin
+GSM4288323	Type 2 diabetic	Skin
+GSM4288324	Type 2 diabetic	Skin
+GSM4288325	Type 2 diabetic	Skin
+GSM4288326	Type 2 diabetic	Skin
+GSM4288327	Type 2 diabetic	Skin
+GSM4288328	Type 2 diabetic	Skin
+GSM4288329	Type 2 diabetic	Skin
+GSM4288330	Type 2 diabetic	Skin
+GSM4288331	Type 2 diabetic	Skin
+GSM4288332	Type 2 diabetic	Skin
+GSM4288333	Non-Diabetic	Skin
+GSM4288334	Non-Diabetic	Skin
+GSM4288335	Non-Diabetic	Skin
+GSM4288336	Non-Diabetic	Skin
+GSM4288337	Non-Diabetic	Skin
+GSM4288338	Non-Diabetic	Skin
+GSM4288339	Non-Diabetic	Skin
+GSM4288340	Non-Diabetic	Skin
+GSM4288341	Non-Diabetic	Skin
+GSM4288342	Non-Diabetic	Skin
+GSM4288343	Non-Diabetic	Skin
+GSM4288344	Non-Diabetic	Skin

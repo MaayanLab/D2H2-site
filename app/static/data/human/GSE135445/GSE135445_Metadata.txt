@@ -1,0 +1,13 @@
+Sample_geo_accession	Condition	Group
+GSM4009115	sinus rhythm (control)	epicardial adipose tissue
+GSM4009116	sinus rhythm (control)	epicardial adipose tissue
+GSM4009117	sinus rhythm (control)	epicardial adipose tissue
+GSM4009121	sinus rhythm (control)	epicardial adipose tissue
+GSM4009122	sinus rhythm (control)	epicardial adipose tissue
+GSM4009124	sinus rhythm (control)	epicardial adipose tissue
+GSM4009118	persistent non-valvular atrial fibrillation (AF)	epicardial adipose tissue
+GSM4009119	persistent non-valvular atrial fibrillation (AF)	epicardial adipose tissue
+GSM4009120	persistent non-valvular atrial fibrillation (AF)	epicardial adipose tissue
+GSM4009123	persistent non-valvular atrial fibrillation (AF)	epicardial adipose tissue
+GSM4009125	persistent non-valvular atrial fibrillation (AF)	epicardial adipose tissue
+GSM4009126	persistent non-valvular atrial fibrillation (AF)	epicardial adipose tissue

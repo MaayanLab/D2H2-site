@@ -33,13 +33,19 @@ def query_enricher(gene):
 
     data = json.loads(response.text)
 
-    print(data.keys())
+
+
     for l in data['categories']:
         if l['name'] == 'Transcription':
-            print(l)
-    return data
+            transcription_libs = l['libraries']
 
-query_enricher('AKT1')
+    res = []
+    for lib in transcription_libs:
+        if lib['name'] in data['gene']:
+            lib['tfs'] = data["gene"][lib['name']]
+            res.append(lib)
+    return res
+
 
 ########################## QUERY KOMP API ###############################
 

@@ -5,3 +5,4 @@ numpy
 GEOparse
 ftfy
 intermine
+waitress

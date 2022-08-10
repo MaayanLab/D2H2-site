@@ -1,0 +1,22 @@
+Sample_geo_accession	Condition	Group
+GSM3946485	Skin	Diabetic foot
+GSM3946486	Skin	Diabetic foot
+GSM3946487	Skin	Diabetic foot
+GSM3946488	Skin	Diabetic foot
+GSM3946489	Skin	Diabetic foot
+GSM3946490	Skin	Diabetic foot
+GSM3946491	Skin	Diabetic foot
+GSM3946492	Skin	Diabetic foot
+GSM3946493	Ulcer - Healer	Diabetic foot
+GSM3946494	Ulcer - Healer	Diabetic foot
+GSM3946495	Ulcer - Healer	Diabetic foot
+GSM3946496	Ulcer - Healer	Diabetic foot
+GSM3946497	Ulcer - Healer	Diabetic foot
+GSM3946498	Ulcer - Healer	Diabetic foot
+GSM3946499	Ulcer - Healer	Diabetic foot
+GSM3946500	Ulcer - Nonhealer	Diabetic foot
+GSM3946501	Ulcer - Nonhealer	Diabetic foot
+GSM3946502	Ulcer - Nonhealer	Diabetic foot
+GSM3946503	Ulcer - Nonhealer	Diabetic foot
+GSM3946504	Ulcer - Nonhealer	Diabetic foot
+GSM3946505	Ulcer - Nonhealer	Diabetic foot

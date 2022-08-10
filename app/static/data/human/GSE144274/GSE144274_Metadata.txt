@@ -1,0 +1,9 @@
+Sample_geo_accession	Condition	Group
+GSM4284785	healthy	cell type: human pulmonary artery smooth muscle cells
+GSM4284786	healthy	cell type: human pulmonary artery smooth muscle cells
+GSM4284787	healthy	cell type: human pulmonary artery smooth muscle cells
+GSM4284788	healthy	cell type: human pulmonary artery smooth muscle cells
+GSM4284789	IPAH PASMC	cell type: human pulmonary artery smooth muscle cells
+GSM4284790	IPAH PASMC	cell type: human pulmonary artery smooth muscle cells
+GSM4284791	IPAH PASMC	cell type: human pulmonary artery smooth muscle cells
+GSM4284792	IPAH PASMC	cell type: human pulmonary artery smooth muscle cells

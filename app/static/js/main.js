@@ -444,6 +444,73 @@ $(document).ready(function() {
         });
     });
 
+    // QUERY ENRICHR AND FORMAT RESULTS
+
+    $('#enrichr-query').click(function() {  
+        var inputvalue = $("#search3").val();
+        if (!inputvalue) {
+            document.getElementById("tf-res").innerHTML = "<p class='text-center'> No data found </p>";
+            return;
+        }
+
+        $.ajax({
+            url: "/gettfs",
+            type: "POST",
+            data: {gene:inputvalue}
+        }).done(function(response) {
+
+            console.log(response)
+
+            const data = response['data'];
+
+
+
+            if (data.length === 0) {
+                document.getElementById("tf-res").innerHTML = "<p class='text-center'> No data found </p>";
+                return;
+            }
+
+            var res_html = `<table id='table-enrichr' class='styled-table'><thead><tr><th>Library</th><th></th></tr><tbody>`
+
+            for (var i = 0; i < data.length; i++) {
+                var lib = data[i]['name'];
+                var sentence = data[i]['format'];
+
+                
+
+                for (j = 0; j < data[i]['tfs'].length; j++) {
+                    var tf = data[i]['tfs'][j]
+             
+                    tf_sentence = sentence.replace('{0}', inputvalue).replace('{1}', tf)
+                    
+                    res_html += `<tr><td>${lib}</td><td> ${tf_sentence} </td></tr>`
+
+                }
+                
+
+            }
+            res_html += `</tbody></table>`
+
+            
+
+            $(document).ready(function(){
+
+                $(`#table-enrichr`).DataTable();
+            });
+            
+            
+
+            
+
+
+            document.getElementById("tf-res").innerHTML = res_html;
+
+
+        });
+    });
+
+    
+
 
     // Configure dropdown menu
 
