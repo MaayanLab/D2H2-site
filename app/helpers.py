@@ -21,23 +21,25 @@ def get_gene_json():
 
 ########################## QUERY ENRICHER ###############################
 
-def query_enricher(genes: list):
-    ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/addList'
-    genes_str = '\n'.join(genes)
+def query_enricher(gene):
+    ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/genemap'
+    query_string = '?json=true&setup=true&gene=%s'
 
-    description = 'Example gene list'
-    payload = {
-        'list': (None, genes_str),
-        'description': (None, description)
-    }
 
-    response = requests.post(ENRICHR_URL, files=payload)
+
+    response = requests.get(ENRICHR_URL + query_string % gene)
     if not response.ok:
-        raise Exception('Error adding gene list')
+        raise Exception('Error finding gene')
 
     data = json.loads(response.text)
 
-    return data['userListId']
+    print(data.keys())
+    for l in data['categories']:
+        if l['name'] == 'Transcription':
+            print(l)
+    return data
+
+query_enricher('AKT1')
 
 ########################## QUERY KOMP API ###############################
 

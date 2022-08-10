@@ -15,7 +15,7 @@
 {% block body %}
 
 <div class="container-fluid pr-5 pl-5">
-  <div class="row">
+  <div class="row mb-5">
 
     <div class="col-3">
       <nav id="toc" data-toggle="toc" class="navbar navbar-light flex-column align-items-stretch p-3 sticky-top"
@@ -188,26 +188,19 @@
               </div>
 
               <div class="justify-content-center row ml-1 mr-1 text-center">
-                <p class="mt-3"> The linked ChEA3 Appyter predicts transcription factors (TFs) associated with
-                  user-input sets of genes.
-                  Discrete query gene sets are compared to ChEA3 libraries of TF target gene sets assembled from
-                  multiple orthogonal
-                  'omics' datasets. The Fisher's Exact Test, with a background size of 20,000, is used to compare
-                  the input gene set to the
-                  TF target gene sets in order to determine which TFs may be most closely associated with the input
-                  gene set. </p>
+                <p class="mt-3"> Query Enrichr to display transcription factor information from annotated datasets about the input gene symbol. </p>
               </div>
 
               <div class="row justify-content-center mb-3">
-                <img src="static/img/chea3-thumbnail.png" alt="" class="img-fluid img-thumbnail">
+                <img src="static/img/enrichr-thumb.png" alt="" class="img-fluid img-thumbnail">
               </div>
 
               <div class="justify-content-center row text-center mb-3">
-                <a id="appyter-url4" target="_blank" rel="noopener noreferrer"
-                  href="https://appyters.maayanlab.cloud/ChEA3_Appyter/"><button type="button"
+                <a id="enrichr-query" target="_blank" rel="noopener noreferrer"
+                  href="https://maayanlab.cloud/Enrichr/#find"><button type="button"
                     class="btn btn-primary btn-group-sm mt-3 mb-3">
-                    <span id="appyter-action" class="ml-3">Start a new appyter in</span>
-                    <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
+                    <span id="appyter-action" class="ml-3">Query </span>
+                    <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 60px" alt="Appyters">
                   </button>
                 </a>
               </div>
@@ -339,5 +332,3 @@
 </div>
 
 {% endblock %}
-
-</div>

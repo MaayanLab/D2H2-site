@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<div class="justify-content-center container-fluid">
+    <div class="col-7 justify-content-center mx-auto banner">
+        <div class="row justify-content-center mb-3 mt-4">
+            <div class=" text-center col-lg-12">
+                <h1 class="">Downloads</h1>
+                <p> Download curated datasets containing gene expression in various Type 2 Diabetes transcriptomics signatures</p>
+            </div>
+        </div>
+
+        
+        <div class="custom-col p-3">
+        <table id="table-downloads" class="styled-table mt-3"><thead>
+            <tr><th>Filename</th><th>Species</th><th>Description</th><th>Download</th></tr>
+            <tbody>
+                <tr><td>all_human_fc.f</td><td>Homo sapiens</td><td>RNA-seq fold changes</td><td><a href="https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/all_human_fc.f"><img  src="static/img/download.png" alt="link" style="width: 10px;"></a></td></tr>
+                <tr><td>all_human_pval.f</td><td>Homo sapiens</td><td>RNA-seq p-values</td><td><a href="https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/all_human_pval.f"><img  src="static/img/download.png" alt="link" style="width: 10px;"></a></td></tr>
+                <tr><td>human_pruned_affy_fc.f</td><td>Homo sapiens</td><td>Microarray fold change</td><td><a href="https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/human_pruned_affy_fc.f"><img  src="static/img/download.png" alt="link" style="width: 10px;"></a></td></tr>
+                <tr><td>human_pruned_affy_pv.f</td><td>Homo sapiens</td><td>Microarray p-values</td><td><a href="https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/human_pruned_affy_pv.f"><img  src="static/img/download.png" alt="link" style="width: 10px;"></a></td></tr>
+                <tr><td>all_mouse_fc.f</td><td>Mus musculus</td><td>RNA-seq fold changes</td><td><a href="https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/all_mouse_fc.f"><img  src="static/img/download.png" alt="link" style="width: 10px;"></a></td></tr>
+                <tr><td>all_mouse_pval.f</td><td>Mus musculus</td><td>RNA-seq p-values</td><td><a href="https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/all_mouse_pval.f"><img  src="static/img/download.png" alt="link" style="width: 10px;"></a></td></tr>
+                <tr><td>mouse_pruned_affy_fc.f</td><td>Mus musculus</td><td>Microarray fold change</td><td><a href="https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/mouse_pruned_affy_fc.f"><img  src="static/img/download.png" alt="link" style="width: 10px;"></a></td></tr>
+                <tr><td>mouse_pruned_affy_pv.f</td><td>Mus musculus</td><td>Microarray p-values</td><td><a href="https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/mouse_pruned_affy_pv.f"><img  src="static/img/download.png" alt="link" style="width: 10px;"></a></td></tr>
+            </tbody>
+
+        </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

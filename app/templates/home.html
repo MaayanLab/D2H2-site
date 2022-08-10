@@ -6,13 +6,10 @@
 
     <div class="row justify-content-center mb-3 mt-3">
       <div class="text-center col-lg-12 mt-5">
-        <div class="d-flex justify-content-center">
-          <h1 class="">Diabetes Data and Hypothesis Hub</h1>
-        </div>
         
         <img
           class="p-0 m-0"
-          style="width: 100px"
+          style="width: 150px"
           src="{{ url_for('static', filename='img/d2h2logo.png') }}"
           alt="D2H2 logo"
         />
@@ -20,36 +17,45 @@
     </div>
 
     <div class="row justify-content-center mt-4 mb-5 mr-5 text-center">
-      <h5> Diabetes Data and Hypothesis Hub (D2H2) is a platform that will facilitate data-driven hypothesis generation for the diabetes and related metabolic disorder research community. 
-
-      </h5>
-    </div>
-    
-    <div class="row justify-content-center mt-5 mb-5 mr-5">
-      <label for="generalsearch"> <p class="text-center mt-1">Search:</p> </label>
-      <input id="generalsearch" type="text form-control-lg" style="width: 500px; height: 30px;">
-    </div>
-    
-
-    <div class="row justify-content-center mt-5 mb-5 mr-5 text-center">
-      <p> From 1980 to 2014 the number of people with diabetes grew from 108 million people to 422 million people. 
-        Additionally, it directly cause the death of 1.5 million people, almost half of which were younger than 70 years old 
-        (<a  target="_blank" href="https://www.who.int/news-room/fact-sheets/detail/diabetes#:~:text=The%20number%20of%20people%20with,stroke%20and%20lower%20limb%20amputation.">WHO 2021</a>).
-        This resource aims to advance our knowledge surrounding diabetes and enable discovery of novel therapeutics. Some other resources that can be utilized to enable diabetes discovery are avalible on the <a href="{{ url_for('resources') }}"">resources</a> page. 
-      </p>
+       <h5 style="font-weight: 450 !important;">Diabetes Data and Hypothesis Hub (D2H2)</h5>
+       <h5> is a platform that facilitates data-driven hypothesis generation for the diabetes and related metabolic disorder research community. </h5>
     </div>
 
+    <div class="justify-content-center col-7 row ml-1 mr-1 text-center mt-4 mx-auto">
+      <p style="font-size: 17px;"> Curated datasets containing gene expression in various Type 2 Diabetes transcriptomics signatures can be <a href="{{ url_for('downloads') }}">downloaded</a>, visualized in the Appyter below, and used for enrichement analysis. </p>
+    </div>
 
-    
+    <div class="row justify-content-center text-center mb-5">
+      <div class="col-10 custom-col">
+
+        
+
+        <div class="input-group mt-3 justify-content-center row mb-3">
+          <label class="mt-1 mr-1" for="search-home">Enter gene symbol: </label>
+          <input class="form-control-sm search-home" id="search-home" type="text">
+        </div>
+
+        <div class="justify-content-center row ml-1 mr-1 text-center">
+          <p class="mt-3">This Appyter provides a volcano plot visualization of the expression levels of a given gene in various Type 2 Diabetes transcriptomics signatures. Users may enter in a single gene symbol as input; the output is a volcano plot which plots each T2D signature by gene-specific p-value (y-axis) and fold change (x-axis).</p>
+        </div>
+
+        <div class="row justify-content-center mb-3">
+          <img src="static/img/t2d-thumbnail.png" alt="" class="img-fluid img-thumbnail">
+        </div>
+
+        <div class="justify-content-center row text-center mb-3">
+          <a id="appyter-home" target="_blank" rel="noopener noreferrer"
+            href="https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/"><button type="button"
+              class="btn btn-primary btn-group-sm mt-3 mb-3">
+              <span id="appyter-action" class="ml-3">Start a new appyter in</span>
+              <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
+            </button>
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-
-<br>
-<br>
-<br>
-<br>
-<br>
-
 
 {% endblock %}
 </div>

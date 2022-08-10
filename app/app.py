@@ -39,6 +39,10 @@ def scg():
 def resources():
 	return render_template('resources.html')
 
+@app.route('/downloads', methods=['GET', 'POST'])
+def downloads():
+	return render_template('downloads.html')
+
 @app.route('/getgwas', methods=['GET','POST'])
 def get_gwas():
 

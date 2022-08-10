@@ -61,11 +61,7 @@
                 href="{{ url_for('home') }}" style="color: black !important;">Home
               </a>
             </li>
-            <li class="nav-item menu">
-              <a class="nav-link hover-underline-animation"
-                href="{{ url_for('about') }}" style="color: black !important;">About
-              </a>
-            </li>
+            
             <li class="nav-item menu">
               <a class="nav-link hover-underline-animation"
                 href="{{ url_for('singlegene') }}" style="color: black !important;">Single Gene Discovery
@@ -96,6 +92,15 @@
             <li class="nav-item menu">
               <a class="nav-link hover-underline-animation"
                 href="{{ url_for('resources') }}" style="color: black !important;"> Resources </a>
+            </li>
+            <li class="nav-item menu">
+              <a class="nav-link hover-underline-animation"
+                href="{{ url_for('downloads') }}" style="color: black !important;"> Downloads </a>
+            </li>
+            <li class="nav-item menu">
+              <a class="nav-link hover-underline-animation"
+                href="{{ url_for('about') }}" style="color: black !important;">About
+              </a>
             </li>
           </ul>
         </div>
@@ -151,7 +156,7 @@
   {% endblock %}
   <div class="footer mx-auto">
 
-    <div class="d-flex justify-content-center mt-5">
+    <div class="d-flex justify-content-center">
       <div class="row justify-content-center">
         <div class="col justify-content-center mt-4">
           <a href="https://icahn.mssm.edu/research/bioinformatics" target="_blank" rel="noreferrer">
@@ -174,7 +179,7 @@
 
         <div class="col d-flex align-items-center justify-content-center">
           <div>
-            <a class="btn btn-secondary mx-auto mb-2 d-block" style="font-size: 15px; width: 180px"
+            <a class="btn btn-primary btn-group-sm mx-auto mb-2 d-block" style="font-size: 15px; width: 180px"
               href="https://github.com/MaayanLab/D2H2-site" target="_blank" rel="noopener noreferrer" role="button">
               <span class="badge badge-light mr-1">
                 <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
@@ -182,7 +187,7 @@
               </span>
               View source code
             </a>
-            <a class="btn btn-secondary mx-auto d-block" style="font-size: 15px; width: 170px"
+            <a class="btn btn-primary btn-group-sm mx-auto d-block" style="font-size: 15px; width: 170px"
               href="https://github.com/MaayanLab/D2H2-site/issues/new" target="_blank" rel="noopener noreferrer"
               role="button">
               <span class="badge badge-light mr-1">

@@ -80,6 +80,7 @@ $(document).ready(function() {
 
 
     function createResourcesTable() {
+        document.getElementById("resources").innerHTML = "<div class='loader justify-content-center'></div>";
         $.ajax({
             url: "/getresources",
             type: "POST",
@@ -123,13 +124,17 @@ $(document).ready(function() {
     }
 
     if (currURL[3] == 'resources') {createResourcesTable();}
+
+
+    if (currURL[3] == 'downloads') {$('#table-downloads').DataTable();}
+
     
     
 
     $('.search').autocomplete({
     source: function (request, response) {
         $.ajax({
-            url: "/static/data/allgenes.json",
+            url: "/static/searchdata/allgenes.json",
             dataType: 'json',
             data: request,
             success: function( data ) {
@@ -156,6 +161,36 @@ $(document).ready(function() {
        max:5,
        select: fillPage
       });
+
+      $('.search-home').autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/static/searchdata/allgenes.json",
+                dataType: 'json',
+                data: request,
+                success: function( data ) {
+                     {
+                        var filtered = data.filter(function (str) { 
+                            return str.includes(request.term.toUpperCase())});
+                        var aSearch = [];
+                        // for each element in the main array ...
+                        $(filtered).each(function(iIndex, sElement) {
+                            // ... if element starts with input value ...
+                            if (sElement.substr(0, request.term.length) == request.term.toUpperCase()) {
+                                // ... add element
+                                aSearch.push(sElement);
+                            }
+                        });
+    
+                        response(aSearch.splice(0,50))
+                    };
+                }
+            }); 
+           },  
+           minLength: 1,
+           scroll:true,
+           max:5,
+    });
 
 
       // GET CURRENT URL FOR STUDY SPECIFIC AUTOCOMPLETE
@@ -196,7 +231,16 @@ $(document).ready(function() {
       
       
 
-    // CHANGE LINKS FOR APPYTERS/ARCHS4/GTEx DYNAMICALLY    
+    // CHANGE LINKS FOR APPYTERS/ARCHS4/GTEx DYNAMICALLY   
+    
+    $('#appyter-home').click(function() {  
+        if ($("#search-home").val()) {
+            var inputvalue = $("#search-home").val();
+            $('#appyter-home').prop('href', "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures//#/?args.human_gene=" +inputvalue + "&submit");
+        } else {
+            $('#appyter-home').prop('href', "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/")
+        }
+    });
 
     $('#appyter-url1').click(function() {  
         if ($("#search1").val()) {
@@ -844,9 +888,6 @@ $(document).ready(function() {
 
 
     
-
-
-
     
 
 })

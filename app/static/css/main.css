@@ -79,13 +79,6 @@ a {  color: rgb(10, 13, 149); text-decoration: none; }
     padding-bottom: 2.5rem;    /* Footer height */
   }
   
-.footer {
-    position: relative;
-    bottom: 0;
-    width: 100%;
-    height: 8rem;         /* Footer height */
-    background-color: #ECEFF1;
-  }
 
 #sigcomslogo {
     border: black;
@@ -132,7 +125,25 @@ body {
     margin: 0px;
 
    /*  background-image: linear-gradient(to right, whitesmoke, rgb(166, 217, 241)); */
-   background-color: #B0BEC5;
+    background-color: #B0BEC5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.footer{
+    margin-top: auto;
+    background-color: #ECEFF1;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background-color: #B0BEC5;
+}
+.btn-primary {
+
+    background-color: #9a8fc1;
+
 }
 
 
@@ -161,7 +172,7 @@ div {
 
 #condition-table {
     border: rgb(182, 182, 182);
-    background-color: #cbe7ff;
+    background-color: #CFD8DC;
     border-width: 1.5px;
     border-style: solid;
     border-radius: 1%;
@@ -278,6 +289,24 @@ nav[data-toggle="toc"] {
 
 .nav-item.dropdown .dropdown-item:hover, .dropdown-item:focus  {
     background-color: lightblue !important;
+}
+
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid #3498db; /* Blue */
+    border-radius: 50%;
+    position: fixed;
+    left: 47%;
+    top: 20%;
+
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 

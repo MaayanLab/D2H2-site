@@ -1,97 +1,110 @@
 {% extends 'base.html' %}
 
 
-            {% block content %}
-            <div class="container px-4 pb-4" style="min-height: 100%;">
+{% block content %}
+<div class="container px-4 pb-4" style="min-height: 100%;">
 
-                <!-- Title -->
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="h4 text-center">An Interactive Gene Expression Viewer</div>
-                    </div>
+    <!-- Title -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="h4 text-center">An Interactive Gene Expression Viewer</div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-12">
+            <!-- Abstract large -->
+            <div class="d-block">
+                <div class="text-center m-2 p-3">
+                    <p>
+                        This module enables interactive visualization of gene expression data from Microarray and
+                        RNA-seq experiments from the Gene Expression Omnibus (GEO). The
+                        Select a study to compare the expression of single genes across experimental groups as a
+                        boxplot, with the conditions on the x-axis and normalized expression levels on the y-axis.
+                    </p>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <!-- Abstract large -->
-                        <div class="d-block">
-                            <div class="text-center m-2 p-3">
-                                <p>
-                                    This module enables interactive visualization of gene expression data from Microarray and RNA-seq experiments from the Gene Expression Omnibus (GEO). The
-                                    Select a study to compare the expression of single genes across experimental groups as a boxplot, with the conditions on the x-axis and normalized expression levels on the y-axis.
-                                </p>
-                            </div>
-                        </div>
+<div class="container custom-col table-responsive-lg mb-4 p-3">
+    <table class="table table-bordered table-hover styled-table" id="studies-table">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">GSE Accession ID</th>
+                <th scope="col">Title</th>
+                <th scope="col">Organism</th>
+                <th scope="col">Assay</th>
+                <th scope="col">Submission Date</th>
+                <th scope="col">Study Design</th>
+                <th scope="col">PMID</th>
+                <th scope="col">Gene Viewer Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for gse_id, geo_metadata in gse_metadata[organ].items() %}
+            <tr>
+                <th scope="row"><a class="text-br-red" href="{{ geo_metadata.get('gse_link', ['#'])[0]|safe }}"
+                        target="_blank" rel="noopener noreferrer">{{ gse_id }}</a></th>
+                <td>{{ geo_metadata.get('title', ['No Title'])[0].replace('RTN1 IS A NOVEL MEDIATOR FOR PROGRESSION OF
+                    KIDNEY DISEASE', 'RTN1 Is A Novel Mediator For Progression of Kidney Disease')|safe}}</td>
+                <td>
+                    {% if geo_metadata.get('cur_gpl', ['Single GPL'])[0] != 'Single GPL' %}
+                    {% for gpl_metadata in geo_metadata['all_gpls'] %}
+                    {% if gpl_metadata['geo_accession'][0] == geo_metadata.get('cur_gpl')[0] %}
+                    {{ gpl_metadata['organism'][0]|safe }}
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    {{ geo_metadata['all_gpls'][0].get('organism', ['No Organism'])[0]|safe }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if geo_metadata.get('type', ['No Assay'])|length > 1 %}
+                    {% for assay in geo_metadata.get('type', ['No Assay']) %}
+                    <p>{{ assay|safe }}</p>
+                    {% endfor %}
+                    {% else %}
+                    {{ geo_metadata.get('type', ['No Assay'])[0]|safe }}
+                    {% endif %}
+                </td>
+                <td>{{ (geo_metadata.get('submission_date')[0][:-5] + ',' +
+                    geo_metadata.get('submission_date')[0][-5:])|safe }}</td>
+                <td>
+                    <button class="btn btn-primary btn-group-sm btn-collapse collapsed d-flex align-items-center text-left"
+                        data-toggle="collapse" data-target="#studyDesignCollapse-{{gse_id}}" aria-expanded="false"
+                        aria-controls="studyDesignCollapse-{{gse_id}}">
+                        {{ gse_id }} Study Design
+                    </button>
+                    <div class="collapse" id="studyDesignCollapse-{{gse_id}}">
+                        {{ geo_metadata.get('overall_design', ['No Study Design'])[0]|safe }}
                     </div>
-                </div>
-            </div>
-
-            <div class="container custom-col table-responsive-lg mb-4 p-3">
-                <table class="table table-bordered table-hover styled-table" id ="studies-table">
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col">GSE Accession ID</th>
-                            <th scope="col">Title</th>
-                            <th scope="col">Organism</th>
-                            <th scope="col">Assay</th>
-                            <th scope="col">Submission Date</th>
-                            <th scope="col">Study Design</th>
-                            <th scope="col">PMID</th>
-                            <th scope="col">Gene Viewer Link</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for gse_id, geo_metadata in gse_metadata[organ].items() %}
-                            <tr>
-                                <th scope="row"><a class="text-br-red" href="{{ geo_metadata.get('gse_link', ['#'])[0]|safe }}" target="_blank" rel="noopener noreferrer">{{ gse_id }}</a></th>
-                                <td>{{ geo_metadata.get('title', ['No Title'])[0].replace('RTN1 IS A NOVEL MEDIATOR FOR PROGRESSION OF KIDNEY DISEASE', 'RTN1 Is A Novel Mediator For Progression of Kidney Disease')|safe}}</td>
-                                <td>
-                                    {% if geo_metadata.get('cur_gpl', ['Single GPL'])[0] != 'Single GPL' %}
-                                        {% for gpl_metadata in geo_metadata['all_gpls'] %}
-                                            {% if gpl_metadata['geo_accession'][0] == geo_metadata.get('cur_gpl')[0] %}
-                                                {{ gpl_metadata['organism'][0]|safe }}
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% else %}
-                                        {{ geo_metadata['all_gpls'][0].get('organism', ['No Organism'])[0]|safe }}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if geo_metadata.get('type', ['No Assay'])|length > 1 %}
-                                        {% for assay in geo_metadata.get('type', ['No Assay']) %}
-                                            <p>{{ assay|safe }}</p>
-                                        {% endfor %}
-                                    {% else %}
-                                        {{ geo_metadata.get('type', ['No Assay'])[0]|safe }}
-                                    {% endif %}
-                                </td>
-                                <td>{{ (geo_metadata.get('submission_date')[0][:-5] + ',' + geo_metadata.get('submission_date')[0][-5:])|safe }}</td>
-                                <td>
-                                    <button class="btn btn-collapse collapsed d-flex align-items-center text-left" data-toggle="collapse" data-target="#studyDesignCollapse-{{gse_id}}" aria-expanded="false" aria-controls="studyDesignCollapse-{{gse_id}}">
-                                        {{ gse_id }} Study Design
-                                    </button>
-                                    <div class="collapse" id="studyDesignCollapse-{{gse_id}}">
-                                        {{ geo_metadata.get('overall_design', ['No Study Design'])[0]|safe }}
-                                    </div>
-                                </td>
-                                <td>
-                                    {% if geo_metadata.get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed ID' %}
-                                        <a class="text-br-red" href="{{ geo_metadata.get('pubmed_link', ['#'])[0]|safe }}" target="_blank" rel="noopener noreferrer">
-                                            {{ geo_metadata.get('pubmed_id', ['No Pubmed ID'])[0]|safe }}
-                                        </a>
-                                    {% else %}
-                                        <p>N/A</p>
-                                    {% endif %}
-                                </td>
-                                <td><a class="btn btn-outline-primary" role="button" href="{{ url_for('organ_or_viewerpg', organ_or_gse=gse_id) }}">{{ gse_id }} Gene Viewer</a></td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <div class="row text center justify-content-center">
-                <p>
-                    This module was developed by the <a class="text-br-red" href="https://labs.icahn.mssm.edu/maayanlab/" target="_blank" rel="noopener noreferrer">Ma'ayan Laboratory</a>, and it is funded by NIH grants <a class="text-br-red" href="https://reporter.nih.gov/search/mr1dDhzzV0ezl5gHT3ip6A/project-details/10364063" target="_blank" rel="noopener noreferrer">R01DK131525</a> and <a class="text-br-red" href="https://reporter.nih.gov/search/S5e0jg4ipkuTqk8o-vkmIw/project-details/10414588" target="_blank" rel="noopener noreferrer">RC2DK131995</a>.
-                </p>
-            </div>
-            {% endblock %}
+                </td>
+                <td>
+                    {% if geo_metadata.get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed ID' %}
+                    <a class="text-br-red" href="{{ geo_metadata.get('pubmed_link', ['#'])[0]|safe }}" target="_blank"
+                        rel="noopener noreferrer">
+                        {{ geo_metadata.get('pubmed_id', ['No Pubmed ID'])[0]|safe }}
+                    </a>
+                    {% else %}
+                    <p>N/A</p>
+                    {% endif %}
+                </td>
+                <td><a href="{{ url_for('organ_or_viewerpg', organ_or_gse=gse_id) }}"><button class="btn btn-primary btn-group-sm">{{ gse_id }} Gene Viewer</button></a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="row text center justify-content-center">
+    <p>
+        This module was developed by the <a class="text-br-red" href="https://labs.icahn.mssm.edu/maayanlab/"
+            target="_blank" rel="noopener noreferrer">Ma'ayan Laboratory</a>, and it is funded by NIH grants <a
+            class="text-br-red" href="https://reporter.nih.gov/search/mr1dDhzzV0ezl5gHT3ip6A/project-details/10364063"
+            target="_blank" rel="noopener noreferrer">R01DK131525</a> and <a class="text-br-red"
+            href="https://reporter.nih.gov/search/S5e0jg4ipkuTqk8o-vkmIw/project-details/10414588" target="_blank"
+            rel="noopener noreferrer">RC2DK131995</a>.
+    </p>
+</div>
+{% endblock %}
