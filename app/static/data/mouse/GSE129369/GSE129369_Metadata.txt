@@ -1,0 +1,9 @@
+Sample_geo_accession	Condition	Group
+GSM3711931	Wildtype 	Perigonadal Whole Adipose Tissue
+GSM3711932	Wildtype 	Perigonadal Whole Adipose Tissue
+GSM3711933	Wildtype 	Perigonadal Whole Adipose Tissue
+GSM3711934	Wildtype 	Perigonadal Whole Adipose Tissue
+GSM3711935	 adSMRT-/- (adipocyte-specific SMRT knockout)	Perigonadal Whole Adipose Tissue
+GSM3711936	 adSMRT-/- (adipocyte-specific SMRT knockout)	Perigonadal Whole Adipose Tissue
+GSM3711937	 adSMRT-/- (adipocyte-specific SMRT knockout)	Perigonadal Whole Adipose Tissue
+GSM3711938	 adSMRT-/- (adipocyte-specific SMRT knockout)	Perigonadal Whole Adipose Tissue

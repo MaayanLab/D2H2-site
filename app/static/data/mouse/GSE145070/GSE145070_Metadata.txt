@@ -1,0 +1,7 @@
+Sample_geo_accession	Condition	Group
+GSM4305739	Control: Bscl2f/f 	Brown Adipose Tissue
+GSM4305740	Control: Bscl2f/f 	Brown Adipose Tissue
+GSM4305741	Control: Bscl2f/f 	Brown Adipose Tissue
+GSM4305742	 Perturbation: Bscl2f/f Ucp1Cre (BKO)	Brown Adipose Tissue
+GSM4305743	 Perturbation: Bscl2f/f Ucp1Cre (BKO)	Brown Adipose Tissue
+GSM4305744	 Perturbation: Bscl2f/f Ucp1Cre (BKO)	Brown Adipose Tissue

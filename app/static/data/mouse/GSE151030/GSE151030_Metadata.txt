@@ -1,0 +1,9 @@
+Sample_geo_accession	Condition	Group
+GSM4564587	Wildtype 	Epididymal White Adipose Tissue (WAT)
+GSM4564588	Wildtype 	Epididymal White Adipose Tissue (WAT)
+GSM4564589	Wildtype 	Epididymal White Adipose Tissue (WAT)
+GSM4564590	Wildtype 	Epididymal White Adipose Tissue (WAT)
+GSM4564591	 S273A Genotype	Epididymal White Adipose Tissue (WAT)
+GSM4564592	 S273A Genotype	Epididymal White Adipose Tissue (WAT)
+GSM4564593	 S273A Genotype	Epididymal White Adipose Tissue (WAT)
+GSM4564594	 S273A Genotype	Epididymal White Adipose Tissue (WAT)

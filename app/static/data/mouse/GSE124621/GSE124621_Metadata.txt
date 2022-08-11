@@ -1,0 +1,9 @@
+Sample_geo_accession	Condition	Group
+GSM3538042	control	Brown Adipose Tissue
+GSM3538043	control	Brown Adipose Tissue
+GSM3538044	control	Brown Adipose Tissue
+GSM3538045	control	Brown Adipose Tissue
+GSM3538046	PGRMC2 Adipose Tissue Knockout	Brown Adipose Tissue
+GSM3538047	PGRMC2 Adipose Tissue Knockout	Brown Adipose Tissue
+GSM3538048	PGRMC2 Adipose Tissue Knockout	Brown Adipose Tissue
+GSM3538049	PGRMC2 Adipose Tissue Knockout	Brown Adipose Tissue

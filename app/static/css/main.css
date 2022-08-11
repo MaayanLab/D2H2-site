@@ -13,6 +13,10 @@ h5 { color: #050a2f; font-family:  "IBM Plex Sans", sans-serif; font-size: 22px;
 
 p { color: #222; font-family: "IBM Plex Sans", sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; margin: 0 0 14px; }
 
+label {
+    font-family: "IBM Plex Sans", sans-serif;
+}
+
 .page-header {
 
     color: #050a2f; font-family: "IBM Plex Sans", sans-serif; font-size: 25px; font-weight: 350; line-height: 32px; margin: 0 0 14px; 
@@ -138,7 +142,7 @@ body {
 }
 
 .btn-primary:hover {
-    background-color: #B0BEC5;
+    background-color: #71477a;
 }
 .btn-primary {
 
@@ -309,46 +313,12 @@ nav[data-toggle="toc"] {
     100% { transform: rotate(360deg); }
 }
 
+.btn-inactive {
+    background-color: rgb(192, 186, 186);
 
-
-  /* Style the button that is used to open and close the collapsible content */
-.collapsible {
-    background-color: #eee;
-    color: #444;
-    cursor: pointer;
-    padding: 18px;
-    width: 100%;
-    border: none;
-    text-align: left;
-    outline: none;
-    font-size: 15px;
-  }
+}
   
-  /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-  .active, .collapsible:hover {
-    background-color: #ccc;
-  }
   
-  /* Style the collapsible content. Note: hidden by default */
-  .content {
-    padding: 0 18px;
-    display: none;
-    overflow: hidden;
-    background-color: #f1f1f1;
-  }
-
-  .collapsible:after {
-    content: '\02795'; /* Unicode character for "plus" sign (+) */
-    font-size: 13px;
-    color: white;
-    float: right;
-    margin-left: 5px;
-  }
-  
-  .active:after {
-    content: "\2796"; /* Unicode character for "minus" sign (-) */
-  }
-
 
 
   

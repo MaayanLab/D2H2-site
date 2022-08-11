@@ -1,0 +1,13 @@
+Sample_geo_accession	Condition	Group
+GSM4508496	Control 	Muscle
+GSM4508497	Control 	Muscle
+GSM4508498	Control 	Muscle
+GSM4508499	Control 	Muscle
+GSM4508500	Control 	Muscle
+GSM4508501	Control 	Muscle
+GSM4508502	 IRMOE (Muscle Specific Insulin Receptor Overexpression)	Muscle
+GSM4508503	 IRMOE (Muscle Specific Insulin Receptor Overexpression)	Muscle
+GSM4508504	 IRMOE (Muscle Specific Insulin Receptor Overexpression)	Muscle
+GSM4508505	 IRMOE (Muscle Specific Insulin Receptor Overexpression)	Muscle
+GSM4508506	 IRMOE (Muscle Specific Insulin Receptor Overexpression)	Muscle
+GSM4508507	 IRMOE (Muscle Specific Insulin Receptor Overexpression)	Muscle

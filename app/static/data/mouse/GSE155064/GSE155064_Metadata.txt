@@ -1,0 +1,25 @@
+Sample_geo_accession	Condition	Group
+GSM4694631	 Low-BCAA Diet	Male mice
+GSM4694632	 Low-BCAA Diet	Male mice
+GSM4694633	 Low-BCAA Diet	Male mice
+GSM4694634	 Low-BCAA Diet	Male mice
+GSM4694635	 Low-BCAA Diet	Male mice
+GSM4694636	 Low-BCAA Diet	Male mice
+GSM4694625	Control Diet 	Male mice
+GSM4694626	Control Diet 	Male mice
+GSM4694627	Control Diet 	Male mice
+GSM4694628	Control Diet 	Male mice
+GSM4694629	Control Diet 	Male mice
+GSM4694630	Control Diet 	Male mice
+GSM4694643	 Low-BCAA Diet	Female mice
+GSM4694644	 Low-BCAA Diet	Female mice
+GSM4694645	 Low-BCAA Diet	Female mice
+GSM4694646	 Low-BCAA Diet	Female mice
+GSM4694647	 Low-BCAA Diet	Female mice
+GSM4694648	 Low-BCAA Diet	Female mice
+GSM4694637	Control Diet 	Female mice
+GSM4694638	Control Diet 	Female mice
+GSM4694639	Control Diet 	Female mice
+GSM4694640	Control Diet 	Female mice
+GSM4694641	Control Diet 	Female mice
+GSM4694642	Control Diet 	Female mice

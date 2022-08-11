@@ -1,0 +1,13 @@
+Sample_geo_accession	Condition	Group
+GSM2714054	control	Pancreatic islets
+GSM2714055	control	Pancreatic islets
+GSM2714056	control	Pancreatic islets
+GSM2714057	ML351	Pancreatic islets
+GSM2714058	ML351	Pancreatic islets
+GSM2714059	ML351	Pancreatic islets
+GSM2714060	Proinflammatory cytokine cocktail	Pancreatic islets
+GSM2714061	Proinflammatory cytokine cocktail	Pancreatic islets
+GSM2714062	Proinflammatory cytokine cocktail	Pancreatic islets
+GSM2714063	ML351 + Proinflammatory cytokine cocktail	Pancreatic islets
+GSM2714064	ML351 + Proinflammatory cytokine cocktail	Pancreatic islets
+GSM2714065	ML351 + Proinflammatory cytokine cocktail	Pancreatic islets

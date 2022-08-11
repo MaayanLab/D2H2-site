@@ -1,0 +1,19 @@
+Sample_geo_accession	Condition	Group
+GSM2249811	control	FACS-enriched β-cells
+GSM2249812	control	FACS-enriched β-cells
+GSM2249813	control	FACS-enriched β-cells
+GSM2249814	control	FACS-enriched β-cells
+GSM2249815	control	FACS-enriched β-cells
+GSM2249798	 Isl1 KO	FACS-enriched β-cells
+GSM2249799	 Isl1 KO	FACS-enriched β-cells
+GSM2249800	 Isl1 KO	FACS-enriched β-cells
+GSM2249801	 Isl1 KO	FACS-enriched β-cells
+GSM2249802	 Isl1 KO	FACS-enriched β-cells
+GSM2249803	 Ldb1 KO	FACS-enriched β-cells
+GSM2249804	 Ldb1 KO	FACS-enriched β-cells
+GSM2249805	 Ldb1 KO	FACS-enriched β-cells
+GSM2249806	 Ldb1 KO	FACS-enriched β-cells
+GSM2249807	 Ldb1 KO	FACS-enriched β-cells
+GSM2249808	 Ldb1 KO	FACS-enriched β-cells
+GSM2249809	 Ldb1 KO	FACS-enriched β-cells
+GSM2249810	 Ldb1 KO	FACS-enriched β-cells

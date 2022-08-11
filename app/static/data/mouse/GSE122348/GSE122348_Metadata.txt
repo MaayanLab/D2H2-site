@@ -1,0 +1,24 @@
+Sample_geo_accession	Condition	Group
+GSM3464441	 Glucagon Receptor Blocking Antibody REGN1193	Chow Diet; Male C57BL/6J mice
+GSM3464442	 Glucagon Receptor Blocking Antibody REGN1193	Chow Diet; Male C57BL/6J mice
+GSM3464443	 Glucagon Receptor Blocking Antibody REGN1193	Chow Diet; Male C57BL/6J mice
+GSM3464444	 Glucagon Receptor Blocking Antibody REGN1193	Chow Diet; Male C57BL/6J mice
+GSM3464445	 Glucagon Receptor Blocking Antibody REGN1193	Chow Diet; Male C57BL/6J mice
+GSM3464446	 Glucagon Receptor Blocking Antibody REGN1193	Chow Diet; Male C57BL/6J mice
+GSM3464436	Isotype Control Antibody 	Chow Diet; Male C57BL/6J mice
+GSM3464437	Isotype Control Antibody 	Chow Diet; Male C57BL/6J mice
+GSM3464438	Isotype Control Antibody 	Chow Diet; Male C57BL/6J mice
+GSM3464439	Isotype Control Antibody 	Chow Diet; Male C57BL/6J mice
+GSM3464440	Isotype Control Antibody 	Chow Diet; Male C57BL/6J mice
+GSM3464453	 Glucagon Receptor Blocking Antibody REGN1193	High-Fat Diet; Male C57BL/6J mice
+GSM3464454	 Glucagon Receptor Blocking Antibody REGN1193	High-Fat Diet; Male C57BL/6J mice
+GSM3464455	 Glucagon Receptor Blocking Antibody REGN1193	High-Fat Diet; Male C57BL/6J mice
+GSM3464456	 Glucagon Receptor Blocking Antibody REGN1193	High-Fat Diet; Male C57BL/6J mice
+GSM3464457	 Glucagon Receptor Blocking Antibody REGN1193	High-Fat Diet; Male C57BL/6J mice
+GSM3464458	 Glucagon Receptor Blocking Antibody REGN1193	High-Fat Diet; Male C57BL/6J mice
+GSM3464447	Isotype Control Antibody 	High-Fat Diet; Male C57BL/6J mice
+GSM3464448	Isotype Control Antibody 	High-Fat Diet; Male C57BL/6J mice
+GSM3464449	Isotype Control Antibody 	High-Fat Diet; Male C57BL/6J mice
+GSM3464450	Isotype Control Antibody 	High-Fat Diet; Male C57BL/6J mice
+GSM3464451	Isotype Control Antibody 	High-Fat Diet; Male C57BL/6J mice
+GSM3464452	Isotype Control Antibody 	High-Fat Diet; Male C57BL/6J mice

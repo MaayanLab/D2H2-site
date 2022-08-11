@@ -1,0 +1,10 @@
+Sample_geo_accession	Condition	Group
+GSM4007546	 Cold (4 C)	NaN
+GSM4007547	 Cold (4 C)	NaN
+GSM4007554	 Cold (4 C)	NaN
+GSM4007555	 Cold (4 C)	NaN
+GSM4007548	Room Temp (24 C) 	NaN
+GSM4007549	Room Temp (24 C) 	NaN
+GSM4007556	Room Temp (24 C) 	NaN
+GSM4007557	Room Temp (24 C) 	NaN
+GSM4007560	Room Temp (24 C) 	NaN

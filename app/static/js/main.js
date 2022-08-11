@@ -76,7 +76,6 @@ $(document).ready(function() {
 
     var currURL = window.location.href.split("/");
 
-    // autocomplete for singlegene page
 
 
     function createResourcesTable() {
@@ -164,8 +163,15 @@ $(document).ready(function() {
 
       $('.search-home').autocomplete({
         source: function (request, response) {
+            if (document.getElementById('human').className.includes('btn-primary')) {
+                var url =  "/static/searchdata/allgenes.json";
+            } else {
+                var url =  "/static/searchdata/mouse_genes.json";
+            }
+            
+
             $.ajax({
-                url: "/static/searchdata/allgenes.json",
+                url: url,
                 dataType: 'json',
                 data: request,
                 success: function( data ) {
@@ -195,14 +201,12 @@ $(document).ready(function() {
 
       // GET CURRENT URL FOR STUDY SPECIFIC AUTOCOMPLETE
 
-      
-
       // DO STUDY SPECIFIC AUTOCOMPLETE
 
       $('.studysearch').autocomplete({
         source: function (request, response) {
             $.ajax({
-                url: "/static/data/" + "human" + "/" + currURL[3] +"/" + "genes.json",
+                url: "/static/data/" + document.getElementById("species").innerText + "/" + currURL[3] +"/" + "genes.json",
                 dataType: 'json',
                 data: request,
                 success: function( data ) {
@@ -233,12 +237,35 @@ $(document).ready(function() {
 
     // CHANGE LINKS FOR APPYTERS/ARCHS4/GTEx DYNAMICALLY   
     
-    $('#appyter-home').click(function() {  
+    $('#appyter-home').click( async function() {  
         if ($("#search-home").val()) {
             var inputvalue = $("#search-home").val();
-            $('#appyter-home').prop('href', "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures//#/?args.human_gene=" +inputvalue + "&submit");
+            if (document.getElementById('human').className.includes('btn-primary')) {
+                var species = 'Human';
+                var arg = 'human_gene';
+            } else {
+                var species = 'Mouse';
+                var arg = 'mouse_gene';
+            }
+
+            const formData = new FormData()
+            formData.append('species_input', species)
+            formData.append(arg, inputvalue)
+            
+            var res = await fetch("https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                },
+                body: formData,
+            })
+
+            const id = await res.json()
+
+            const final_url = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id
+            window.open(final_url, '_blank')
         } else {
-            $('#appyter-home').prop('href', "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/")
+            window.open('https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/', '_blank')
         }
     });
 
@@ -411,11 +438,6 @@ $(document).ready(function() {
             data: {gene:inputvalue}
         }).done(function(response) {
 
-                //row["subject.primaryIdentifier"], row["subject.symbol"], \
-                //row["subject.sequenceOntologyTerm.name"], row["ontologyTerm.identifier"], \
-                //row["ontologyTerm.name"], row["evidence.publications.pubMedId"], \
-                //row["evidence.comments.type"], row["evidence.comments.description"])
-
             const data = response['data'];
 
             if (data.length === 0) {
@@ -443,6 +465,7 @@ $(document).ready(function() {
 
         });
     });
+
 
     // QUERY ENRICHR AND FORMAT RESULTS
 
@@ -549,7 +572,11 @@ $(document).ready(function() {
 
             gene_symbol = 'A1BG';
 
-            if (currURL[3] === 'GSE142209') {
+            if(document.getElementById("species")) {
+                var species = document.getElementById("species").innerText
+            }
+
+            if (species === 'mouse') {
                 gene_symbol = '0610007P14Rik';
             }
         }
@@ -952,9 +979,18 @@ $(document).ready(function() {
     });
 
 
+    $('#human').click(function() {
+        $('#human').prop('class', 'species-tab btn btn-primary m-1')
+        $('#mouse').prop('class', 'species-tab btn btn-inactive m-1')
+    })
+
+    $('#mouse').click(function() {
+        $('#mouse').prop('class', 'species-tab btn btn-primary m-1')
+        $('#human').prop('class', 'species-tab btn btn-inactive m-1')
+    })
+    
 
 
-    
-    
+
 
 })

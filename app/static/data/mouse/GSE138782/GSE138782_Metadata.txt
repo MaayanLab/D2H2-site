@@ -1,0 +1,8 @@
+Sample_geo_accession	Condition	Group
+GSM4119264	control	Interscapular Brown Adipose Tissue
+GSM4119265	control	Interscapular Brown Adipose Tissue
+GSM4119266	control	Interscapular Brown Adipose Tissue
+GSM4119267	PGAM5 Knockout	Interscapular Brown Adipose Tissue
+GSM4119268	PGAM5 Knockout	Interscapular Brown Adipose Tissue
+GSM4119269	PGAM5 Knockout	Interscapular Brown Adipose Tissue
+GSM4119270	PGAM5 Knockout	Interscapular Brown Adipose Tissue

@@ -1,0 +1,20 @@
+Sample_geo_accession	Condition	Group
+GSM2670763	control	Islet macrophages
+GSM2670764	control	Islet macrophages
+GSM2670765	control	Islet macrophages
+GSM2670766	control	Islet macrophages
+GSM2670767	 NOD.Rag1-/- (NOD.129S7(B6)-Rag1tm1)	Islet macrophages
+GSM2670768	 NOD.Rag1-/- (NOD.129S7(B6)-Rag1tm1)	Islet macrophages
+GSM2670769	 NOD.Rag1-/- (NOD.129S7(B6)-Rag1tm1)	Islet macrophages
+GSM2670770	 B6.g7 B6.NOD-(D17Mit21-D17M...)	Islet macrophages
+GSM2670771	 B6.g7 B6.NOD-(D17Mit21-D17M...)	Islet macrophages
+GSM2670772	 B6.g7 B6.NOD-(D17Mit21-D17M...)	Islet macrophages
+GSM2670773	 Lung macrophages	Islet macrophages
+GSM2670774	 Lung macrophages	Islet macrophages
+GSM2670775	 Lung macrophages	Islet macrophages
+GSM2670776	 Lung macrophages	Islet macrophages
+GSM2670777	 Pancreatic LN Dendritic Cells	Islet macrophages
+GSM2670778	 Pancreatic LN Dendritic Cells	Islet macrophages
+GSM2670779	 Pancreatic LN Dendritic Cells	Islet macrophages
+GSM2670780	 Pancreatic LN Dendritic Cells	Islet macrophages
+GSM2670781	 Pancreatic LN Dendritic Cells	Islet macrophages

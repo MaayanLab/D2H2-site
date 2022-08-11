@@ -1,0 +1,7 @@
+Sample_geo_accession	Condition	Group
+GSM1660657	Ffar3 Wildtype 	Pancreatic islets
+GSM1660658	Ffar3 Wildtype 	Pancreatic islets
+GSM1660659	Ffar3 Wildtype 	Pancreatic islets
+GSM1660660	 Ffar3 KO	Pancreatic islets
+GSM1660661	 Ffar3 KO	Pancreatic islets
+GSM1660662	 Ffar3 KO	Pancreatic islets

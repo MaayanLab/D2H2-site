@@ -1,0 +1,9 @@
+Sample_geo_accession	Condition	Group
+GSM4636161	 High-Fat (60%) Diet	Mouse strain: C57BL/6N
+GSM4636163	 High-Fat (60%) Diet	Mouse strain: C57BL/6N
+GSM4636165	 High-Fat (60%) Diet	Mouse strain: C57BL/6N
+GSM4636167	 High-Fat (60%) Diet	Mouse strain: C57BL/6N
+GSM4636113	Control Chow Diet 	Mouse strain: C57BL/6N
+GSM4636115	Control Chow Diet 	Mouse strain: C57BL/6N
+GSM4636117	Control Chow Diet 	Mouse strain: C57BL/6N
+GSM4636119	Control Chow Diet 	Mouse strain: C57BL/6N

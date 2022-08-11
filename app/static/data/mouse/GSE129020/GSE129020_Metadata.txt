@@ -1,0 +1,7 @@
+Sample_geo_accession	Condition	Group
+GSM3690825	control	Brown Adipose Tissue
+GSM3690826	control	Brown Adipose Tissue
+GSM3690827	control	Brown Adipose Tissue
+GSM3690828	PHOSPHO1 knockout	Brown Adipose Tissue
+GSM3690829	PHOSPHO1 knockout	Brown Adipose Tissue
+GSM3690830	PHOSPHO1 knockout	Brown Adipose Tissue

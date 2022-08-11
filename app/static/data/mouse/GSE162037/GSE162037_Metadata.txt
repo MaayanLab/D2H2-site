@@ -1,0 +1,9 @@
+Sample_geo_accession	Condition	Group
+GSM4931896	Wildtype 	White adipose tissue (epididymal fat)
+GSM4931897	Wildtype 	White adipose tissue (epididymal fat)
+GSM4931898	Wildtype 	White adipose tissue (epididymal fat)
+GSM4931899	Wildtype 	White adipose tissue (epididymal fat)
+GSM4931900	 Mrp4 Knockout (Mrp4-/-)	White adipose tissue (epididymal fat)
+GSM4931901	 Mrp4 Knockout (Mrp4-/-)	White adipose tissue (epididymal fat)
+GSM4931902	 Mrp4 Knockout (Mrp4-/-)	White adipose tissue (epididymal fat)
+GSM4931903	 Mrp4 Knockout (Mrp4-/-)	White adipose tissue (epididymal fat)

@@ -1,0 +1,11 @@
+Sample_geo_accession	Condition	Group
+GSM1893675	control	Brain
+GSM1893676	control	Brain
+GSM1893677	control	Brain
+GSM1893678	control	Brain
+GSM1893679	control	Brain
+GSM1893680	Homozygous AMPK R299Q Knock-in	Brain
+GSM1893681	Homozygous AMPK R299Q Knock-in	Brain
+GSM1893682	Homozygous AMPK R299Q Knock-in	Brain
+GSM1893683	Homozygous AMPK R299Q Knock-in	Brain
+GSM1893684	Homozygous AMPK R299Q Knock-in	Brain

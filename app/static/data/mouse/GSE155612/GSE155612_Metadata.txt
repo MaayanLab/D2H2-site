@@ -1,0 +1,7 @@
+Sample_geo_accession	Condition	Group
+GSM4708547	Mettl3flox/flox 	Pancreatic islets
+GSM4708548	Mettl3flox/flox 	Pancreatic islets
+GSM4708549	Mettl3flox/flox 	Pancreatic islets
+GSM4708550	 β-Mettl3-KO	Pancreatic islets
+GSM4708551	 β-Mettl3-KO	Pancreatic islets
+GSM4708552	 β-Mettl3-KO	Pancreatic islets

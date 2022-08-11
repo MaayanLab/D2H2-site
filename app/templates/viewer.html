@@ -127,10 +127,11 @@
         </div>
 
         <!-- Table -->
-        <div class="col-lg-4 col-xl-3">
+        <div class="col-lg-4 col-xl-3 p-2">
+            <p class="m-3" style="font-size: 0.97rem;">Select conditions below to toggle them from the plot:</p>
             <div class="custom-col">
-                <p class="m-3" style="font-size: 0.97rem;">Select conditions below to toggle them from the plot:</p>
-                <table id="condition-table" class="text-center m-3">
+                
+                <table id="condition-table" class="text-center">
                     <thead>
                         <tr>
                             <th>GROUP</th>
@@ -160,6 +161,9 @@
             </div>
         </div>
     </div>
+
+    <div id="species" hidden>{{ organ }}</div>
+    
 
     <!-- Abstract small -->
     <div class="row">

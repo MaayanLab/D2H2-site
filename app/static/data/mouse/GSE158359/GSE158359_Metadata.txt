@@ -1,0 +1,7 @@
+Sample_geo_accession	Condition	Group
+GSM4798352	Vehicle 	Liver
+GSM4798353	Vehicle 	Liver
+GSM4798354	Vehicle 	Liver
+GSM4798355	 FGF19	Liver
+GSM4798356	 FGF19	Liver
+GSM4798357	 FGF19	Liver
