@@ -1,5 +1,7 @@
 Sample_geo_accession	Condition	Group
-GSM2906486;GSM2906487;GSM2906488	Ctrl 	Liver
+GSM2906486	Ctrl 	Liver
+GSM2906487	Ctrl 	Liver
+GSM2906488	Ctrl 	Liver
 GSM2906489	 Blnc1 liver-specific knockout	Liver
 GSM2906490	 Blnc1 liver-specific knockout	Liver
 GSM2906491	 Blnc1 liver-specific knockout	Liver
