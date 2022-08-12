@@ -1,0 +1,7 @@
+Sample_geo_accession	Condition	Group
+GSM1429373	 Day 9.5 of Pregnancy	Female mice
+GSM1429374	 Day 9.5 of Pregnancy	Female mice
+GSM1429375	 Day 9.5 of Pregnancy	Female mice
+GSM1429367	Non-Pregnant 	Female mice
+GSM1429368	Non-Pregnant 	Female mice
+GSM1429369	Non-Pregnant 	Female mice

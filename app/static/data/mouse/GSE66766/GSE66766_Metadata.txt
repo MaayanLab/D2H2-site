@@ -1,0 +1,11 @@
+Sample_geo_accession	Condition	Group
+GSM1631698	Wildtype (Mut+/+) 	Muscle: Quadriceps
+GSM1631699	Wildtype (Mut+/+) 	Muscle: Quadriceps
+GSM1631701	Wildtype (Mut+/+) 	Muscle: Quadriceps
+GSM1631703	Wildtype (Mut+/+) 	Muscle: Quadriceps
+GSM1631705	Wildtype (Mut+/+) 	Muscle: Quadriceps
+GSM1631697	 Mut+/-	Muscle: Quadriceps
+GSM1631700	 Mut+/-	Muscle: Quadriceps
+GSM1631702	 Mut+/-	Muscle: Quadriceps
+GSM1631704	 Mut+/-	Muscle: Quadriceps
+GSM1631706	 Mut+/-	Muscle: Quadriceps

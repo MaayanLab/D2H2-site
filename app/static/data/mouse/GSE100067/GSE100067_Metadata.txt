@@ -6,9 +6,9 @@ GSM2670766	control	Islet macrophages
 GSM2670767	 NOD.Rag1-/- (NOD.129S7(B6)-Rag1tm1)	Islet macrophages
 GSM2670768	 NOD.Rag1-/- (NOD.129S7(B6)-Rag1tm1)	Islet macrophages
 GSM2670769	 NOD.Rag1-/- (NOD.129S7(B6)-Rag1tm1)	Islet macrophages
-GSM2670770	 B6.g7 B6.NOD-(D17Mit21-D17M...)	Islet macrophages
-GSM2670771	 B6.g7 B6.NOD-(D17Mit21-D17M...)	Islet macrophages
-GSM2670772	 B6.g7 B6.NOD-(D17Mit21-D17M...)	Islet macrophages
+GSM2670770	 B6.g7 B6.NOD-(D17Mit21-D17M)	Islet macrophages
+GSM2670771	 B6.g7 B6.NOD-(D17Mit21-D17M)	Islet macrophages
+GSM2670772	 B6.g7 B6.NOD-(D17Mit21-D17M)	Islet macrophages
 GSM2670773	 Lung macrophages	Islet macrophages
 GSM2670774	 Lung macrophages	Islet macrophages
 GSM2670775	 Lung macrophages	Islet macrophages

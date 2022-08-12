@@ -1,0 +1,13 @@
+Sample_geo_accession	Condition	Group
+GSM795608	 High-Fat Diet	Wildtype mice
+GSM795610	 High-Fat Diet	Wildtype mice
+GSM795612	 High-Fat Diet	Wildtype mice
+GSM795615	Normal Diet 	Wildtype mice
+GSM795617	Normal Diet 	Wildtype mice
+GSM795625	Normal Diet 	Wildtype mice
+GSM795602	 High-Fat Diet	GPR120 Knockout mice
+GSM795604	 High-Fat Diet	GPR120 Knockout mice
+GSM795606	 High-Fat Diet	GPR120 Knockout mice
+GSM795619	Normal Diet 	GPR120 Knockout mice
+GSM795621	Normal Diet 	GPR120 Knockout mice
+GSM795623	Normal Diet 	GPR120 Knockout mice

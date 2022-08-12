@@ -1,0 +1,14 @@
+Sample_geo_accession	Condition	Group
+GSM1429382	 Day 12.5 of Pregnancy	C57bl6/J mice
+GSM1429383	 Day 12.5 of Pregnancy	C57bl6/J mice
+GSM1429384	 Day 12.5 of Pregnancy	C57bl6/J mice
+GSM1429385	 Day 12.5 of Pregnancy	C57bl6/J mice
+GSM1429399	Non-Pregnant 	C57bl6/J mice
+GSM1429400	Non-Pregnant 	C57bl6/J mice
+GSM1429401	Non-Pregnant 	C57bl6/J mice
+GSM1429390	 Day 12.5 of Pregnancy + Female Islet Graft	C57bl6/J mice
+GSM1429391	 Day 12.5 of Pregnancy + Female Islet Graft	C57bl6/J mice
+GSM1429392	 Day 12.5 of Pregnancy + Female Islet Graft	C57bl6/J mice
+GSM1429393	 Day 12.5 of Pregnancy + Male Islet Graft	C57bl6/J mice
+GSM1429394	 Day 12.5 of Pregnancy + Male Islet Graft	C57bl6/J mice
+GSM1429395	 Day 12.5 of Pregnancy + Male Islet Graft	C57bl6/J mice

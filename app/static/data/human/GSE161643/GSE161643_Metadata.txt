@@ -1,0 +1,25 @@
+Sample_geo_accession	Condition	Group
+GSM4911742	 1 year post-RYGB surgery	Control condition
+GSM4911744	 1 year post-RYGB surgery	Control condition
+GSM4911746	 1 year post-RYGB surgery	Control condition
+GSM4911748	 1 year post-RYGB surgery	Control condition
+GSM4911750	 1 year post-RYGB surgery	Control condition
+GSM4911741	Control 	Control condition
+GSM4911743	Control 	Control condition
+GSM4911745	Control 	Control condition
+GSM4911747	Control 	Control condition
+GSM4911749	Control 	Control condition
+GSM4911728	 1 year post-RYGB surgery	Case condition
+GSM4911730	 1 year post-RYGB surgery	Case condition
+GSM4911732	 1 year post-RYGB surgery	Case condition
+GSM4911734	 1 year post-RYGB surgery	Case condition
+GSM4911736	 1 year post-RYGB surgery	Case condition
+GSM4911738	 1 year post-RYGB surgery	Case condition
+GSM4911740	 1 year post-RYGB surgery	Case condition
+GSM4911727	Control 	Case condition
+GSM4911729	Control 	Case condition
+GSM4911731	Control 	Case condition
+GSM4911733	Control 	Case condition
+GSM4911735	Control 	Case condition
+GSM4911737	Control 	Case condition
+GSM4911739	Control 	Case condition

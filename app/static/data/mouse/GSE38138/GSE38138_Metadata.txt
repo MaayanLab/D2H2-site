@@ -1,0 +1,21 @@
+Sample_geo_accession	Condition	Group
+GSM935732	control	Liver
+GSM935733	control	Liver
+GSM935734	control	Liver
+GSM935735	control	Liver
+GSM935736	control	Liver
+GSM935737	 Streptozotocin (STZ) treatment	Liver
+GSM935738	 Streptozotocin (STZ) treatment	Liver
+GSM935739	 Streptozotocin (STZ) treatment	Liver
+GSM935740	 Streptozotocin (STZ) treatment	Liver
+GSM935741	 Streptozotocin (STZ) treatment	Liver
+GSM935742	 [Streptozotocin (STZ) treatment + 0.1 Percent Phloridzin Diet]	Liver
+GSM935743	 [Streptozotocin (STZ) treatment + 0.1 Percent Phloridzin Diet]	Liver
+GSM935744	 [Streptozotocin (STZ) treatment + 0.1 Percent Phloridzin Diet]	Liver
+GSM935745	 [Streptozotocin (STZ) treatment + 0.1 Percent Phloridzin Diet]	Liver
+GSM935746	 [Streptozotocin (STZ) treatment + 0.1 Percent Phloridzin Diet]	Liver
+GSM935747	 [Streptozotocin (STZ) treatment + 0.5 Percent Phloridzin Diet]	Liver
+GSM935748	 [Streptozotocin (STZ) treatment + 0.5 Percent Phloridzin Diet]	Liver
+GSM935749	 [Streptozotocin (STZ) treatment + 0.5 Percent Phloridzin Diet]	Liver
+GSM935750	 [Streptozotocin (STZ) treatment + 0.5 Percent Phloridzin Diet]	Liver
+GSM935751	 [Streptozotocin (STZ) treatment + 0.5 Percent Phloridzin Diet]	Liver

@@ -1,0 +1,19 @@
+Sample_geo_accession	Condition	Group
+GSM4665789	control	Fetal Liver Hepatocytes
+GSM4665790	control	Fetal Liver Hepatocytes
+GSM4665791	control	Fetal Liver Hepatocytes
+GSM4665792	 Passage 1	Fetal Liver Hepatocytes
+GSM4665793	 Passage 1	Fetal Liver Hepatocytes
+GSM4665794	 Passage 1	Fetal Liver Hepatocytes
+GSM4665795	 Passage 8	Fetal Liver Hepatocytes
+GSM4665796	 Passage 8	Fetal Liver Hepatocytes
+GSM4665797	 Passage 8	Fetal Liver Hepatocytes
+GSM4665798	 Passage 22	Fetal Liver Hepatocytes
+GSM4665799	 Passage 22	Fetal Liver Hepatocytes
+GSM4665800	 Passage 22	Fetal Liver Hepatocytes
+GSM4665801	 Passage 58	Fetal Liver Hepatocytes
+GSM4665802	 Passage 58	Fetal Liver Hepatocytes
+GSM4665803	 Passage 58	Fetal Liver Hepatocytes
+GSM4665804	 Passage 113	Fetal Liver Hepatocytes
+GSM4665805	 Passage 113	Fetal Liver Hepatocytes
+GSM4665806	 Passage 113	Fetal Liver Hepatocytes

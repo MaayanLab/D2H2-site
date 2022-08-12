@@ -1,0 +1,18 @@
+Sample_geo_accession	Condition	Group
+GSM680266	control	Islets
+GSM680267	control	Islets
+GSM680268	control	Islets
+GSM680269	control	Islets
+GSM680270	control	Islets
+GSM680271	 24 hrs	Islets
+GSM680272	 24 hrs	Islets
+GSM680273	 24 hrs	Islets
+GSM680274	 24 hrs	Islets
+GSM680275	 24 hrs	Islets
+GSM680276	 24 hrs	Islets
+GSM680277	 48 hrs	Islets
+GSM680278	 48 hrs	Islets
+GSM680279	 48 hrs	Islets
+GSM680280	 48 hrs	Islets
+GSM680281	 48 hrs	Islets
+GSM680282	 48 hrs	Islets

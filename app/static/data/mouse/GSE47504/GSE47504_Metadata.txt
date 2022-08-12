@@ -1,0 +1,15 @@
+Sample_geo_accession	Condition	Group
+GSM1151232	control	Pancreatic Islets
+GSM1151235	control	Pancreatic Islets
+GSM1151236	control	Pancreatic Islets
+GSM1151239	control	Pancreatic Islets
+GSM1151243	control	Pancreatic Islets
+GSM1151234	 Pdx-1+/- genotype	Pancreatic Islets
+GSM1151237	 Pdx-1+/- genotype	Pancreatic Islets
+GSM1151241	 Pdx-1+/- genotype	Pancreatic Islets
+GSM1151242	 Pdx-1+/- genotype	Pancreatic Islets
+GSM1151233	 IKK2-CApdx-1 genotype	Pancreatic Islets
+GSM1151238	 IKK2-CApdx-1 genotype	Pancreatic Islets
+GSM1151240	 IKK2-CApdx-1 genotype	Pancreatic Islets
+GSM1151244	 IKK2-CApdx-1 genotype	Pancreatic Islets
+GSM1151245	 IKK2-CApdx-1 genotype	Pancreatic Islets

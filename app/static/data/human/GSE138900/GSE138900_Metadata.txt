@@ -1,0 +1,13 @@
+Sample_geo_accession	Condition	Group
+GSM4121420	 Death Ligand TRAIL	2D Monolayer
+GSM4121421	 Death Ligand TRAIL	2D Monolayer
+GSM4121422	 Death Ligand TRAIL	2D Monolayer
+GSM4121417	Control 	2D Monolayer
+GSM4121418	Control 	2D Monolayer
+GSM4121419	Control 	2D Monolayer
+GSM4121426	 Death Ligand TRAIL	3D reconstituted basement membrane (rBM)
+GSM4121427	 Death Ligand TRAIL	3D reconstituted basement membrane (rBM)
+GSM4121428	 Death Ligand TRAIL	3D reconstituted basement membrane (rBM)
+GSM4121423	Control 	3D reconstituted basement membrane (rBM)
+GSM4121424	Control 	3D reconstituted basement membrane (rBM)
+GSM4121425	Control 	3D reconstituted basement membrane (rBM)

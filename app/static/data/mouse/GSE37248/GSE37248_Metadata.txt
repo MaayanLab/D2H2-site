@@ -1,0 +1,9 @@
+Sample_geo_accession	Condition	Group
+GSM914319	 hFXRBat: Adipose-Specific Human FXR Overexpression	10-week-old male C57BL/6J mice; chow diet
+GSM914320	 hFXRBat: Adipose-Specific Human FXR Overexpression	10-week-old male C57BL/6J mice; chow diet
+GSM914321	 hFXRBat: Adipose-Specific Human FXR Overexpression	10-week-old male C57BL/6J mice; chow diet
+GSM914322	 hFXRBat: Adipose-Specific Human FXR Overexpression	10-week-old male C57BL/6J mice; chow diet
+GSM914315	Wildtype 	10-week-old male C57BL/6J mice; chow diet
+GSM914316	Wildtype 	10-week-old male C57BL/6J mice; chow diet
+GSM914317	Wildtype 	10-week-old male C57BL/6J mice; chow diet
+GSM914318	Wildtype 	10-week-old male C57BL/6J mice; chow diet

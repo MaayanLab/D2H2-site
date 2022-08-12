@@ -1,0 +1,13 @@
+Sample_geo_accession	Condition	Group
+GSM2341941	control	Adipose Tissue
+GSM2341942	control	Adipose Tissue
+GSM2341943	control	Adipose Tissue
+GSM2341944	control	Adipose Tissue
+GSM2341945	 High-Fat Diet (Day 5)	Adipose Tissue
+GSM2341946	 High-Fat Diet (Day 5)	Adipose Tissue
+GSM2341947	 High-Fat Diet (Day 5)	Adipose Tissue
+GSM2341948	 High-Fat Diet (Day 5)	Adipose Tissue
+GSM2341949	 High-Fat Diet (Day 14)	Adipose Tissue
+GSM2341950	 High-Fat Diet (Day 14)	Adipose Tissue
+GSM2341951	 High-Fat Diet (Day 14)	Adipose Tissue
+GSM2341952	 High-Fat Diet (Day 14)	Adipose Tissue

@@ -116,7 +116,6 @@ def get_metadata(geo_accession, organ_folder):
 	Output: A dictionary representing the metadata parsed by GEOparse, with keys being labels and values being that value of the
 		metadata label.
 	"""
-	organisms = {}
     # Case where I have GPL in geo_accession
 	if "-" in geo_accession:
 		geo_accession_num = geo_accession.split("-", 1)[0]

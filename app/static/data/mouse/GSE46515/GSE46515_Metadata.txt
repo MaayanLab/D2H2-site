@@ -1,0 +1,9 @@
+Sample_geo_accession	Condition	Group
+GSM1131555	Wildtype 	Liver
+GSM1131556	Wildtype 	Liver
+GSM1131557	Wildtype 	Liver
+GSM1131558	Wildtype 	Liver
+GSM1131559	 Rictor Floxed	Liver
+GSM1131560	 Rictor Floxed	Liver
+GSM1131561	 Rictor Floxed	Liver
+GSM1131562	 Rictor Floxed	Liver

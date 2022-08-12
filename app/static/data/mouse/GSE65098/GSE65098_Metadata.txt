@@ -1,0 +1,7 @@
+Sample_geo_accession	Condition	Group
+GSM1587294	FTO flox/flox 	Epididymal White Adipose Tissue
+GSM1587295	FTO flox/flox 	Epididymal White Adipose Tissue
+GSM1587296	FTO flox/flox 	Epididymal White Adipose Tissue
+GSM1587297	 Adiponectin-cre FTO flox/flox	Epididymal White Adipose Tissue
+GSM1587298	 Adiponectin-cre FTO flox/flox	Epididymal White Adipose Tissue
+GSM1587299	 Adiponectin-cre FTO flox/flox	Epididymal White Adipose Tissue

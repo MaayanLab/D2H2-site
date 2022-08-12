@@ -2,6 +2,6 @@ Sample_geo_accession	Condition	Group
 GSM2310792	Wildtype 	Pancreatic islets
 GSM2310793	Wildtype 	Pancreatic islets
 GSM2310794	Wildtype 	Pancreatic islets
-GSM2310795	 mutGCK(Y214C) [expressing mutant GCK (Y214C) (Pdx1Cre-ER; Rosa-LSL-Y214C-GCK)]	Pancreatic islets
-GSM2310796	 mutGCK(Y214C) [expressing mutant GCK (Y214C) (Pdx1Cre-ER; Rosa-LSL-Y214C-GCK)]	Pancreatic islets
-GSM2310797	 mutGCK(Y214C) [expressing mutant GCK (Y214C) (Pdx1Cre-ER; Rosa-LSL-Y214C-GCK)]	Pancreatic islets
+GSM2310795	 mutGCK(Y214C)	Pancreatic islets
+GSM2310796	 mutGCK(Y214C)	Pancreatic islets
+GSM2310797	 mutGCK(Y214C)	Pancreatic islets

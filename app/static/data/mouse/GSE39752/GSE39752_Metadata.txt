@@ -1,0 +1,14 @@
+Sample_geo_accession	Condition	Group
+GSM978535	Control 	Liver
+GSM978536	Control 	Liver
+GSM978537	Control 	Liver
+GSM978538	Control 	Liver
+GSM978539	Control 	Liver
+GSM978540	Control 	Liver
+GSM978541	Control 	Liver
+GSM978542	 Streptozotocin (STZ)	Liver
+GSM978543	 Streptozotocin (STZ)	Liver
+GSM978544	 Streptozotocin (STZ)	Liver
+GSM978545	 Streptozotocin (STZ)	Liver
+GSM978546	 Streptozotocin (STZ)	Liver
+GSM978547	 Streptozotocin (STZ)	Liver

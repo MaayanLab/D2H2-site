@@ -1,0 +1,9 @@
+Sample_geo_accession	Condition	Group
+GSM719995	Control 	Mature Proximal Small Intestine
+GSM719996	Control 	Mature Proximal Small Intestine
+GSM719999	Control 	Mature Proximal Small Intestine
+GSM720000	Control 	Mature Proximal Small Intestine
+GSM719994	 Intestinal epithelium-specific Pdx1 inactivation	Mature Proximal Small Intestine
+GSM719997	 Intestinal epithelium-specific Pdx1 inactivation	Mature Proximal Small Intestine
+GSM719998	 Intestinal epithelium-specific Pdx1 inactivation	Mature Proximal Small Intestine
+GSM720001	 Intestinal epithelium-specific Pdx1 inactivation	Mature Proximal Small Intestine

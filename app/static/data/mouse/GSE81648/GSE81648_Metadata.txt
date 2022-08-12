@@ -1,0 +1,18 @@
+Sample_geo_accession	Condition	Group
+GSM2160141	 Sub-Therapeutic Antibiotic Treatment (male mice)	terminal ileum
+GSM2160148	 Sub-Therapeutic Antibiotic Treatment (male mice)	terminal ileum
+GSM2160149	 Sub-Therapeutic Antibiotic Treatment (male mice)	terminal ileum
+GSM2160132	Control 	terminal ileum
+GSM2160133	Control 	terminal ileum
+GSM2160136	Control 	terminal ileum
+GSM2160144	 Pulsed Therapeutic Antibiotic Treatment (male mice)	terminal ileum
+GSM2160150	 Pulsed Therapeutic Antibiotic Treatment (male mice)	terminal ileum
+GSM2160151	 Pulsed Therapeutic Antibiotic Treatment (male mice)	terminal ileum
+GSM2160152	 Pulsed Therapeutic Antibiotic Treatment (male mice)	terminal ileum
+GSM2160153	 Pulsed Therapeutic Antibiotic Treatment (male mice)	terminal ileum
+GSM2160135	 Sub-Therapeutic Antibiotic Treatment (female mice)	terminal ileum
+GSM2160137	 Sub-Therapeutic Antibiotic Treatment (female mice)	terminal ileum
+GSM2160138	 Sub-Therapeutic Antibiotic Treatment (female mice)	terminal ileum
+GSM2160134	 Pulsed Therapeutic Antibiotic Treatment (female mice)	terminal ileum
+GSM2160139	 Pulsed Therapeutic Antibiotic Treatment (female mice)	terminal ileum
+GSM2160140	 Pulsed Therapeutic Antibiotic Treatment (female mice)	terminal ileum

@@ -1,0 +1,9 @@
+Sample_geo_accession	Condition	Group
+GSM309970	 TAC Intervention 	Wildtype mice
+GSM309971	 TAC Intervention 	Wildtype mice
+GSM309972	 TAC Intervention 	Wildtype mice
+GSM309973	 TAC Intervention 	Wildtype mice
+GSM309966	Sham 	Wildtype mice
+GSM309967	Sham 	Wildtype mice
+GSM309968	Sham 	Wildtype mice
+GSM309969	Sham 	Wildtype mice

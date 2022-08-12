@@ -1,0 +1,9 @@
+Sample_geo_accession	Condition	Group
+GSM3526020	control	Subcutaneous Adipose Tissue (SAT)
+GSM3526024	control	Subcutaneous Adipose Tissue (SAT)
+GSM3526025	control	Subcutaneous Adipose Tissue (SAT)
+GSM3526026	control	Subcutaneous Adipose Tissue (SAT)
+GSM3526021	Polycystic Ovary Syndrome (PCOS)	Subcutaneous Adipose Tissue (SAT)
+GSM3526022	Polycystic Ovary Syndrome (PCOS)	Subcutaneous Adipose Tissue (SAT)
+GSM3526023	Polycystic Ovary Syndrome (PCOS)	Subcutaneous Adipose Tissue (SAT)
+GSM3526027	Polycystic Ovary Syndrome (PCOS)	Subcutaneous Adipose Tissue (SAT)

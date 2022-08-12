@@ -1,0 +1,7 @@
+Sample_geo_accession	Condition	Group
+GSM401525	control	Pancreatic Beta Cells
+GSM401526	control	Pancreatic Beta Cells
+GSM401527	control	Pancreatic Beta Cells
+GSM401528	Pdx1Cre;PPARbetafl/fl Knockout	Pancreatic Beta Cells
+GSM401529	Pdx1Cre;PPARbetafl/fl Knockout	Pancreatic Beta Cells
+GSM401530	Pdx1Cre;PPARbetafl/fl Knockout	Pancreatic Beta Cells

@@ -1,0 +1,67 @@
+Sample_geo_accession	Condition	Group
+GSM4037887	Obstructive Sleep Apnea (OSA)	Mixed female & male subjects
+GSM4037888	Obstructive Sleep Apnea (OSA)	Mixed female & male subjects
+GSM4037889	Obstructive Sleep Apnea (OSA)	Mixed female & male subjects
+GSM4037890	Obstructive Sleep Apnea (OSA)	Mixed female & male subjects
+GSM4037891	Obstructive Sleep Apnea (OSA)	Mixed female & male subjects
+GSM4037892	Obstructive Sleep Apnea (OSA)	Mixed female & male subjects
+GSM4037893	Obstructive Sleep Apnea (OSA)	Mixed female & male subjects
+GSM4037894	Obstructive Sleep Apnea (OSA)	Mixed female & male subjects
+GSM4037895	Obstructive Sleep Apnea (OSA)	Mixed female & male subjects
+GSM4037896	Obstructive Sleep Apnea (OSA)	Mixed female & male subjects
+GSM4037879	control	Mixed female & male subjects
+GSM4037880	control	Mixed female & male subjects
+GSM4037881	control	Mixed female & male subjects
+GSM4037882	control	Mixed female & male subjects
+GSM4037883	control	Mixed female & male subjects
+GSM4037884	control	Mixed female & male subjects
+GSM4037885	control	Mixed female & male subjects
+GSM4037886	control	Mixed female & male subjects
+GSM4037898	 After CPAP Intervention	Male subjects
+GSM4037900	 After CPAP Intervention	Male subjects
+GSM4037902	 After CPAP Intervention	Male subjects
+GSM4037908	 After CPAP Intervention	Male subjects
+GSM4037914	 After CPAP Intervention	Male subjects
+GSM4037918	 After CPAP Intervention	Male subjects
+GSM4037922	 After CPAP Intervention	Male subjects
+GSM4037924	 After CPAP Intervention	Male subjects
+GSM4037932	 After CPAP Intervention	Male subjects
+GSM4037936	 After CPAP Intervention	Male subjects
+GSM4037938	 After CPAP Intervention	Male subjects
+GSM4037940	 After CPAP Intervention	Male subjects
+GSM4037944	 After CPAP Intervention	Male subjects
+GSM4037897	Before 	Male subjects
+GSM4037899	Before 	Male subjects
+GSM4037901	Before 	Male subjects
+GSM4037907	Before 	Male subjects
+GSM4037913	Before 	Male subjects
+GSM4037917	Before 	Male subjects
+GSM4037921	Before 	Male subjects
+GSM4037923	Before 	Male subjects
+GSM4037931	Before 	Male subjects
+GSM4037935	Before 	Male subjects
+GSM4037937	Before 	Male subjects
+GSM4037939	Before 	Male subjects
+GSM4037943	Before 	Male subjects
+GSM4037904	 After CPAP Intervention	Female subjects
+GSM4037906	 After CPAP Intervention	Female subjects
+GSM4037910	 After CPAP Intervention	Female subjects
+GSM4037912	 After CPAP Intervention	Female subjects
+GSM4037916	 After CPAP Intervention	Female subjects
+GSM4037920	 After CPAP Intervention	Female subjects
+GSM4037926	 After CPAP Intervention	Female subjects
+GSM4037928	 After CPAP Intervention	Female subjects
+GSM4037930	 After CPAP Intervention	Female subjects
+GSM4037934	 After CPAP Intervention	Female subjects
+GSM4037942	 After CPAP Intervention	Female subjects
+GSM4037903	Before 	Female subjects
+GSM4037905	Before 	Female subjects
+GSM4037909	Before 	Female subjects
+GSM4037911	Before 	Female subjects
+GSM4037915	Before 	Female subjects
+GSM4037919	Before 	Female subjects
+GSM4037925	Before 	Female subjects
+GSM4037927	Before 	Female subjects
+GSM4037929	Before 	Female subjects
+GSM4037933	Before 	Female subjects
+GSM4037941	Before 	Female subjects

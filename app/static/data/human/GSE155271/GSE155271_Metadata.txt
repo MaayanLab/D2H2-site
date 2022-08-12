@@ -1,0 +1,14 @@
+Sample_geo_accession	Condition	Group
+GSM4698319	Control 	Muscle: Vastus lateralis
+GSM4698320	Control 	Muscle: Vastus lateralis
+GSM4698321	Control 	Muscle: Vastus lateralis
+GSM4698322	Control 	Muscle: Vastus lateralis
+GSM4698323	Control 	Muscle: Vastus lateralis
+GSM4698324	Control 	Muscle: Vastus lateralis
+GSM4698325	Control 	Muscle: Vastus lateralis
+GSM4698326	Control 	Muscle: Vastus lateralis
+GSM4698327	 Endurance-Trained	Muscle: Vastus lateralis
+GSM4698328	 Endurance-Trained	Muscle: Vastus lateralis
+GSM4698329	 Endurance-Trained	Muscle: Vastus lateralis
+GSM4698330	 Endurance-Trained	Muscle: Vastus lateralis
+GSM4698331	 Endurance-Trained	Muscle: Vastus lateralis

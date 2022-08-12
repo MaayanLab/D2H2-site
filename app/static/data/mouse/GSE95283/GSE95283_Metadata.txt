@@ -1,0 +1,13 @@
+Sample_geo_accession	Condition	Group
+GSM2501294	 aERKO (Esr1-/-)	Normal Diet condition; Adult female B6.129 mice
+GSM2501295	 aERKO (Esr1-/-)	Normal Diet condition; Adult female B6.129 mice
+GSM2501296	 aERKO (Esr1-/-)	Normal Diet condition; Adult female B6.129 mice
+GSM2501288	Wildtype 	Normal Diet condition; Adult female B6.129 mice
+GSM2501289	Wildtype 	Normal Diet condition; Adult female B6.129 mice
+GSM2501290	Wildtype 	Normal Diet condition; Adult female B6.129 mice
+GSM2501297	 aERKO (Esr1-/-)	High-Fat Diet condition; Adult female B6.129 mice
+GSM2501298	 aERKO (Esr1-/-)	High-Fat Diet condition; Adult female B6.129 mice
+GSM2501299	 aERKO (Esr1-/-)	High-Fat Diet condition; Adult female B6.129 mice
+GSM2501291	Wildtype 	High-Fat Diet condition; Adult female B6.129 mice
+GSM2501292	Wildtype 	High-Fat Diet condition; Adult female B6.129 mice
+GSM2501293	Wildtype 	High-Fat Diet condition; Adult female B6.129 mice

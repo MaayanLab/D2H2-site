@@ -1,0 +1,20 @@
+Sample_geo_accession	Condition	Group
+GSM3415027	Coronary Artery Disease (CAD)	Subcutaneous Adipose Tissue
+GSM3415028	Coronary Artery Disease (CAD)	Subcutaneous Adipose Tissue
+GSM3415029	Coronary Artery Disease (CAD)	Subcutaneous Adipose Tissue
+GSM3415030	Coronary Artery Disease (CAD)	Subcutaneous Adipose Tissue
+GSM3415031	Coronary Artery Disease (CAD)	Subcutaneous Adipose Tissue
+GSM3415032	Coronary Artery Disease (CAD)	Subcutaneous Adipose Tissue
+GSM3415033	Coronary Artery Disease (CAD)	Subcutaneous Adipose Tissue
+GSM3415034	Coronary Artery Disease (CAD)	Subcutaneous Adipose Tissue
+GSM3415035	Coronary Artery Disease (CAD)	Subcutaneous Adipose Tissue
+GSM3415017	control	Subcutaneous Adipose Tissue
+GSM3415018	control	Subcutaneous Adipose Tissue
+GSM3415019	control	Subcutaneous Adipose Tissue
+GSM3415020	control	Subcutaneous Adipose Tissue
+GSM3415021	control	Subcutaneous Adipose Tissue
+GSM3415022	control	Subcutaneous Adipose Tissue
+GSM3415023	control	Subcutaneous Adipose Tissue
+GSM3415024	control	Subcutaneous Adipose Tissue
+GSM3415025	control	Subcutaneous Adipose Tissue
+GSM3415026	control	Subcutaneous Adipose Tissue

@@ -1,0 +1,7 @@
+Sample_geo_accession	Condition	Group
+GSM275315	Wildtype 	Heart
+GSM275316	Wildtype 	Heart
+GSM275317	Wildtype 	Heart
+GSM275318	 Caveolin-1 Knockout	Heart
+GSM275319	 Caveolin-1 Knockout	Heart
+GSM275320	 Caveolin-1 Knockout	Heart

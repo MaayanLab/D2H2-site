@@ -1,0 +1,82 @@
+Sample_geo_accession	Condition	Group
+GSM1010394	 4 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010395	 4 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010396	 4 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010397	 4 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010398	 4 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010399	 4 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010388	2 weeks 	Non-Obese Diabetic (NOD) mice
+GSM1010389	2 weeks 	Non-Obese Diabetic (NOD) mice
+GSM1010390	2 weeks 	Non-Obese Diabetic (NOD) mice
+GSM1010391	2 weeks 	Non-Obese Diabetic (NOD) mice
+GSM1010392	2 weeks 	Non-Obese Diabetic (NOD) mice
+GSM1010393	2 weeks 	Non-Obese Diabetic (NOD) mice
+GSM1010400	 6 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010401	 6 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010402	 6 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010403	 6 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010404	 6 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010405	 6 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010406	 8 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010407	 8 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010408	 8 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010409	 8 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010410	 8 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010411	 8 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010412	 12 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010413	 12 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010414	 12 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010415	 18 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010416	 18 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010417	 18 weeks	Non-Obese Diabetic (NOD) mice
+GSM1010418	 DBX	Non-Obese Diabetic (NOD) mice
+GSM1010419	 DBX	Non-Obese Diabetic (NOD) mice
+GSM1010420	 DBX	Non-Obese Diabetic (NOD) mice
+GSM1010388	 NOD [NonObeseDiabetic] (2 Weeks)	All mice are 2 weeks old
+GSM1010389	 NOD [NonObeseDiabetic] (2 Weeks)	All mice are 2 weeks old
+GSM1010390	 NOD [NonObeseDiabetic] (2 Weeks)	All mice are 2 weeks old
+GSM1010391	 NOD [NonObeseDiabetic] (2 Weeks)	All mice are 2 weeks old
+GSM1010392	 NOD [NonObeseDiabetic] (2 Weeks)	All mice are 2 weeks old
+GSM1010393	 NOD [NonObeseDiabetic] (2 Weeks)	All mice are 2 weeks old
+GSM1010421	NOD.RAG-/- 	All mice are 2 weeks old
+GSM1010422	NOD.RAG-/- 	All mice are 2 weeks old
+GSM1010423	NOD.RAG-/- 	All mice are 2 weeks old
+GSM1010424	NOD.RAG-/- 	All mice are 2 weeks old
+GSM1010425	NOD.RAG-/- 	All mice are 2 weeks old
+GSM1010426	NOD.RAG-/- 	All mice are 2 weeks old
+GSM1010400	 NOD [NonObeseDiabetic] (6 Weeks)	All mice are 6 weeks old
+GSM1010401	 NOD [NonObeseDiabetic] (6 Weeks)	All mice are 6 weeks old
+GSM1010402	 NOD [NonObeseDiabetic] (6 Weeks)	All mice are 6 weeks old
+GSM1010403	 NOD [NonObeseDiabetic] (6 Weeks)	All mice are 6 weeks old
+GSM1010404	 NOD [NonObeseDiabetic] (6 Weeks)	All mice are 6 weeks old
+GSM1010405	 NOD [NonObeseDiabetic] (6 Weeks)	All mice are 6 weeks old
+GSM1010427	NOD.RAG-/- 	All mice are 6 weeks old
+GSM1010428	NOD.RAG-/- 	All mice are 6 weeks old
+GSM1010429	NOD.RAG-/- 	All mice are 6 weeks old
+GSM1010430	NOD.RAG-/- 	All mice are 6 weeks old
+GSM1010431	NOD.RAG-/- 	All mice are 6 weeks old
+GSM1010432	NOD.RAG-/- 	All mice are 6 weeks old
+GSM1010400	 NOD [NonObeseDiabetic] (6 weeks)	All mice are 6 weeks old
+GSM1010401	 NOD [NonObeseDiabetic] (6 weeks)	All mice are 6 weeks old
+GSM1010402	 NOD [NonObeseDiabetic] (6 weeks)	All mice are 6 weeks old
+GSM1010403	 NOD [NonObeseDiabetic] (6 weeks)	All mice are 6 weeks old
+GSM1010404	 NOD [NonObeseDiabetic] (6 weeks)	All mice are 6 weeks old
+GSM1010405	 NOD [NonObeseDiabetic] (6 weeks)	All mice are 6 weeks old
+GSM1010433	B6.g7 	All mice are 6 weeks old
+GSM1010434	B6.g7 	All mice are 6 weeks old
+GSM1010435	B6.g7 	All mice are 6 weeks old
+GSM1010436	B6.g7 	All mice are 6 weeks old
+GSM1010437	B6.g7 	All mice are 6 weeks old
+GSM1010438	B6.g7 	All mice are 6 weeks old
+GSM1010400	 NOD [NonObeseDiabetic] (6Weeks)	All mice are 6 weeks old
+GSM1010401	 NOD [NonObeseDiabetic] (6Weeks)	All mice are 6 weeks old
+GSM1010402	 NOD [NonObeseDiabetic] (6Weeks)	All mice are 6 weeks old
+GSM1010403	 NOD [NonObeseDiabetic] (6Weeks)	All mice are 6 weeks old
+GSM1010404	 NOD [NonObeseDiabetic] (6Weeks)	All mice are 6 weeks old
+GSM1010405	 NOD [NonObeseDiabetic] (6Weeks)	All mice are 6 weeks old
+GSM1010439	C57BL/6 	All mice are 6 weeks old
+GSM1010440	C57BL/6 	All mice are 6 weeks old
+GSM1010441	C57BL/6 	All mice are 6 weeks old
+GSM1010442	C57BL/6 	All mice are 6 weeks old
+GSM1010443	C57BL/6 	All mice are 6 weeks old
+GSM1010444	C57BL/6 	All mice are 6 weeks old

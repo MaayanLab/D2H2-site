@@ -1,0 +1,7 @@
+Sample_geo_accession	Condition	Group
+GSM1238917	Wildtype 	Liver
+GSM1238918	Wildtype 	Liver
+GSM1238919	Wildtype 	Liver
+GSM1238920	 Ghrh-KO	Liver
+GSM1238921	 Ghrh-KO	Liver
+GSM1238922	 Ghrh-KO	Liver
