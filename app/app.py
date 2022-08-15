@@ -123,7 +123,11 @@ def get_metadata(geo_accession, organ_folder):
 	else:
 		geo_accession_num = geo_accession
     # Get gse from GEO
-	gse = GEOparse.get_GEO(geo = geo_accession_num, destdir = f'./static/data/{organ_folder}/{geo_accession}', silent=True)
+	if f'{geo_accession}_family.soft.gz' not in os.listdir(f'./static/data/{organ_folder}/{geo_accession}'):
+		gse = GEOparse.get_GEO(geo = geo_accession_num, destdir = f'./static/data/{organ_folder}/{geo_accession}', silent=True)
+	else:
+		print('reading file')
+		gse = GEOparse.get_GEO(filepath = f'./static/data/{organ_folder}/{geo_accession}/{geo_accession}_family.soft.gz', silent=True)
 
 	if "-" in geo_accession:
 		gse.metadata['cur_gpl'] = [gpl_num]
@@ -136,6 +140,8 @@ def get_metadata(geo_accession, organ_folder):
 		gse.metadata['all_gpls'].append(gpl.metadata)
 
     # Add link to gse (put in a list for consistency)
+	
+
 	gse.metadata['gse_link'] = ['https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=' + geo_accession_num]
 
     # Fix text
