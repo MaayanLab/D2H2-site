@@ -232,11 +232,11 @@ def sigcom_gene_set(gene_set):
 
 def get_resources():
 
-    table = pd.read_csv('./static/searchdata/resources.csv')
+    table = pd.read_csv('./static/searchdata/resources.csv', index_col=0)
     table.fillna('', inplace=True)
     resources_list = table.values.tolist()
+    print(table.columns.values, resources_list)
     table_list = [list(table.columns.values)] + resources_list
-
     return table_list
     
 
@@ -246,3 +246,5 @@ def get_resources():
 #url_1 = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
 #table = pd.read_csv(url_1)
 #table.to_csv('./static/search/data/resources.csv')
+
+get_resources()
