@@ -231,12 +231,18 @@ def sigcom_gene_set(gene_set):
 
 
 def get_resources():
-    sheet_url = "https://docs.google.com/spreadsheets/d/1uKuDw8eN3si7QmukL7n4dQsOdn3qN8xUiu-rRapC1Cs/edit#gid=0"
-    url_1 = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
-    table = pd.read_csv(url_1)
+
+    table = pd.read_csv('./static/search/data/resources.csv')
     table.fillna('', inplace=True)
     resources_list = table.values.tolist()
     table_list = [list(table.columns.values)] + resources_list
 
     return table_list
     
+
+#### UPDATE RESOURCES TABALE ####
+
+#sheet_url = "https://docs.google.com/spreadsheets/d/1uKuDw8eN3si7QmukL7n4dQsOdn3qN8xUiu-rRapC1Cs/edit#gid=0"
+#url_1 = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
+#table = pd.read_csv(url_1)
+#table.to_csv('./static/search/data/resources.csv')

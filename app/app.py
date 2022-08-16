@@ -126,7 +126,6 @@ def get_metadata(geo_accession, organ_folder):
 	if f'{geo_accession}_family.soft.gz' not in os.listdir(f'./static/data/{organ_folder}/{geo_accession}'):
 		gse = GEOparse.get_GEO(geo = geo_accession_num, destdir = f'./static/data/{organ_folder}/{geo_accession}', silent=True)
 	else:
-		print('reading file')
 		gse = GEOparse.get_GEO(filepath = f'./static/data/{organ_folder}/{geo_accession}/{geo_accession}_family.soft.gz', silent=True)
 
 	if "-" in geo_accession:
