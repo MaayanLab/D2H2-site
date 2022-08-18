@@ -245,6 +245,6 @@ def get_resources():
 #sheet_url = "https://docs.google.com/spreadsheets/d/1uKuDw8eN3si7QmukL7n4dQsOdn3qN8xUiu-rRapC1Cs/edit#gid=0"
 #url_1 = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
 #table = pd.read_csv(url_1)
-#table.to_csv('./static/search/data/resources.csv')
+#table.to_csv('static/searchdata/resources.csv')
 
 get_resources()

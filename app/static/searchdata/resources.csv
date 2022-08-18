@@ -3,7 +3,7 @@
 1,T2DKP,Providing data and tools to promote understanding and treatment of type 2 diabetes and its complication,https://t2d.hugeamp.org/,,"knowledge portal, resources, search, variants, phenotypes, traits","U01DK105554, U54DK105566 "
 2,Secrepedia,Generating an encyclopedia of the white and brown adi pocyte secretome in mouse models and humans,http://secrepedia.org/,,"adipocytes, secretome",RC2DK129961
 3,White Adipose Atlas,Mouse white adipose tissue single cell atlas,https://gitlab.com/rosen-lab/white-adipose-atlas,35296864.0,"white adipose tissue, single cell atlas",RC2DK116691
-4,EGA Archive,The European Genome-phenome Archive,Ega Archive,34791407.0,"archive, datasets, resource, portal",
+4,EGA Archive,The European Genome-phenome Archive,https://ega-archive.org/search/(%7B!join%20from%3Ddataset_studies%20to%3Did%20v%3D$q1%7D)%20OR%20(%22diabetes%22%20OR%20%22insulin%22)&q1=(%22diabetes%22%20OR%20%22insulin%22)/datasets/ega,34791407.0,"archive, datasets, resource, portal",
 5,Human Cell Atlas ,A repository of single cell datasets,https://data.humancellatlas.org/search?q=Diabetes,29206104.0,"single cell, gene expression, RNA",
 6,TIGER Data Portal,Translational Human Pancreatic Islet Genotype Tissue-Expression Resource,http://tiger.bsc.es/,34644572.0,"pancreatic islet, genotype, portal","U01-DK105535,U01-DK085545"
 7,HIRN Resource Browser,"A repository summarizing all of the resources generated through the HIRN. You will be able to view Bioreagents, Datasets, Protocols, and Technology (Assay, Code/Pipeline, Device/Equipment, Services and Software, Databases)",https://resourcebrowser.hirnetwork.org/,,"human, pancreatic isltic, genotype, search, protal",RFA-DK-13-015
