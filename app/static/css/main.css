@@ -318,10 +318,6 @@ nav[data-toggle="toc"] {
 
 }
 
-select {
-    z-index: 1000000;
-    position: absolute;
-}
   
   
 
