@@ -1,7 +1,6 @@
+from functools import lru_cache
 import json
 import requests
-from urllib.parse import urlparse
-from collections.abc import MutableMapping
 from intermine.webservice import Service
 import pandas as pd
 
@@ -21,6 +20,7 @@ def get_gene_json():
 
 ########################## QUERY ENRICHER ###############################
 
+@lru_cache
 def query_enricher(gene):
     ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/genemap'
     query_string = '?json=true&setup=true&gene=%s'
@@ -50,7 +50,7 @@ def query_enricher(gene):
 ########################## QUERY KOMP API ###############################
 
 
-
+@lru_cache
 def query_komp(gene: str):
 
     gene =  gene[0].upper() + (gene[1:]).lower()
@@ -65,6 +65,7 @@ def query_komp(gene: str):
 
 ######## QUERY MGI ##############
 
+@lru_cache
 def query_mgi(gene: str):
     service = Service("https://www.mousemine.org/mousemine/service")
 
@@ -92,6 +93,7 @@ def query_mgi(gene: str):
 
 ######## QUERY GWAS ##############
 
+@lru_cache
 def query_gwas(gene: str):
     gene = gene.upper()
     url = "https://www.ebi.ac.uk/gwas/api/search/downloads?q=ensemblMappedGenes:" + gene + "&pvalfilter=&orfilter=&betafilter=&datefilter=&genomicfilter=&genotypingfilter[]=&traitfilter[]=&dateaddedfilter=&facet=association&efo=true"

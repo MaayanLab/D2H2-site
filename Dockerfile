@@ -20,6 +20,6 @@ COPY . .
 
 WORKDIR /D2H2/app
 
-EXPOSE 80
+EXPOSE 5000
 
-CMD ["python3", "app.py"]
+CMD CMD gunicorn --bind 0.0.0.0:5000 app:app
