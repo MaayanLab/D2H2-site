@@ -22,4 +22,4 @@ WORKDIR /D2H2/app
 
 EXPOSE 5000
 
-CMD ["python", "app.py"]
+CMD ["python3", "app.py"]

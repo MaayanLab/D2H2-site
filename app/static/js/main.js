@@ -548,7 +548,7 @@ $(document).ready(function() {
             document.getElementById("tf-res").innerHTML = "<p class='text-center'> No data found </p>";
             return;
         }
-        $("#tf-res").innerHTML = "<div class='loader justify-content-center'> </div>";
+        document.getElementById("tf-res").innerHTML = "<div class='loader justify-content-center'>LOADING</div>";
 
         $.ajax({
             url: "/gettfs",
