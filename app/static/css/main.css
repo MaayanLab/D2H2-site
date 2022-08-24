@@ -196,6 +196,14 @@ div {
     border-radius: 1%;
 }
 
+.libpicker {
+    background-color: #9a8fc1;
+    color: white;
+    border-radius: 1%;
+    border-style: none;
+    font-family: "IBM Plex Sans", sans-serif;
+}
+
 
 
 .banner {
@@ -313,10 +321,12 @@ nav[data-toggle="toc"] {
     border: 16px solid #f3f3f3; /* Light grey */
     border-top: 16px solid #3498db; /* Blue */
     border-radius: 50%;
-
+    left: 48%;
+    position: relative;
     width: 40px;
     height: 40px;
     animation: spin 1s linear infinite;
+    justify-content: center;
   }
   
   @keyframes spin {

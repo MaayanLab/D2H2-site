@@ -6,6 +6,14 @@ function geneCount(gene_list, num) {
     $('span#gene-count' + String(num)).text(genes.length);
 }
 
+function on_change(el) {
+    console.log(el)
+    for (var i =0; i < el.options.length; i++) {
+        document.getElementById(el.options[i].value).style.display = 'none';
+    }
+    document.getElementById(el.options[el.selectedIndex].value).style.display = 'block'; // Show el
+
+}
 
 
 // OPEN GENE LIST IN ENRICHR
@@ -401,8 +409,7 @@ $(document).ready(function() {
             return;
         }
 
-
-        $("#gwas-res").addClass('loader');
+        document.getElementById("gwas-res").innerHTML = "<div class='loader' style='left: 48%; position: relative;'></div>"
 
         $.ajax({
             url: "/getgwas",
@@ -433,7 +440,6 @@ $(document).ready(function() {
                 $('#table-gwas').DataTable();
             });
 
-            $("#gwas-res").removeClass('loader');
             document.getElementById("gwas-res").innerHTML = tabletext + clear_button;
         });
     });
@@ -444,7 +450,7 @@ $(document).ready(function() {
     function loadCorrelation(gene){
         $("archs4-res").html("");
 
-        document.getElementById("archs4-res").innerHTML = "<div class='loader justify-content-center mx-auto'> </div>";
+        document.getElementById("archs4-res").innerHTML = "<div class='loader' style='left: 48%; position: relative;'></div>"
         var jsonData = {};
 
         jsonData["id"] = gene;
@@ -504,7 +510,7 @@ $(document).ready(function() {
             $("#komp-res").html("");
             return;
         }
-        $("#komp-res").innerHTML = "<div class='loader justify-content-center'> </div>";
+        document.getElementById("komp-res").innerHTML = "<div class='loader' style='left: 48%; position: relative;'></div>"
 
         $.ajax({
             url: "/getkomp",
@@ -548,7 +554,7 @@ $(document).ready(function() {
             document.getElementById("tf-res").innerHTML = "<p class='text-center'> No data found </p>";
             return;
         }
-        document.getElementById("tf-res").innerHTML = "<div class='loader justify-content-center'>LOADING</div>";
+        document.getElementById("tf-res").innerHTML = "<div class='loader' style='left: 48%; position: relative;'></div>"
 
         $.ajax({
             url: "/gettfs",
@@ -560,19 +566,28 @@ $(document).ready(function() {
 
             const data = response['data'];
 
-
+            const clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='$(\"#tf-res\").html(\"\");'> Clear Results </button> </a>"
 
             if (data.length === 0) {
                 document.getElementById("tf-res").innerHTML = "<p class='text-center'> No data found </p>";
                 return;
             }
 
-            var res_html = `<table id='table-enrichr' class='styled-table'><thead><tr><th>Library</th><th></th></tr><tbody>`
+            var selecter = `<div class='text-center'><p>Select from one the annotated libraries: </p><select class="m-2 libpicker" data-style="btn-primary" onchange="on_change(this)" data-width="500px">`
+            for (var i = 0; i < data.length; i++) {
+                var lib = data[i]['name'];
+                var libDisplay = lib.replaceAll("_"," ")
+                selecter += `<option value=${lib}>${libDisplay}</option>`;
+            }
+            selecter += `</select></div>`
+
+            
 
             for (var i = 0; i < data.length; i++) {
                 var lib = data[i]['name'];
                 var sentence = data[i]['format'];
 
+                var res_html = `<div id="${lib}" style="display:none;"><table id='table-enrichr' class='styled-table table-enrichr'><thead><tr><th></th></tr><tbody>`
                 
 
                 for (j = 0; j < data[i]['tfs'].length; j++) {
@@ -580,28 +595,35 @@ $(document).ready(function() {
              
                     tf_sentence = sentence.replace('{0}', inputvalue).replace('{1}', tf)
                     
-                    res_html += `<tr><td>${lib}</td><td> ${tf_sentence} </td></tr>`
+                    res_html += `<tr><td> ${tf_sentence} </td></tr>`
 
                 }
                 
+                res_html += `</tbody></table></div>`
+
+                selecter += res_html
 
             }
-            res_html += `</tbody></table>`
+            
+            selecter += `<script>
+                        
+                        </script>`
 
             
-
             $(document).ready(function(){
 
-                $(`#table-enrichr`).DataTable();
+                $(`.table-enrichr`).DataTable();
             });
             
         
-
-            document.getElementById("tf-res").innerHTML = res_html;
+            console.log(selecter)
+            document.getElementById("tf-res").innerHTML = selecter + clear_button;
+            document.getElementById(data[0]['name']).style.display = 'block';
 
         });
     });
 
+    
     
 
 
