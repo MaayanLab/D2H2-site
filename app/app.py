@@ -353,10 +353,15 @@ def samples_api(geo_accession):
 
 @app.route('/api/data',  methods=['GET', 'POST'])
 def get_study_data():
+	response_json = request.get_json()
+	geo_accession = response_json['gse']
+	control = response_json['control']
+	perturb = response_json['perturb']
 
-	geo_accession = request.get_json()['gse']
 	metadata_file = 'static/data/' + 'human' + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 	expression_file = 'static/data/' + 'human' + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
+
+	
 
 	with open(metadata_file, 'r') as f:
 		meta_data = f.read()
@@ -364,10 +369,18 @@ def get_study_data():
 	with open(expression_file, 'r') as f:
 		expression_data = f.read()
 
-	data_dict = {'meta': meta_data, 'expression': expression_data}
+	selected_conditions = []
+	for i, row in enumerate(meta_data.split('\n')):
+		if i == 0:
+			selected_conditions.append(row)
+		entries = row.split('\t')
+		if entries[1] == control or entries[1] == perturb:
+			selected_conditions.append(row)
 
 
+	selected_meta = '\n'.join(selected_conditions)
 
+	data_dict = {'meta': selected_meta, 'expression': expression_data}
 
 	return data_dict
 	
