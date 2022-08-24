@@ -22,4 +22,4 @@ WORKDIR /D2H2/app
 
 EXPOSE 5000
 
-CMD CMD gunicorn --bind 0.0.0.0:5000 app:app
+CMD gunicorn --bind 0.0.0.0:5000 app:app
