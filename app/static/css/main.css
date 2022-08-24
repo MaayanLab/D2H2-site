@@ -81,7 +81,7 @@ a {  color: rgb(10, 13, 149); text-decoration: none; }
   
 .content-wrap {
     padding-bottom: 2.5rem;    /* Footer height */
-  }
+}
   
 
 #sigcomslogo {
@@ -138,12 +138,15 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    padding-bottom: 0;
 }
 
 .footer{
     margin-top: auto;
     background-color: #ECEFF1;
     width: 100%;
+    padding-bottom: 0%;
+    margin-bottom: 0%;
 }
 
 .btn-primary:hover {
@@ -153,6 +156,12 @@ body {
 
     background-color: #9a8fc1;
 
+}
+
+.btn-custom {
+    border: lightgray;
+    border-style: solid;
+    width: 140px;
 }
 
 

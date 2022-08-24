@@ -125,17 +125,71 @@ $(document).ready(function() {
     if (currURL[3] == 'resources') {createResourcesTable();}
 
 
-    if (currURL[3] == 'downloads') {$('#table-downloads').DataTable();}
+    if (currURL[3] == 'downloads') {createDownloadsTable();}
 
 
-
+    function createDownloadsTable() {
+        document.getElementById("downloads").innerHTML = "<div class='loader justify-content-center'></div>";
+        $.ajax({
+            url: "/getdownloads",
+            type: "POST",
+            data: {},
+            dataType: 'json',
+        }).done(function(response) {
     
-    $('a').each(function(){
-        
-        if ($(this).prop('href') == window.location.href) {
-            console.log(($(this).prop('href')));
+            const data = response['downloads']
+    
+            var headers = data[0]
+    
+            var tabletext = "<table id='table-downloads' class='styled-table mb-5'><thead><tr>"
+    
+            headers.forEach(function(header) {
+                tabletext += "<th>" + header + "</th>"
+            });
+            tabletext += "</tr><tbody>"
+    
+            for (var k = 1; k < data.length; k++) {
+                tabletext += "<tr><td>"+ data[k][0]+"</td><td>"+ data[k][1]+ "</td><td>"+ data[k][2]+ "</td><td>"
+
+                var links = data[k][3].split(',')
+                links.forEach(function(link) {
+                    var types = link.split('.')
+                    var type = types[types.length - 1]
+                    if (type === 'f') {
+                        type = 'feather';
+                    }
+                    tabletext += "<a href='" + link + "'><img src='static/img/download.png' alt='' style='width: 10px;'>"+ type +"</a>" 
+                });
+                tabletext += "</td></tr>"
+            }
+    
+            tabletext += "</tbody></table>";
+    
+    
+            $(document).ready(function(){
+                document.getElementById("downloads").innerHTML = tabletext;
+                table = $('#table-downloads').DataTable();
+            });
+            console.log()
+        });
+    }
+
+
+    // BOLD CURRENT PAGE
+    
+    $('.nav-link').each(function(){
+        var url = window.location.href
+        if (url.includes('#')) {
+            url = url.split('#')[0]
+        }
+       
+        if ($(this).prop('href') == url) {
             $(this).addClass('active'); 
             $(this).parents('li').addClass('active');
+        }
+        if (url.split('/')[3].startsWith('GSE')) {
+            $("#viewer").addClass('active'); 
+            $("#viewer").parents('li').addClass('active');
         }
     });
     
@@ -174,6 +228,8 @@ $(document).ready(function() {
        select: fillPage
       });
 
+
+
       $('.search-home').autocomplete({
         source: function (request, response) {
             if (document.getElementById('human').className.includes('btn-primary')) {
@@ -181,8 +237,6 @@ $(document).ready(function() {
             } else {
                 var url =  "/static/searchdata/mouse_genes.json";
             }
-            
-
             $.ajax({
                 url: url,
                 dataType: 'json',

@@ -106,8 +106,13 @@
                     <div class="row justify-content-center mt-4">
                         <div class="w-25">
                             <p class="text-br-red text-center font-weight-bold">Control Condition</p>
-                            <select id="condition-select-control" class="mt-2 mb-5" 
+                            <select id="condition-select-control" class="mt-2 mb-5 mr-2" 
                                 data-url-control="{{ url_for('conditions_api', geo_accession=geo_accession) }}"></select>
+                        </div>
+                        <div class="w-25">
+                            <p class="text-br-red text-center font-weight-bold">Perturbation Condition</p>
+                            <select id="condition-select-perturb" class="mt-2 mb-5 ml-2" 
+                                data-url-perturb="{{ url_for('conditions_api', geo_accession=geo_accession) }}"></select>
                         </div>
                     </div>
 

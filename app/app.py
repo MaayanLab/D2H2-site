@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from waitress import serve
 import os
 import json
 import plotly
@@ -83,6 +84,12 @@ def resources_api():
 
 	return {'resources': table}
 
+@app.route('/getdownloads',  methods=['GET','POST'])
+def downloads_api():
+	table = get_downloads()
+
+	return {'downloads': table}
+
 @app.route('/gettfs',  methods=['GET','POST'])
 def gettfs():
 	gene = request.form['gene']
@@ -152,11 +159,10 @@ def get_metadata(geo_accession, organ_folder):
 	if 'pubmed_id' in gse.metadata and (len(gse.metadata.get('pubmed_id', [])) != 0):
 		gse.metadata['pubmed_link'] = ["https://pubmed.ncbi.nlm.nih.gov/" + gse.metadata['pubmed_id'][0]]
 	
-	if organ_folder == 'PBMC Studies':
-		metadata_file = 'app/static/data/' + organ_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
-		metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
-		cell_types = metadata_dataframe.get('Cell Type', pd.Series(index=metadata_dataframe.index, name='Cell Type', dtype=str)).unique()
-		gse.metadata['cell_types'] = list(cell_types)
+	
+	metadata_file = 'static/data/' + organ_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
+	gse.metadata['numsamples'] = metadata_dataframe.shape[0] - 1
 
 
 	return gse.metadata
@@ -398,7 +404,7 @@ def get_study_data():
 #######################################################
 #######################################################
 if __name__ == "__main__":
-	#from waitress import serve
-	#serve(app, host="0.0.0.0", port=5000)
-	app.run(debug=True, host='0.0.0.0')
+	
+	serve(app, host="0.0.0.0", port=5000)
+	#app.run(host='127.0.0.1')
 

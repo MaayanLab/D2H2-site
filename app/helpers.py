@@ -237,16 +237,35 @@ def get_resources():
     table = pd.read_csv('./static/searchdata/resources.csv', index_col=0)
     table.fillna('', inplace=True)
     resources_list = table.values.tolist()
-    print(table.columns.values, resources_list)
     table_list = [list(table.columns.values)] + resources_list
     return table_list
     
 
 #### UPDATE RESOURCES TABALE ####
 
-#sheet_url = "https://docs.google.com/spreadsheets/d/1uKuDw8eN3si7QmukL7n4dQsOdn3qN8xUiu-rRapC1Cs/edit#gid=0"
-#url_1 = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
-#table = pd.read_csv(url_1)
-#table.to_csv('static/searchdata/resources.csv')
+def update_resources():
+    sheet_url = "https://docs.google.com/spreadsheets/d/1uKuDw8eN3si7QmukL7n4dQsOdn3qN8xUiu-rRapC1Cs/edit#gid=0"
+    url_1 = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
+    table = pd.read_csv(url_1)
+    table.to_csv('static/searchdata/resources.csv')
 
-get_resources()
+#update_resources()
+
+def get_downloads():
+
+    table = pd.read_csv('./static/searchdata/downloads.csv', index_col=0)
+    table.fillna('', inplace=True)
+    resources_list = table.values.tolist()
+    table_list = [list(table.columns.values)] + resources_list
+    return table_list
+    
+
+#### UPDATE RESOURCES TABALE ####
+
+def update_downloads():
+    sheet_url = "https://docs.google.com/spreadsheets/d/17if2nhNAOQMESA6EyO_eicqinMmT-P5Ly3TxbkSZZRQ/edit#gid=0"
+    url_1 = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
+    table = pd.read_csv(url_1)
+    table.to_csv('static/searchdata/downloads.csv')
+
+#update_downloads()

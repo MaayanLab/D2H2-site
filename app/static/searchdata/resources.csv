@@ -1,4 +1,4 @@
-,Name,Description,URL,PubMed ID,Keywords,NIH grants and RFAs
+,Name,Description,URL,PMID,Keywords,NIH grants and RFAs
 0,dkNET,The NIDDK Information Network (dkNET) serves the needs of basic and clinical investigators by providing seamless access to large pools of data and research resources relevant to the mission of The National Institute of Diabetes Digestive and Kidney Diseases (NIDDK),https://dknet.org/,26393351.0,"knowledge portal, resources, search",U24DK097771
 1,T2DKP,Providing data and tools to promote understanding and treatment of type 2 diabetes and its complication,https://t2d.hugeamp.org/,,"knowledge portal, resources, search, variants, phenotypes, traits","U01DK105554, U54DK105566 "
 2,Secrepedia,Generating an encyclopedia of the white and brown adi pocyte secretome in mouse models and humans,http://secrepedia.org/,,"adipocytes, secretome",RC2DK129961
@@ -20,4 +20,5 @@ and diabetes-related clinical phenotypes",http://diabetes.wisc.edu/,,"gene expre
 17,Liver Cell Atlas,Liver cell atlas,https://www.livercellatlas.org/,,"human, mouse, liver, gene expression, single cell",
 18,Huising islet cell transcriptomic data,"Gene expression in mouse alpha, beta, and delta cells",https://huisinglab.com/islet_txomes_2016/index.html,,"gene expression, mouse, alpha, beta, delta, cells",
 19,Islet Regulome Browser,Visualization tool that provides access to interactive exploration of pancreatic islet genomic data,http://pasqualilab.upf.edu/app/isletregulome,28261261.0,"islet, gene expression, pancreas, pancreatic islet",
-20,NIDDK Central Repository,"Resources for Research (NIDDK-CR R4R) facilitates sharing of data, biospecimens, and other resources generated from studies supported by NIDDK",https://repository.niddk.nih.gov/home/,,,
+20,NIDDK Central Repository,"Resources for Research (NIDDK-CR R4R) facilitates sharing of data, biospecimens, and other resources generated from studies supported by NIDDK",https://repository.niddk.nih.gov/home/,,"NIDDK, repository, NIH",
+21,Diabetes Genes,Information for researchs and patients on genetic types of diabetes,https://www.diabetesgenes.org/,,"genetic, diabetes, genes",
