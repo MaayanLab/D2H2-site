@@ -487,13 +487,13 @@ $(document).ready(function() {
             for (var k = 0; k < data.length; k++) {
                 tabletext += "<tr><td>" + data[k][0] + "</td><td>"+ data[k][1] +"</td><td>" + Number(data[k][2]).toPrecision(4) + "</td><td>"+Number(data[k][3]).toPrecision(4) +"</td><td>" + Number(data[k][4]).toPrecision(4) + "</td><td>"
                 
-                tabletext += `<button class="btn-custom btn-group-sm btn-collapse collapsed d-flex align-items-center text-center"
+                tabletext += `<button class="btn-custom btn-group-sm btn-collapse collapsed d-flex align-items-start text-left"
                         data-toggle="collapse" data-target="#genesoverlap-${data[k][0]}" aria-expanded="false"
                         aria-controls="genesoverlap-${data[k][0]}">
                         <div class="text">Show Overlapping Genes</div>
                 </button>
                     <div class="collapse" id="genesoverlap-${data[k][0]}">
-                        ${data[k][5].join(",")}
+                        ${data[k][5].join(", ")}
                     </div></td>
                 `
                 tabletext += "<td>" + Number(data[k][6]).toPrecision(4) + "</td></tr>";
