@@ -49,6 +49,10 @@
                   <div class="mt-1">
                     <span id="gene-count1"> 0 </span> gene(s) entered
                   </div>
+                  <div class="text-right">
+                    <a id="examplefill1" style="color: rgb(10, 13, 149)">Try an example gene set</a>
+                  </div>
+
                 </div>
                 <div class="col-3 justify-content-around">
                   <p>
@@ -100,6 +104,9 @@
                     onfocus="geneCount($(this).val(), 2)"></textarea>
                   <div class="mt-1">
                     <span id="gene-count2"> 0 </span> gene(s) entered
+                  </div>
+                  <div class="text-right">
+                    <a id="examplefill2" style="color: rgb(10, 13, 149)">Try an example gene set</a>
                   </div>
                 </div>
                 <div class="col-3 justify-content-around">
@@ -173,9 +180,6 @@
                   </div>
                 </div>
               </div>
-
-
-
             </div>
           </div>
         </div>
@@ -195,10 +199,13 @@
                 <div class="col-6 text-right mr-3">
                   <textarea name="list" rows="8" id="text-area3"
                     placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
-                    onkeyup="geneCount($(this).val(), 4)" onchange="geneCount($(this).val(), 4)"
-                    onfocus="geneCount($(this).val(),4)"></textarea>
+                    onkeyup="geneCount($(this).val(), 3)" onchange="geneCount($(this).val(), 3)"
+                    onfocus="geneCount($(this).val(), 3)"></textarea>
                   <div class="mt-1">
-                    <span id="gene-count4"> 0 </span> gene(s) entered
+                    <span id="gene-count3"> 0 </span> gene(s) entered
+                  </div>
+                  <div class="text-right">
+                    <a id="examplefill3" style="color: rgb(10, 13, 149)">Try an example gene set</a>
                   </div>
                 </div>
                 <div class="col-3 justify-content-around">
@@ -213,7 +220,7 @@
               </div>
 
               <div class="row justify-content-center">
-                <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3" id="sigcom_entries_button">Use
+                <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3" id="sigcom_entries_button" value="single">Use
                   Up/Down Gene Sets</button>
               </div>
 

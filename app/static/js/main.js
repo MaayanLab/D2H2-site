@@ -80,11 +80,43 @@ function fillPage(event, ui) {
     
 }
 
+function fillSingleExample(gene) {
+
+    const numSearch = 6
+    for (let i = 1; i < (numSearch +1); i++) {
+        document.getElementById(`search${i}`).value = gene;
+    }
+    
+}
+
+function fillSingleExampleHome(gene) {
+
+    document.getElementById("search-home").value = gene;
+    
+}
+
+function fillSet(id, descid, count_id) {
+    $.ajax({
+        url: "/getexample",
+        type: "POST",
+        data: {},
+        dataType: 'json',
+    }).done(function(response) {
+
+        const desc = response['description']
+        const genes = response['genes']
+        document.getElementById(id).value = genes;
+        if (descid != '') {
+            document.getElementById(descid).value = desc;
+        }
+        geneCount(genes, count_id)
+
+    });
+}
+
 $(document).ready(function() {
 
     var currURL = window.location.href.split("/");
-
-
 
     function createResourcesTable() {
         document.getElementById("resources").innerHTML = "<div class='loader justify-content-center'></div>";
@@ -397,6 +429,85 @@ $(document).ready(function() {
         } else {
             $('#appyter-url4').prop('href', "https://appyters.maayanhttps://appyters.maayanlab.cloud/ChEA3_Appyter/")
         }
+    });
+
+    // QUERY DIABETES PERTURBATIONS ENRICHR LIBRARY
+
+    $('#diabetesEnrichr-query').click(async function() {  
+        var inputvalue = document.getElementById("text-area1").value;
+        var desc = document.getElementById("desc1").value;
+        var file = document.getElementById("gene-file1").value;
+        const section = "gene-file1";
+
+        if (!inputvalue && !file) {
+            alert("No genes entered")
+            return;
+        }
+
+        if (file) {
+            inputvalue = await loadFileAsText(section, "\n");
+        }
+
+
+        if (!inputvalue) {
+            alert("Check file format!")
+            return;
+        }
+
+        if (!inputvalue) {
+            $("#enrich-res").html("");
+            return;
+        }
+
+        console.log(inputvalue)
+
+        document.getElementById("enrich-res").innerHTML = "<div class='loader' style='left: 48%; position: relative;'></div>"
+
+        $.ajax({
+            url: "/getdiabetesenrich",
+            type: "POST",
+            data: {genelist:inputvalue, description: desc}
+        }).done(function(response) {
+            console.log(response)
+            const data = response['data']['Diabetes_Perturbations_GEO_2022'];
+            console.log(data)
+
+
+            if (!data) {
+                $("#enrich-res").html("<p class='text-center'> No data found </p>");
+                return;
+            }
+
+            
+            const clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='$(\"#enrich-res\").html(\"\");'> Clear Results </button> </a>"
+
+
+            var tabletext = "<table id='table-enrichr' class='styled-table' style:'width=100%; vertical-align:top;'><thead><tr><th>Rank</th><th>Term name</th><th>P-value</th><th>Z-score</th><th>Combined score</th><th>Overlapping genes</th><th>Adjusted p-value</th></tr><tbody>";
+
+            for (var k = 0; k < data.length; k++) {
+                tabletext += "<tr><td>" + data[k][0] + "</td><td>"+ data[k][1] +"</td><td>" + Number(data[k][2]).toPrecision(4) + "</td><td>"+Number(data[k][3]).toPrecision(4) +"</td><td>" + Number(data[k][4]).toPrecision(4) + "</td><td>"
+                
+                tabletext += `<button class="btn-custom btn-group-sm btn-collapse collapsed d-flex align-items-center text-center"
+                        data-toggle="collapse" data-target="#genesoverlap-${data[k][0]}" aria-expanded="false"
+                        aria-controls="genesoverlap-${data[k][0]}">
+                        <div class="text">Show Overlapping Genes</div>
+                </button>
+                    <div class="collapse" id="genesoverlap-${data[k][0]}">
+                        ${data[k][5].join(",")}
+                    </div></td>
+                `
+                tabletext += "<td>" + Number(data[k][6]).toPrecision(4) + "</td></tr>";
+            }
+            tabletext += "</tbody></table>";
+
+
+            $(document).ready(function(){
+                $('#table-enrichr').DataTable();
+                    
+            });
+
+            document.getElementById("enrich-res").innerHTML = tabletext + clear_button;
+        });
     });
 
     
@@ -798,6 +909,19 @@ $(document).ready(function() {
 
     });
 
+    $('#examplefill1').click(function() {
+        fillSet('text-area1', 'desc1', 1)
+    });
+
+    $('#examplefill2').click(function() {
+        fillSet('text-area2', '', 2)
+    });
+
+    $('#examplefill3').click(function() {
+        fillSet('text-area3', '', 3)
+    });
+
+
     // PRODUCE INPUT HTML FOR SINGLE GENE SET
     
     function getSingleEntry(num, genecount) {
@@ -805,6 +929,9 @@ $(document).ready(function() {
             <textarea name="list" rows="8" id="text-area${num}" placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box" onkeyup="geneCount($(this).val(), ${genecount})" onchange="geneCount($(this).val(), ${genecount})" onfocus="geneCount($(this).val(), ${genecount})"></textarea>
             <div class="mt-1">
                 <span id="gene-count${genecount}"> 0 </span> gene(s) entered
+            </div>
+            <div class="text-right">
+                <a id="examplefill3" onclick="fillSet('text-area3', '', 3)" style="color: rgb(10, 13, 149)">Try an example gene set</a>
             </div>
             </div>
             <div class="col-3 justify-content-around">
@@ -827,6 +954,9 @@ $(document).ready(function() {
             <div class="mt-1">
                 <span id="gene-count${genecount}"> 0 </span> UP gene(s) entered
             </div>
+            <div class="text-right">
+                <a id="examplefill3-up" onclick="fillSet('text-area3-up', '', 3)" style="color: rgb(10, 13, 149)">Try an example gene set</a>
+            </div>
             </div>
             <div class="col-3">
             <p>
@@ -842,6 +972,9 @@ $(document).ready(function() {
             <div class="mt-1">
                 <span id="gene-count${genecount + 1}"> 0 </span> DOWN gene(s) entered
             </div>
+            <div class="text-right">
+                <a id="examplefill3-down" onclick="fillSet('text-area3-down', '', 4)" style="color: rgb(10, 13, 149)">Try an example gene set</a>
+            </div>
             </div>
             <div class="col-3">
             <p>
@@ -855,34 +988,22 @@ $(document).ready(function() {
         return multiple_entries;
     }
 
-    // FOR KEA3/CHEA3 INPUT SWITCHING  (between multiple and single gene set)
-
-    /* $('#ea3_entries_button').click( function() {  
-        
-        var button = document.getElementById("ea3_entries_button");
-
-        if (button.textContent === "Use Up/Down Gene Sets"){
-            document.getElementById("ea3_entries").innerHTML = getMultipleEntries(2, 2);
-            button.textContent = "Use Single Gene Set"
-        } else {
-            document.getElementById("ea3_entries").innerHTML = getSingleEntry(2, 2);
-            button.textContent = "Use Up/Down Gene Sets"
-        }
-        
-    }); */
-
-    // SWITCH INPUT FOR SIGCOM LINCS
+    // SWITCH INPUT FOR SIGCOM LINCS to UP DOWN OR SINGLE GENE SET
 
     $('#sigcom_entries_button').click( function() {  
         
         var button = document.getElementById("sigcom_entries_button");
+        var mode = button.value
 
-        if (button.textContent === "Use Up/Down Gene Sets"){
-            document.getElementById("sigcom_entries").innerHTML = getMultipleEntries(3, 4);
-            button.textContent = "Use Single Gene Set"
+
+        if (mode === "single"){
+            document.getElementById("sigcom_entries").innerHTML = getMultipleEntries(3, 3);
+            button.innerText = "Use Single Gene Set"
+            button.value = "double"
         } else {
-            document.getElementById("sigcom_entries").innerHTML = getSingleEntry(3, 4);
-            button.textContent = "Use Up/Down Gene Sets"
+            document.getElementById("sigcom_entries").innerHTML = getSingleEntry(3, 3);
+            button.innerText = "Use Up/Down Gene Sets"
+            button.value = "single"
         }
         
     });

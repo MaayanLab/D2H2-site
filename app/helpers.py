@@ -47,6 +47,43 @@ def query_enricher(gene):
     return res
 
 
+@lru_cache
+def query_enricher_diabetes(genelist, description):
+    ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/addList'
+
+    ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/addList'
+    genes_str = genelist
+
+    payload = {
+        'list': (None, genes_str),
+        'description': (None, description)
+    }
+
+    response = requests.post(ENRICHR_URL, files=payload)
+    if not response.ok:
+        raise Exception('Error analyzing gene list')
+
+    data = json.loads(response.text)
+    listid = data["userListId"]
+
+
+    ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/enrich'
+    query_string = '?userListId=%s&backgroundType=%s'
+    user_list_id = listid
+    gene_set_library = 'Diabetes_Perturbations_GEO_2022'
+    response = requests.get(
+        ENRICHR_URL + query_string % (user_list_id, gene_set_library)
+    )
+    if not response.ok:
+        raise Exception('Error fetching enrichment results')
+
+    data = json.loads(response.text)
+    print(data)
+
+
+    return data
+
+
 ########################## QUERY KOMP API ###############################
 
 

@@ -1,3 +1,4 @@
+from asyncore import read
 from flask import Flask, render_template, request
 from waitress import serve
 import os
@@ -99,6 +100,24 @@ def gettfs():
 	result = query_enricher(gene)
 
 	return {'data': result}
+
+@app.route('/getexample',  methods=['GET','POST'])
+def getexample():
+
+	with open('static/searchdata/example_list.txt') as f:
+		text = f.read()
+
+	return {'genes': text, 'description': "GSE136134 Ctrl-vs-Insulin 24hrs Human BulkRNAseq hiPSCs_down"}
+
+@app.route('/getdiabetesenrich',  methods=['GET','POST'])
+def getdiabetesenrich():
+
+	genes = request.form['genelist']
+	description = request.form['description']
+
+	data = query_enricher_diabetes(genes, description)
+
+	return {'data': data}
 
 #############################################
 ########## 2. Data
@@ -406,5 +425,5 @@ def get_study_data():
 if __name__ == "__main__":
 	
 	serve(app, host="0.0.0.0", port=5000)
-	#app.run(host='127.0.0.1')
+	#app.run(debug=True, host="0.0.0.0")
 

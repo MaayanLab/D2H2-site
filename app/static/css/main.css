@@ -45,7 +45,9 @@ label {
 }
 
 
-a {  color: rgb(10, 13, 149); text-decoration: none; }
+a {
+    color: rgb(10, 13, 149); 
+    text-decoration: none; }
 
 .title-border {
     border-bottom-style: solid !important;
@@ -242,6 +244,16 @@ header#masthead {
     font-family: "IBM Plex Sans", sans-serif !important;
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+table {
+    margin: 0 auto;
+    width: 100%;
+    clear: both;
+    border-collapse: collapse;
+    table-layout: fixed;
+    word-wrap:break-word; 
+      
 }
 
 .styled-table th,

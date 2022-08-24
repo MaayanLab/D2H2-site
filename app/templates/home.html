@@ -2,37 +2,49 @@
 
 {% block body %}
 <div class="justify-content-center container-fluid">
-  <div class="col-10 justify-content-center mx-auto banner">
+  <div class="col-12 justify-content-center mx-auto banner">
+    <div class="row m-3">
 
-    <div class="row justify-content-center mb-3 mt-3">
-      <div class="text-center col-lg-12 mt-5">
-        
-        <img
-          class="p-0 m-0"
-          style="width: 150px"
-          src="{{ url_for('static', filename='img/d2h2logo.png') }}"
-          alt="D2H2 logo"
-        />
+    
+      <div class="col-7">
+        <div class="row justify-content-center mb-3">
+          <div class="text-center col-lg-12 mt-5">
+            
+            <img
+              class="p-0 m-0"
+              style="width: 150px"
+              src="{{ url_for('static', filename='img/d2h2logo.png') }}"
+              alt="D2H2 logo"
+            />
+          </div>
+        </div>
+    
+        <div class="row justify-content-center m-5 text-center">
+          <h5 style="font-weight: 450 !important;">Diabetes Data and Hypothesis Hub (D2H2)</h5>
+          <h5> A platform that facilitates data-driven hypothesis generation for the diabetes and related metabolic disorder research community. </h5>
+        </div>
+    
+        <div class="justify-content-center col-7 row ml-1 mr-1 text-center mt-4 mx-auto">
+          <p style="font-size: 17px;"> Curated datasets containing gene expression in various Type 2 Diabetes transcriptomics signatures can be <a href="{{ url_for('downloads') }}">downloaded</a>, visualized in the Appyter below, and used for enrichment analysis. </p>
+        </div>
+      </div>
+      <div class="col-3 p-3 custom-col">
+        <a class="twitter-timeline" data-lang="en" data-width="400" data-height="600" data-theme="dark" href="https://twitter.com/D2H2Bot?ref_src=twsrc%5Etfw">Tweets by D2H2Bot</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
       </div>
     </div>
+    
 
-    <div class="row justify-content-center mt-4 mb-5 mr-5 text-center">
-       <h5 style="font-weight: 450 !important;">Diabetes Data and Hypothesis Hub (D2H2)</h5>
-       <h5> A platform that facilitates data-driven hypothesis generation for the diabetes and related metabolic disorder research community. </h5>
-    </div>
-
-    <div class="justify-content-center col-7 row ml-1 mr-1 text-center mt-4 mx-auto">
-      <p style="font-size: 17px;"> Curated datasets containing gene expression in various Type 2 Diabetes transcriptomics signatures can be <a href="{{ url_for('downloads') }}">downloaded</a>, visualized in the Appyter below, and used for enrichment analysis. </p>
-    </div>
-
-    <div class="row justify-content-center text-center mb-5">
-      <div class="col-10 custom-col">
-
-        
-
+    <div class="row text-center mb-5 justify-content-center">
+      <div class="col-5 custom-col mr-4">
         <div class="input-group mt-3 justify-content-center row mb-3">
           <label class="mt-2 mr-1 ml-4" for="search-home">Enter gene symbol: </label>
           <input class="form-control-sm search-home mr-4 mt-2" id="search-home" type="text">
+        </div>
+        <div class="row text-center justify-content-center">
+          <p> Try an example: <a onclick="fillSingleExampleHome('STAT3')" style="color:rgb(10, 13, 149);">STAT3</a>, 
+            <a onclick="fillSingleExampleHome('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a> </p>
+        </div>
+        <div class="row justify-content-center">
           <label class="mt-2 mr-1" for="human">Select species: </label>
           <button class="species-tab btn btn-primary m-1" id="human" role="tab">Human </button>
           <button class="species-tab btn btn-inactive m-1" id="mouse" role="tab">Mouse </button>
@@ -62,6 +74,53 @@
           </a>
         </div>
       </div>
+      <div class="col-5 custom-col ml-4">
+
+          <div class="row mt-4">
+            <div class="col-6 text-right mr-3">
+              <textarea name="list" rows="8" id="text-area1"
+                placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
+                onkeyup="geneCount($(this).val(), 1)" onchange="geneCount($(this).val(), 1)"
+                onfocus="geneCount($(this).val(), 1)"></textarea>
+              <div class="mt-1">
+                <span id="gene-count1"> 0 </span> gene(s) entered
+              </div>
+              <div class="text-right">
+                <a id="examplefill1" style="color: rgb(10, 13, 149)">Try an example gene set</a>
+              </div>
+
+            </div>
+            <div class="col-3 justify-content-around">
+              <p>
+                File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
+              </p>
+              <form action="/action_page.php">
+                <input type="file" id="gene-file1" name="filename">
+              </form>
+              <label class="mt-1 mr-1" for="desc1">Enter gene set description (optional): </label>
+              <input class="form-control-md" id="desc1" type="text">
+            </div>
+          </div>
+
+
+          <div class="row text-center justify-content-center m-2">
+            <p>Perform enrichement analysis through Enricher with the entered or uploaded gene set agasint our curated Diabetes gene set library:</p>
+          </div>
+
+
+          <div class="justify-content-center row text-center mt-3">
+            <a id="diabetesEnrichr-query">
+              <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Submit to Enricher
+                <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enricher">
+              </button>
+            </a>
+          </div>
+
+
+      </div>
+    </div>
+    <div class="container table-responsive-lg mb-4 p-3">
+      <div id="enrich-res"></div>
     </div>
   </div>
 </div>
