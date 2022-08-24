@@ -127,6 +127,19 @@ $(document).ready(function() {
 
     if (currURL[3] == 'downloads') {$('#table-downloads').DataTable();}
 
+
+
+    
+    $('a').each(function(){
+        
+        if ($(this).prop('href') == window.location.href) {
+            console.log(($(this).prop('href')));
+            $(this).addClass('active'); 
+            $(this).parents('li').addClass('active');
+        }
+    });
+    
+
     
     
 
@@ -334,14 +347,18 @@ $(document).ready(function() {
             return;
         }
 
+
+        $("#gwas-res").addClass('loader');
+
         $.ajax({
             url: "/getgwas",
             type: "POST",
             data: {gene:inputvalue}
         }).done(function(response) {
 
-            const data = response['GWAS_Catalog']
- 
+            const data = response['GWAS_Catalog'];
+
+
             if (data.length === 0) {
                 $("#gwas-res").html("<p class='text-center'> No data found </p>");
                 return;
@@ -362,6 +379,7 @@ $(document).ready(function() {
                 $('#table-gwas').DataTable();
             });
 
+            $("#gwas-res").removeClass('loader');
             document.getElementById("gwas-res").innerHTML = tabletext + clear_button;
         });
     });
@@ -372,6 +390,7 @@ $(document).ready(function() {
     function loadCorrelation(gene){
         $("archs4-res").html("");
 
+        document.getElementById("archs4-res").innerHTML = "<div class='loader justify-content-center mx-auto'> </div>";
         var jsonData = {};
 
         jsonData["id"] = gene;
@@ -431,6 +450,7 @@ $(document).ready(function() {
             $("#komp-res").html("");
             return;
         }
+        $("#komp-res").innerHTML = "<div class='loader justify-content-center'> </div>";
 
         $.ajax({
             url: "/getkomp",
@@ -460,7 +480,6 @@ $(document).ready(function() {
             });
 
             
-
             document.getElementById("komp-res").innerHTML = tabletext + clear_button;
 
         });
@@ -475,6 +494,7 @@ $(document).ready(function() {
             document.getElementById("tf-res").innerHTML = "<p class='text-center'> No data found </p>";
             return;
         }
+        $("#tf-res").innerHTML = "<div class='loader justify-content-center'> </div>";
 
         $.ajax({
             url: "/gettfs",
@@ -521,13 +541,9 @@ $(document).ready(function() {
                 $(`#table-enrichr`).DataTable();
             });
             
-            
-
-            
-
+        
 
             document.getElementById("tf-res").innerHTML = res_html;
-
 
         });
     });
@@ -897,14 +913,15 @@ $(document).ready(function() {
 
     $('#dgea-button').on('click', async function() {
         var control_condition = $('#condition-select-control').val();
+        var perturb_condition = $('#condition-select-perturb').val();
 
-        if (!control_condition) {
-            alert("Please select the control condition")
+        if (!control_condition || !perturb_condition ) {
+            alert("Please select both conditions")
             return;
         }
 
         var gse = currURL[3]
-        var gsedata = JSON.stringify({'gse': gse});
+        var gsedata = JSON.stringify({'gse': gse, 'control': control_condition, 'perturb': perturb_condition});
         
         $.ajax({
             url: "/api/data",
@@ -967,6 +984,34 @@ $(document).ready(function() {
             // if (!query.length) return callback();
             $.ajax({
                 url: $('#condition-select-control').attr('data-url-control'),//"{{ url_for('conditions_api', geo_accession=geo_accession) }}",
+                dataType: 'json',
+                error: function () {
+                    callback();
+                },
+                success: function (res) {
+                    callback(res);
+                }
+            });
+        }
+    });
+
+     //////////////////////////////////
+    /// Perturb Condition Selection
+    //////////////////////////////////
+    $('#condition-select-perturb').selectize({
+        preload: true,
+        valueField: 'Condition',
+        labelField: 'Condition',
+        searchField: 'Condition',
+        render: {
+            option: function (item, escape) {
+                return '<div class="pt-2 light">'+item.Condition+'</div>';
+            }
+        },
+        load: function (query, callback) {
+            // if (!query.length) return callback();
+            $.ajax({
+                url: $('#condition-select-perturb').attr('data-url-perturb'),//"{{ url_for('conditions_api', geo_accession=geo_accession) }}",
                 dataType: 'json',
                 error: function () {
                     callback();

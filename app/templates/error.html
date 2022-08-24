@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block metatitle %}D2H2 - Error{% endblock %}
+
+{% block content %}
+<!-- Error Message -->
+<div class="h1 text-center mt-4">
+    Error 404: Page Not Found. Return to <a href="{{ url_for('home') }}">home page</a>.
+</div>
+{% endblock %}
