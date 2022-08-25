@@ -7,7 +7,7 @@
 <div class="w-100 viewer-title">
     <div class="container viewer-title d-flex align-items-center">
         <a class="brand px-3 py-3 col-12" href="#" style="text-decoration: none">{{ geo_accession }}: {{
-            gse_metadata[organ][geo_accession].get('title', ["Title Not Found"])[0].replace('RTN1 IS A NOVEL MEDIATOR
+            gse_metadata[species][geo_accession].get('title', ["Title Not Found"])[0].replace('RTN1 IS A NOVEL MEDIATOR
             FOR PROGRESSION OF KIDNEY DISEASE', 'RTN1 Is A Novel Mediator For Progression of Kidney Disease')|safe
             }}</a>
     </div>
@@ -21,9 +21,9 @@
 
         <div class="col-12">
             <div class="h4 pl-2 mb-4">
-                {% if gse_metadata[organ][geo_accession].get('type') == ['Expression profiling by array'] %}
+                {% if gse_metadata[species][geo_accession].get('type') == ['Expression profiling by array'] %}
                 Microarray Data Explorer
-                {% elif gse_metadata[organ][geo_accession].get('type') == ['Expression profiling by high throughput
+                {% elif gse_metadata[species][geo_accession].get('type') == ['Expression profiling by high throughput
                 sequencing'] %}
                 RNA-Seq Data Explorer
                 {% else %}
@@ -43,7 +43,7 @@
             <div class="custom-col justify-content-center text-center">
                 Enter gene symbol:
                 <input id="gene-select" class="mt-2 studysearch"
-                    data-url-genes="{{ url_for('genes_api', geo_accession=geo_accession, organ_name=organ_name) }}"
+                    data-url-genes="{{ url_for('genes_api', geo_accession=geo_accession, species_name=species_name) }}"
                     data-geo-acc={{geo_accession}}></input>
                 <div><button type="button" id="generate-plot" class="btn btn-primary btn-group-sm mt-3 mb-3"> Generate
                         Plot </button></div>
@@ -56,10 +56,10 @@
                 <div class="h4 pl-2 mt-5 mb-4">Description</div>
                 <div class="custom-col p-2">
                     <p class="text-br-red font-weight-bold">Submission Date: <span class="font-weight-normal"
-                            style="color:#212529">{{ (gse_metadata[organ][geo_accession].get('submission_date')[0][:-5]
-                            + ',' + gse_metadata[organ][geo_accession].get('submission_date')[0][-5:])|safe }}</span>
+                            style="color:#212529">{{ (gse_metadata[species][geo_accession].get('submission_date')[0][:-5]
+                            + ',' + gse_metadata[species][geo_accession].get('submission_date')[0][-5:])|safe }}</span>
                     </p>
-                    {% for paragraph in gse_metadata[organ][geo_accession].get('summary', ['Summary Not Found']) %}
+                    {% for paragraph in gse_metadata[species][geo_accession].get('summary', ['Summary Not Found']) %}
                     {% if loop.first %}
                     <p class="text-br-red font-weight-bold">Summary: <span class="font-weight-normal"
                             style="color:#212529">{{ paragraph|safe }}</span></p>
@@ -69,16 +69,16 @@
                     {% endfor %}
                     <p class="text-br-red font-weight-bold">GEO Accession ID: <a class="font-weight-normal"
                             style="color: #0e63c4"
-                            href="{{ gse_metadata[organ][geo_accession].get('gse_link', ['#'])[0]|safe }}"
+                            href="{{ gse_metadata[species][geo_accession].get('gse_link', ['#'])[0]|safe }}"
                             target="_blank" rel="noopener noreferrer">{{
-                            gse_metadata[organ][geo_accession].get('geo_accession', ['GEO Accession ID Not Found'])[0]
+                            gse_metadata[species][geo_accession].get('geo_accession', ['GEO Accession ID Not Found'])[0]
                             }}</a></p>
-                    {% if gse_metadata[organ][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed
+                    {% if gse_metadata[species][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed
                     ID' %}
                     <p class="text-br-red font-weight-bold">PMID: <a class="font-weight-normal" style="color: #0e63c4"
-                            href="{{ gse_metadata[organ][geo_accession].get('pubmed_link', ['#'])[0]|safe }}"
+                            href="{{ gse_metadata[species][geo_accession].get('pubmed_link', ['#'])[0]|safe }}"
                             target="_blank" rel="noopener noreferrer">{{
-                            gse_metadata[organ][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe }}</a></p>
+                            gse_metadata[species][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe }}</a></p>
                     {% else %}
                     <p class="text-br-red font-weight-bold">PMID: <span class="font-weight-normal"
                             style="color:#212529">N/A</span></p>
@@ -119,8 +119,8 @@
                     <div class="row justify-content-center">
                         <button id="dgea-button" class="btn btn-outline-primary mx-auto mt-2 mb-3" style="width: 100px"
                             data-url-samp="{{ url_for('samples_api', geo_accession=geo_accession) }}"
-                            data-gse-id="{{ gse_metadata[organ][geo_accession].get('geo_accession', ['No GSE ID'])[0] }}"
-                            data-gpl-id="{{ gse_metadata[organ][geo_accession].get('cur_gpl', ['No GPL ID'])[0] }}">Analyze</button>
+                            data-gse-id="{{ gse_metadata[species][geo_accession].get('geo_accession', ['No GSE ID'])[0] }}"
+                            data-gpl-id="{{ gse_metadata[species][geo_accession].get('cur_gpl', ['No GPL ID'])[0] }}">Analyze</button>
                     </div>
 
                 </div>
@@ -164,7 +164,7 @@
         </div>
     </div>
 
-    <div id="species" hidden>{{ organ }}</div>
+    <div id="species" hidden>{{ species }}</div>
     
 
     <!-- Abstract small -->
@@ -176,10 +176,10 @@
                 <div class="h4 pl-2 mt-5 mb-4">Description</div>
                 <div class="custom-col p-2">
                     <p class="text-br-red font-weight-bold">Submission Date: <span class="font-weight-normal"
-                            style="color:#212529">{{ (gse_metadata[organ][geo_accession].get('submission_date')[0][:-5]
-                            + ',' + gse_metadata[organ][geo_accession].get('submission_date')[0][-5:])|safe }}</span>
+                            style="color:#212529">{{ (gse_metadata[species][geo_accession].get('submission_date')[0][:-5]
+                            + ',' + gse_metadata[species][geo_accession].get('submission_date')[0][-5:])|safe }}</span>
                     </p>
-                    {% for paragraph in gse_metadata[organ][geo_accession].get('summary', ['Summary Not Found']) %}
+                    {% for paragraph in gse_metadata[species][geo_accession].get('summary', ['Summary Not Found']) %}
                     {% if loop.first %}
                     <p class="text-br-red font-weight-bold">Summary: <span class="font-weight-normal"
                             style="color:#212529">{{ paragraph|safe }}</span></p>
@@ -189,16 +189,16 @@
                     {% endfor %}
                     <p class="text-br-red font-weight-bold">GEO Accession ID: <a class="font-weight-normal"
                             style="color: #0e63c4"
-                            href="{{ gse_metadata[organ][geo_accession].get('gse_link', ['#'])[0]|safe }}"
+                            href="{{ gse_metadata[species][geo_accession].get('gse_link', ['#'])[0]|safe }}"
                             target="_blank" rel="noopener noreferrer">{{
-                            gse_metadata[organ][geo_accession].get('geo_accession', ['GEO Accession ID Not Found'])[0]
+                            gse_metadata[species][geo_accession].get('geo_accession', ['GEO Accession ID Not Found'])[0]
                             }}</a></p>
-                    {% if gse_metadata[organ][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed
+                    {% if gse_metadata[species][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed
                     ID' %}
                     <p class="text-br-red font-weight-bold">PMID: <a class="font-weight-normal" style="color: #0e63c4"
-                            href="{{ gse_metadata[organ][geo_accession].get('pubmed_link', ['#'])[0]|safe }}"
+                            href="{{ gse_metadata[species][geo_accession].get('pubmed_link', ['#'])[0]|safe }}"
                             target="_blank" rel="noopener noreferrer">{{
-                            gse_metadata[organ][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe }}</a></p>
+                            gse_metadata[species][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe }}</a></p>
                     {% else %}
                     <p class="text-br-red font-weight-bold">PMID: <span class="font-weight-normal"
                             style="color:#212529">N/A</span></p>

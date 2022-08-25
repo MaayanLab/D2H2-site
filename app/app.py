@@ -1,4 +1,3 @@
-from asyncore import read
 from flask import Flask, render_template, request
 from waitress import serve
 import os
@@ -10,8 +9,10 @@ import numpy as np
 import GEOparse
 import ftfy
 from functools import lru_cache
+import pickle
 from helpers import *
 
+create_meta = False
 
 app = Flask(__name__)
 
@@ -134,7 +135,7 @@ def fix_para_text(gse_metadata_dict, attribute):
 			gse_metadata_dict[attribute][idx] = ftfy.fix_text(gse_metadata_dict[attribute][idx])
 
 
-def get_metadata(geo_accession, organ_folder):
+def get_metadata(geo_accession, species_folder):
 	"""
 	Gets the metadata for the GEO Series.
 	Input: geo_accession, a string representing the GEO Accession ID (possibly with the GPL)
@@ -149,10 +150,10 @@ def get_metadata(geo_accession, organ_folder):
 	else:
 		geo_accession_num = geo_accession
     # Get gse from GEO
-	if f'{geo_accession}_family.soft.gz' not in os.listdir(f'./static/data/{organ_folder}/{geo_accession}'):
-		gse = GEOparse.get_GEO(geo = geo_accession_num, destdir = f'./static/data/{organ_folder}/{geo_accession}', silent=True)
+	if f'{geo_accession}_family.soft.gz' not in os.listdir(f'./static/data/{species_folder}/{geo_accession}'):
+		gse = GEOparse.get_GEO(geo = geo_accession_num, destdir = f'./static/data/{species_folder}/{geo_accession}', silent=True)
 	else:
-		gse = GEOparse.get_GEO(filepath = f'./static/data/{organ_folder}/{geo_accession}/{geo_accession}_family.soft.gz', silent=True)
+		gse = GEOparse.get_GEO(filepath = f'./static/data/{species_folder}/{geo_accession}/{geo_accession}_family.soft.gz', silent=True)
 
 	if "-" in geo_accession:
 		gse.metadata['cur_gpl'] = [gpl_num]
@@ -179,7 +180,7 @@ def get_metadata(geo_accession, organ_folder):
 		gse.metadata['pubmed_link'] = ["https://pubmed.ncbi.nlm.nih.gov/" + gse.metadata['pubmed_id'][0]]
 	
 	
-	metadata_file = 'static/data/' + organ_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	metadata_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
 	gse.metadata['numsamples'] = metadata_dataframe.shape[0] - 1
 
@@ -188,58 +189,67 @@ def get_metadata(geo_accession, organ_folder):
 
 ignore_list = ['mouse_matrix_v11.h5', 'human_matrix_v11.h5', '.DS_Store', 'allgenes.json']
 
-def organs_to_studies(path):
-	organs_mapping = {}
-	for organ_name in os.listdir(path):
-		if organ_name not in ignore_list:
-			organs_mapping[organ_name] = []
-			for study_name in os.listdir(os.path.join(path, organ_name)):
+def species_to_studies(path):
+	species_mapping = {}
+	for species_name in os.listdir(path):
+		if species_name not in ignore_list:
+			species_mapping[species_name] = []
+			for study_name in os.listdir(os.path.join(path, species_name)):
 				if study_name not in ignore_list:
-					organs_mapping[organ_name].append(study_name)
-	return organs_mapping
+					species_mapping[species_name].append(study_name)
+	return species_mapping
 
-def sort_studies(organs_mapping):
-	organs_url_mapping = {}
-	for organ_folder, studies_list in organs_mapping.items():
-		if organ_folder not in ignore_list:
-			organ = folder_to_url[organ_folder]
-			organs_url_mapping[organ] = sorted(studies_list, key=lambda x: (int(x.split('-', 1)[0][3:])))
-	return organs_url_mapping
+def sort_studies(species_mapping):
+	species_url_mapping = {}
+	for species_folder, studies_list in species_mapping.items():
+		if species_folder not in ignore_list:
+			species = folder_to_url[species_folder]
+			species_url_mapping[species] = sorted(studies_list, key=lambda x: (int(x.split('-', 1)[0][3:])))
+	return species_url_mapping
 
 url_to_folder = {"human": "human", "mouse": "mouse"}
 folder_to_url = {folder:url for url, folder in url_to_folder.items()}
 
-organs_mapping = organs_to_studies('static/data')
-organs_mapping = sort_studies(organs_mapping)
-# print(organs_mapping)
-
-gse_metadata = {}
-for organ, geo_accession_ids in organs_mapping.items():
-	gse_metadata[organ] = {}
-	for geo_accession in geo_accession_ids:
-		gse_metadata[organ][geo_accession] = get_metadata(geo_accession, url_to_folder[organ])
+species_mapping = species_to_studies('static/data')
+species_mapping = sort_studies(species_mapping)
+# print(species_mapping)
 
 
-study_to_organ = {study:organ_name for organ_name, studies_metadata in gse_metadata.items() for study in studies_metadata.keys()}
+
+if create_meta:
+	gse_metadata = {}
+	for species, geo_accession_ids in species_mapping.items():
+		gse_metadata[species] = {}
+		for geo_accession in geo_accession_ids:
+			gse_metadata[species][geo_accession] = get_metadata(geo_accession, url_to_folder[species])
+	with open('static/searchdata/metadata-v1.pickle', 'wb') as f:
+		pickle.dump(gse_metadata, f, protocol=pickle.HIGHEST_PROTOCOL)
+else:
+	with open('static/searchdata/metadata-v1.pickle', 'rb') as f:	
+		gse_metadata = pickle.load(f)
 
 
-@app.route("/<organ_or_gse>", methods=['GET', 'POST'])
-def organ_or_viewerpg(organ_or_gse):
-	# test if organ
-	if organ_or_gse in gse_metadata:
-		return render_template('species.html', organ=organ_or_gse, gse_metadata=gse_metadata, organs_mapping=organs_mapping)
+
+study_to_species = {study:species_name for species_name, studies_metadata in gse_metadata.items() for study in studies_metadata.keys()}
+
+
+@app.route("/<species_or_gse>", methods=['GET', 'POST'])
+def species_or_viewerpg(species_or_gse):
+	# test if species
+	if species_or_gse in gse_metadata:
+		return render_template('species.html', species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping)
 	# test if gsea
-	elif organ_or_gse in study_to_organ:
-		geo_accession = organ_or_gse
-		organ = study_to_organ[geo_accession]
-		organ_folder = url_to_folder[organ]
-		metadata_file = 'static/data/' + organ_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	elif species_or_gse in study_to_species:
+		geo_accession = species_or_gse
+		species = study_to_species[geo_accession]
+		species_folder = url_to_folder[species]
+		metadata_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 		metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
 		metadata_dict = metadata_dataframe.groupby('Group')['Condition'].apply(set).to_dict()
 		# print(metadata_dict)
-		return render_template('viewer.html', metadata_dict=metadata_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, organ=organ, organs_mapping=organs_mapping)
+		return render_template('viewer.html', metadata_dict=metadata_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping)
 	else:
-		return render_template('error.html', gse_metadata=gse_metadata, organs_mapping=organs_mapping)
+		return render_template('error.html', gse_metadata=gse_metadata, species_mapping=species_mapping)
 
 
 
@@ -257,11 +267,11 @@ def organ_or_viewerpg(organ_or_gse):
 # this will likely stay the same.
 @lru_cache(maxsize=None)
 def genes_api(geo_accession):
-	organ = study_to_organ[geo_accession]
-	organ_folder = url_to_folder[organ]
+	species = study_to_species[geo_accession]
+	species_folder = url_to_folder[species]
 
 	# Get genes json
-	expression_file = 'static/data/' + organ_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
+	expression_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
 	expression_dataframe = pd.read_csv(expression_file, index_col = 0, sep='\t')
 
 	genes_json = json.dumps([{'gene_symbol': x} for x in expression_dataframe.index])
@@ -284,13 +294,13 @@ def plot_api(geo_accession):
 	Outputs: 
 	- plotly_json, a serialized JSON formatted string that represents the data for the boxplot to be plotted, used by boxplot() function in scripts.js.
 	"""
-	organ = study_to_organ[geo_accession]
-	organ_folder = url_to_folder[organ]
+	species = study_to_species[geo_accession]
+	species_folder = url_to_folder[species]
 
-	assay = gse_metadata[organ][geo_accession].get('type')[0]
+	assay = gse_metadata[species][geo_accession].get('type')[0]
 
-	expression_file = 'static/data/' + organ_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
-	metadata_file = 'static/data/' + organ_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	expression_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
+	metadata_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 	expression_dataframe = pd.read_csv(expression_file, index_col = 0, sep='\t')
 	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
 	
@@ -328,10 +338,6 @@ def plot_api(geo_accession):
 
 	if assay == 'Expression profiling by array':
 		y_units = 'Expression<br>RMA Normalized'
-	elif assay == 'Expression profiling by high throughput sequencing' and geo_accession == 'GSE117987':
-		y_units = 'Expression<br>log10 RPKM'
-	elif assay == 'Expression profiling by high throughput sequencing' and geo_accession == 'GSE141756':
-		y_units = 'Expression<br>log2CPM'
 	else:
 		y_units = 'Expression'
 
@@ -352,9 +358,9 @@ def plot_api(geo_accession):
 @app.route('/api/conditions/<geo_accession>')
 
 def conditions_api(geo_accession):
-	organ = study_to_organ[geo_accession]
-	organ_folder = url_to_folder[organ]
-	metadata_file = 'static/data/' + organ_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	species = study_to_species[geo_accession]
+	species_folder = url_to_folder[species]
+	metadata_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
 	conditions = set(metadata_dataframe['Condition'])
 	return json.dumps([{'Condition': x} for x in conditions])
@@ -365,10 +371,10 @@ def conditions_api(geo_accession):
 @app.route('/api/samples/<geo_accession>')
 
 def samples_api(geo_accession):
-	organ = study_to_organ[geo_accession]
-	organ_folder = url_to_folder[organ]
+	species = study_to_species[geo_accession]
+	species_folder = url_to_folder[species]
 
-	metadata_file = 'static/data/' + organ_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	metadata_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
 
 	conditions_mapping = metadata_dataframe.groupby('Condition')['Sample_geo_accession'].apply(list).to_dict()

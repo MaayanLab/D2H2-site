@@ -44,7 +44,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for gse_id, geo_metadata in gse_metadata[organ].items() %}
+            {% for gse_id, geo_metadata in gse_metadata[species].items() %}
             <tr>
                 <th scope="row"><a class="text-br-red" href="{{ geo_metadata.get('gse_link', ['#'])[0]|safe }}"
                         target="_blank" rel="noopener noreferrer">{{ gse_id }}</a></th>
@@ -96,7 +96,7 @@
                     <p>N/A</p>
                     {% endif %}
                 </td>
-                <td><a href="{{ url_for('organ_or_viewerpg', organ_or_gse=gse_id) }}"><button class="btn btn-primary btn-group-sm">{{ gse_id }} Gene Viewer</button></a></td>
+                <td><a href="{{ url_for('species_or_viewerpg', species_or_gse=gse_id) }}"><button class="btn btn-primary btn-group-sm">{{ gse_id }} Gene Viewer</button></a></td>
             </tr>
             {% endfor %}
         </tbody>

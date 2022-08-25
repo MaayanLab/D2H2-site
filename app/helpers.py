@@ -269,6 +269,7 @@ def sigcom_gene_set(gene_set):
 ############## GET RESOURCES TABLE FROM GOOGLE DRIVE ##############
 
 
+@lru_cache
 def get_resources():
 
     table = pd.read_csv('./static/searchdata/resources.csv', index_col=0)
@@ -280,6 +281,7 @@ def get_resources():
 
 #### UPDATE RESOURCES TABALE ####
 
+
 def update_resources():
     sheet_url = "https://docs.google.com/spreadsheets/d/1uKuDw8eN3si7QmukL7n4dQsOdn3qN8xUiu-rRapC1Cs/edit#gid=0"
     url_1 = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
@@ -288,6 +290,7 @@ def update_resources():
 
 #update_resources()
 
+@lru_cache
 def get_downloads():
 
     table = pd.read_csv('./static/searchdata/downloads.csv', index_col=0)
