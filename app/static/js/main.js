@@ -167,6 +167,11 @@ $(document).ready(function() {
 
     if (currURL[3] == 'downloads') {createDownloadsTable();}
 
+    if (currURL[3] ==  'singlegene' && currURL.length == 5) {
+        var gene = currURL[4]
+        fillSingleExample(gene);
+    }
+
 
     function createDownloadsTable() {
         document.getElementById("downloads").innerHTML = "<div class='loader justify-content-center'></div>";

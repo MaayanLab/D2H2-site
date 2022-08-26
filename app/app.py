@@ -28,6 +28,10 @@ def about():
 
 @app.route("/singlegene", methods=['GET', 'POST'])
 def singlegene():
+    return render_template("singlegene.html", gene='None')
+
+@app.route("/singlegene/<gene>", methods=['GET', 'POST'])
+def singlegene_gene(gene):
     return render_template("singlegene.html")
 
 @app.route("/geneset", methods=['GET', 'POST'])
