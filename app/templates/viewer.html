@@ -122,7 +122,16 @@
                                     data-group_label="{{ condition }}">{{ condition|safe }}</button>
                             </td>
                             <td class="border" rowspan="{{ ' '.join(metadata_dict_samples[condition]) }}" style="padding: 0px 18px">
-                                {{ " ".join(metadata_dict_samples[condition]) }}
+                                <button class="btn-custom btn-collapse collapsed d-flex"
+                                data-toggle="collapse" data-target="#genesoverlap-{{ condition }}" aria-expanded="false"
+                                aria-controls="genesoverlap-{{ condition }}">
+                                    <div class="text">Show Sample IDs ({{ metadata_dict_samples[condition]['count'] }}) </div>
+                                </button>
+                                <div class="collapse" id="genesoverlap-{{ condition }}">
+                                    {{ " ".join(metadata_dict_samples[condition]['samples']) }}
+                                </div></td>
+                
+                                
                             </td>
                         </tr>
                         {% endfor %}
@@ -142,7 +151,7 @@
 
             <!-- Abstract large -->
             <div class="d-block d-lg-none">
-                <div class="h4 pl-2 mt-5 mb-4">Description</div>
+                <div class="h4 pl-2 mt-5 mb-2">Description</div>
                 <div class="custom-col p-2">
                     <p class="text-br-red font-weight-bold">Submission Date: <span class="font-weight-normal"
                             style="color:#212529">{{ (gse_metadata[species][geo_accession].get('submission_date')[0][:-5]
@@ -177,11 +186,11 @@
         </div>
     </div>
 
-    <div class="row justify-content-center mb-3 mt-4">
+    <div class="row justify-content-center mb-3 mt-2">
         <div class="col-8">
 
         
-            <div class="h4 pl-2 mt-5 mb-4">Differential Gene Expression Analysis</div>
+            <div class="h4 pl-2 mt-2 mb-4">Differential Gene Expression Analysis</div>
         <div class="custom-col justify-content-center" style = "overflow: visible">
             <div class="h4 pl-2 mb-4 mt-3"></div>
             <div class="row justify-content-center mt-4">

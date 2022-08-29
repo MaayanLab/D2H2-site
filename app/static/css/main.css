@@ -36,10 +36,20 @@ label {
 } */
 
 .selectize-dropdown {
+    position: absolute !important;
+    z-index: 10000000000 !important; /* adjust as necessary */
     border: 1px solid #d0d0d0 !important;
     background: #ffffff !important;
-    position: relative;
+    margin: -1px 0 0 0 !important;
+    border-top: 0 none !important;  
+}
 
+.selectize-nav {
+    position: relative !important;
+    border: 1px solid #d0d0d0 !important;
+    background: #ffffff !important;
+    margin: -1px 0 0 0 !important;
+    border-top: 0 none !important;  
 }
 
 

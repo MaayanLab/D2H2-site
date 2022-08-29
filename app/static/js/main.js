@@ -118,20 +118,18 @@ $(document).ready(function() {
 
     // SMALL NAV MENU
 
-    $("<select class='selectize-dropdown justify-content-center'/>").appendTo("#mainnav");
+    $("<select class='selectize-nav justify-content-center'/>").appendTo("#mainnav");
 
     // Create default option "Go to..."
     $("<option />", {
        "selected": "selected",
        "value"   : "",
-       "text"    : "Go to..."
+       "text"    : "Go to.."
     }).appendTo("nav select");
     
     // Populate dropdown with menu items
     $("nav a").each(function() {
      var el = $(this);
-     console.log(el.attr("href"))
-     console.log(el.text().trim())
      if (el.attr("href").substr(0, 1) != "#" && el.attr("href") != '/' && el.attr("id") != 'toc') {
         $("<option />", {
             "value"   : el.attr("href"),

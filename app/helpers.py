@@ -308,4 +308,4 @@ def update_downloads():
     table = pd.read_csv(url_1)
     table.to_csv('static/searchdata/downloads.csv')
 
-#update_downloads()
+update_downloads()
