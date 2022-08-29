@@ -1,9 +1,5 @@
 ,Filename,Species,Description,Downloads
-0,all_human_fc,Homo sapiens,RNA-seq fold changes,"https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/all_human_fc.f,https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/all_human_fc.csv"
-1,all_human_pval,Homo sapiens,RNA-seq p-values,"https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/all_human_pval.f,https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/all_human_pval.csv"
-2,all_mouse_fc,Mus musculus,RNA-seq fold changes,"https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/all_mouse_fc.f,https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/all_mouse_fc.csv"
-3,all_mouse_pval,Mus musculus,RNA-seq p-values,"https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/all_mouse_pval.f,https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/all_mouse_pval.csv"
-4,human_pruned_affy_fc,Homo sapiens,Microarray fold change,"https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/human_pruned_affy_fc.f,https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/human_pruned_affy_fc.csv"
-5,human_pruned_affy_pv,Homo sapiens,Microarray p-values,"https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/human_pruned_affy_pv.f,https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/human_pruned_affy_pv.csv"
-6,mouse_pruned_affy_fc,Mus musculus,Microarray fold change,"https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/mouse_pruned_affy_fc.f,https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/mouse_pruned_affy_fc.csv"
-7,mouse_pruned_affy_pv,Mus musculus,Microarray p-values,"https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/mouse_pruned_affy_pv.f,https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/mouse_pruned_affy_pv.csv"
+0,all_human_pval,Homo sapiens,RNA-seq p-values,"https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/all_human_pval.f,https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/all_human_pval.csv"
+1,all_mouse_pval,Mus musculus,RNA-seq p-values,"https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/all_mouse_pval.f,https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/all_mouse_pval.csv"
+2,human_pruned_affy_pv,Homo sapiens,Microarray p-values pruned to keep only one representative SNP per region,"https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/human_pruned_affy_pv.f,https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/human_pruned_affy_pv.csv"
+3,mouse_pruned_affy_pv,Mus musculus,Microarray p-values pruned to keep only one representative SNP per region,"https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/mouse_pruned_affy_pv.f,https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/mouse_pruned_affy_pv.csv"

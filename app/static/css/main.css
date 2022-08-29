@@ -36,12 +36,10 @@ label {
 } */
 
 .selectize-dropdown {
-    position: absolute !important;
-    z-index: 10000000000 !important; /* adjust as necessary */
     border: 1px solid #d0d0d0 !important;
     background: #ffffff !important;
-    margin: -1px 0 0 0 !important;
-    border-top: 0 none !important;  
+    position: relative;
+
 }
 
 
@@ -167,15 +165,13 @@ body {
 }
 
 
-div {
-    border-bottom-color: black;
-}
+
 
 .custom-col {
     border: rgb(182, 182, 182);
     background-color: #CFD8DC;
     border-width: 1.5px;
-    overflow: hidden;
+    overflow: scroll;
     border-style: solid;
     border-radius: 1%;
     
@@ -244,6 +240,7 @@ header#masthead {
     font-family: "IBM Plex Sans", sans-serif !important;
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    overflow: scroll;
 }
 
 .styled-table th,
@@ -299,11 +296,13 @@ nav[data-toggle="toc"] {
 
   
   /* small screens */
-@media (max-width: 768px) {
+@media (max-width: 700px) {
 /* override stickyness so that the navigation does not follow scrolling */
 
     nav[data-toggle="toc"] {
         margin-bottom: 42px;
+        margin-left: 0px;
+        padding-left: 0px;
         position: static;
     }
 
@@ -353,7 +352,15 @@ nav[data-toggle="toc"] {
     font-weight: bolder !important;
 }
 
+  
+nav select {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    nav ul     { display: none; }
+    nav select { display: inline-block; }
+  }
 
 
-  
-  
+

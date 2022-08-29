@@ -250,8 +250,9 @@ def species_or_viewerpg(species_or_gse):
 		metadata_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 		metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
 		metadata_dict = metadata_dataframe.groupby('Group')['Condition'].apply(set).to_dict()
-		# print(metadata_dict)
-		return render_template('viewer.html', metadata_dict=metadata_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping)
+		metadata_dict_samples = metadata_dataframe.groupby('Condition')['Sample_geo_accession'].apply(set).to_dict()
+		print(metadata_dict)
+		return render_template('viewer.html', metadata_dict=metadata_dict, metadata_dict_samples=metadata_dict_samples, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping)
 	else:
 		return render_template('error.html', gse_metadata=gse_metadata, species_mapping=species_mapping)
 
@@ -388,6 +389,7 @@ def samples_api(geo_accession):
 
 @app.route('/api/data',  methods=['GET', 'POST'])
 def get_study_data():
+
 	response_json = request.get_json()
 	geo_accession = response_json['gse']
 	control = response_json['control']
@@ -408,7 +410,10 @@ def get_study_data():
 	for i, row in enumerate(meta_data.split('\n')):
 		if i == 0:
 			selected_conditions.append(row)
+		
 		entries = row.split('\t')
+		if len(entries) != 3:
+			break
 		if entries[1] == control or entries[1] == perturb:
 			selected_conditions.append(row)
 
@@ -434,6 +439,6 @@ def get_study_data():
 #######################################################
 if __name__ == "__main__":
 	
-	serve(app, host="0.0.0.0", port=5000)
-	#app.run(debug=True, host="0.0.0.0")
+	#serve(app, host="0.0.0.0", port=5000)
+	app.run(debug=True, host="0.0.0.0")
 

@@ -116,6 +116,34 @@ function fillSet(id, descid, count_id) {
 
 $(document).ready(function() {
 
+    // SMALL NAV MENU
+
+    $("<select class='selectize-dropdown justify-content-center'/>").appendTo("#mainnav");
+
+    // Create default option "Go to..."
+    $("<option />", {
+       "selected": "selected",
+       "value"   : "",
+       "text"    : "Go to..."
+    }).appendTo("nav select");
+    
+    // Populate dropdown with menu items
+    $("nav a").each(function() {
+     var el = $(this);
+     console.log(el.attr("href"))
+     console.log(el.text().trim())
+     if (el.attr("href").substr(0, 1) != "#" && el.attr("href") != '/' && el.attr("id") != 'toc') {
+        $("<option />", {
+            "value"   : el.attr("href"),
+            "text"    : el.text().trim()
+        }).appendTo("#mainnav select");
+    }
+    });
+
+    $("nav select").change(function() {
+        window.location = $(this).find("option:selected").val();
+    });
+
     var currURL = window.location.href.split("/");
 
     function createResourcesTable() {
@@ -203,7 +231,7 @@ $(document).ready(function() {
                     if (type === 'f') {
                         type = 'feather';
                     }
-                    tabletext += "<a href='" + link + "'><img src='static/img/download.png' alt='' style='width: 10px;'>"+ type +"</a>" 
+                    tabletext += "<a href='" + link + "'><img src='static/img/download.png' alt='' style='width: 12px;'>"+ "<img class='mr-2 ml-1' src='static/img/" + type + ".png' alt='' style='width: 15px;'></a>";
                 });
                 tabletext += "</td></tr>"
             }
@@ -930,40 +958,43 @@ $(document).ready(function() {
     // PRODUCE INPUT HTML FOR SINGLE GENE SET
     
     function getSingleEntry(num, genecount) {
-        var single_entry = `<div class="col-6 text-right mr-3">
-            <textarea name="list" rows="8" id="text-area${num}" placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box" onkeyup="geneCount($(this).val(), ${genecount})" onchange="geneCount($(this).val(), ${genecount})" onfocus="geneCount($(this).val(), ${genecount})"></textarea>
-            <div class="mt-1">
-                <span id="gene-count${genecount}"> 0 </span> gene(s) entered
-            </div>
-            <div class="text-right">
-                <a id="examplefill3" onclick="fillSet('text-area3', '', 3)" style="color: rgb(10, 13, 149)">Try an example gene set</a>
-            </div>
-            </div>
-            <div class="col-3 justify-content-around">
-            <p>
-            File formats excepted: csv, tsv, txt file with Entrez gene symbols on each line
-            </p>
-            <form action="/action_page.php">
-        <input type="file" id="gene-file${num}" name="filename">
-        </form>
-        
-        </div>`;
+        var single_entry = `<div class="col-6 col-md-10 col-sm-7 col-lg-10 text-center mr-3">
+                  <textarea name="list" rows="8" id="text-area${num}"
+                    placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
+                    onkeyup="geneCount($(this).val(), 3)" onchange="geneCount($(this).val(), 3)"
+                    onfocus="geneCount($(this).val(), 3)"></textarea>
+                  <div class="mt-1">
+                    <span id="gene-count${genecount}"> 0 </span> gene(s) entered
+                  </div>
+                  <div class="text-center">
+                    <a id="examplefill3" style="color: rgb(10, 13, 149)">Try an example gene set</a>
+                  </div>
+                </div>
+                <div class="flex-column justify-content-center text-center m-2" style="overflow-y: visible !important;">
+                  <p>
+                    File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
+                  </p>
+                  <form action="/action_page.php">
+                    <input type="file" id="gene-file${num}" name="filename">
+                  </form>
+
+                </div>`;
         return single_entry;
     }
 
     // PRODUCE INPUT HTML FOR MULTIPLE GENE SETS
 
     function getMultipleEntries(num, genecount) {
-        var multiple_entries = `<div class="col-3 text-right">
+        var multiple_entries = `<div class="col-6 col-md-10 col-sm-7 col-lg-10 text-center mr-3">
             <textarea name="list" rows="8" id="text-area${num}-up" placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box" onkeyup="geneCount($(this).val(), ${genecount})" onchange="geneCount($(this).val(),  ${genecount})" onfocus="geneCount($(this).val(),  ${genecount})"></textarea>
             <div class="mt-1">
                 <span id="gene-count${genecount}"> 0 </span> UP gene(s) entered
             </div>
-            <div class="text-right">
+            <div class="text-center">
                 <a id="examplefill3-up" onclick="fillSet('text-area3-up', '', 3)" style="color: rgb(10, 13, 149)">Try an example gene set</a>
             </div>
             </div>
-            <div class="col-3">
+            <div class="flex-column justify-content-center text-center m-2" style="overflow-y: visible !important;">
             <p>
                 File formats excepted: csv, tsv, txt file with Entrez gene symbols on each line
             </p>
@@ -972,16 +1003,16 @@ $(document).ready(function() {
             </form>
             
             </div>
-            <div class="col-3 text-right">
+            <div class="col-6 col-md-10 col-sm-7 col-lg-10 text-center mr-3">
             <textarea name="list" rows="8" id="text-area${num}-down" placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box" onkeyup="geneCount($(this).val(), ${genecount + 1})" onchange="geneCount($(this).val(), ${genecount + 1})" onfocus="geneCount($(this).val(), ${genecount + 1})"></textarea>
             <div class="mt-1">
                 <span id="gene-count${genecount + 1}"> 0 </span> DOWN gene(s) entered
             </div>
-            <div class="text-right">
+            <div class="text-center">
                 <a id="examplefill3-down" onclick="fillSet('text-area3-down', '', 4)" style="color: rgb(10, 13, 149)">Try an example gene set</a>
             </div>
             </div>
-            <div class="col-3">
+            <div class="flex-column justify-content-center text-center m-2" style="overflow-y: visible !important;">
             <p>
                 File formats excepted: csv, tsv, txt file with Entrez gene symbols on each line
             </p>
@@ -1122,8 +1153,12 @@ $(document).ready(function() {
             return;
         }
 
+        document.getElementById("dgea-loading").innerHTML = "<div class='loader justify-content-center'></div>";
+
         var gse = currURL[3]
         var gsedata = JSON.stringify({'gse': gse, 'control': control_condition, 'perturb': perturb_condition});
+
+        console.log(control_condition)
         
         $.ajax({
             url: "/api/data",
@@ -1131,7 +1166,7 @@ $(document).ready(function() {
             type: "POST",
             dataType: 'json',
             data: gsedata
-        }).done( async function(response) {
+        }).done(async function(response) {
             console.log(response)
             console.log(response['meta'])
 
@@ -1161,6 +1196,8 @@ $(document).ready(function() {
 
             console.log(res)
             const id = await res.json()
+
+            document.getElementById("dgea-loading").innerHTML = "";
 
             const final_url = "https://appyters.maayanlab.cloud/Bulk_RNA_seq/" + id.session_id + "/#differential-gene-expression"
             window.open(final_url, '_blank')

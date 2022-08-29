@@ -4,12 +4,14 @@
 
 
 {% block content %}
-<div class="w-100 viewer-title">
-    <div class="container viewer-title d-flex align-items-center">
-        <a class="brand px-3 py-3 col-12" href="#" style="text-decoration: none">{{ geo_accession }}: {{
-            gse_metadata[species][geo_accession].get('title', ["Title Not Found"])[0].replace('RTN1 IS A NOVEL MEDIATOR
-            FOR PROGRESSION OF KIDNEY DISEASE', 'RTN1 Is A Novel Mediator For Progression of Kidney Disease')|safe
-            }}</a>
+<div class="viewer-title">
+    <div class="container viewer-title d-flex align-items-center justify-content-center text-center mt-4">
+        <h4>
+            <a class="brand px-3 py-3 col-12" href="{{ gse_metadata[species][geo_accession].get('gse_link', ['#'])[0]|safe }}"  
+            target="_blank" rel="noopener noreferrer" style="text-decoration: none">{{ geo_accession }}: {{
+                gse_metadata[species][geo_accession].get('title', ["Title Not Found"])[0]|safe}}
+            </a>
+        </h4>
     </div>
 </div>
 
@@ -87,43 +89,7 @@
             </div>
 
             <div class="d-none d-lg-block">
-                <div class="h4 pl-2 mt-5 mb-4">Differential Gene Expression Analysis</div>
-                <div class="custom-col mx-auto" style = "overflow: visible">
-                    <div class="row justify-content-center mt-4">
-
-                        <div class="row text-center justify-content-center mt-2">
-                            <div class="col-10">
-                                <p>This pipeline enables you to analyze and visualize your bulk RNA sequencing datasets
-                                    with an array of downstream analysis and visualization tools. The pipeline includes:
-                                    PCA analysis, Clustergrammer interactive heatmap, library size analysis,
-                                    differential gene expression analysis, enrichment analysis, and L1000 small molecule
-                                    search.</p>
-                                <img src="static/img/bulkdeg-thumbnail.png" alt="" class="img-fluid img-thumbnail">
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="row justify-content-center mt-4">
-                        <div class="w-25">
-                            <p class="text-br-red text-center font-weight-bold">Control Condition</p>
-                            <select id="condition-select-control" class="mt-2 mb-5 mr-2" 
-                                data-url-control="{{ url_for('conditions_api', geo_accession=geo_accession) }}"></select>
-                        </div>
-                        <div class="w-25">
-                            <p class="text-br-red text-center font-weight-bold">Perturbation Condition</p>
-                            <select id="condition-select-perturb" class="mt-2 mb-5 ml-2" 
-                                data-url-perturb="{{ url_for('conditions_api', geo_accession=geo_accession) }}"></select>
-                        </div>
-                    </div>
-
-                    <div class="row justify-content-center">
-                        <button id="dgea-button" class="btn btn-outline-primary mx-auto mt-2 mb-3" style="width: 100px"
-                            data-url-samp="{{ url_for('samples_api', geo_accession=geo_accession) }}"
-                            data-gse-id="{{ gse_metadata[species][geo_accession].get('geo_accession', ['No GSE ID'])[0] }}"
-                            data-gpl-id="{{ gse_metadata[species][geo_accession].get('cur_gpl', ['No GPL ID'])[0] }}">Analyze</button>
-                    </div>
-
-                </div>
+                
             </div>
 
         </div>
@@ -131,13 +97,13 @@
         <!-- Table -->
         <div class="col-lg-4 col-xl-3 p-2">
             <p class="m-3" style="font-size: 0.97rem;">Select conditions below to toggle them from the plot:</p>
-            <div class="custom-col">
                 
                 <table id="condition-table" class="text-center">
                     <thead>
                         <tr>
                             <th>GROUP</th>
                             <th>CONDITION</th>
+                            <th>SAMPLES</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -153,8 +119,11 @@
                             <td class="p-0 ml-3 border"><button style="background-color: #ECEFF1; color: black;"
                                     class="btn w-100 m-0 rounded-0 py-0 condition-btn{{' active plotted '}}"
                                     data-toggle="button" aria-pressed="{{ grouploop.first|lower }}" autocomplete="off"
-                                    data-group_label="{{ condition }}">{{ condition|safe }}</button></td>
-                            <!-- Can modify this above line to make formatting specific for the conditions/words that I'm working with-->
+                                    data-group_label="{{ condition }}">{{ condition|safe }}</button>
+                            </td>
+                            <td class="border" rowspan="{{ ' '.join(metadata_dict_samples[condition]) }}" style="padding: 0px 18px">
+                                {{ " ".join(metadata_dict_samples[condition]) }}
+                            </td>
                         </tr>
                         {% endfor %}
                         {% endfor %}
@@ -168,8 +137,8 @@
     
 
     <!-- Abstract small -->
-    <div class="row">
-        <div class="col-12">
+    <div class="row justify-content-center">
+        <div class="col-10">
 
             <!-- Abstract large -->
             <div class="d-block d-lg-none">
@@ -206,6 +175,55 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="row justify-content-center mb-3 mt-4">
+        <div class="col-8">
+
+        
+            <div class="h4 pl-2 mt-5 mb-4">Differential Gene Expression Analysis</div>
+        <div class="custom-col justify-content-center" style = "overflow: visible">
+            <div class="h4 pl-2 mb-4 mt-3"></div>
+            <div class="row justify-content-center mt-4">
+
+                <div class="row text-center justify-content-center mt-2">
+                    <div class="col-10">
+                        <p>This pipeline enables you to analyze and visualize your bulk RNA sequencing datasets
+                            with an array of downstream analysis and visualization tools. The pipeline includes:
+                            PCA analysis, Clustergrammer interactive heatmap, library size analysis,
+                            differential gene expression analysis, enrichment analysis, and L1000 small molecule
+                            search.</p>
+                        <img src="static/img/bulkdeg-thumbnail.png" alt="" class="img-fluid img-thumbnail">
+                    </div>
+                </div>
+
+            </div>
+            <div class="row justify-content-center mt-4">
+                <div class="w-25">
+                    <p class="text-br-red text-center font-weight-bold">Control Condition</p>
+                    <select id="condition-select-control" class="mt-2 mb-5 mr-2" 
+                        data-url-control="{{ url_for('conditions_api', geo_accession=geo_accession) }}"></select>
+                </div>
+                <div class="w-25">
+                    <p class="text-br-red text-center font-weight-bold">Perturbation Condition</p>
+                    <select id="condition-select-perturb" class="mt-2 mb-5 ml-2" 
+                        data-url-perturb="{{ url_for('conditions_api', geo_accession=geo_accession) }}"></select>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <button id="dgea-button" class="btn btn-outline-primary mx-auto mt-2 mb-3" style="width: 100px"
+                    data-url-samp="{{ url_for('samples_api', geo_accession=geo_accession) }}"
+                    data-gse-id="{{ gse_metadata[species][geo_accession].get('geo_accession', ['No GSE ID'])[0] }}"
+                    data-gpl-id="{{ gse_metadata[species][geo_accession].get('cur_gpl', ['No GPL ID'])[0] }}">Analyze</button>
+            </div>
+
+            <div id="dgea-loading" class="m-3">
+
+            </div>
+
+        </div>
+    </div>
     </div>
 </div>
 {% endblock %}
