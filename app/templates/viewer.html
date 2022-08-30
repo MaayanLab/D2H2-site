@@ -121,18 +121,26 @@
                                     data-toggle="button" aria-pressed="{{ grouploop.first|lower }}" autocomplete="off"
                                     data-group_label="{{ condition }}">{{ condition|safe }}</button>
                             </td>
-                            <td class="border" rowspan="{{ ' '.join(metadata_dict_samples[condition]) }}" style="padding: 0px 18px">
-                                <button class="btn-custom btn-collapse collapsed d-flex"
-                                data-toggle="collapse" data-target="#genesoverlap-{{ condition }}" aria-expanded="false"
-                                aria-controls="genesoverlap-{{ condition }}">
+                            
+                            <td  class="border" style="padding: 0px 18px">
+                                <!-- <button class="btn-custom btn-collapse collapsed d-flex"
+                                data-toggle="collapse" data-target="#{{ condition }}" aria-expanded="true"
+                                aria-controls="{{ condition }}">
                                     <div class="text">Show Sample IDs ({{ metadata_dict_samples[condition]['count'] }}) </div>
                                 </button>
-                                <div class="collapse" id="genesoverlap-{{ condition }}">
-                                    {{ " ".join(metadata_dict_samples[condition]['samples']) }}
-                                </div></td>
-                
+                                <div class="collapse" id="{{ condition }}"> {{ " ".join(metadata_dict_samples[condition]['samples']) }}</div> -->
+                                <button class="btn-custom btn-group-sm btn-collapse collapsed d-flex align-items-center text-center"
+                                data-toggle="collapse" data-target="#samples-{{gse_id}}" aria-expanded="false"
+                                aria-controls="samples-{{gse_id}}">
+                                <div class="text">Show Sample IDs ({{ metadata_dict_samples[condition]['count'] }})</div>
+                            </button>
+                            <div class="collapse" id="samples-{{gse_id}}">
+                                {{ " ".join(metadata_dict_samples[condition]['samples']) }}
+                            </div>
                                 
                             </td>
+                
+                                
                         </tr>
                         {% endfor %}
                         {% endfor %}
