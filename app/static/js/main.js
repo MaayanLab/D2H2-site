@@ -386,22 +386,50 @@ $(document).ready(function() {
                 var arg = 'mouse_gene';
             }
 
-            const formData = new FormData()
-            formData.append('species_input', species)
-            formData.append(arg, inputvalue)
+            //check if gene is valid
+            if (species == 'Human') {
+                var url = "/static/searchdata/t2d-human.json"
+            } else {
+                var url = "/static/searchdata/t2d-mouse.json"
+            }
+
+            var valid = $.ajax({
+                url: url,
+                dataType: 'json',
+                success: async function( data ) {
+                     {
+                        var valid = data['genes'].includes(inputvalue)
+                        if (!valid) {
+                            alert("The entered gene symbol is not recognized")
+                            return;
+                        }
             
-            var res = await fetch("https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/", {
-                method: "POST",
-                headers: {
-                    'Accept': 'application/json',
-                },
-                body: formData,
-            })
+            
+            
+                        const formData = new FormData()
+                        formData.append('species_input', species)
+                        formData.append(arg, inputvalue)
+                        
+                        var res = await fetch("https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/", {
+                            method: "POST",
+                            headers: {
+                                'Accept': 'application/json',
+                            },
+                            body: formData,
+                        })
+            
+                        const id = await res.json()
+            
+                        const final_url = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id
+                        window.open(final_url, '_blank')
 
-            const id = await res.json()
-
-            const final_url = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id
-            window.open(final_url, '_blank')
+                    
+                    
+                    
+                    };
+                }
+            }); 
+            
         } else {
             window.open('https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/', '_blank')
         }
