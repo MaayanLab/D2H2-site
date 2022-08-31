@@ -320,6 +320,7 @@ $(document).ready(function() {
 
 
       var $gene_select = $('#gene-select').selectize({
+        preload: true,
         valueField: 'gene_symbol',
         labelField: 'gene_symbol',
         searchField: 'gene_symbol',

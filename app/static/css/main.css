@@ -34,7 +34,8 @@ label {
     border: 1px solid #d0d0d0 !important;
     background: #ffffff !important;
     margin: -1px 0 0 0 !important;
-    border-top: 0 none !important;  
+    border-top: 0 none !important;
+    font: "IBM Plex Sans", sans-serif !important;
 }
 
 .selectize-nav {
