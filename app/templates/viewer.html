@@ -44,11 +44,9 @@
             <!-- Selector and plot -->
             <div class="custom-col justify-content-center text-center">
                 Enter gene symbol:
-                <input id="gene-select" class="mt-2 studysearch"
+                <select id="gene-select" class="m-4 studysearch"
                     data-url-genes="{{ url_for('genes_api', geo_accession=geo_accession, species_name=species_name) }}"
-                    data-geo-acc={{geo_accession}}></input>
-                <div><button type="button" id="generate-plot" class="btn btn-primary btn-group-sm mt-3 mb-3"> Generate
-                        Plot </button></div>
+                    data-geo-acc={{geo_accession}}></select>
                 <div id="boxplot" class="plotly-plot chart m-4"
                     data-url-plot="{{ url_for('plot_api', geo_accession=geo_accession) }}"></div>
             </div>

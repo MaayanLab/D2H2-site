@@ -7,7 +7,7 @@ function geneCount(gene_list, num) {
 }
 
 function on_change(el) {
-    console.log(el)
+
     for (var i =0; i < el.options.length; i++) {
         document.getElementById(el.options[i].value).style.display = 'none';
     }
@@ -67,33 +67,37 @@ function loadFileAsText(section, delim){
     });   
 }
 
-
-// FILL IN ALL BOXS WITH GENE ENTERED ON singlegene page
-
-function fillPage(event, ui) {
-
-    var gene = ui.item.label;
-    const numSearch = 6
-    for (let i = 1; i < (numSearch +1); i++) {
-        document.getElementById(`search${i}`).value = gene;
-    }
-    
-}
-
 function fillSingleExample(gene) {
 
-    const numSearch = 6
-    for (let i = 1; i < (numSearch +1); i++) {
-        document.getElementById(`search${i}`).value = gene;
-    }
+
     
+    for (var i = 1; i < 7; i++) {
+        var selectize = $(`#search${i}`)[0].selectize;
+        selectize.setValue(gene);
+    }
+}
+
+function fillSingleExampleSkip(gene, skip) {
+
+
+    
+    for (var i = 1; i < 7; i++) {
+        if (`#search${i}` != skip) {
+        var selectize = $(`#search${i}`)[0].selectize;
+        selectize.setValue(gene);
+        }
+    }
 }
 
 function fillSingleExampleHome(gene) {
 
-    document.getElementById("search-home").value = gene;
-    
+    var selectize = $(`#gene-select`)[0].selectize;
+    selectize.setValue(gene);
+
 }
+
+
+
 
 function fillSet(id, descid, count_id) {
     $.ajax({
@@ -118,7 +122,7 @@ $(document).ready(function() {
 
     // SMALL NAV MENU
 
-    $("<select class='selectize-nav justify-content-center'/>").appendTo("#mainnav");
+    $("<select class='selectize-nav text-center justify-content-center hamburger'> <img href='static/img/hamburger.jpeg/> </select>").appendTo("#mainnav");
 
     // Create default option "Go to..."
     $("<option />", {
@@ -184,7 +188,7 @@ $(document).ready(function() {
                 document.getElementById("resources").innerHTML = tabletext;
                 table = $('#table-resources').DataTable();
             });
-            console.log()
+
         });
     }
 
@@ -196,7 +200,22 @@ $(document).ready(function() {
     if (currURL[3] ==  'singlegene' && currURL.length == 5) {
         var gene = currURL[4]
         fillSingleExample(gene);
-    }
+    } 
+
+
+    
+/*   $('#search1').on('', function () { 
+        console.log($('#search1').val())
+        fillSingleExample($('#search1').val())
+    }) */
+
+
+
+    
+
+
+
+    
 
 
     function createDownloadsTable() {
@@ -241,7 +260,6 @@ $(document).ready(function() {
                 document.getElementById("downloads").innerHTML = tabletext;
                 table = $('#table-downloads').DataTable();
             });
-            console.log()
         });
     }
 
@@ -265,119 +283,75 @@ $(document).ready(function() {
     });
     
 
-    
-    
-
-    $('.search').autocomplete({
-    source: function (request, response) {
-        $.ajax({
-            url: "/static/searchdata/allgenes.json",
-            dataType: 'json',
-            data: request,
-            success: function( data ) {
-                 {
-                    var filtered = data.filter(function (str) { 
-                        return str.includes(request.term.toUpperCase())});
-                    var aSearch = [];
-                    // for each element in the main array ...
-                    $(filtered).each(function(iIndex, sElement) {
-                        // ... if element starts with input value ...
-                        if (sElement.substr(0, request.term.length) == request.term.toUpperCase()) {
-                            // ... add element
-                            aSearch.push(sElement);
-                        }
-                    });
-
-                    response(aSearch.splice(0,50))
-                };
+    $('.search').each(function() {
+        $(this).selectize({
+            preload: true,
+        valueField: 'gene_symbol',
+        labelField: 'gene_symbol',
+        searchField: 'gene_symbol',
+        maxItems: 1,
+        render: {
+            option: function (item, escape) {
+                return '<div class="pt-2 light">'+item.gene_symbol+'</div>';
             }
-        }); 
-       },  
-       minLength: 1,
-       scroll:true,
-       max:5,
-       select: fillPage
-      });
-
-
-
-      $('.search-home').autocomplete({
-        source: function (request, response) {
-            if (document.getElementById('human').className.includes('btn-primary')) {
-                var url =  "/static/searchdata/allgenes.json";
-            } else {
-                var url =  "/static/searchdata/mouse_genes.json";
-            }
+        },
+        load: function (query, callback) {
+            // if (!query.length) return callback();
             $.ajax({
-                url: url,
+                url: 'api/genes/human',
                 dataType: 'json',
-                data: request,
-                success: function( data ) {
-                     {
-                        var filtered = data.filter(function (str) { 
-                            return str.includes(request.term.toUpperCase())});
-                        var aSearch = [];
-                        // for each element in the main array ...
-                        $(filtered).each(function(iIndex, sElement) {
-                            // ... if element starts with input value ...
-                            if (sElement.substr(0, request.term.length) == request.term.toUpperCase()) {
-                                // ... add element
-                                aSearch.push(sElement);
-                            }
-                        });
-    
-                        response(aSearch.splice(0,50))
-                    };
+                error: function () {
+                    callback();
+                },
+                success: function (res) {
+                    callback(res);
                 }
-            }); 
-           },  
-           minLength: 1,
-           scroll:true,
-           max:5,
+            });
+        },
+        onDropdownClose: function(value) {
+            var gene = this.getValue()
+            fillSingleExampleSkip(gene, this.id)
+        },
+    })
+    })
+
+
+
+
+
+      var $gene_select = $('#gene-select').selectize({
+        valueField: 'gene_symbol',
+        labelField: 'gene_symbol',
+        searchField: 'gene_symbol',
+        render: {
+            option: function (item, escape) {
+                return '<div class="pt-2 light">'+item.gene_symbol+'</div>';
+            }
+        },
+        load: function (query, callback) {
+            // if (!query.length) return callback();
+            $.ajax({
+                url: $('#gene-select').attr('data-url-genes'),
+                dataType: 'json',
+                error: function () {
+                    callback();
+                },
+                success: function (res) {
+                    callback(res);
+                }
+            });
+        },
+        persist: false,
     });
 
-
-      // GET CURRENT URL FOR STUDY SPECIFIC AUTOCOMPLETE
-
-      // DO STUDY SPECIFIC AUTOCOMPLETE
-
-      $('.studysearch').autocomplete({
-        source: function (request, response) {
-            $.ajax({
-                url: "/static/data/" + document.getElementById("species").innerText + "/" + currURL[3] +"/" + "genes.json",
-                dataType: 'json',
-                data: request,
-                success: function( data ) {
-                     {
-                        var filtered = data.filter(function (str) { 
-                            return str.includes(request.term.toUpperCase())});
-                        var aSearch = [];
-                        // for each element in the main array ...
-                        $(filtered).each(function(iIndex, sElement) {
-                            // ... if element starts with input value ...
-                            if (sElement.substr(0, request.term.length) == request.term.toUpperCase()) {
-                                // ... add element
-                                aSearch.push(sElement);
-                            }
-                        });
     
-                        response(aSearch.splice(0,50))
-                    };
-                }
-            }); 
-           },  
-           minLength: 1,
-           scroll:true,
-           max:5
-        });
-      
       
 
     // CHANGE LINKS FOR APPYTERS/ARCHS4/GTEx DYNAMICALLY   
     
     $('#appyter-home').click( async function() {  
-        if ($("#search-home").val()) {
-            var inputvalue = $("#search-home").val();
+        if ($("#gene-select").val()) {
+            var inputvalue = $("#gene-select").val();
             if (document.getElementById('human').className.includes('btn-primary')) {
                 var species = 'Human';
                 var arg = 'human_gene';
@@ -385,50 +359,23 @@ $(document).ready(function() {
                 var species = 'Mouse';
                 var arg = 'mouse_gene';
             }
+            const formData = new FormData()
+            formData.append('species_input', species)
+            formData.append(arg, inputvalue)
+            
+            var res = await fetch("https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                },
+                body: formData,
+            })
 
-            //check if gene is valid
-            if (species == 'Human') {
-                var url = "/static/searchdata/t2d-human.json"
-            } else {
-                var url = "/static/searchdata/t2d-mouse.json"
-            }
+            const id = await res.json()
 
-            var valid = $.ajax({
-                url: url,
-                dataType: 'json',
-                success: async function( data ) {
-                     {
-                        var valid = data['genes'].includes(inputvalue)
-                        if (!valid) {
-                            alert("The entered gene symbol is not recognized")
-                            return;
-                        }
-            
-            
-            
-                        const formData = new FormData()
-                        formData.append('species_input', species)
-                        formData.append(arg, inputvalue)
-                        
-                        var res = await fetch("https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/", {
-                            method: "POST",
-                            headers: {
-                                'Accept': 'application/json',
-                            },
-                            body: formData,
-                        })
-            
-                        const id = await res.json()
-            
-                        const final_url = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id
-                        window.open(final_url, '_blank')
+            const final_url = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id
+            window.open(final_url, '_blank')
 
-                    
-                    
-                    
-                    };
-                }
-            }); 
             
         } else {
             window.open('https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/', '_blank')
@@ -436,9 +383,10 @@ $(document).ready(function() {
     });
 
     $('#appyter-url1').click(function() {  
-        if ($("#search1").val()) {
-            var inputvalue = $("#search1").val();
-            $('#appyter-url1').prop('href', "https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/#/?args.gene=" +inputvalue + "&submit");
+        var selectize = $(`#search1`)[0].selectize;
+        var gene = selectize.getValue();
+        if (gene) {
+            $('#appyter-url1').prop('href', "https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/#/?args.gene=" + gene + "&submit");
         } else {
             $('#appyter-url1').prop('href', "https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/")
         }
@@ -446,8 +394,10 @@ $(document).ready(function() {
 
 
     $('#archs-url').click(function() {  
+        console.log($("#search1").val())
         if ($("#search1").val()) {
             var inputvalue = $("#search1").val();
+            
             $('#archs-url').prop('href', "https://maayanlab.cloud/archs4/gene/" +inputvalue + "#tissueexpression");
         } else {
             $('#archs-url').prop('href', "https://maayanlab.cloud/archs4/")
@@ -518,7 +468,7 @@ $(document).ready(function() {
             return;
         }
 
-        console.log(inputvalue)
+
 
         document.getElementById("enrich-res").innerHTML = "<div class='loader' style='left: 48%; position: relative;'></div>"
 
@@ -527,9 +477,9 @@ $(document).ready(function() {
             type: "POST",
             data: {genelist:inputvalue, description: desc}
         }).done(function(response) {
-            console.log(response)
+
             const data = response['data']['Diabetes_Perturbations_GEO_2022'];
-            console.log(data)
+
 
 
             if (!data) {
@@ -732,7 +682,6 @@ $(document).ready(function() {
             data: {gene:inputvalue}
         }).done(function(response) {
 
-            console.log(response)
 
             const data = response['data'];
 
@@ -786,7 +735,6 @@ $(document).ready(function() {
             });
             
         
-            console.log(selecter)
             document.getElementById("tf-res").innerHTML = selecter + clear_button;
             document.getElementById(data[0]['name']).style.display = 'block';
 
@@ -872,9 +820,17 @@ $(document).ready(function() {
 
     // 2. Listeners
     // Gene
-    $('#generate-plot').on('click', function(evt) {
+    if (currURL[3].startsWith('GSE')) {
+        var boxplot_selectize = $gene_select[0].selectize;
+        boxplot_selectize.on('change', function(value) {
+            boxplot();
+        })
+    }
+    
+   
+    /* $('#generate-plot').on('click', function(evt) {
         boxplot();
-    })
+    }) */
     
     // Conditions
     $('.condition-btn').on('click', function(evt) {
@@ -938,7 +894,6 @@ $(document).ready(function() {
             $('#kea3').prop('href', "https://appyters.maayanlab.cloud/KEA3_Appyter/")
             return;
         }
-        console.log(inputvalue)
 
         $('#kea3').prop('href', "https://appyters.maayanlab.cloud/KEA3_Appyter/#/?args.Input%20gene/protein%20list=" +inputvalue + "&submit");
 
@@ -1184,7 +1139,7 @@ $(document).ready(function() {
         var gse = currURL[3]
         var gsedata = JSON.stringify({'gse': gse, 'control': control_condition, 'perturb': perturb_condition});
 
-        console.log(control_condition)
+
         
         $.ajax({
             url: "/api/data",
@@ -1193,8 +1148,6 @@ $(document).ready(function() {
             dataType: 'json',
             data: gsedata
         }).done(async function(response) {
-            console.log(response)
-            console.log(response['meta'])
 
             meta = response['meta']
             expression = response['expression']
@@ -1220,7 +1173,7 @@ $(document).ready(function() {
                 body: formData,
             })
 
-            console.log(res)
+
             const id = await res.json()
 
             document.getElementById("dgea-loading").innerHTML = "";
@@ -1290,13 +1243,41 @@ $(document).ready(function() {
 
 
     $('#human').click(function() {
-        $('#human').prop('class', 'species-tab btn btn-primary m-1')
-        $('#mouse').prop('class', 'species-tab btn btn-inactive m-1')
+        $('#human').prop('class', 'species-tab btn btn-primary m-1');
+        $('#mouse').prop('class', 'species-tab btn btn-inactive m-1');
+        $gene_select[0].selectize.clearOptions();
+        $gene_select[0].selectize.load(function(callback) {
+            $.ajax({
+                url: 'api/genes/human',
+                dataType: 'json',
+                error: function () {
+                    callback();
+                },
+                success: function (res) {
+
+                    callback(res);
+                }
+            });
+        });         
     })
 
     $('#mouse').click(function() {
-        $('#mouse').prop('class', 'species-tab btn btn-primary m-1')
-        $('#human').prop('class', 'species-tab btn btn-inactive m-1')
+        $('#mouse').prop('class', 'species-tab btn btn-primary m-1');
+        $('#human').prop('class', 'species-tab btn btn-inactive m-1');
+        $gene_select[0].selectize.clearOptions();
+        $gene_select[0].selectize.load(function(callback) {
+            $.ajax({
+                url: 'api/genes/mouse',
+                dataType: 'json',
+                error: function () {
+                    callback();
+                },
+                success: function (res) {
+
+                    callback(res);
+                }
+            });
+        });         
     })
     
 

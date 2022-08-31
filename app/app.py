@@ -276,14 +276,23 @@ def species_or_viewerpg(species_or_gse):
 # this will likely stay the same.
 @lru_cache(maxsize=None)
 def genes_api(geo_accession):
-	species = study_to_species[geo_accession]
-	species_folder = url_to_folder[species]
+	if geo_accession == 'human':
+		with open('static/searchdata/t2d-human.json', 'r') as f:
+			human_genes = json.load(f)
+		genes_json = json.dumps([{'gene_symbol': x} for x in human_genes['human_genes']])
+	elif geo_accession == 'mouse':
+		with open('static/searchdata/t2d-mouse.json', 'r') as f:
+			mouse_genes = json.load(f)
+		genes_json = json.dumps([{'gene_symbol': x} for x in mouse_genes['mouse_genes']])
+	else:
+		species = study_to_species[geo_accession]
+		species_folder = url_to_folder[species]
 
-	# Get genes json
-	expression_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
-	expression_dataframe = pd.read_csv(expression_file, index_col = 0, sep='\t')
+		# Get genes json
+		expression_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
+		expression_dataframe = pd.read_csv(expression_file, index_col = 0, sep='\t')
 
-	genes_json = json.dumps([{'gene_symbol': x} for x in expression_dataframe.index])
+		genes_json = json.dumps([{'gene_symbol': x} for x in expression_dataframe.index])
 
 	# Return
 	return genes_json

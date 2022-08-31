@@ -27,17 +27,10 @@ label {
     font-family: "IBM Plex Sans", sans-serif;
 }
 
-/* .btn-primary {
-    background-color: lightgray !important;
-} */
-
-/* .btn-secondary {
-    background-color: darkgray !important;
-} */
 
 .selectize-dropdown {
     position: absolute !important;
-    z-index: 10000000000 !important; /* adjust as necessary */
+    z-index: 10000000000 !important; 
     border: 1px solid #d0d0d0 !important;
     background: #ffffff !important;
     margin: -1px 0 0 0 !important;
@@ -46,10 +39,15 @@ label {
 
 .selectize-nav {
     position: relative !important;
-    border: 1px solid #d0d0d0 !important;
-    background: #ffffff !important;
+    border: 1px solid #801414 !important;
+
     margin: -1px 0 0 0 !important;
-    border-top: 0 none !important;  
+    border-top: 0 none !important; 
+    display: none;
+}
+
+.navbar-toggler-icon {
+    background-image: url('../img/hamburger.png');
 }
 
 
@@ -370,7 +368,7 @@ nav select {
 @media (max-width: 768px) {
     nav ul     { display: none; }
     nav select { display: inline-block; }
-  }
+}
 
 
 
