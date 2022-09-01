@@ -68,19 +68,15 @@ function loadFileAsText(section, delim){
 }
 
 function fillSingleExample(gene) {
-
-
-    
+    $(document).ready(function() {
     for (var i = 1; i < 7; i++) {
         var selectize = $(`#search${i}`)[0].selectize;
         selectize.setValue(gene);
     }
+})
 }
 
 function fillSingleExampleSkip(gene, skip) {
-
-
-    
     for (var i = 1; i < 7; i++) {
         if (`#search${i}` != skip) {
         var selectize = $(`#search${i}`)[0].selectize;
@@ -89,11 +85,10 @@ function fillSingleExampleSkip(gene, skip) {
     }
 }
 
-function fillSingleExampleHome(gene) {
 
+function fillSingleExampleHome(gene) {
     var selectize = $(`#gene-select`)[0].selectize;
     selectize.setValue(gene);
-
 }
 
 
@@ -193,29 +188,99 @@ $(document).ready(function() {
     }
 
     if (currURL[3] == 'resources') {createResourcesTable();}
-
-
     if (currURL[3] == 'downloads') {createDownloadsTable();}
-
-    if (currURL[3] ==  'singlegene' && currURL.length == 5) {
-        var gene = currURL[4]
-        fillSingleExample(gene);
-    } 
+    if (currURL[3] == 'scg') {createWorkflowsTable();}
+    console.log(currURL)
+    if (currURL[3] == '') {createTweetsTable();}
 
 
+    function createTweetsTable() {
+        document.getElementById("tweets-res").innerHTML = "<div class='loader justify-content-center'></div>";
+        $.ajax({
+            url: "/gettweets",
+            type: "POST",
+            data: {},
+            dataType: 'json',
+        }).done(function(response) {
     
-/*   $('#search1').on('', function () { 
-        console.log($('#search1').val())
-        fillSingleExample($('#search1').val())
-    }) */
-
-
-
+            const data = response['tweets']
     
-
-
-
+            var headers = data[0]
     
+            var tabletext = "<table id='table-twitter' class='styled-table'><thead><tr>"
+    
+            headers.forEach(function(header) {
+                tabletext += "<th>" + header + "</th>"
+            });
+
+            tabletext += "</tr><tbody>"
+            
+            for (var k = 1; k < data.length; k++) {
+
+
+                tabletext += "<tr><td>"+ data[k][0]+"</td><td>"+ data[k][1]+ "</td><td>" + data[k][2] + "</td><td>"+ data[k][3] + "</td>"
+                tabletext += "<td><a href='" + data[k][4] +"' target='_blank'>"+ 'link' +"</a></td>"
+
+                var analyze = data[k][5].replaceAll('[', '').replaceAll(']', '').replaceAll(' ', '').replaceAll("'","").split(',')
+                console.log(analyze[0])
+                tabletext += "<td><a href='" + analyze[0] +"' target='_blank'>"+ "<img class='mr-2' src='static/img/d2h2logo.png' style='width: 25px;'/>" +"</a>"
+                tabletext += "<a href='" + analyze[1] +"' target='_blank'>"+ "<img class='mr-2' src='static/img/enrichrlogo.png' style='width: 25px;'/>" +"</a>"
+                tabletext += "<a href='" + analyze[2] +"' target='_blank'>"+ "<img class='mr-2' src='static/img/harmonizomelogo.png' style='width: 25px;'/>" +"</a>"
+                tabletext += "</td></tr>"
+                
+            }
+            console.log(tabletext)
+            tabletext += "</tbody></table>";
+    
+    
+            $(document).ready(function(){
+                document.getElementById("tweets-res").innerHTML = tabletext;
+                table = $('#table-twitter').DataTable();
+            });
+
+        });
+    }
+
+
+    function createWorkflowsTable() {
+        document.getElementById("workflows").innerHTML = "<div class='loader justify-content-center'></div>";
+        $.ajax({
+            url: "/getworkflows",
+            type: "POST",
+            data: {},
+            dataType: 'json',
+        }).done(function(response) {
+    
+            const data = response['workflows']
+    
+            var headers = data[0]
+    
+            var tabletext = "<table id='table-workflows' class='styled-table'><thead><tr>"
+    
+            headers.forEach(function(header) {
+                tabletext += "<th>" + header + "</th>"
+            });
+            tabletext += "</tr><tbody>"
+    
+            for (var k = 1; k < data.length; k++) {
+                tabletext += "<tr><td>"+ data[k][0]+"</td><td>"+ data[k][1]+ "</td>"
+                tabletext += `<td><a id="scg-link" href="${data[k][2]}" target="_blank">
+                                    <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3">
+                                        Open in<img src="/static/img/scglogo.png" class="img-fluid" style="width: 50px" alt="SCG">
+                                    </button>
+                              </a></td></tr>`
+            }
+    
+            tabletext += "</tbody></table>";
+    
+    
+            $(document).ready(function(){
+                document.getElementById("workflows").innerHTML = tabletext;
+                table = $('#table-workflows').DataTable();
+            });
+
+        });
+    }
 
 
     function createDownloadsTable() {
@@ -284,6 +349,8 @@ $(document).ready(function() {
     
 
     $('.search').each(function() {
+
+        var url = this.getAttribute('data-url')
         $(this).selectize({
             preload: true,
         valueField: 'gene_symbol',
@@ -295,10 +362,9 @@ $(document).ready(function() {
                 return '<div class="pt-2 light">'+item.gene_symbol+'</div>';
             }
         },
-        load: function (query, callback) {
-            // if (!query.length) return callback();
+        load: function (query, callback) {         
             $.ajax({
-                url: 'api/genes/human',
+                url: url,
                 dataType: 'json',
                 error: function () {
                     callback();
@@ -318,7 +384,7 @@ $(document).ready(function() {
 
 
 
-
+        // SELECTIZE FOR VIEWER AND HOME PAGE APPYTER T2D
       var $gene_select = $('#gene-select').selectize({
         preload: true,
         valueField: 'gene_symbol',

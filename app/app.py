@@ -27,12 +27,12 @@ def about():
     return render_template("about.html")
 
 
-@app.route("/singlegene", methods=['GET', 'POST'])
-def singlegene():
-    return render_template("singlegene.html", gene='None')
-
 @app.route("/singlegene/<gene>", methods=['GET', 'POST'])
-def singlegene_gene(gene):
+def singlegene(gene):
+    return render_template("singlegene.html", gene=gene)
+
+@app.route("/singlegene", methods=['GET', 'POST'])
+def singlegene_home():
     return render_template("singlegene.html")
 
 @app.route("/geneset", methods=['GET', 'POST'])
@@ -96,6 +96,18 @@ def downloads_api():
 	table = get_downloads()
 
 	return {'downloads': table}
+
+
+@app.route('/gettweets',  methods=['GET','POST'])
+def tweets_api():
+	table = get_tweets()
+	return {'tweets': table}
+
+@app.route('/getworkflows',  methods=['GET','POST'])
+def workflows_api():
+	table = get_workflows()
+
+	return {'workflows': table}
 
 @app.route('/gettfs',  methods=['GET','POST'])
 def gettfs():
@@ -452,6 +464,6 @@ def get_study_data():
 #######################################################
 if __name__ == "__main__":
 	
-	serve(app, host="0.0.0.0", port=5000)
-	#app.run(debug=True, host="0.0.0.0")
+	#serve(app, host="0.0.0.0", port=5000)
+	app.run(debug=True, host="0.0.0.0")
 

@@ -78,7 +78,6 @@ def query_enricher_diabetes(genelist, description):
         raise Exception('Error fetching enrichment results')
 
     data = json.loads(response.text)
-    print(data)
 
 
     return data
@@ -138,8 +137,6 @@ def query_gwas(gene: str):
     df = pd.read_csv(url, sep='\t')
 
     summerized_data = pd.DataFrame(columns=['gene', 'trait', 'mapped_trait_link', 'count'])
-
-    print(df.columns.values)
     i = 0
     seen_traits = set()
     for index, row in df.iterrows():
@@ -308,4 +305,24 @@ def update_downloads():
     table = pd.read_csv(url_1)
     table.to_csv('static/searchdata/downloads.csv')
 
+
 #update_downloads()
+
+def get_workflows():
+
+    table = pd.read_csv('./static/searchdata/workflows.csv')
+    resources_list = table.values.tolist()
+    table_list = [list(table.columns.values)] + resources_list
+    print(table_list)
+    return table_list
+
+def get_tweets():
+
+    table = pd.read_csv('./static/searchdata/tweets.csv', index_col=None)
+    resources_list = table.values.tolist()
+    table_list = [list(table.columns.values)] + resources_list
+    print(table_list)
+    return table_list
+
+get_tweets()
+

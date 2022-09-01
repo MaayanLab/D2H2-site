@@ -1,0 +1,4 @@
+Input,Description,Link
+disease term,Query Enrichr for gene-set labels -> extract terms from Enrichr signatures -> perform gene search with Geneshot -> transcription factor and kinase enrichrment with ChEA3 and KEA3,https://scg.maayanlab.cloud/report/6e797127-788a-508d-b93f-933eb36eb295
+single gene symbol,ARCHS4 tissue/cell expression -> gene summary -> expand into gene set from mRNA co-expression with Geneshot -> Enrichr enrichment analysis and query Harmonizome for associations,https://scg.maayanlab.cloud/report/329df500-d840-57b7-8ab9-71b99ae7cf38
+gene set,Enrichr enrichment analysis and extract enriched drugs and phenotypes -> transcription factor and kinase enrichrment with ChEA3 and KEA3,https://scg.maayanlab.cloud/report/9e37d8ed-8798-5272-9c44-d11a4edf26b0
