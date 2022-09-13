@@ -10,3 +10,4 @@ waitress
 bokeh
 matplotlib
 tweepy
+pyarrow
