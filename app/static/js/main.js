@@ -9,6 +9,8 @@ function geneCount(gene_list, num) {
 function clear_home() {
     document.getElementById("t2d-tables").innerHTML = ""
     document.getElementById("volcano-plot").innerHTML = ""
+    document.getElementById("buttons").innerHTML = ""
+
 }
 
 function on_change(el) {
@@ -25,17 +27,22 @@ function gen_table(link, table_id, title, ismicro) {
     csvdata.then(function(data) {
         var titletext = `<div class ="row text-center mt-3"> <h4>${title}</h4></div>`;
         var tabletext = `<table id='${table_id}' class='styled-table'><thead><tr>`
+
         if (ismicro) {
-            tabletext += "<th>Signature</th><th>P-value</th><th>Log2 Fold Change</th><th>Gene Rank in Signature</th></tr><tbody>"
+            tabletext += "<th>Signature</th><th>GEO Entry</th><th>P-value</th><th>Log2 Fold Change</th><th>Gene Rank in Signature</th><th>Boxplot Viewer</th></tr><tbody>"
         } else {
-            tabletext += "<th>Signature</th><th>P-value</th><th>Log2 Fold Change</th><th>Gene Rank in Signature</th><th>Bulk RNA-seq Analysis</th></tr><tbody>"
+            tabletext += "<th>Signature</th><th>GEO Entry</th><th>P-value</th><th>Log2 Fold Change</th><th>Gene Rank in Signature</th><th>Boxplot Viewer</th></tr><tbody>"
         }
 
         data.data.forEach(function(row) {
+            var gse = row['Link to GEO Study'].split("=")[1]
+            var curr = window.location.href
+            var studyviewer = curr + gse
+            
             if (ismicro) {
-                tabletext += "<tr><td><a href='" + row['Link to GEO Study'] + "' target='_blank'>" + row['Signature'] +"</a></td><td>" +row['P-value'] +"</td><td>"+row['Log2 Fold Change'] + "</td><td>"+row['Gene Rank in Signature'] + "</td></tr>"
+                tabletext += "<tr><td>" +row['Signature'] +"</td><td><a href='" + row['Link to GEO Study'] + "' target='_blank'>" + gse +"</a></td><td>" +row['P-value'] +"</td><td>"+row['Log2 Fold Change'] + "</td><td>"+row['Gene Rank in Signature'] + "</td><td><a href='"+ studyviewer + "' target='_blank'><button class='btn btn-primary btn-group-sm'>"+gse + "Gene Viewer</button></a></td></tr>"
             } else {
-                tabletext += "<tr><td><a href='" + row['Link to GEO Study'] + "' target='_blank'>" + row['Signature'] +"</a></td><td>" +row['P-value'] +"</td><td>"+row['Log2 Fold Change'] + "</td><td>"+row['Gene Rank in Signature'] + "</td><td><a href='"+ row['Link to Bulk RNA-seq Analysis'] + "' target='_blank'>link</a></td></tr>"
+                tabletext += "<tr><td>" +row['Signature'] +"</td><td><a href='" + row['Link to GEO Study'] + "' target='_blank'>" + gse +"</a></td><td>" +row['P-value'] +"</td><td>"+row['Log2 Fold Change'] + "</td><td>"+row['Gene Rank in Signature'] + "</td><td><a href='"+ studyviewer + "' target='_blank'><button class='btn btn-primary btn-group-sm'>"+gse + "Gene Viewer</button></a></td></tr>"
             }
         });
 
@@ -947,7 +954,7 @@ $(document).ready(function() {
 
         if (!gene_symbol) {
 
-            gene_symbol = 'A1BG';
+            gene_symbol = 'A1CF';
 
             if(document.getElementById("species")) {
                 var species = document.getElementById("species").innerText

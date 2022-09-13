@@ -467,9 +467,11 @@ def download_link(df, fname, isRNA=False):
         df['Link to Bulk RNA-seq Analysis'] = df['Link to Bulk RNA-seq Analysis'].apply(
             lambda x: x.split('href=')[1].split('>')[0].replace('"', '')
         )
+
     df['Link to GEO Study'] = df['Link to GEO Study'].apply(
         lambda x: x.split('href=')[1].split('>')[0].replace('"', '')
     )
+
     df['Signature'] = df['Signature'].apply(lambda x: x.replace('* ', ''))
     csv = df.to_csv(fname, sep='\t', index=False)
     link = f'<div>Download full results: <a href="{fname}" target=_blank>{fname}</a></div>'
@@ -498,15 +500,14 @@ def make_tables(comb_df, species, gene, is_upreg, isRNA=False):
     else:
         sigranks = pd.read_feather(f"{root_path}{species}_affy_fc_sigrank.f", columns=['index', gene]).set_index('index')
     dir_df = comb_df[comb_df['fc'] > 0] if is_upreg else comb_df[comb_df['fc'] < 0]
-    if dir_df.shape[0] == 0:
-        return dir_df
     dir_df = dir_df.drop(columns='logpv').sort_values(by='pval', ascending=True)
     if isRNA:
         dir_df['inst'] = dir_df.apply(lambda row: appyter_link(row.sig, inst=row.inst), axis=1)
     dir_df['rank'] = [sigranks.loc[sig, gene] for sig in dir_df['sig']]
-    dir_df['sig'] = dir_df.apply(lambda row: f"* {row.sig}" if row.pval < 0.05 else row.sig, axis=1)
-    dir_df['pval'] = dir_df['pval'].apply(lambda x: f'{x:.3e}')
-    dir_df['fc'] = dir_df['fc'].apply(lambda x: f'{x:.4f}')
+    if dir_df.shape[0] != 0:
+        dir_df['sig'] = dir_df.apply(lambda row: f"* {row.sig}" if row.pval < 0.05 else row.sig, axis=1)
+        dir_df['pval'] = dir_df['pval'].apply(lambda x: f'{x:.3e}')
+        dir_df['fc'] = dir_df['fc'].apply(lambda x: f'{x:.4f}')
     if isRNA:
         dir_df = dir_df.rename(columns={'sig': 'Signature', 'pval': 'P-value', 'fc': 'Log2 Fold Change', 'inst': 'Link to Bulk RNA-seq Analysis', 'rank': 'Gene Rank in Signature'})
     else:
@@ -526,10 +527,15 @@ def send_plot(species, gene):
     fname='static/searchdata/t2d-files/'
     up_comb_df_input = download_link(make_tables(comb_df_input, species, gene, is_upreg=True, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-upreg.tsv', isRNA=True)
     dn_comb_df_input = download_link(make_tables(comb_df_input, species, gene, is_upreg=False, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-dnreg.tsv', isRNA=True)
-    if micro_exists:
-        up_micro_df_input = download_link(make_tables(micro_df_input, species, gene, is_upreg=True), fname + gene + '_' + species + '_' + 'micro-upreg.tsv')
-        dn_micro_df_input = download_link(make_tables(micro_df_input, species, gene, is_upreg=False), fname + gene + '_' + species + '_' + 'micro-dnreg.tsv')
+    if micro_exists and not(micro_df_input.empty):
+        micro_df_input.dropna(inplace=True)
+        up_micro_df = make_tables(micro_df_input, species, gene, is_upreg=True)
+        print(up_micro_df)
+        up_micro_df_input = download_link(up_micro_df, fname + gene + '_' + species + '_' + 'micro-upreg.tsv')
+        dn_micro_df = make_tables(micro_df_input, species, gene, is_upreg=False)
+        dn_micro_df_input = download_link(dn_micro_df, fname + gene + '_' + species + '_' + 'micro-dnreg.tsv')
     else:
+        micro_exists = False
         up_micro_df_input = ''
         dn_micro_df_input = ''
     return {'plot': json_item(plot, 'volcano-plot'), 'micro': micro_exists, 'tables': [up_comb_df_input, dn_comb_df_input, up_micro_df_input, dn_micro_df_input]}
