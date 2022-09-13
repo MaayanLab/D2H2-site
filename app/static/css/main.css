@@ -52,9 +52,9 @@ label {
 }
 
 
-a {
+/* a {
     color: rgb(10, 13, 149); 
-    text-decoration: none; }
+    text-decoration: none; } */
 
 .title-border {
     border-bottom-style: solid !important;
@@ -230,8 +230,15 @@ header#masthead {
     padding-bottom: 0;
 }
 
-.a {
-    color: darkblue;
+a {
+    color: black;
+}
+
+.centered {
+    display : block;
+    margin : 0 auto;
+    text-align: left;
+    width: 800px;
 }
 
 .img-logo {

@@ -6,6 +6,11 @@ function geneCount(gene_list, num) {
     $('span#gene-count' + String(num)).text(genes.length);
 }
 
+function clear_home() {
+    document.getElementById("t2d-tables").innerHTML = ""
+    document.getElementById("volcano-plot").innerHTML = ""
+}
+
 function on_change(el) {
 
     for (var i =0; i < el.options.length; i++) {
@@ -14,6 +19,51 @@ function on_change(el) {
     document.getElementById(el.options[el.selectedIndex].value).style.display = 'block'; // Show el
 
 }
+
+function gen_table(link, table_id, title, ismicro) {
+    var csvdata = parseCsv(link)
+    csvdata.then(function(data) {
+        var titletext = `<div class ="row text-center mt-3"> <h4>${title}</h4></div>`;
+        var tabletext = `<table id='${table_id}' class='styled-table'><thead><tr>`
+        if (ismicro) {
+            tabletext += "<th>Signature</th><th>P-value</th><th>Log2 Fold Change</th><th>Gene Rank in Signature</th></tr><tbody>"
+        } else {
+            tabletext += "<th>Signature</th><th>P-value</th><th>Log2 Fold Change</th><th>Gene Rank in Signature</th><th>Link to Bulk RNA-seq Analysis</th></tr><tbody>"
+        }
+
+        data.data.forEach(function(row) {
+            if (ismicro) {
+                tabletext += "<tr><td><a href='" + row['Link to GEO Study'] + "' target='_blank'>" + row['Signature'] +"</a></td><td>" +row['P-value'] +"</td><td>"+row['Log2 Fold Change'] + "</td><td>"+row['Gene Rank in Signature'] + "</td></tr>"
+            } else {
+                tabletext += "<tr><td><a href='" + row['Link to GEO Study'] + "' target='_blank'>" + row['Signature'] +"</a></td><td>" +row['P-value'] +"</td><td>"+row['Log2 Fold Change'] + "</td><td>"+row['Gene Rank in Signature'] + "</td><td>"+ row['Link to Bulk RNA-seq Analysis'] + "</td></tr>"
+            }
+        });
+
+        tabletext += "</tbody></table>";
+        var filename = link.split("/")[link.split("/").length -1 ]
+        var download = `Download table: <a href="${link}">${filename}</a>`
+        document.getElementById("t2d-tables").innerHTML += (titletext + tabletext + download)
+        table = $(`#${table_id}`).DataTable();
+    })
+
+    
+}
+
+async function parseCsv(file) {
+    return new Promise((resolve, reject) => {
+      Papa.parse(file, {
+        download: true,
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+          return resolve(results);
+        },
+        error: (error ) => {
+          return reject(error);
+        },
+      });
+    });
+  }
 
 
 // OPEN GENE LIST IN ENRICHR
@@ -229,7 +279,7 @@ $(document).ready(function() {
                 tabletext += "</td></tr>"
                 
             }
-            console.log(tabletext)
+            
             tabletext += "</tbody></table>";
     
     
@@ -429,6 +479,8 @@ $(document).ready(function() {
             const formData = new FormData()
             formData.append('species_input', species)
             formData.append(arg, inputvalue)
+
+            document.getElementById("volcano-loading").innerHTML = "<div class='loader mb-2' style='left: 48%; position: relative;'></div>";
             
             var res = await fetch("https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/", {
                 method: "POST",
@@ -440,9 +492,70 @@ $(document).ready(function() {
 
             const id = await res.json()
 
-            const final_url = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id
-            window.open(final_url, '_blank')
+            
+            const download_link_up_human = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id + "/" + inputvalue + "_upreg_expression_human_T2D_signatures.tsv"
+            const download_link_up_human_mirco = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id + "/" + inputvalue + "_upreg_microarray_human_T2D_signatures.tsv"
+            const download_link_down_human = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id + "/" + inputvalue + "_downreg_expression_human_T2D_signatures.tsv"
+            const download_link_down_human_mirco = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id + "/" + inputvalue + "_downreg_microarray_human_T2D_signatures.tsv"
 
+            const download_link_up_mouse = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id + "/" + inputvalue + "_upreg_expression_mouse_T2D_signatures.tsv"
+            const download_link_up_mouse_mirco = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id + "/" + inputvalue + "_upreg_microarray_mouse_T2D_signatures.tsv"
+            const download_link_down_mouse = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id + "/" + inputvalue + "_downreg_expression_mouse_T2D_signatures.tsv"
+            const download_link_down_mouse_mirco = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id + "/" + inputvalue + "_downreg_microarray_mouse_T2D_signatures.tsv"
+            
+            if (species === 'Human') {
+            
+                var dir = "up";
+                var titleRNA = `Top human RNA-seq signatures where ${inputvalue} is ${dir}-regulated`
+                var titlemicro = `Top human microarray signatures where ${inputvalue} is ${dir}-regulated`
+                gen_table(download_link_up_human, 'human-up', titleRNA, false)
+                gen_table( download_link_up_human_mirco, 'human-micro-up', titlemicro, true)
+                dir = "down";
+                var titleRNA = `Top human RNA-seq signatures where ${inputvalue} is ${dir}-regulated`
+                var titlemicro = `Top human microarray signatures where ${inputvalue} is ${dir}-regulated`
+                gen_table(download_link_down_human, 'human-down', titleRNA, false)
+                gen_table( download_link_down_human_mirco, 'human-micro-down', titlemicro, true)
+
+            } else {
+                var dir = "up";
+                var titleRNA = `Top mouse RNA-seq signatures where ${inputvalue} is ${dir}-regulated`
+                var titlemicro = `Top mouse microarray signatures where ${inputvalue} is ${dir}-regulated`
+                gen_table(download_link_up_mouse, 'mouse-up', titleRNA)
+                gen_table( download_link_up_mouse_mirco, 'mouse-micro-up', titlemicro)
+                dir = "down";
+                var titleRNA = `Top mouse RNA-seq signatures where ${inputvalue} is ${dir}-regulated`
+                var titlemicro = `Top mouse microarray signatures where ${inputvalue} is ${dir}-regulated`
+                gen_table(download_link_down_mouse, 'mouse-down', titleRNA)
+                gen_table( download_link_down_mouse_mirco, 'mouse-micro-down', titlemicro)
+
+            }
+
+            
+            
+            const final_url = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id
+            const clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-4 mb-1' onclick='clear_home();'> Clear Results </button> </a>"
+            appyter_button = `<a id="appyter-home" href="${final_url}"><button type="button"
+              class="btn btn-primary btn-group-sm mt-3 mb-2">
+              <span id="appyter-action" class="ml-3">Open in</span>
+              <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
+            </button>
+            </a>`
+            //window.open(final_url, '_blank')
+            var jsonData = {};
+
+            jsonData["gene"] = inputvalue;
+            jsonData["species"] = species.toLowerCase();
+            $.ajax({
+                url: "/api/volcano",
+                type: "POST",
+                dataType: 'json',          
+                data: jsonData,
+                success: function(jdata) {
+                    document.getElementById("t2d-tables").innerHTML += `<div class='row'><div class= 'col text-right'>${appyter_button}</div><div class='col text-left'>${clear_button}</div></div>`
+                    window.Bokeh.embed.embed_item(jdata)
+                    document.getElementById("volcano-loading").innerHTML = "";
+                }
+            });
             
         } else {
             window.open('https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/', '_blank')
@@ -1244,6 +1357,9 @@ $(document).ready(function() {
             const id = await res.json()
 
             document.getElementById("dgea-loading").innerHTML = "";
+
+            var download_link = "https://appyters.maayanlab.cloud/Bulk_RNA_seq/" + id.session_id + "/DEG_results_" + control_condition.split(" ").join('%20') + "%20vs.%20"+ perturb_condition.split(" ").join('%20') + ".csv"
+            console.log(download_link)
 
             const final_url = "https://appyters.maayanlab.cloud/Bulk_RNA_seq/" + id.session_id + "/#differential-gene-expression"
             window.open(final_url, '_blank')

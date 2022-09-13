@@ -3,7 +3,13 @@ import json
 import requests
 from intermine.webservice import Service
 import pandas as pd
-
+# bokeh
+from bokeh.plotting import figure
+from bokeh.embed import json_item
+from bokeh.models import ColumnDataSource
+import matplotlib.cm as cm
+import matplotlib.colors as colors
+import numpy as np
 
 ######################### UPDATE GENE LIST ############################
 
@@ -321,8 +327,141 @@ def get_tweets():
     table = pd.read_csv('./static/searchdata/tweets.csv', index_col=None)
     resources_list = table.values.tolist()
     table_list = [list(table.columns.values)] + resources_list
-    print(table_list)
     return table_list
 
-get_tweets()
+
+
+red_map = cm.get_cmap('Reds_r')
+red_norm = colors.Normalize(vmin=-0.25, vmax=1)
+blue_map = cm.get_cmap('Blues_r')
+blue_norm = colors.Normalize(vmin=-0.25, vmax=1)
+
+def load_files(species, gene):
+    root_path = 'https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/'
+    pval_rna_df = pd.read_feather(f'{root_path}all_{species}_pval.f', columns=['index', gene]).set_index('index')
+    # RNA-seq fold change
+    fc_rna_df = pd.read_feather(f'{root_path}all_{species}_fc.f', columns=['index', gene]).set_index('index')
+
+    # microarray data
+
+    pval_micro_df = pd.read_feather(f"{root_path}{species}_pruned_affy_pv.f", columns=['index', gene]).set_index('index')
+    fc_micro_df = pd.read_feather(f"{root_path}{species}_pruned_affy_fc.f", columns=['index', gene]).set_index('index')
+    micro_exists = True
+    inst_df_input = pd.read_csv(f"{root_path}{species}_instances.tsv", sep='\t', index_col=0)
+
+    return  pval_rna_df, fc_rna_df, inst_df_input, pval_micro_df, fc_micro_df
+
+def combine_data(pval_df, fc_df, gene, isRNA=False, inst_df=None):
+    # extract and combine data for each gene
+    comb_df = pd.DataFrame()
+    comb_df['sig'] = pval_df.index.tolist()
+    comb_df['pval'] = pval_df[gene].tolist()
+    comb_df['logpv'] = np.negative(np.log10(comb_df['pval']))
+    comb_df['fc'] = fc_df[gene].tolist()
+    if isRNA:
+        comb_df['inst'] = comb_df['sig'].apply(lambda x: inst_df.loc[x, 'session_id'])
+    return comb_df
+
+
+def map_color(fc, pv):
+    if fc < 0:
+        return colors.to_hex(red_map(red_norm(pv)))
+    elif fc == 0:
+        return '#808080'
+    else:
+        return colors.to_hex(blue_map(blue_norm(pv)))
+
+def make_plot(comb_df, species, gene, micro=False, micro_df=None):
+    # create links from Bulk RNA-seq Appyter instance session IDs
+    comb_df['inst'] = comb_df['inst'].apply(lambda x: f'https://appyters.maayanlab.cloud/Bulk_RNA_seq/{x}')
+
+    # set color and size for each point on plot
+    rna_colors = [map_color(r.fc, r.pval) for r in comb_df.itertuples()]
+    rna_sizes = [12 if r.pval < 0.05 else 6 for r in comb_df.itertuples()]
+
+    if micro:
+        micro_colors = [map_color(r.fc, r.pval) for r in micro_df.itertuples()]
+        micro_sizes = [12 if r.pval < 0.05 else 6 for r in micro_df.itertuples()]
+
+    # generate data source
+    data_source = ColumnDataSource(
+        data=dict(
+            x = comb_df['fc'],
+            y = comb_df['logpv'],
+            sig = comb_df['sig'],
+            pval = comb_df['pval'], 
+            fc = comb_df['fc'], 
+            colors = rna_colors, 
+            sizes = rna_sizes,
+            label = ['RNA-seq']*comb_df.shape[0]
+        )
+    )
+
+    # generate microarray data source if it exists
+    if micro:
+        micro_data_source = ColumnDataSource(
+            data=dict(
+                x = micro_df['fc'],
+                y = micro_df['logpv'], 
+                sig = micro_df['sig'],
+                pval = micro_df['pval'], 
+                fc = micro_df['fc'],
+                colors = micro_colors,
+                sizes = micro_sizes,
+                label = ['Microarray']*micro_df.shape[0]
+            )
+        )
+    # create hover tooltip
+    tools = [
+        ("Signature", "@sig"),
+        ("P-Value", "@pval"),
+        ("Fold Change", "@fc")
+    ]
+    # generate plot and relevant plot labels
+    plot = figure(
+        plot_width=700,
+        plot_height=500,
+        tooltips=tools
+    )
+    plot.circle(
+        'x', 'y', 
+        size='sizes',
+        alpha=0.7, 
+        line_alpha=0,
+        line_width=0.01, 
+        source=data_source,
+        fill_color='colors', 
+        name=f'{gene}_t2d_expression_volcano_plot',
+        legend_group='label'
+    )
+
+    if micro:
+        plot.square(
+            'x', 'y',
+            size='sizes',
+            alpha=0.7,
+            line_alpha=0,
+            line_width=0.01,
+            source=micro_data_source,
+            fill_color='colors',
+            name=f'{gene}_t2d_expression_volcano_plot',
+            legend_group='label'
+        )
+
+    plot.xaxis.axis_label = 'log2(Fold Change)'
+    plot.yaxis.axis_label = '-log10(P-value)'
+    plot.title.text = f"Differential Expression of {gene} in {species} Type 2 Diabetes Transcriptomics Signatures"
+    plot.title.align = 'center'
+    plot.title.text_font_size = '14px'
+
+    return plot
+    
+@lru_cache
+def send_plot(species, gene):
+    pval_rna_df, fc_rna_df, inst_df_input, pval_micro_df, fc_micro_df = load_files(species, gene)
+    comb_df_input = combine_data(pval_rna_df, fc_rna_df, gene, isRNA=True, inst_df=inst_df_input)
+    micro_df_input = combine_data(pval_micro_df, fc_micro_df, gene)
+
+    plot = make_plot(comb_df_input, species, gene, micro=True, micro_df=micro_df_input)
+    return json_item(plot, 'volcano-plot')
 

@@ -12,6 +12,7 @@ import ftfy
 from functools import lru_cache
 import pickle
 from helpers import *
+from twitterauth import update_tweets_table
 
 create_meta = False
 
@@ -20,6 +21,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
+	update_tweets_table()
 	return render_template('home.html')
 
 @app.route("/about", methods=['GET', 'POST'])
@@ -377,10 +379,16 @@ def plot_api(geo_accession):
 		yaxis_title = y_units,
 		showlegend = False
 	)
-
-	# print(json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder))
-	# Return
 	return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+@app.route('/api/volcano', methods=['GET', 'POST'])
+def plot_volcano_api():
+	request.form
+	gene = request.form["gene"]
+	species = request.form["species"]
+	json_item_plot = send_plot(species, gene)
+	# Return
+	return json.dumps(json_item_plot)
 
 
 ########## 3. Conditions ##########

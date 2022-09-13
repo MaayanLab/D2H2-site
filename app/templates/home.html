@@ -19,25 +19,96 @@
           </div>
         </div>
     
-        <div class="row justify-content-center m-5 text-center">
+        <div class="row justify-content-center m-2 text-center">
           <h5 style="font-weight: 450 !important;">Diabetes Data and Hypothesis Hub (D2H2)</h5>
           <h5> A platform that facilitates data-driven hypothesis generation for the diabetes and related metabolic disorder research community. </h5>
         </div>
     
-        <div class="justify-content-center row ml-1 mr-1 text-center mt-4 mx-auto">
+        <div class="justify-content-center row ml-1 mr-1 text-center mt-1 text-center">
           <p style="font-size: 17px;"> Curated datasets containing gene expression in various Type 2 Diabetes transcriptomics signatures can be <a href="{{ url_for('downloads') }}">downloaded</a>, visualized in the Appyter below, and used for enrichment analysis. </p>
         </div>
+
+        <div class="custom-col mb-2">
+          <div class="justify-content-center row ml-1 mr-1 text-center mt-1">
+            <h5 style="font-weight: 400 !important;">Knowledge Center</h5>
+          </div>
+          <div class="justify-content-center row ml-1 mr-1 mt-1 mb-2" style="flex-wrap: wrap;">
+            <div class="col">
+              <ul>  
+                <li>
+                  <a href="{{ url_for('singlegene_home') }}#tissue-cell-expression"> 
+                  In what cells and tissues is my gene expressed?<br>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{ url_for('singlegene_home') }}#perturbations-conditions"> 
+                    Under what conditions or perturbations is my gene regulated?<br>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{ url_for('singlegene_home') }}#gene-transcription-factors"> 
+                    What are the transcription factors that regulate my gene?<br>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{ url_for('singlegene_home') }}#gwas-traits"> 
+                    Is my gene associated with traits in human GWAS?<br>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{ url_for('singlegene_home') }}#gene-correlations"> 
+                    Is my gene correlated with other genes?<br>
+                  </a>
+                </li>
+                <li>
+                <a href="{{ url_for('singlegene_home') }}#gene-phenotypes"> 
+                  Is there a knockout mouse for my gene and does it show any phenotypes?
+                </a>
+              </li>
+            </ul>
+            </div>
+            <div class="col">
+              <ul>
+                <li>
+                  <a href="{{ url_for('geneset') }}#geneset-enrichr"> 
+                    In which annotated gene sets is my gene set enriched?<br>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{ url_for('geneset') }}#geneset-kea3-chea3"> 
+                    What transcription factors and kinases regulate my gene set?<br>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{ url_for('geneset') }}#geneset-sigcomlincs"> 
+                    What are the LINCS L1000 small molecules and genetic perturbations that likely up- or down-regulate the expression of my gene set?
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
       </div>
+
       <div class="col-lg-3 col-md-6 custom-col p-3 m-2 justify-content-center col-sm-8 text-center">
-          <a class="twitter-timeline" data-width="600" data-height="500" data-chrome="nofooter noborder" data-dnt="true" href="https://twitter.com/D2H2Bot?ref_src=twsrc%5Etfw">Tweets by D2H2Bot</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+          <a class="twitter-timeline" data-width="900" data-height="625" data-chrome="nofooter noborder" data-dnt="true" href="https://twitter.com/D2H2Bot?ref_src=twsrc%5Etfw">Tweets by D2H2Bot</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
        
+      </div>
+    </div>
+    <div class="row text-center justify-content-center" style="flex-wrap: wrap;">
+      
+      <div class="col-md-10 col-sm-7 col-lg-10 text-center custom-col m-2 mb-1"> 
+        <div class="question p-2 justify-content-center row">
+          <h4>Recent Diabetes and Related Metabolic Disorder Publications Containing a Gene-Centric Title</h4>
+        </div>
+        <div id="tweets-res" class="m-2"></div>
       </div>
     </div>
     
 
-    <div class="row text-center justify-content-center" style="flex-wrap: wrap;">
+    <div class="row text-center justify-content-center mb-4" style="flex-wrap: wrap;">
 
-     
       <div class="col-lg-5 col-md-10 col-sm-10 custom-col m-2">
 
         <div class="question mt-3 justify-content-center row p-2">
@@ -71,11 +142,12 @@
         <div class="justify-content-center row text-center mb-3">
           <a id="appyter-home"><button type="button"
               class="btn btn-primary btn-group-sm mt-3 mb-3">
-              <span id="appyter-action" class="ml-3">Start a new appyter in</span>
+              <span id="appyter-action" class="ml-3">Generate plot</span>
               <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
             </button>
           </a>
         </div>
+        <div id="volcano-loading""></div>
       </div>
       <div class="col-lg-5 col-md-10 col-sm-10 custom-col m-2">
 
@@ -126,20 +198,13 @@
 
       </div>
     </div>
-    <div class="container">
+    <div class="container justify-content-center">
+      <div class="justify-content-center centered" id="volcano-plot"></div>
+      <div id ="t2d-tables"></div>
       <div id="enrich-res"></div>
     </div>
 
-    <div class="row text-center justify-content-center" style="flex-wrap: wrap;">
-      
-      <div class="col-md-10 col-sm-7 col-lg-10 text-center custom-col m-2 mb-4"> 
-        <div class="question mt-3 p-2 justify-content-center row">
-          <h4>Recent Diabetes and Related Metabolic Disorder Publications Containing a Gene-Centric Title</h4>
-        </div>
-        <div id="tweets-res" class="m-2"></div>
-      </div>
-      
-    </div>
+    
 
   </div>
 </div>
