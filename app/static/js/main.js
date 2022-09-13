@@ -28,14 +28,14 @@ function gen_table(link, table_id, title, ismicro) {
         if (ismicro) {
             tabletext += "<th>Signature</th><th>P-value</th><th>Log2 Fold Change</th><th>Gene Rank in Signature</th></tr><tbody>"
         } else {
-            tabletext += "<th>Signature</th><th>P-value</th><th>Log2 Fold Change</th><th>Gene Rank in Signature</th><th>Link to Bulk RNA-seq Analysis</th></tr><tbody>"
+            tabletext += "<th>Signature</th><th>P-value</th><th>Log2 Fold Change</th><th>Gene Rank in Signature</th><th>Bulk RNA-seq Analysis</th></tr><tbody>"
         }
 
         data.data.forEach(function(row) {
             if (ismicro) {
                 tabletext += "<tr><td><a href='" + row['Link to GEO Study'] + "' target='_blank'>" + row['Signature'] +"</a></td><td>" +row['P-value'] +"</td><td>"+row['Log2 Fold Change'] + "</td><td>"+row['Gene Rank in Signature'] + "</td></tr>"
             } else {
-                tabletext += "<tr><td><a href='" + row['Link to GEO Study'] + "' target='_blank'>" + row['Signature'] +"</a></td><td>" +row['P-value'] +"</td><td>"+row['Log2 Fold Change'] + "</td><td>"+row['Gene Rank in Signature'] + "</td><td>"+ row['Link to Bulk RNA-seq Analysis'] + "</td></tr>"
+                tabletext += "<tr><td><a href='" + row['Link to GEO Study'] + "' target='_blank'>" + row['Signature'] +"</a></td><td>" +row['P-value'] +"</td><td>"+row['Log2 Fold Change'] + "</td><td>"+row['Gene Rank in Signature'] + "</td><td><a href='"+ row['Link to Bulk RNA-seq Analysis'] + "' target='_blank'>link</a></td></tr>"
             }
         });
 
@@ -43,7 +43,11 @@ function gen_table(link, table_id, title, ismicro) {
         var filename = link.split("/")[link.split("/").length -1 ]
         var download = `Download table: <a href="${link}">${filename}</a>`
         document.getElementById("t2d-tables").innerHTML += (titletext + tabletext + download)
-        table = $(`#${table_id}`).DataTable();
+        $(document).ready(function() {
+            $(`#${table_id}`).DataTable({
+                order: [[1, 'asc']],
+            });
+        })
     })
 
     
@@ -467,6 +471,7 @@ $(document).ready(function() {
     // CHANGE LINKS FOR APPYTERS/ARCHS4/GTEx DYNAMICALLY   
     
     $('#appyter-home').click( async function() {  
+        clear_home()
         if ($("#gene-select").val()) {
             var inputvalue = $("#gene-select").val();
             if (document.getElementById('human').className.includes('btn-primary')) {
@@ -493,48 +498,13 @@ $(document).ready(function() {
             const id = await res.json()
 
             
-            const download_link_up_human = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id + "/" + inputvalue + "_upreg_expression_human_T2D_signatures.tsv"
-            const download_link_up_human_mirco = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id + "/" + inputvalue + "_upreg_microarray_human_T2D_signatures.tsv"
-            const download_link_down_human = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id + "/" + inputvalue + "_downreg_expression_human_T2D_signatures.tsv"
-            const download_link_down_human_mirco = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id + "/" + inputvalue + "_downreg_microarray_human_T2D_signatures.tsv"
-
-            const download_link_up_mouse = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id + "/" + inputvalue + "_upreg_expression_mouse_T2D_signatures.tsv"
-            const download_link_up_mouse_mirco = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id + "/" + inputvalue + "_upreg_microarray_mouse_T2D_signatures.tsv"
-            const download_link_down_mouse = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id + "/" + inputvalue + "_downreg_expression_mouse_T2D_signatures.tsv"
-            const download_link_down_mouse_mirco = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id + "/" + inputvalue + "_downreg_microarray_mouse_T2D_signatures.tsv"
-            
-            if (species === 'Human') {
-            
-                var dir = "up";
-                var titleRNA = `Top human RNA-seq signatures where ${inputvalue} is ${dir}-regulated`
-                var titlemicro = `Top human microarray signatures where ${inputvalue} is ${dir}-regulated`
-                gen_table(download_link_up_human, 'human-up', titleRNA, false)
-                gen_table( download_link_up_human_mirco, 'human-micro-up', titlemicro, true)
-                dir = "down";
-                var titleRNA = `Top human RNA-seq signatures where ${inputvalue} is ${dir}-regulated`
-                var titlemicro = `Top human microarray signatures where ${inputvalue} is ${dir}-regulated`
-                gen_table(download_link_down_human, 'human-down', titleRNA, false)
-                gen_table( download_link_down_human_mirco, 'human-micro-down', titlemicro, true)
-
-            } else {
-                var dir = "up";
-                var titleRNA = `Top mouse RNA-seq signatures where ${inputvalue} is ${dir}-regulated`
-                var titlemicro = `Top mouse microarray signatures where ${inputvalue} is ${dir}-regulated`
-                gen_table(download_link_up_mouse, 'mouse-up', titleRNA)
-                gen_table( download_link_up_mouse_mirco, 'mouse-micro-up', titlemicro)
-                dir = "down";
-                var titleRNA = `Top mouse RNA-seq signatures where ${inputvalue} is ${dir}-regulated`
-                var titlemicro = `Top mouse microarray signatures where ${inputvalue} is ${dir}-regulated`
-                gen_table(download_link_down_mouse, 'mouse-down', titleRNA)
-                gen_table( download_link_down_mouse_mirco, 'mouse-micro-down', titlemicro)
-
-            }
 
             
             
             const final_url = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id
+
             const clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-4 mb-1' onclick='clear_home();'> Clear Results </button> </a>"
-            appyter_button = `<a id="appyter-home" href="${final_url}"><button type="button"
+            appyter_button = `<a id="appyter-home" href="${final_url}" target='_blank'><button type="button"
               class="btn btn-primary btn-group-sm mt-3 mb-2">
               <span id="appyter-action" class="ml-3">Open in</span>
               <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
@@ -542,18 +512,35 @@ $(document).ready(function() {
             </a>`
             //window.open(final_url, '_blank')
             var jsonData = {};
-
+            species = species.toLowerCase();
             jsonData["gene"] = inputvalue;
-            jsonData["species"] = species.toLowerCase();
+            jsonData["species"] = species;
             $.ajax({
                 url: "/api/volcano",
                 type: "POST",
                 dataType: 'json',          
                 data: jsonData,
                 success: function(jdata) {
-                    document.getElementById("t2d-tables").innerHTML += `<div class='row'><div class= 'col text-right'>${appyter_button}</div><div class='col text-left'>${clear_button}</div></div>`
-                    window.Bokeh.embed.embed_item(jdata)
+                    var plot = jdata['plot']
+                    var tables = jdata['tables']
+                    var micro = jdata['micro']
+                    document.getElementById("buttons").innerHTML += `<div class='row'><div class= 'col text-right'>${appyter_button}</div><div class='col text-left'>${clear_button}</div></div>`
+                    window.Bokeh.embed.embed_item(plot)
                     document.getElementById("volcano-loading").innerHTML = "";
+                    
+                    
+                        
+                    var dir = "up";
+                    var titleRNA = `Top ${species} RNA-seq signatures where ${inputvalue} is ${dir}-regulated`
+                    var titlemicro = `Top ${species} microarray signatures where ${inputvalue} is ${dir}-regulated`
+                    gen_table(tables[0], `${species}-up`, titleRNA, false)
+                    if (micro) gen_table(tables[2], `${species}-micro-up`, titlemicro, true)
+                    dir = "down";
+                    var titleRNA = `Top ${species} RNA-seq signatures where ${inputvalue} is ${dir}-regulated`
+                    var titlemicro = `Top ${species} microarray signatures where ${inputvalue} is ${dir}-regulated`
+                    gen_table(tables[1], `${species}-down`, titleRNA, false)
+                    if (micro) gen_table(tables[3], `${species}-micro-down`, titlemicro, true)
+
                 }
             });
             

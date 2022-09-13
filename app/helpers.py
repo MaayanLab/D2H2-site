@@ -337,19 +337,24 @@ blue_map = cm.get_cmap('Blues_r')
 blue_norm = colors.Normalize(vmin=-0.25, vmax=1)
 
 def load_files(species, gene):
-    root_path = 'https://s3.appyters.maayanlab.cloud/storage/Gene_Expression_T2D_Signatures/'
+    root_path = 'static/searchdata/'
     pval_rna_df = pd.read_feather(f'{root_path}all_{species}_pval.f', columns=['index', gene]).set_index('index')
     # RNA-seq fold change
     fc_rna_df = pd.read_feather(f'{root_path}all_{species}_fc.f', columns=['index', gene]).set_index('index')
 
     # microarray data
-
-    pval_micro_df = pd.read_feather(f"{root_path}{species}_pruned_affy_pv.f", columns=['index', gene]).set_index('index')
-    fc_micro_df = pd.read_feather(f"{root_path}{species}_pruned_affy_fc.f", columns=['index', gene]).set_index('index')
-    micro_exists = True
+    try:
+        has_micro = True 
+        pval_micro_df = pd.read_feather(f"{root_path}{species}_pruned_affy_pv.f", columns=['index', gene]).set_index('index')
+        fc_micro_df = pd.read_feather(f"{root_path}{species}_pruned_affy_fc.f", columns=['index', gene]).set_index('index')
+    except:
+        print('no micro data')
+        has_micro = False 
+        pval_micro_df = pd.DataFrame()
+        fc_micro_df = pd.DataFrame()
     inst_df_input = pd.read_csv(f"{root_path}{species}_instances.tsv", sep='\t', index_col=0)
 
-    return  pval_rna_df, fc_rna_df, inst_df_input, pval_micro_df, fc_micro_df
+    return  pval_rna_df, fc_rna_df, inst_df_input, pval_micro_df, fc_micro_df, has_micro
 
 def combine_data(pval_df, fc_df, gene, isRNA=False, inst_df=None):
     # extract and combine data for each gene
@@ -455,13 +460,83 @@ def make_plot(comb_df, species, gene, micro=False, micro_df=None):
     plot.title.text_font_size = '14px'
 
     return plot
-    
+
+# create download link for table results
+def download_link(df, fname, isRNA=False):
+    if isRNA:
+        df['Link to Bulk RNA-seq Analysis'] = df['Link to Bulk RNA-seq Analysis'].apply(
+            lambda x: x.split('href=')[1].split('>')[0].replace('"', '')
+        )
+    df['Link to GEO Study'] = df['Link to GEO Study'].apply(
+        lambda x: x.split('href=')[1].split('>')[0].replace('"', '')
+    )
+    df['Signature'] = df['Signature'].apply(lambda x: x.replace('* ', ''))
+    csv = df.to_csv(fname, sep='\t', index=False)
+    link = f'<div>Download full results: <a href="{fname}" target=_blank>{fname}</a></div>'
+    return fname
+
+# get GEO links 
+@lru_cache
+def geo_link(sig_name, clickable):
+    gse_id = sig_name.split('_')[0].replace('* ', '')
+    geo_path = 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc='
+    if clickable:
+        return f'<a target="_blank" href="{geo_path}{gse_id}">{gse_id}</a>'
+    else:
+        return f'{geo_path}{gse_id}'
+
+@lru_cache
+def appyter_link(sig_name, inst=''):
+    text = f'Analysis of {sig_name}'
+    return f'<a target="_blank" href="{inst}">{text}</a>'
+
+# create tables of significant results with links to GEO 
+def make_tables(comb_df, species, gene, is_upreg, isRNA=False):
+    root_path = 'static/searchdata/'
+    if isRNA:
+        sigranks = pd.read_feather(f"{root_path}all_{species}_fc_sigrank.f", columns=['index', gene]).set_index('index')
+    else:
+        sigranks = pd.read_feather(f"{root_path}{species}_affy_fc_sigrank.f", columns=['index', gene]).set_index('index')
+    dir_df = comb_df[comb_df['fc'] > 0] if is_upreg else comb_df[comb_df['fc'] < 0]
+    if dir_df.shape[0] == 0:
+        return dir_df
+    dir_df = dir_df.drop(columns='logpv').sort_values(by='pval', ascending=True)
+    if isRNA:
+        dir_df['inst'] = dir_df.apply(lambda row: appyter_link(row.sig, inst=row.inst), axis=1)
+    dir_df['rank'] = [sigranks.loc[sig, gene] for sig in dir_df['sig']]
+    dir_df['sig'] = dir_df.apply(lambda row: f"* {row.sig}" if row.pval < 0.05 else row.sig, axis=1)
+    dir_df['pval'] = dir_df['pval'].apply(lambda x: f'{x:.3e}')
+    dir_df['fc'] = dir_df['fc'].apply(lambda x: f'{x:.4f}')
+    if isRNA:
+        dir_df = dir_df.rename(columns={'sig': 'Signature', 'pval': 'P-value', 'fc': 'Log2 Fold Change', 'inst': 'Link to Bulk RNA-seq Analysis', 'rank': 'Gene Rank in Signature'})
+    else:
+        dir_df = dir_df.rename(columns={'sig': 'Signature', 'pval': 'P-value', 'fc': 'Log2 Fold Change', 'rank': 'Gene Rank in Signature'})
+    dir_df['Link to GEO Study'] = dir_df['Signature'].apply(geo_link, clickable=True)
+    return dir_df
+
 @lru_cache
 def send_plot(species, gene):
-    pval_rna_df, fc_rna_df, inst_df_input, pval_micro_df, fc_micro_df = load_files(species, gene)
+    pval_rna_df, fc_rna_df, inst_df_input, pval_micro_df, fc_micro_df, micro_exists = load_files(species, gene)
     comb_df_input = combine_data(pval_rna_df, fc_rna_df, gene, isRNA=True, inst_df=inst_df_input)
-    micro_df_input = combine_data(pval_micro_df, fc_micro_df, gene)
+    if micro_exists:
+        micro_df_input = combine_data(pval_micro_df, fc_micro_df, gene)
+        plot = make_plot(comb_df_input, species, gene, micro=True, micro_df=micro_df_input)
+    else:
+        plot = make_plot(comb_df_input, species, gene)
+    fname='static/searchdata/t2d-files/'
+    up_comb_df_input = download_link(make_tables(comb_df_input, species, gene, is_upreg=True, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-upreg.tsv', isRNA=True)
+    dn_comb_df_input = download_link(make_tables(comb_df_input, species, gene, is_upreg=False, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-dnreg.tsv', isRNA=True)
+    if micro_exists:
+        up_micro_df_input = download_link(make_tables(micro_df_input, species, gene, is_upreg=True), fname + gene + '_' + species + '_' + 'micro-upreg.tsv')
+        dn_micro_df_input = download_link(make_tables(micro_df_input, species, gene, is_upreg=False), fname + gene + '_' + species + '_' + 'micro-dnreg.tsv')
+    else:
+        up_micro_df_input = ''
+        dn_micro_df_input = ''
+    return {'plot': json_item(plot, 'volcano-plot'), 'micro': micro_exists, 'tables': [up_comb_df_input, dn_comb_df_input, up_micro_df_input, dn_micro_df_input]}
 
-    plot = make_plot(comb_df_input, species, gene, micro=True, micro_df=micro_df_input)
-    return json_item(plot, 'volcano-plot')
+
+
+
+
+
 
