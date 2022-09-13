@@ -21,7 +21,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-	update_tweets_table()
+	#update_tweets_table()
 	return render_template('home.html')
 
 @app.route("/about", methods=['GET', 'POST'])
