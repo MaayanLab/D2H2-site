@@ -9,3 +9,4 @@ intermine
 waitress
 bokeh
 matplotlib
+tweepy
