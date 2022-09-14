@@ -38,8 +38,12 @@ def singlegene_home():
     return render_template("singlegene.html")
 
 @app.route("/geneset", methods=['GET', 'POST'])
-def geneset():
+def geneset_home():
     return render_template("geneset.html")
+
+@app.route("/geneset/<geneset>", methods=['GET', 'POST'])
+def geneset(geneset):
+    return render_template("geneset.html", genes=geneset)
 
 @app.route('/scg', methods=['GET', 'POST'])
 def scg():
