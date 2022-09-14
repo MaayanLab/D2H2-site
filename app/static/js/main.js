@@ -46,7 +46,7 @@ function gen_table(link, table_id, title, ismicro) {
 
         $(document).ready(function() {
             $(`#${table_id}`).DataTable({
-                order: [[1, 'asc']],
+                order: [[2, 'asc']],
             });
         })
         
@@ -523,7 +523,8 @@ $(document).ready(function() {
                     var plot = jdata['plot']
                     var tables = jdata['tables']
                     var micro = jdata['micro']
-                    document.getElementById("buttons").innerHTML += `<div class='row'><div class= 'col text-right'>${appyter_button}</div><div class='col text-left'>${clear_button}</div></div>`
+                    //document.getElementById("buttons").innerHTML += `<div class='row'><div class= 'col text-right'>${appyter_button}</div><div class='col text-left'>${clear_button}</div></div>`
+                    document.getElementById("buttons").innerHTML += `<div class='row text-center justify-content-center'>${clear_button}</div>`
                     window.Bokeh.embed.embed_item(plot)
                     document.getElementById("volcano-loading").innerHTML = "";
                     
