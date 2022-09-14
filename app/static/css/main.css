@@ -241,6 +241,12 @@ a {
     width: 800px;
 }
 
+.queries {
+    text-shadow: #71477a;
+    font-size: medium;
+    font-weight:normal;
+}
+
 .img-logo {
     height: 155px; 
     border-color: darkgray; 
@@ -373,7 +379,7 @@ nav select {
     display: none;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 950px) {
     nav ul     { display: none; }
     nav select { display: inline-block; }
 }

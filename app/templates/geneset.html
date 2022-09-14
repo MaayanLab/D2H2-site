@@ -42,7 +42,7 @@
 
               <div class="row justify-content-center" style="flex-wrap: wrap;">
                 <div class="col-md-10 col-sm-7 col-lg-6 text-center mr-3">
-                  <textarea name="list" rows="8" id="text-area1"
+                  <textarea class="input-form" name="list" rows="8" id="text-area1"
                     placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
                     onkeyup="geneCount($(this).val(), 1)" onchange="geneCount($(this).val(), 1)"
                     onfocus="geneCount($(this).val(), 1)"></textarea>
@@ -73,7 +73,8 @@
               </div>
 
               <div class="row text-center justify-content-center mt-2">
-                <img src="static/img/enrichrthumbnail.png" alt="" class="img-fluid img-thumbnail">
+                
+                <img src="{{url_for('static',filename= 'img/enrichrthumbnail.png')}}" alt="" class="img-fluid img-thumbnail">
               </div>
 
               <div class="justify-content-center row text-center mt-3">
@@ -98,7 +99,7 @@
 
               <div class="row justify-content-center" id="ea3_entries" style="flex-wrap: wrap;">
                 <div class="col-md-10 col-sm-7 col-lg-6 text-center">
-                  <textarea name="list" rows="8" id="text-area2"
+                  <textarea class="input-form" name="list" rows="8" id="text-area2"
                     placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
                     onkeyup="geneCount($(this).val(), 2)" onchange="geneCount($(this).val(), 2)"
                     onfocus="geneCount($(this).val(), 2)"></textarea>
@@ -138,7 +139,8 @@
                   </div>
 
                   <div class="row justify-content-center mt-4 mb-3">
-                    <img src="static/img/chea3-thumbnail.png" alt="" class="img-fluid img-thumbnail">
+                    
+                    <img src="{{url_for('static',filename= 'img/chea3-thumbnail.png')}}" " alt="" class="img-fluid img-thumbnail">
                   </div>
 
 
@@ -165,7 +167,7 @@
                   </div>
 
                   <div class="row justify-content-center mb-3 mt-4">
-                    <img src="static/img/kea3thumbnail.png" alt="" class="img-fluid img-thumbnail">
+                    <img src="{{url_for('static',filename= 'img/kea3thumbnail.png')}}" alt="" class="img-fluid img-thumbnail">
                   </div>
 
                   <div class="justify-content-center row text-center mb-3">
@@ -197,7 +199,7 @@
 
               <div class="row justify-content-center" id="sigcom_entries" style="flex-wrap: wrap;">
                 <div class="col-md-10 col-sm-7 col-lg-10 text-center mr-3">
-                  <textarea name="list" rows="8" id="text-area3"
+                  <textarea class="input-form" name="list" rows="8" id="text-area3"
                     placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
                     onkeyup="geneCount($(this).val(), 3)" onchange="geneCount($(this).val(), 3)"
                     onfocus="geneCount($(this).val(), 3)"></textarea>
@@ -233,7 +235,7 @@
               </div>
 
               <div class="row justify-content-center mb-3">
-                <img src="static/img/sigcoms.png" alt="" class="img-fluid img-thumbnail" style="height: 192px;">
+                <img src="{{url_for('static',filename= 'img/sigcoms.png')}}" alt="" class="img-fluid img-thumbnail" style="height: 192px;">
               </div>
 
               <div class="justify-content-center row text-center mt-3">
@@ -259,5 +261,18 @@
 {% endblock %}
 
 {% block footer %}
+
+
+<script>
+  $(document).ready(function() {
+    if (window.location.href.split("/").length > 4) {
+      var genes = window.location.href.split("/")[4].split('&').join('\r\n')
+      console.log(genes)
+      fillSetExample(genes)
+    }
+    
+    
+  })
+</script>
 
 {% endblock %}

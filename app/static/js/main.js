@@ -1,4 +1,49 @@
 
+function createTweetsTable() {
+    document.getElementById("tweets-res").innerHTML = "<div class='loader justify-content-center'></div>";
+    $.ajax({
+        url: "/gettweets",
+        type: "POST",
+        data: {},
+        dataType: 'json',
+    }).done(function(response) {
+
+        const data = response['tweets']
+
+        var headers = data[0]
+
+        var tabletext = "<table id='table-twitter' class='styled-table'><thead><tr>"
+
+        headers.forEach(function(header) {
+            tabletext += "<th>" + header + "</th>"
+        });
+
+        tabletext += "</tr><tbody>"
+        
+        for (var k = 1; k < data.length; k++) {
+
+
+            tabletext += "<tr><td>"+ data[k][0]+"</td><td>"+ data[k][1]+ "</td><td>" + data[k][2] + "</td><td>"+ data[k][3] + "</td>"
+            tabletext += "<td><a href='" + data[k][4] +"' target='_blank'>"+ 'link' +"</a></td>"
+
+            var analyze = data[k][5].replaceAll('[', '').replaceAll(']', '').replaceAll(' ', '').replaceAll("'","").split(',')
+            tabletext += "<td><a href='" + analyze[0] +"' target='_blank'>"+ "<img class='mr-2' src='static/img/d2h2logo.png' style='width: 25px;'/>" +"</a>"
+            tabletext += "<a href='" + analyze[1] +"' target='_blank'>"+ "<img class='mr-2' src='static/img/enrichrlogo.png' style='width: 25px;'/>" +"</a>"
+            tabletext += "<a href='" + analyze[2] +"' target='_blank'>"+ "<img class='mr-2' src='static/img/harmonizomelogo.png' style='width: 25px;'/>" +"</a>"
+            tabletext += "</td></tr>"
+            
+        }
+        
+        tabletext += "</tbody></table>";
+
+
+        $(document).ready(function(){
+            document.getElementById("tweets-res").innerHTML = tabletext;
+            table = $('#table-twitter').DataTable();
+        });
+
+    });
+}
 // COUNT GENES IN TEXT BOXS ON geneset page
 
 function geneCount(gene_list, num) {
@@ -21,6 +66,7 @@ function on_change(el) {
     document.getElementById(el.options[el.selectedIndex].value).style.display = 'block'; // Show el
 
 }
+
 
 function gen_table(link, table_id, title, ismicro) {
     var csvdata = parseCsv(link)
@@ -123,14 +169,13 @@ function loadFileAsText(section, delim){
 
 function fillSingleExample(gene) {
     $(document).ready(function() {
-    document.getElementById("singlegenenav").classList.add('active')
-    for (var i = 1; i < 7; i++) {
-        
-        var selectize = $(`#search${i}`)[0].selectize;
-        selectize.setValue(gene);
-    }
-
-})
+        document.getElementById("singlegenenav").classList.add('active')
+        for (var i = 1; i < 7; i++) {
+            
+            var selectize = $(`#search${i}`)[0].selectize;
+            selectize.setValue(gene);
+        }
+    })
 }
 
 function fillSingleExampleSkip(gene, skip) {
@@ -148,7 +193,13 @@ function fillSingleExampleHome(gene) {
     selectize.setValue(gene);
 }
 
-
+function fillSetExample(geneset) {
+    $('.input-form').each(function() {
+        console.log(geneset)
+        document.getElementById(this.id).value = geneset;
+        geneCount(geneset, this.id[this.id.length -1])
+    })
+}
 
 
 function fillSet(id, descid, count_id) {
@@ -247,56 +298,8 @@ $(document).ready(function() {
     if (currURL[3] == 'resources') {createResourcesTable();}
     if (currURL[3] == 'downloads') {createDownloadsTable();}
     if (currURL[3] == 'scg') {createWorkflowsTable();}
-    console.log(currURL)
-    if (currURL[3] == '') {createTweetsTable();}
 
-
-    function createTweetsTable() {
-        document.getElementById("tweets-res").innerHTML = "<div class='loader justify-content-center'></div>";
-        $.ajax({
-            url: "/gettweets",
-            type: "POST",
-            data: {},
-            dataType: 'json',
-        }).done(function(response) {
     
-            const data = response['tweets']
-    
-            var headers = data[0]
-    
-            var tabletext = "<table id='table-twitter' class='styled-table'><thead><tr>"
-    
-            headers.forEach(function(header) {
-                tabletext += "<th>" + header + "</th>"
-            });
-
-            tabletext += "</tr><tbody>"
-            
-            for (var k = 1; k < data.length; k++) {
-
-
-                tabletext += "<tr><td>"+ data[k][0]+"</td><td>"+ data[k][1]+ "</td><td>" + data[k][2] + "</td><td>"+ data[k][3] + "</td>"
-                tabletext += "<td><a href='" + data[k][4] +"' target='_blank'>"+ 'link' +"</a></td>"
-
-                var analyze = data[k][5].replaceAll('[', '').replaceAll(']', '').replaceAll(' ', '').replaceAll("'","").split(',')
-                console.log(analyze[0])
-                tabletext += "<td><a href='" + analyze[0] +"' target='_blank'>"+ "<img class='mr-2' src='static/img/d2h2logo.png' style='width: 25px;'/>" +"</a>"
-                tabletext += "<a href='" + analyze[1] +"' target='_blank'>"+ "<img class='mr-2' src='static/img/enrichrlogo.png' style='width: 25px;'/>" +"</a>"
-                tabletext += "<a href='" + analyze[2] +"' target='_blank'>"+ "<img class='mr-2' src='static/img/harmonizomelogo.png' style='width: 25px;'/>" +"</a>"
-                tabletext += "</td></tr>"
-                
-            }
-            
-            tabletext += "</tbody></table>";
-    
-    
-            $(document).ready(function(){
-                document.getElementById("tweets-res").innerHTML = tabletext;
-                table = $('#table-twitter').DataTable();
-            });
-
-        });
-    }
 
 
     function createWorkflowsTable() {
@@ -564,7 +567,7 @@ $(document).ready(function() {
 
 
     $('#archs-url').click(function() {  
-        console.log($("#search1").val())
+
         if ($("#search1").val()) {
             var inputvalue = $("#search1").val();
             
@@ -665,14 +668,20 @@ $(document).ready(function() {
 
             for (var k = 0; k < data.length; k++) {
                 tabletext += "<tr><td>" + data[k][0] + "</td><td>"+ data[k][1] +"</td><td>" + Number(data[k][2]).toPrecision(4) + "</td><td>"+Number(data[k][3]).toPrecision(4) +"</td><td>" + Number(data[k][4]).toPrecision(4) + "</td><td>"
-                
+                var api = currURL.join('/') + 'singlegene/'
+                var api2 = currURL.join('/') + 'geneset/'
+                var gene_arr = data[k][5].map(g => `<a href='${api}${g}' target='_blank'>${g}<a/>`);
+    
                 tabletext += `<button class="btn-custom btn-group-sm btn-collapse collapsed d-flex align-items-start text-left"
                         data-toggle="collapse" data-target="#genesoverlap-${data[k][0]}" aria-expanded="false"
                         aria-controls="genesoverlap-${data[k][0]}">
                         <div class="text">Show Overlapping Genes</div>
                 </button>
                     <div class="collapse" id="genesoverlap-${data[k][0]}">
-                        ${data[k][5].join(", ")}
+                        ${gene_arr.join(", ")}
+                        <a href="${api2}${data[k][5].join('&')}" target='_blank'><button class="btn-primary btn-group-sm d-flex align-items-start text-left">
+                            Submit list to Gene Set Queries
+                        </button></a>
                     </div></td>
                 `
                 tabletext += "<td>" + Number(data[k][6]).toPrecision(4) + "</td></tr>";
@@ -1349,7 +1358,7 @@ $(document).ready(function() {
             document.getElementById("dgea-loading").innerHTML = "";
 
             var download_link = "https://appyters.maayanlab.cloud/Bulk_RNA_seq/" + id.session_id + "/DEG_results_" + control_condition.split(" ").join('%20') + "%20vs.%20"+ perturb_condition.split(" ").join('%20') + ".csv"
-            console.log(download_link)
+
 
             const final_url = "https://appyters.maayanlab.cloud/Bulk_RNA_seq/" + id.session_id + "/#differential-gene-expression"
             window.open(final_url, '_blank')
