@@ -130,18 +130,18 @@
 
 
         <div class="justify-content-center row ml-1 mr-1 text-center">
-          <p class="mt-3">This Appyter provides a volcano plot visualization of the expression levels of a given gene in various Type 2 Diabetes transcriptomics signatures. Users may enter in a single gene symbol as input; the output is a volcano plot which plots each T2D signature by gene-specific p-value (y-axis) and fold change (x-axis).</p>
+          <p class="mt-3">This module provides a volcano plot visualization of the expression levels of a given gene in various Type 2 Diabetes transcriptomics signatures. Users may enter in a single gene symbol as input; the output is a volcano plot which plots each T2D signature by gene-specific p-value (y-axis) and fold change (x-axis) as well as the corresponding tables available for download.</p>
         </div>
 
         
 
-        <div class="row justify-content-center mb-3">
+        <div class="row justify-content-center mb-5">
           <img src="static/img/t2d-thumbnail.png" alt="" class="img-fluid img-thumbnail">
         </div>
 
-        <div class="justify-content-center row text-center mb-3">
+        <div class="justify-content-center row text-center mb-3" style="bottom: 0;"">
           <a id="appyter-home"><button type="button"
-              class="btn btn-primary btn-group-sm mt-3 mb-3">
+              class="btn btn-primary btn-group-sm mt-3 mb-3" >
               <span id="appyter-action" class="ml-3">Generate plot</span>
               <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
             </button>
@@ -182,12 +182,13 @@
           </div>
 
 
-          <div class="row text-center justify-content-center m-2">
-            <p>Perform enrichement analysis through Enricher with the entered or uploaded gene set agasint our curated Diabetes gene set library:</p>
+          <div class="row text-center justify-content-center m-2 mb-0">
+            <p>Perform enrichement analysis through Enricher with the entered or uploaded gene set agasint our curated Diabetes gene set library. 
+              Any overlapping gene can be submitted to the <a href="{{ url_for('singlegene_home')}}">Single Gene Queries</a> page and the sets of overlapping genes can be submitted to the <a href="{{ url_for('geneset_home') }}">Gene Set Queries page.</p>
           </div>
 
 
-          <div class="justify-content-center row text-center mt-3">
+          <div class="justify-content-center row text-center mt-1">
             <a id="diabetesEnrichr-query">
               <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Submit to Enrichr
                 <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">

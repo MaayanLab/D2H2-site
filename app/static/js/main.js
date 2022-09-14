@@ -679,9 +679,11 @@ $(document).ready(function() {
                 </button>
                     <div class="collapse" id="genesoverlap-${data[k][0]}">
                         ${gene_arr.join(", ")}
-                        <a href="${api2}${data[k][5].join('&')}" target='_blank'><button class="btn-primary btn-group-sm d-flex align-items-start text-left">
-                            Submit list to Gene Set Queries
-                        </button></a>
+                        <a href="${api2}${data[k][5].join('&')}" target='_blank'>
+                            <button class="btn btn-primary btn-group-sm d-flex align-items-start text-center" style="font-size: small;">
+                                Submit to Gene Set Queries
+                            </button>
+                        </a>
                     </div></td>
                 `
                 tabletext += "<td>" + Number(data[k][6]).toPrecision(4) + "</td></tr>";
