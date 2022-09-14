@@ -319,7 +319,6 @@ def get_workflows():
     table = pd.read_csv('./static/searchdata/workflows.csv')
     resources_list = table.values.tolist()
     table_list = [list(table.columns.values)] + resources_list
-    print(table_list)
     return table_list
 
 def get_tweets():
@@ -530,7 +529,6 @@ def send_plot(species, gene):
     if micro_exists and not(micro_df_input.empty):
         micro_df_input.dropna(inplace=True)
         up_micro_df = make_tables(micro_df_input, species, gene, is_upreg=True)
-        print(up_micro_df)
         up_micro_df_input = download_link(up_micro_df, fname + gene + '_' + species + '_' + 'micro-upreg.tsv')
         dn_micro_df = make_tables(micro_df_input, species, gene, is_upreg=False)
         dn_micro_df_input = download_link(dn_micro_df, fname + gene + '_' + species + '_' + 'micro-dnreg.tsv')

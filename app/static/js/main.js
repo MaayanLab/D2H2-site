@@ -28,36 +28,29 @@ function gen_table(link, table_id, title, ismicro) {
         var titletext = `<div class ="row text-center mt-3"> <h4>${title}</h4></div>`;
         var tabletext = `<table id='${table_id}' class='styled-table'><thead><tr>`
 
-        if (ismicro) {
-            tabletext += "<th>Signature</th><th>GEO Entry</th><th>P-value</th><th>Log2 Fold Change</th><th>Gene Rank in Signature</th><th>Boxplot Viewer</th></tr><tbody>"
-        } else {
-            tabletext += "<th>Signature</th><th>GEO Entry</th><th>P-value</th><th>Log2 Fold Change</th><th>Gene Rank in Signature</th><th>Boxplot Viewer</th></tr><tbody>"
-        }
+
+        tabletext += "<th>Signature</th><th>GEO Entry</th><th>P-value</th><th>Log2 Fold Change</th><th>Gene Rank in Signature</th><th>Boxplot Viewer</th></tr><tbody>"
+
 
         data.data.forEach(function(row) {
             var gse = row['Link to GEO Study'].split("=")[1]
             var curr = window.location.href
             var studyviewer = curr + gse
-            
-            if (ismicro) {
-                tabletext += "<tr><td>" +row['Signature'] +"</td><td><a href='" + row['Link to GEO Study'] + "' target='_blank'>" + gse +"</a></td><td>" +row['P-value'] +"</td><td>"+row['Log2 Fold Change'] + "</td><td>"+row['Gene Rank in Signature'] + "</td><td><a href='"+ studyviewer + "' target='_blank'><button class='btn btn-primary btn-group-sm'>"+gse + "Gene Viewer</button></a></td></tr>"
-            } else {
-                tabletext += "<tr><td>" +row['Signature'] +"</td><td><a href='" + row['Link to GEO Study'] + "' target='_blank'>" + gse +"</a></td><td>" +row['P-value'] +"</td><td>"+row['Log2 Fold Change'] + "</td><td>"+row['Gene Rank in Signature'] + "</td><td><a href='"+ studyviewer + "' target='_blank'><button class='btn btn-primary btn-group-sm'>"+gse + "Gene Viewer</button></a></td></tr>"
-            }
+            tabletext += "<tr><td>" +row['Signature'] +"</td><td><a href='" + row['Link to GEO Study'] + "' target='_blank'>" + gse +"</a></td><td>" +row['P-value'] +"</td><td>"+row['Log2 Fold Change'] + "</td><td>"+row['Gene Rank in Signature'] + "</td><td><a href='"+ studyviewer + "' target='_blank'><button class='btn btn-primary btn-group-sm'>"+gse + " Gene Viewer</button></a></td></tr>"
         });
 
         tabletext += "</tbody></table>";
-        var filename = link.split("/")[link.split("/").length -1 ]
+        var filename = link.split("/")[link.split("/").length -1]
         var download = `Download table: <a href="${link}">${filename}</a>`
         document.getElementById("t2d-tables").innerHTML += (titletext + tabletext + download)
+
         $(document).ready(function() {
             $(`#${table_id}`).DataTable({
                 order: [[1, 'asc']],
             });
         })
+        
     })
-
-    
 }
 
 async function parseCsv(file) {
@@ -130,10 +123,13 @@ function loadFileAsText(section, delim){
 
 function fillSingleExample(gene) {
     $(document).ready(function() {
+    document.getElementById("singlegenenav").classList.add('active')
     for (var i = 1; i < 7; i++) {
+        
         var selectize = $(`#search${i}`)[0].selectize;
         selectize.setValue(gene);
     }
+
 })
 }
 
@@ -504,20 +500,16 @@ $(document).ready(function() {
 
             const id = await res.json()
 
-            
-
-            
-            
             const final_url = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id
 
             const clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-4 mb-1' onclick='clear_home();'> Clear Results </button> </a>"
             appyter_button = `<a id="appyter-home" href="${final_url}" target='_blank'><button type="button"
-              class="btn btn-primary btn-group-sm mt-3 mb-2">
-              <span id="appyter-action" class="ml-3">Open in</span>
-              <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
-            </button>
-            </a>`
-            //window.open(final_url, '_blank')
+                                class="btn btn-primary btn-group-sm mt-3 mb-2">
+                                <span id="appyter-action" class="ml-3">Open in</span>
+                                <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
+                                </button>
+                                </a>`
+
             var jsonData = {};
             species = species.toLowerCase();
             jsonData["gene"] = inputvalue;
@@ -540,13 +532,16 @@ $(document).ready(function() {
                     var dir = "up";
                     var titleRNA = `Top ${species} RNA-seq signatures where ${inputvalue} is ${dir}-regulated`
                     var titlemicro = `Top ${species} microarray signatures where ${inputvalue} is ${dir}-regulated`
-                    gen_table(tables[0], `${species}-up`, titleRNA, false)
-                    if (micro) gen_table(tables[2], `${species}-micro-up`, titlemicro, true)
+                    gen_table('', 'faketable', '', false)
+                    gen_table(tables[0], `${species}_up`, titleRNA, false)
+                    if (micro) gen_table(tables[2], `${species}_micro_up`, titlemicro, true)
                     dir = "down";
                     var titleRNA = `Top ${species} RNA-seq signatures where ${inputvalue} is ${dir}-regulated`
                     var titlemicro = `Top ${species} microarray signatures where ${inputvalue} is ${dir}-regulated`
-                    gen_table(tables[1], `${species}-down`, titleRNA, false)
-                    if (micro) gen_table(tables[3], `${species}-micro-down`, titlemicro, true)
+                    gen_table(tables[1], `${species}_down`, titleRNA, false)
+                    if (micro) gen_table(tables[3], `${species}_micro_down`, titlemicro, true)
+
+                    
 
                 }
             });
