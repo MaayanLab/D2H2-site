@@ -110,29 +110,29 @@
                         {% for condition in conditions %}
                         <tr>
                             <!-- {% if loop.first %} -->
-                            <td rowspan="{{ conditions|length }}" class="align-middle">
+                            <td rowspan="{{ conditions|length }}" class="align-middle" style="width: auto">
                                 {{ group|safe }}
                             </td>
                             <!-- {% endif %} -->
-                            <td class="p-0 ml-3 border"><button style="background-color: #ECEFF1; color: black;"
-                                    class="btn w-100 m-0 rounded-0 py-0 condition-btn{{' active plotted '}}"
+                            <td class="p-0 ml-3 border"><button style="background-color: #ECEFF1; color: black; width: max-content;"
+                                    class="btn m-0 rounded-0 py-0 condition-btn{{' active plotted '}}"
                                     data-toggle="button" aria-pressed="{{ grouploop.first|lower }}" autocomplete="off"
-                                    data-group_label="{{ condition }}">{{ condition|safe }}</button>
+                                    data-group_label="{{ condition }}" >{{ condition|safe }} </button>
                             </td>
                             
                             <td  class="border" style="padding: 0px 18px">
                                 <!-- <button class="btn-custom btn-collapse collapsed d-flex"
-                                data-toggle="collapse" data-target="#{{ condition }}" aria-expanded="true"
-                                aria-controls="{{ condition }}">
+                                data-toggle="collapse" data-target="#samples-{{ condition }}" aria-expanded="true"
+                                aria-controls="samples-{{ condition }}">
                                     <div class="text">Show Sample IDs ({{ metadata_dict_samples[condition]['count'] }}) </div>
                                 </button>
-                                <div class="collapse" id="{{ condition }}"> {{ " ".join(metadata_dict_samples[condition]['samples']) }}</div> -->
+                                <div class="collapse" id="samples-{{ condition }}"> {{ " ".join(metadata_dict_samples[condition]['samples']) }}</div> -->
                                 <button class="btn-custom btn-group-sm btn-collapse collapsed d-flex align-items-center text-center"
-                                data-toggle="collapse" data-target="#samples-{{gse_id}}" aria-expanded="false"
-                                aria-controls="samples-{{gse_id}}">
+                                data-toggle="collapse" data-target="#samples-{{ gse_id }}" aria-expanded="false"
+                                aria-controls="samples-{{ gse_id }}">
                                 <div class="text">Show Sample IDs ({{ metadata_dict_samples[condition]['count'] }})</div>
                             </button>
-                            <div class="collapse" id="samples-{{gse_id}}">
+                            <div class="collapse" id="samples-{{ gse_id }}">
                                 {{ " ".join(metadata_dict_samples[condition]['samples']) }}
                             </div>
                                 
@@ -241,4 +241,23 @@
     </div>
     </div>
 </div>
+{% endblock %}
+
+{% block footer %}
+<script>
+if (localStorage.hasOwnProperty("gene")) {
+    $(document).ready(function() {
+        var gene = localStorage['gene']
+        localStorage.removeItem('gene');
+        var selectize = $("#gene-select")[0].selectize;
+        console.log(gene)
+        setTimeout(function() {
+            selectize.setValue(gene);
+        }, 500)
+        
+
+    })
+}
+</script>
+
 {% endblock %}

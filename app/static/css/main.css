@@ -1,4 +1,5 @@
 
+  
 
 h1 { color: #0f0724; font-family:  "IBM Plex Sans", sans-serif; font-size: 36px; font-weight: 350; line-height: 40px; margin: 0 0 16px; /* border: #d0d0d0; border-left-style: solid; border-right-style: solid; border-width: 2px; */}
 
@@ -84,12 +85,14 @@ label {
 }
 
 .page-container {
-    position: relative;
-    min-height: 80vh;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
   }
   
 .content-wrap {
-    padding-bottom: 2.5rem;    /* Footer height */
+    padding-bottom: 3rem;    /* Footer height */
 }
   
 
@@ -141,22 +144,27 @@ body {
     font-size: 15px; 
     font-weight: 400; 
     line-height: 24px; 
-    margin: 0 0 14px;
    /*  background-image: linear-gradient(to right, whitesmoke, rgb(166, 217, 241)); */
     background-color: #B0BEC5;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     padding-bottom: 0;
+    flex-grow: 1;
+    margin-bottom: 60px; /* Margin bottom by footer height */
 }
 
-.footer{
-    margin-top: auto;
+
+    
+.footer {
+    position: relative;
     background-color: #ECEFF1;
+    bottom: 0;
     width: 100%;
-    padding-bottom: 0%;
-    margin-bottom: 0%;
+    height: 135px; /* Set the fixed height of the footer here */
+    line-height: 60px; /* Vertically center the text there */
 }
+
 
 .btn-primary:hover {
     background-color: #71477a;
@@ -240,11 +248,22 @@ a {
     text-align: left;
     width: 800px;
 }
+.query-list {
+    border-style: solid;
+    border-color: rgb(145, 145, 145);
+    border-width: 1px;
+    border-radius: 2%;
+} 
+.query-list li {
+    margin: 10px 0;
+}
 
 .queries {
     text-shadow: #71477a;
-    font-size: medium;
+    font-size: 16px;
     font-weight:normal;
+    color: rgb(23, 30, 82);
+    text-decoration: underline;
 }
 
 .img-logo {
@@ -382,6 +401,95 @@ nav select {
 @media (min-width: 950px) {
     nav ul     { display: none; }
     nav select { display: inline-block; }
+}
+
+
+.toggle {
+    --width: 100px;
+    --height: calc(var(--width) / 3);
+
+    position: relative;
+    display: inline-block;
+    width: var(--width);
+    height: var(--height);
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+    border-radius: var(--height);
+    cursor: pointer;
+  }
+
+  .toggle input {
+    display: none;
+  }
+
+  .toggle .slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--height);
+    background-color: #9a8fc1;
+    transition: all 0.4s ease-in-out;
+  }
+
+  .toggle .slider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(var(--height));
+    height: calc(var(--height));
+    border-radius: calc(var(--height) / 2);
+    background-color: #fff;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s ease-in-out;
+  }
+
+  .toggle input:checked+.slider {
+    background-color: #9a8fc1;
+  }
+
+  .toggle input:checked+.slider::before {
+    transform: translateX(calc(var(--width) - var(--height)));
+  }
+
+  .toggle .labels {
+    position: absolute;
+    top: 8px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 14px;
+    font-family: "IBM Plex Sans", sans-serif;
+    transition: all 0.4s ease-in-out;
+  }
+
+.toggle .labels::after {
+    content: attr(data-off);
+    position: absolute;
+    right: 10px;
+    bottom: 12px;
+    color: #ffffff;
+    opacity: 1;
+    transition: all 0.4s ease-in-out;
+}
+
+.toggle .labels::before {
+    content: attr(data-on);
+    position: absolute;
+    left: 10px;
+    bottom: 12px;
+    color: #ffffff;
+    opacity: 0;
+    transition: all 0.4s ease-in-out;
+}
+
+.toggle input:checked~.labels::after {
+    opacity: 0;
+}
+
+  .toggle input:checked~.labels::before {
+    opacity: 1;
 }
 
 

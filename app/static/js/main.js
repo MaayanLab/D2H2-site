@@ -58,6 +58,10 @@ function clear_home() {
 
 }
 
+function store_gene(gene) {
+    localStorage('gene', gene)
+}
+
 function on_change(el) {
 
     for (var i =0; i < el.options.length; i++) {
@@ -68,7 +72,7 @@ function on_change(el) {
 }
 
 
-function gen_table(link, table_id, title, ismicro) {
+function gen_table(link, table_id, title, gene) {
     var csvdata = parseCsv(link)
     csvdata.then(function(data) {
         var titletext = `<div class ="row text-center mt-3"> <h4>${title}</h4></div>`;
@@ -82,7 +86,7 @@ function gen_table(link, table_id, title, ismicro) {
             var gse = row['Link to GEO Study'].split("=")[1]
             var curr = window.location.href
             var studyviewer = curr + gse
-            tabletext += "<tr><td>" +row['Signature'] +"</td><td><a href='" + row['Link to GEO Study'] + "' target='_blank'>" + gse +"</a></td><td>" +row['P-value'] +"</td><td>"+row['Log2 Fold Change'] + "</td><td>"+row['Gene Rank in Signature'] + "</td><td><a href='"+ studyviewer + "' target='_blank'><button class='btn btn-primary btn-group-sm'>"+gse + " Gene Viewer</button></a></td></tr>"
+            tabletext += "<tr><td>" +row['Signature'] +"</td><td><a href='" + row['Link to GEO Study'] + "' target='_blank'>" + gse +"</a></td><td>" +row['P-value'] +"</td><td>"+row['Log2 Fold Change'] + "</td><td>"+row['Gene Rank in Signature'] + "</td><td><a href='"+ studyviewer + `' target='_blank'><button class='btn btn-primary btn-group-sm' onclick="setGene('${gene}')">`+gse + " Gene Viewer</button></a></td></tr>"
         });
 
         tabletext += "</tbody></table>";
@@ -219,6 +223,10 @@ function fillSet(id, descid, count_id) {
         geneCount(genes, count_id)
 
     });
+}
+
+function setGene(gene) {
+    localStorage.setItem('gene', gene)
 }
 
 $(document).ready(function() {
@@ -480,10 +488,13 @@ $(document).ready(function() {
         clear_home()
         if ($("#gene-select").val()) {
             var inputvalue = $("#gene-select").val();
-            if (document.getElementById('human').className.includes('btn-primary')) {
+            var isChecked= document.getElementById("species-val").checked;
+            if (!isChecked) {
+                console.log('human')
                 var species = 'Human';
                 var arg = 'human_gene';
             } else {
+                console.log('mouse')
                 var species = 'Mouse';
                 var arg = 'mouse_gene';
             }
@@ -512,10 +523,10 @@ $(document).ready(function() {
                                 <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
                                 </button>
                                 </a>`
-
+            var gene = inputvalue;
             var jsonData = {};
             species = species.toLowerCase();
-            jsonData["gene"] = inputvalue;
+            jsonData["gene"] = gene;
             jsonData["species"] = species;
             $.ajax({
                 url: "/api/volcano",
@@ -537,13 +548,13 @@ $(document).ready(function() {
                     var titleRNA = `Top ${species} RNA-seq signatures where ${inputvalue} is ${dir}-regulated`
                     var titlemicro = `Top ${species} microarray signatures where ${inputvalue} is ${dir}-regulated`
                     gen_table('', 'faketable', '', false)
-                    gen_table(tables[0], `${species}_up`, titleRNA, false)
-                    if (micro) gen_table(tables[2], `${species}_micro_up`, titlemicro, true)
+                    gen_table(tables[0], `${species}_up`, titleRNA, gene)
+                    if (micro) gen_table(tables[2], `${species}_micro_up`, titlemicro, gene)
                     dir = "down";
                     var titleRNA = `Top ${species} RNA-seq signatures where ${inputvalue} is ${dir}-regulated`
                     var titlemicro = `Top ${species} microarray signatures where ${inputvalue} is ${dir}-regulated`
-                    gen_table(tables[1], `${species}_down`, titleRNA, false)
-                    if (micro) gen_table(tables[3], `${species}_micro_down`, titlemicro, true)
+                    gen_table(tables[1], `${species}_down`, titleRNA, gene)
+                    if (micro) gen_table(tables[3], `${species}_micro_down`, titlemicro, gene)
 
                     
 
@@ -551,7 +562,7 @@ $(document).ready(function() {
             });
             
         } else {
-            window.open('https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/', '_blank')
+           alert("Please select valid gene symbol")
         }
     });
 
@@ -1425,31 +1436,11 @@ $(document).ready(function() {
         }
     });
 
-
-    $('#human').click(function() {
-        $('#human').prop('class', 'species-tab btn btn-primary m-1');
-        $('#mouse').prop('class', 'species-tab btn btn-inactive m-1');
-        $gene_select[0].selectize.clearOptions();
-        $gene_select[0].selectize.load(function(callback) {
-            $.ajax({
-                url: 'api/genes/human',
-                dataType: 'json',
-                error: function () {
-                    callback();
-                },
-                success: function (res) {
-
-                    callback(res);
-                }
-            });
-        });         
-    })
-
-    $('#mouse').click(function() {
-        $('#mouse').prop('class', 'species-tab btn btn-primary m-1');
-        $('#human').prop('class', 'species-tab btn btn-inactive m-1');
-        $gene_select[0].selectize.clearOptions();
-        $gene_select[0].selectize.load(function(callback) {
+    $('#species-val').on('change', function() {
+        if ($(this).is(':checked')) {
+            switchStatus = $(this).is(':checked');
+            $gene_select[0].selectize.clearOptions();
+            $gene_select[0].selectize.load(function(callback) {
             $.ajax({
                 url: 'api/genes/mouse',
                 dataType: 'json',
@@ -1462,10 +1453,25 @@ $(document).ready(function() {
                 }
             });
         });         
+        }
+        else {
+            switchStatus = $(this).is(':checked');
+            $gene_select[0].selectize.clearOptions();
+            $gene_select[0].selectize.load(function(callback) {
+            $.ajax({
+                url: 'api/genes/human',
+                dataType: 'json',
+                error: function () {
+                    callback();
+                },
+                success: function (res) {
+
+                    callback(res);
+                }
+            });
+        });         
+        }
     })
-    
-
-
 
 
 })
