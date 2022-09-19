@@ -7,8 +7,9 @@
 <div class="viewer-title">
     <div class="container viewer-title d-flex align-items-center justify-content-center text-center mt-4">
         <h4>
-            <a class="brand px-3 py-3 col-12" href="{{ gse_metadata[species][geo_accession].get('gse_link', ['#'])[0]|safe }}"  
-            target="_blank" rel="noopener noreferrer" style="text-decoration: none">{{ geo_accession }}: {{
+            <a class="brand px-3 py-3 col-12"
+                href="{{ gse_metadata[species][geo_accession].get('gse_link', ['#'])[0]|safe }}" target="_blank"
+                rel="noopener noreferrer" style="text-decoration: none">{{ geo_accession }}: {{
                 gse_metadata[species][geo_accession].get('title', ["Title Not Found"])[0]|safe}}
             </a>
         </h4>
@@ -56,7 +57,8 @@
                 <div class="h4 pl-2 mt-5 mb-4">Description</div>
                 <div class="custom-col p-2">
                     <p class="text-br-red font-weight-bold">Submission Date: <span class="font-weight-normal"
-                            style="color:#212529">{{ (gse_metadata[species][geo_accession].get('submission_date')[0][:-5]
+                            style="color:#212529">{{
+                            (gse_metadata[species][geo_accession].get('submission_date')[0][:-5]
                             + ',' + gse_metadata[species][geo_accession].get('submission_date')[0][-5:])|safe }}</span>
                     </p>
                     {% for paragraph in gse_metadata[species][geo_accession].get('summary', ['Summary Not Found']) %}
@@ -87,7 +89,7 @@
             </div>
 
             <div class="d-none d-lg-block">
-                
+
             </div>
 
         </div>
@@ -95,115 +97,179 @@
         <!-- Table -->
         <div class="col-lg-4 col-xl-3 p-2">
             <p class="m-3" style="font-size: 0.97rem;">Select conditions below to toggle them from the plot:</p>
-                
-                <table id="condition-table" class="text-center">
-                    <thead>
-                        <tr>
-                            <th>GROUP</th>
-                            <th>CONDITION</th>
-                            <th>SAMPLES</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for group, conditions in metadata_dict.items() %}
-                        {% set grouploop = loop %}
-                        {% for condition in conditions %}
-                        <tr>
-                            <!-- {% if loop.first %} -->
-                            <td rowspan="{{ conditions|length }}" class="align-middle" style="width: auto">
-                                {{ group|safe }}
-                            </td>
-                            <!-- {% endif %} -->
-                            <td class="p-0 ml-3 border"><button style="background-color: #ECEFF1; color: black; width: max-content;"
-                                    class="btn m-0 rounded-0 py-0 condition-btn{{' active plotted '}}"
-                                    data-toggle="button" aria-pressed="{{ grouploop.first|lower }}" autocomplete="off"
-                                    data-group_label="{{ condition }}" >{{ condition|safe }} </button>
-                            </td>
-                            
-                            <td  class="border" style="padding: 0px 18px">
-                                <!-- <button class="btn-custom btn-collapse collapsed d-flex"
+
+            <table id="condition-table" class="text-center">
+                <thead>
+                    <tr>
+                        <th>GROUP</th>
+                        <th>CONDITION</th>
+                        <th>SAMPLES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group, conditions in metadata_dict.items() %}
+                    {% set grouploop = loop %}
+                    {% for condition in conditions %}
+                    <tr>
+                        <!-- {% if loop.first %} -->
+                        <td rowspan="{{ conditions|length }}" class="align-middle" style="width: auto">
+                            {{ group|safe }}
+                        </td>
+                        <!-- {% endif %} -->
+                        <td class="p-0 ml-3 border"><button
+                                style="background-color: #ECEFF1; color: black; width: max-content;"
+                                class="btn m-0 rounded-0 py-0 condition-btn{{' active plotted '}}" data-toggle="button"
+                                aria-pressed="{{ grouploop.first|lower }}" autocomplete="off"
+                                data-group_label="{{ condition }}">{{ condition|safe }} </button>
+                        </td>
+
+                        <td class="border" style="padding: 0px 18px">
+                            <!-- <button class="btn-custom btn-collapse collapsed d-flex"
                                 data-toggle="collapse" data-target="#samples-{{ condition }}" aria-expanded="true"
                                 aria-controls="samples-{{ condition }}">
                                     <div class="text">Show Sample IDs ({{ metadata_dict_samples[condition]['count'] }}) </div>
                                 </button>
                                 <div class="collapse" id="samples-{{ condition }}"> {{ " ".join(metadata_dict_samples[condition]['samples']) }}</div> -->
-                                <button class="btn-custom btn-group-sm btn-collapse collapsed d-flex align-items-center text-center"
+                            <button
+                                class="btn-custom btn-group-sm btn-collapse collapsed d-flex align-items-center text-center"
                                 data-toggle="collapse" data-target="#samples-{{ gse_id }}" aria-expanded="false"
                                 aria-controls="samples-{{ gse_id }}">
-                                <div class="text">Show Sample IDs ({{ metadata_dict_samples[condition]['count'] }})</div>
+                                <div class="text">Show Sample IDs ({{ metadata_dict_samples[condition]['count'] }})
+                                </div>
                             </button>
                             <div class="collapse" id="samples-{{ gse_id }}">
                                 {{ " ".join(metadata_dict_samples[condition]['samples']) }}
                             </div>
-                                
-                            </td>
-                
-                                
-                        </tr>
-                        {% endfor %}
-                        {% endfor %}
-                    </tbody>
-                </table>
+
+                        </td>
+
+
+                    </tr>
+                    {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="species" hidden>{{ species }}</div>
+
+
+<!-- Abstract small -->
+<div class="row justify-content-center">
+    <div class="col-10">
+
+        <!-- Abstract large -->
+        <div class="d-block d-lg-none">
+            <div class="h4 pl-2 mt-5 mb-2">Description</div>
+            <div class="custom-col p-2">
+                <p class="text-br-red font-weight-bold">Submission Date: <span class="font-weight-normal"
+                        style="color:#212529">{{ (gse_metadata[species][geo_accession].get('submission_date')[0][:-5]
+                        + ',' + gse_metadata[species][geo_accession].get('submission_date')[0][-5:])|safe }}</span>
+                </p>
+                {% for paragraph in gse_metadata[species][geo_accession].get('summary', ['Summary Not Found']) %}
+                {% if loop.first %}
+                <p class="text-br-red font-weight-bold">Summary: <span class="font-weight-normal"
+                        style="color:#212529">{{ paragraph|safe }}</span></p>
+                {% else %}
+                <p>{{ paragraph|safe }}</p>
+                {% endif %}
+                {% endfor %}
+                <p class="text-br-red font-weight-bold">GEO Accession ID: <a class="font-weight-normal"
+                        style="color: #0e63c4"
+                        href="{{ gse_metadata[species][geo_accession].get('gse_link', ['#'])[0]|safe }}" target="_blank"
+                        rel="noopener noreferrer">{{
+                        gse_metadata[species][geo_accession].get('geo_accession', ['GEO Accession ID Not Found'])[0]
+                        }}</a></p>
+                {% if gse_metadata[species][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed
+                ID' %}
+                <p class="text-br-red font-weight-bold">PMID: <a class="font-weight-normal" style="color: #0e63c4"
+                        href="{{ gse_metadata[species][geo_accession].get('pubmed_link', ['#'])[0]|safe }}"
+                        target="_blank" rel="noopener noreferrer">{{
+                        gse_metadata[species][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe }}</a></p>
+                {% else %}
+                <p class="text-br-red font-weight-bold">PMID: <span class="font-weight-normal"
+                        style="color:#212529">N/A</span></p>
+                {% endif %}
             </div>
         </div>
     </div>
+</div>
 
-    <div id="species" hidden>{{ species }}</div>
-    
 
-    <!-- Abstract small -->
-    <div class="row justify-content-center">
-        <div class="col-10">
-
-            <!-- Abstract large -->
-            <div class="d-block d-lg-none">
-                <div class="h4 pl-2 mt-5 mb-2">Description</div>
-                <div class="custom-col p-2">
-                    <p class="text-br-red font-weight-bold">Submission Date: <span class="font-weight-normal"
-                            style="color:#212529">{{ (gse_metadata[species][geo_accession].get('submission_date')[0][:-5]
-                            + ',' + gse_metadata[species][geo_accession].get('submission_date')[0][-5:])|safe }}</span>
-                    </p>
-                    {% for paragraph in gse_metadata[species][geo_accession].get('summary', ['Summary Not Found']) %}
-                    {% if loop.first %}
-                    <p class="text-br-red font-weight-bold">Summary: <span class="font-weight-normal"
-                            style="color:#212529">{{ paragraph|safe }}</span></p>
-                    {% else %}
-                    <p>{{ paragraph|safe }}</p>
-                    {% endif %}
-                    {% endfor %}
-                    <p class="text-br-red font-weight-bold">GEO Accession ID: <a class="font-weight-normal"
-                            style="color: #0e63c4"
-                            href="{{ gse_metadata[species][geo_accession].get('gse_link', ['#'])[0]|safe }}"
-                            target="_blank" rel="noopener noreferrer">{{
-                            gse_metadata[species][geo_accession].get('geo_accession', ['GEO Accession ID Not Found'])[0]
-                            }}</a></p>
-                    {% if gse_metadata[species][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed
-                    ID' %}
-                    <p class="text-br-red font-weight-bold">PMID: <a class="font-weight-normal" style="color: #0e63c4"
-                            href="{{ gse_metadata[species][geo_accession].get('pubmed_link', ['#'])[0]|safe }}"
-                            target="_blank" rel="noopener noreferrer">{{
-                            gse_metadata[species][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe }}</a></p>
-                    {% else %}
-                    <p class="text-br-red font-weight-bold">PMID: <span class="font-weight-normal"
-                            style="color:#212529">N/A</span></p>
-                    {% endif %}
+<div class="row justify-content-center mb-3 mt-2">
+    <div class="col-7">
+        <div class="custom-col justify-content-center" style="overflow: visible">
+            <h4 class="text-center mt-3">Select conditions:</h4>
+            <div class="row justify-content-center mt-4">
+                <div class="w-25">
+                    <p class="text-br-red text-center font-weight-bold">Control Condition</p>
+                    <select id="condition-select-control" class="mt-2 mb-5 mr-2"
+                        data-url-control="{{ url_for('conditions_api', geo_accession=geo_accession) }}"></select>
+                </div>
+                <div class="w-25">
+                    <p class="text-br-red text-center font-weight-bold">Perturbation Condition</p>
+                    <select id="condition-select-perturb" class="mt-2 mb-5 ml-2"
+                        data-url-perturb="{{ url_for('conditions_api', geo_accession=geo_accession) }}"></select>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="row justify-content-center mb-3 mt-2">
-        <div class="col-8">
+
 
         
-            <div class="h4 pl-2 mt-2 mb-4">Differential Gene Expression Analysis</div>
-        <div class="custom-col justify-content-center" style = "overflow: visible">
-            <div class="h4 pl-2 mb-4 mt-3"></div>
-            <div class="row justify-content-center mt-4">
+            <div class="h4 pl-2 mt-4 mb-4 text-center">Differential Gene Expression Analysis</div>
 
+            <div class="h6 text-center mb-2"> Select Normalization Methods:</div>
+                <div class="row justify-items-center justify-content-center">
+                    <div class="h9 m-2">logCPM normalization:</div>
+                    <label class="switch" for="logCPM">
+                        <input type="checkbox" id="logCPM" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <div class="h9 m-2">log normalization:</div>
+                    <label class="switch" for="log"> 
+                        <input type="checkbox" id="log">
+                        <span class="slider round"></span>
+                    </label>
+                    <div class="h9 m-2">Z normalization:</div>
+                    <label class="switch" for="z"> 
+                        <input type="checkbox" id="z" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <div class="h9 m-2">Quantile normalization:</div>
+                    <label class="switch" for="q"> 
+                        <input type="checkbox" id="q">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            <div class="h6 text-center mt-3"> Select differential expression analysis method:</div>
+            <div class="row justify-items-center justify-content-center mb-3 mt-3 text-center">
+                <select name="Select Method" id="method" class="libpicker" style="width: 100px;">
+                    <option value="limma">limma</option>
+                    <option value="edgeR">edgeR</option>
+                    <option value="DESeq2">DESeq2</option>
+                </select>
+            </div>
+
+            <div class="row justify-content-center">
+                <button id="dge-button" class="btn btn-primary mx-auto mt-2 mb-3" style="width: 125px"
+                    data-url-samp="{{ url_for('samples_api', geo_accession=geo_accession) }}"
+                    data-gse-id="{{ gse_metadata[species][geo_accession].get('geo_accession', ['No GSE ID'])[0] }}"
+                    data-gpl-id="{{ gse_metadata[species][geo_accession].get('cur_gpl', ['No GPL ID'])[0] }}">
+                    Compute DGE
+                </button>
+            </div>
+
+            <div id="dge-loading" class="m-3"></div>
+
+            {% if 'Expression profiling by high throughput sequencing' == gse_metadata[species][geo_accession].get('type')[0] %}
+            <div class="row justify-content-center mt-4">
+                
+                <div class="h4 pl-2 mt-4 mb-4 text-center">Bulk RNA-seq Appyter</div>
                 <div class="row text-center justify-content-center mt-2">
                     <div class="col-10">
-                        <p>This pipeline enables you to analyze and visualize your bulk RNA sequencing datasets
+                        <p> This pipeline enables you to analyze and visualize your bulk RNA sequencing datasets
                             with an array of downstream analysis and visualization tools. The pipeline includes:
                             PCA analysis, Clustergrammer interactive heatmap, library size analysis,
                             differential gene expression analysis, enrichment analysis, and L1000 small molecule
@@ -211,53 +277,53 @@
                         <img src="static/img/bulkdeg-thumbnail.png" alt="" class="img-fluid img-thumbnail">
                     </div>
                 </div>
+                
 
             </div>
-            <div class="row justify-content-center mt-4">
-                <div class="w-25">
-                    <p class="text-br-red text-center font-weight-bold">Control Condition</p>
-                    <select id="condition-select-control" class="mt-2 mb-5 mr-2" 
-                        data-url-control="{{ url_for('conditions_api', geo_accession=geo_accession) }}"></select>
-                </div>
-                <div class="w-25">
-                    <p class="text-br-red text-center font-weight-bold">Perturbation Condition</p>
-                    <select id="condition-select-perturb" class="mt-2 mb-5 ml-2" 
-                        data-url-perturb="{{ url_for('conditions_api', geo_accession=geo_accession) }}"></select>
-                </div>
-            </div>
+            
 
             <div class="row justify-content-center">
-                <button id="dgea-button" class="btn btn-outline-primary mx-auto mt-2 mb-3" style="width: 100px"
+                <button id="dgea-button" class="btn btn-primary mx-auto mt-2 mb-3"
                     data-url-samp="{{ url_for('samples_api', geo_accession=geo_accession) }}"
                     data-gse-id="{{ gse_metadata[species][geo_accession].get('geo_accession', ['No GSE ID'])[0] }}"
-                    data-gpl-id="{{ gse_metadata[species][geo_accession].get('cur_gpl', ['No GPL ID'])[0] }}">Analyze</button>
+                    data-gpl-id="{{ gse_metadata[species][geo_accession].get('cur_gpl', ['No GPL ID'])[0] }}">
+                    Open in <img src="{{ url_for('static', filename='img/appyters_logo.svg')}}" style="width: 100px;">
+                </button>
+                
             </div>
+            {% endif %}
 
-            <div id="dgea-loading" class="m-3">
-
-            </div>
+            <div id="dgea-loading" class="m-3"></div>
 
         </div>
+
+
+
     </div>
-    </div>
+
 </div>
+
+<div id="dge-plot" class="centered"></div>
+<div class="col-6 justify-content-center mx-auto text-center align-items-center"><div id="dge-table-area"></div></div>
+
+
+
+
 {% endblock %}
 
 {% block footer %}
 <script>
-if (localStorage.hasOwnProperty("gene")) {
-    $(document).ready(function() {
-        var gene = localStorage['gene']
-        localStorage.removeItem('gene');
-        var selectize = $("#gene-select")[0].selectize;
-        console.log(gene)
-        setTimeout(function() {
-            selectize.setValue(gene);
-        }, 500)
-        
-
-    })
-}
+    if (localStorage.hasOwnProperty("gene")) {
+        $(document).ready(function () {
+            var gene = localStorage['gene']
+            localStorage.removeItem('gene');
+            var selectize = $("#gene-select")[0].selectize;
+            console.log(gene)
+            setTimeout(function () {
+                selectize.setValue(gene);
+            }, 500)
+        })
+    }
 </script>
 
 {% endblock %}

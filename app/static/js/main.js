@@ -58,6 +58,12 @@ function clear_home() {
 
 }
 
+function clear_dge() {
+    document.getElementById("dge-table-area").innerHTML = ""
+    document.getElementById("dge-plot").innerHTML = ""
+    document.getElementById("dge-loading").innerHTML = ""
+}
+
 function store_gene(gene) {
     localStorage('gene', gene)
 }
@@ -297,7 +303,12 @@ $(document).ready(function() {
     
             $(document).ready(function(){
                 document.getElementById("resources").innerHTML = tabletext;
-                table = $('#table-resources').DataTable();
+                table = $('#table-resources').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', {extend: 'csv', title: 'D2H2-resourceslist'}
+                    ]
+                });
             });
 
         });
@@ -703,7 +714,11 @@ $(document).ready(function() {
 
 
             $(document).ready(function(){
-                $('#table-enrichr').DataTable();
+                $('#table-enrichr').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                    'copy', {extend: 'csv', title: `${desc}-Diabetes-Perturbations-Enrichr-res`}
+                ]});
                     
             });
 
@@ -749,7 +764,11 @@ $(document).ready(function() {
 
 
             $(document).ready(function(){
-                $('#table-gwas').DataTable();
+                $('#table-gwas').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                    'copy', {extend: 'csv', title: `${inputvalue}-gwas-res`}
+                ]});
             });
 
             document.getElementById("gwas-res").innerHTML = tabletext + clear_button;
@@ -794,7 +813,11 @@ $(document).ready(function() {
                 tabletext += "</tbody></table>";
 
                 $(document).ready(function(){
-                    $('#tablecor').DataTable();
+                    $('#tablecor').DataTable({
+                        dom: 'Bfrtip',
+                        buttons: [
+                        'copy', {extend: 'csv', title: `${gene}-archs4-corr`}
+                    ]});
                 });
 
                 document.getElementById("archs4-res").innerHTML = tabletext + clear_button;
@@ -848,7 +871,11 @@ $(document).ready(function() {
             tabletext += "</tbody></table>";
 
             $(document).ready(function(){
-                $('#table-pheno').DataTable();
+                $('#table-pheno').DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                    'copy', {extend: 'csv', title: `${inputvalue}-mgi-pheno`}
+                ]});
             });
 
             
@@ -923,7 +950,11 @@ $(document).ready(function() {
             
             $(document).ready(function(){
 
-                $(`.table-enrichr`).DataTable();
+                $(`.table-enrichr`).DataTable({
+                    dom: 'Bfrtip',
+                    buttons: [
+                    'copy', {extend: 'csv', title: `${inputvalue}-enrichr-tfs`}
+                ]});
             });
             
         
@@ -1297,7 +1328,13 @@ $(document).ready(function() {
 
     // MAKE STUIDIES TABLE A DataTable
 
-    $('#studies-table').DataTable({responsive: true});
+    $('#studies-table').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+        'copy', {extend: 'csv', title: `D2H2-studies-table`}
+        ],
+        responsive: true
+    });
 
 
     // OPEN CUSTOMIZED WORKFLOW DEPENDING ON SELECTION IN SCG
@@ -1320,6 +1357,7 @@ $(document).ready(function() {
     $('#dgea-button').on('click', async function() {
         var control_condition = $('#condition-select-control').val();
         var perturb_condition = $('#condition-select-perturb').val();
+        var species = document.getElementById("species").innerText
 
         if (!control_condition || !perturb_condition ) {
             alert("Please select both conditions")
@@ -1329,7 +1367,7 @@ $(document).ready(function() {
         document.getElementById("dgea-loading").innerHTML = "<div class='loader justify-content-center'></div>";
 
         var gse = currURL[3]
-        var gsedata = JSON.stringify({'gse': gse, 'control': control_condition, 'perturb': perturb_condition});
+        var gsedata = JSON.stringify({'gse': gse, 'control': control_condition, 'perturb': perturb_condition, 'species': species});
 
 
         
@@ -1375,6 +1413,117 @@ $(document).ready(function() {
 
             const final_url = "https://appyters.maayanlab.cloud/Bulk_RNA_seq/" + id.session_id + "/#differential-gene-expression"
             window.open(final_url, '_blank')
+
+        });
+    });
+
+    $('#dge-button').on('click', async function() {
+        clear_dge()
+        var control_condition = $('#condition-select-control').val();
+        var perturb_condition = $('#condition-select-perturb').val();
+
+        if (!control_condition || !perturb_condition ) {
+            alert("Please select both conditions")
+            return;
+        }
+
+        document.getElementById("dge-loading").innerHTML = "<div class='loader justify-content-center'></div>";
+
+        var gse = currURL[3]
+
+        var species = document.getElementById("species").innerText
+        var method = document.getElementById("method").value
+        console.log(method)
+         
+        var logCPM = document.getElementById("logCPM").checked
+        var log = document.getElementById("log").checked
+        var q = document.getElementById("q").checked
+        var z = document.getElementById("z").checked
+        var norms = {'logCPM': logCPM, 'log': log, 'q': q, 'z': z}
+        console.log(norms)
+
+
+        var gsedata = JSON.stringify({'gse': gse, 'control': control_condition, 'perturb': perturb_condition, 'method': method, 'species': species, 'norms': norms});
+        
+        $.ajax({
+            url: "/dgeapi",
+            contentType: 'application/json',
+            type: "POST",
+            dataType: 'json',
+            data: gsedata
+        }).done(async function(response) {
+            document.getElementById("dge-loading").innerHTML = "";
+            var plot = response['plot']
+            var table = response['table']
+
+            var rows = table.split('\n').slice(1, -1);
+            clear_dge()
+            window.Bokeh.embed.embed_item(plot)
+
+            var table_id = 'dge-table'
+            var tabletext = `<table id='${table_id}' class='styled-table'><thead><tr>`
+            const clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_dge();'> Clear Results </button> </a>"
+            var api = currURL.splice(0, 3).join('/') + '/singlegene/'
+            console.log(api)
+
+            if (method === 'limma') {
+                tabletext += "<th></th><th>logFC</th><th>AvgExpr</th><th>t</th><th>P Value</th><th>Adj. P Value</th><th>B</th></tr><tbody>"
+                rows.forEach(function(row) {
+                    var vals = row.replace(/\s\s+/g, ' ').split(' ');
+                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>`  + vals[0] + "</a></td><td>" + vals[1]+"</td><td>" + vals[2] +"</td><td>"+ vals[3] + "</td><td>"+ vals[4] + "</td><td>"+ vals[5] + "</td><td>"+ vals[6] + "</td></tr>"
+                });
+                tabletext += "</tbody></table>";
+
+                document.getElementById("dge-table-area").innerHTML += (clear_button + tabletext )
+                $(`#${table_id}`).DataTable({
+                    order: [[3, 'desc']],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', {extend: 'csv', title: `${control_condition}-vs-${perturb_condition}-${method}`}
+                    ]
+                });
+
+            } else if (method === 'edgeR') {
+                tabletext += "<th></th><th>logFC</th><th>logCPM</th><th>PValue</th><th>FDR</th></tr><tbody>"
+                rows.forEach(function(row) {
+                    var vals = row.replace(/\s\s+/g, ' ').split(' ');
+                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>`  +vals[0] + "</a></td><td>" + vals[1]+"</td><td>" + vals[2] +"</td><td>"+ vals[3] + "</td><td>"+ vals[4] + "</td></tr>"
+                });
+                tabletext += "</tbody></table>";
+
+                document.getElementById("dge-table-area").innerHTML += (clear_button + tabletext )
+                $(`#${table_id}`).DataTable({
+                    order: [[1, 'desc']],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', {extend: 'csv', title: `${control_condition}-vs-${perturb_condition}-${method}`}
+                    ]
+                });
+
+            } else if (method === 'DESeq2') {
+                tabletext += "<th></th><th>baseMean</th><th>log2FC</th><th>lfcSE</th><th>stat</th><th>P-value</th><th>Adj. P-value</th></tr><tbody>"
+                rows.forEach(function(row) {
+                    var vals = row.replace(/\s\s+/g, ' ').split(' ');
+                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>` +vals[0] +"</a></td><td>" + vals[1]+"</td><td>" + vals[2] +"</td><td>"+ vals[3] + "</td><td>"+ vals[4] + "</td><td>" + vals[5] + "</td><td>" + vals[6] + "</td></tr>"
+                });
+                tabletext += "</tbody></table>";
+
+                document.getElementById("dge-table-area").innerHTML += (clear_button + tabletext )
+                $(`#${table_id}`).DataTable({
+                    order: [[2, 'desc']],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', {extend: 'csv', title: `${control_condition}-vs-${perturb_condition}-${method}`}
+                    ]
+                });
+            }
+
+            
+
+            
+            
+
+
 
         });
     });

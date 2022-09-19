@@ -1,4 +1,3 @@
-from array import array
 from flask import Flask, render_template, request
 from waitress import serve
 import os
@@ -13,6 +12,7 @@ from functools import lru_cache
 import pickle
 from helpers import *
 from twitterauth import update_tweets_table
+from dge import *
 
 create_meta = False
 
@@ -142,6 +142,26 @@ def getdiabetesenrich():
 	data = query_enricher_diabetes(genes, description)
 
 	return {'data': data}
+
+
+@app.route('/dgeapi',  methods=['GET','POST'])
+def dge():
+	response_json = request.get_json()
+	perturb = response_json['perturb']
+	control = response_json['control']
+	method = response_json['method']
+	gse = response_json['gse']
+	species = response_json['species']
+	norms = response_json['norms']
+	expr_file = 'static/data/{species}/{gse}/{gse}_Expression.txt'.format(species=species, gse=gse)
+	meta_file = 'static/data/{species}/{gse}/{gse}_Metadata.txt'.format(species=species, gse=gse)
+	data, title = compute_dge(expr_file, meta_file, method, control, perturb, norms['logCPM'], norms['log'], norms['z'], norms['q'])
+
+	jsonplot = make_dge_plot(data,title, method)
+
+	string_data = data.to_string()
+
+	return json.dumps({'table': string_data, 'plot': jsonplot})
 
 #############################################
 ########## 2. Data
@@ -315,6 +335,8 @@ def genes_api(geo_accession):
 	# Return
 	return genes_json
 
+
+
 #############################################
 ########## 2. Plot
 #############################################
@@ -431,9 +453,10 @@ def get_study_data():
 	geo_accession = response_json['gse']
 	control = response_json['control']
 	perturb = response_json['perturb']
+	species = response_json['species']
 
-	metadata_file = 'static/data/' + 'human' + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
-	expression_file = 'static/data/' + 'human' + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
+	metadata_file = 'static/data/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	expression_file = 'static/data/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
 
 	
 
@@ -461,6 +484,7 @@ def get_study_data():
 
 	return data_dict
 	
+
 
 
 

@@ -538,8 +538,123 @@ def send_plot(species, gene):
         dn_micro_df_input = ''
     return {'plot': json_item(plot, 'volcano-plot'), 'micro': micro_exists, 'tables': [up_comb_df_input, dn_comb_df_input, up_micro_df_input, dn_micro_df_input]}
 
+def make_dge_plot(data, title, method):
+
+    # set color and size for each point on plot
+
+    if method == 'limma':
+        colors = [map_color(r[1]['logFC'], r[1]['P.Value']) for r in data.iterrows()]
+        sizes = [12 if r[1]['P.Value'] < 0.05 else 6 for r in data.iterrows()]
+        data['logp'] = data['P.Value'].apply(lambda x: -np.log10(x))
+        data['gene'] = data.index.values
+    elif method == 'edgeR':
+        colors = [map_color(r[1]['logFC'], r[1]['PValue']) for r in data.iterrows()]
+        sizes = [12 if r[1]['PValue'] < 0.05 else 6 for r in data.iterrows()]
+        data['logp'] = data['PValue'].apply(lambda x: -np.log10(x))
+        data['gene'] = data.index.values
+    elif method == 'DESeq2':
+        colors = [map_color(r[1]['log2FoldChange'], r[1]['pvalue']) for r in data.iterrows()]
+        sizes = [12 if r[1]['pvalue'] < 0.05 else 6 for r in data.iterrows()]
+        data['logp'] = data['pvalue'].apply(lambda x: -np.log10(x))
+        data['gene'] = data.index.values
 
 
+    # generate data source
+    if method == 'limma':
+        data_source = ColumnDataSource(
+            data=dict(
+                x = data['logFC'],
+                y = data['logp'],
+                gene =  data['gene'],
+                t = data['t'],
+                pval = data['P.Value'], 
+                adjpval = data['adj.P.Val'],
+                avgExpr = data['AvgExpr'], 
+                B = data['B'],
+                colors = colors, 
+                sizes = sizes,
+            )
+        )
+        tools = [
+        ("Gene", "@gene"),
+        ("t-test", "@t"),
+        ("P-Value", "@pval"),
+        ("Adj. P-Value", "@adjpval"),
+        ("log2 Fold Change", "@x"),
+        ("log-odds", "@B"),
+        ("Avg. Expression", "@avgExpr")
+    ]
+    if method == 'edgeR':
+        data_source = ColumnDataSource(
+            data=dict(
+                x = data['logFC'],
+                y = data['logp'],
+                logCPM = data['logCPM'],
+                gene =  data['gene'],
+                pval = data['PValue'], 
+                FDR = data['FDR'],
+                colors = colors, 
+                sizes = sizes,
+            )
+        )
+        tools = [
+        ("Gene", "@gene"),
+        ("P-Value", "@pval"),
+        ("log2 Fold Change", "@x"),
+        ("-log10(p)", "@y"),
+        ("logCPM", "@logCPM")
+    ]
+    if method == 'DESeq2':
+        data_source = ColumnDataSource(
+            data=dict(
+                x = data['log2FoldChange'],
+                y = data['logp'],
+                gene =  data['gene'],
+                pval = data['pvalue'], 
+                adjpval = data['padj'], 
+                stat = data['stat'],
+                lfcSE = data['lfcSE'],
+                baseMean = data['baseMean'],
+                colors = colors, 
+                sizes = sizes,
+            )
+        )
+        tools = [
+        ("Gene", "@gene"),
+        ("P-value", "@pval"),
+        ("log2 Fold Change", "@x"),
+        ("-log10(p)", "@y"),
+        ("adj. P-value", "@adjpval"),
+        ("stat", "@stat"),
+        ("base Mean", "@baseMean"),
+        ("lfcSE", "@lfcSE")
+        ]
+
+    # create hover tooltip
+    
+    plot = figure(
+        plot_width=700,
+        plot_height=500,
+        tooltips=tools
+    )
+    plot.circle(
+        'x', 'y', 
+        size='sizes',
+        alpha=0.7, 
+        line_alpha=0,
+        line_width=0.01, 
+        source=data_source,
+        fill_color='colors', 
+        name=None,
+    )
+
+    plot.xaxis.axis_label = 'log2(Fold Change)'
+    plot.yaxis.axis_label = '-log10(P-value)'
+    plot.title.text = f"Differential Gene Expression of {title}"
+    plot.title.align = 'center'
+    plot.title.text_font_size = '14px'
+    print("made_plot")
+    return json_item(plot, 'dge-plot')
 
 
 
