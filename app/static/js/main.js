@@ -1430,7 +1430,7 @@ $(document).ready(function() {
         document.getElementById("dge-loading").innerHTML = "<div class='loader justify-content-center'></div>";
 
         var gse = currURL[3]
-
+        console.log(gse)
         var species = document.getElementById("species").innerText
         var method = document.getElementById("method").value
         console.log(method)
@@ -1444,7 +1444,7 @@ $(document).ready(function() {
 
 
         var gsedata = JSON.stringify({'gse': gse, 'control': control_condition, 'perturb': perturb_condition, 'method': method, 'species': species, 'norms': norms});
-        
+        console.log(gsedata)
         $.ajax({
             url: "/dgeapi",
             contentType: 'application/json',

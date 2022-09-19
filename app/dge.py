@@ -162,7 +162,6 @@ def get_signatures(classes, dataset, normalization, method, meta_class_column_na
             signature = characteristic_direction(dataset[tmp_normalization].loc[:, cls1_sample_ids], dataset[normalization].loc[:, cls2_sample_ids], calculate_sig=True)
             signature = signature.sort_values("CD-coefficient", ascending=False)
         elif method == "edgeR":
-            print('edgeR used')
             edgeR = robjects.r['edgeR']
             
             edgeR_results = pandas2ri.conversion.rpy2py(edgeR(pandas2ri.conversion.py2rpy(expr_df), pandas2ri.conversion.py2rpy(cls1_sample_ids), pandas2ri.conversion.py2rpy(cls2_sample_ids)))
@@ -170,9 +169,7 @@ def get_signatures(classes, dataset, normalization, method, meta_class_column_na
             signature = pd.DataFrame(edgeR_results[0])
             signature.index = edgeR_results[1]
             signature = signature.sort_values("logFC", ascending=False)
-            print(signature)
         elif method == "DESeq2":
-            print('DESeq2 used')
             # deseq2 receives raw counts
             DESeq2 = robjects.r['deseq2']
             DESeq2_results = pandas2ri.conversion.rpy2py(DESeq2(pandas2ri.conversion.py2rpy(expr_df), pandas2ri.conversion.py2rpy(cls1_sample_ids), pandas2ri.conversion.py2rpy(cls2_sample_ids)))
@@ -180,7 +177,6 @@ def get_signatures(classes, dataset, normalization, method, meta_class_column_na
             signature = pd.DataFrame(DESeq2_results[0])
             signature.index = DESeq2_results[1]
             signature = signature.sort_values("log2FoldChange", ascending=False)
-            print(signature)
                         
             
         signatures[signature_label] = signature

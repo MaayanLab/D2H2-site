@@ -147,6 +147,7 @@ def getdiabetesenrich():
 @app.route('/dgeapi',  methods=['GET','POST'])
 def dge():
 	response_json = request.get_json()
+	print(response_json)
 	perturb = response_json['perturb']
 	control = response_json['control']
 	method = response_json['method']
@@ -500,6 +501,6 @@ def get_study_data():
 #######################################################
 if __name__ == "__main__":
 	
-	serve(app, host="0.0.0.0", port=5000)
-	#app.run(debug=True, host="0.0.0.0")
+	#serve(app, host="0.0.0.0", port=5000)
+	app.run(debug=True, host="0.0.0.0")
 
