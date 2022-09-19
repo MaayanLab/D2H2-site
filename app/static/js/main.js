@@ -1429,8 +1429,7 @@ $(document).ready(function() {
 
         document.getElementById("dge-loading").innerHTML = "<div class='loader justify-content-center'></div>";
 
-        var gse = currURL[3]
-        console.log(gse)
+        var gse = document.getElementById("gse").innerText
         var species = document.getElementById("species").innerText
         var method = document.getElementById("method").value
         console.log(method)
