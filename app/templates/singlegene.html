@@ -366,10 +366,40 @@
   $(document).ready(function() {
     var gene = "{{ gene }}"
     console.log(gene)
-    setTimeout(function() {
-      fillSingleExample(gene)
-    }, 500)
-    
+    const searchArray = Array.from(document.querySelectorAll('.search'));
+    searchArray.forEach(function(item) {
+      var url = item.getAttribute('data-url')
+      var $select = $(item).selectize({
+        preload: true,
+      valueField: 'gene_symbol',
+      labelField: 'gene_symbol',
+      searchField: 'gene_symbol',
+      maxItems: 1,
+      render: {
+          option: function (item, escape) {
+              return '<div class="pt-2 light">'+item.gene_symbol+'</div>';
+          }
+      },
+      load: function (query, callback) {         
+          $.ajax({
+              url: url,
+              dataType: 'json',
+              error: function () {
+                  callback();
+              },
+              success: function (res) {
+                  callback(res);
+                  $select[0].selectize.setValue(gene);
+              }
+          });
+      },
+      onDropdownClose: function(value) {
+          var gene = this.getValue()
+          fillSingleExampleSkip(gene, this.id)
+      },
+    }) 
+    })
+  document.getElementById('singlegenenav').className = document.getElementById('singlegenenav').className + ' active';
   })
 </script>
 {% endblock %}

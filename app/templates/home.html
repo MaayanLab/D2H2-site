@@ -224,9 +224,6 @@
       </div>
       <!-- Twitter Table -->
       <div class="row text-center justify-content-center" style="flex-wrap: wrap;">
-
-        
-
         <div class="col-md-10 col-sm-10 col-lg-7 text-center custom-col mb-4 mr-2 ml-2">
           <div class="question p-2 justify-content-center row">
             <h4 class="mt-4">Recent Diabetes and Related Metabolic Disorder Publications Containing a Gene-Centric Title</h4>
@@ -237,9 +234,7 @@
         <div class="col-md-6 col-sm-7 col-lg-3 text-center custom-col mb-4 mr-2 ml-2">
           <a class="twitter-timeline" data-width="1500" data-height="450" data-chrome="nofooter noborders transparent" href="https://twitter.com/D2H2Bot?ref_src=twsrc%5Etfw">Tweets by D2H2Bot</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
         </div>
-        
       </div>
-
     </div>
 
 
@@ -252,5 +247,20 @@
 {% block footer %}
 <script>
   createTweetsTable()
+  if (localStorage.hasOwnProperty("genes")) {
+      $(document).ready(function () {
+          var genes = localStorage['genes']
+          var desc = localStorage['descset']
+          localStorage.removeItem('genes');
+          localStorage.removeItem('descset');
+          genes = genes.split('&').join('\n')
+          document.getElementById('text-area1').value = genes;
+          document.getElementById('desc1').value = desc;
+          geneCount(genes, 1)
+          document.getElementById('enrichranalysis').scrollIntoView()
+          document.getElementById('diabetesEnrichr-query').click();
+      })
+  }
 </script>
+
 {% endblock %}

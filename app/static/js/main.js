@@ -58,14 +58,43 @@ function clear_home() {
 
 }
 
+function submit_geneset(genelist) {
+    genelist = genelist.split(',')
+    var numgenes = document.getElementById('numgenes').value
+    var dir = document.getElementById('dir').value
+
+    if (dir === 'top') {
+        var genes = genelist.splice(0, numgenes).join('&')
+    } else {
+        var genes = genelist.slice(-numgenes).join('&')
+    }
+    const currURL = window.location.href.split('/')
+    var url = currURL.splice(0, 3).join('/') + '/geneset/' + genes
+    window.open(url, '_blank')
+}
+
+function submit_geneset_home(genelist, descset) {
+    genelist = genelist.split(',')
+    var numgenes = document.getElementById('numgenes').value
+    var dir = document.getElementById('dir').value
+
+    if (dir === 'top') {
+        var genes = genelist.splice(0, numgenes).join('&')
+    } else {
+        var genes = genelist.slice(-numgenes).join('&')
+    }
+    localStorage.setItem('genes', genes)
+    localStorage.setItem('descset', `${descset}-${dir}-${numgenes}`)
+    var home = window.location.href.split('/').filter(x => !x.includes('GSE')).join('/')
+    window.open(home, '_blank')
+}
+
 function clear_dge() {
     document.getElementById("dge-table-area").innerHTML = ""
     document.getElementById("dge-plot").innerHTML = ""
     document.getElementById("dge-loading").innerHTML = ""
-}
-
-function store_gene(gene) {
-    localStorage('gene', gene)
+    document.getElementById("geneset-buttons").innerHTML = ""
+    
 }
 
 function on_change(el) {
@@ -427,69 +456,44 @@ $(document).ready(function() {
     });
     
 
-    $('.search').each(function() {
-
-        var url = this.getAttribute('data-url')
-        $(this).selectize({
-            preload: true,
-        valueField: 'gene_symbol',
-        labelField: 'gene_symbol',
-        searchField: 'gene_symbol',
-        maxItems: 1,
-        render: {
-            option: function (item, escape) {
-                return '<div class="pt-2 light">'+item.gene_symbol+'</div>';
-            }
-        },
-        load: function (query, callback) {         
-            $.ajax({
-                url: url,
-                dataType: 'json',
-                error: function () {
-                    callback();
-                },
-                success: function (res) {
-                    callback(res);
-                }
-            });
-        },
-        onDropdownClose: function(value) {
-            var gene = this.getValue()
-            fillSingleExampleSkip(gene, this.id)
-        },
-    })
-    })
+    
 
 
 
 
         // SELECTIZE FOR VIEWER AND HOME PAGE APPYTER T2D
-      var $gene_select = $('#gene-select').selectize({
-        preload: true,
-        valueField: 'gene_symbol',
-        labelField: 'gene_symbol',
-        searchField: 'gene_symbol',
-        render: {
-            option: function (item, escape) {
-                return '<div class="pt-2 light">'+item.gene_symbol+'</div>';
-            }
-        },
-        load: function (query, callback) {
-            // if (!query.length) return callback();
-            $.ajax({
-                url: $('#gene-select').attr('data-url-genes'),
-                dataType: 'json',
-                error: function () {
-                    callback();
-                },
-                success: function (res) {
-                    callback(res);
+    var $gene_select = $('#gene-select').selectize({
+            preload: true,
+            valueField: 'gene_symbol',
+            labelField: 'gene_symbol',
+            searchField: 'gene_symbol',
+            render: {
+                option: function (item, escape) {
+                    return '<div class="pt-2 light">'+item.gene_symbol+'</div>';
                 }
-            });
-        },
-        persist: false,
-    });
-
+            },
+            load: function (query, callback) {
+                // if (!query.length) return callback();
+                $.ajax({
+                    url: $('#gene-select').attr('data-url-genes'),
+                    dataType: 'json',
+                    error: function () {
+                        callback();
+                    },
+                    success: function (res) {
+                        callback(res);
+                        if (localStorage.hasOwnProperty("gene")) {
+                            var gene = localStorage['gene']
+                            localStorage.removeItem('gene');
+                            $gene_select[0].selectize.setValue(gene);
+                        }
+                    }
+                });
+            },
+            persist: false,
+        });
+    
+        
     
       
 
@@ -1364,6 +1368,11 @@ $(document).ready(function() {
             return;
         }
 
+        if (control_condition == perturb_condition) {
+            alert("Please select two different conditions")
+            return;
+        }
+
         document.getElementById("dgea-loading").innerHTML = "<div class='loader justify-content-center'></div>";
 
         var gse = currURL[3]
@@ -1427,6 +1436,11 @@ $(document).ready(function() {
             return;
         }
 
+        if (control_condition == perturb_condition) {
+            alert("Please select two different conditions")
+            return;
+        }
+
         document.getElementById("dge-loading").innerHTML = "<div class='loader justify-content-center'></div>";
 
         var gse = document.getElementById("gse").innerText
@@ -1461,9 +1475,10 @@ $(document).ready(function() {
 
             var table_id = 'dge-table'
             var tabletext = `<table id='${table_id}' class='styled-table'><thead><tr>`
-            const clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_dge();'> Clear Results </button> </a>"
-            var api = currURL.splice(0, 3).join('/') + '/singlegene/'
+            const clear_button = "<div class='mx-auto justify-content-center text-center'><button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_dge();'> Clear Results </button></div>"
+            var api = currURL.filter(x => !x.includes('GSE')).join('/') + '/singlegene/'
             console.log(api)
+            var name = `${control_condition}-vs-${perturb_condition}-${method}`
 
             if (method === 'limma') {
                 tabletext += "<th></th><th>logFC</th><th>AvgExpr</th><th>t</th><th>P Value</th><th>Adj. P Value</th><th>B</th></tr><tbody>"
@@ -1473,12 +1488,12 @@ $(document).ready(function() {
                 });
                 tabletext += "</tbody></table>";
 
-                document.getElementById("dge-table-area").innerHTML += (clear_button + tabletext )
-                $(`#${table_id}`).DataTable({
-                    order: [[3, 'desc']],
+                document.getElementById("dge-table-area").innerHTML += tabletext
+                var table = $(`#${table_id}`).DataTable({
+                    order: [[1, 'desc']],
                     dom: 'Bfrtip',
                     buttons: [
-                        'copy', {extend: 'csv', title: `${control_condition}-vs-${perturb_condition}-${method}`}
+                        'copy', {extend: 'csv', title: name}
                     ]
                 });
 
@@ -1490,12 +1505,12 @@ $(document).ready(function() {
                 });
                 tabletext += "</tbody></table>";
 
-                document.getElementById("dge-table-area").innerHTML += (clear_button + tabletext )
-                $(`#${table_id}`).DataTable({
+                document.getElementById("dge-table-area").innerHTML += tabletext 
+                var table = $(`#${table_id}`).DataTable({
                     order: [[1, 'desc']],
                     dom: 'Bfrtip',
                     buttons: [
-                        'copy', {extend: 'csv', title: `${control_condition}-vs-${perturb_condition}-${method}`}
+                        'copy', {extend: 'csv', title: name}
                     ]
                 });
 
@@ -1507,23 +1522,33 @@ $(document).ready(function() {
                 });
                 tabletext += "</tbody></table>";
 
-                document.getElementById("dge-table-area").innerHTML += (clear_button + tabletext )
-                $(`#${table_id}`).DataTable({
+                document.getElementById("dge-table-area").innerHTML += tabletext
+                var table = $(`#${table_id}`).DataTable({
                     order: [[2, 'desc']],
                     dom: 'Bfrtip',
                     buttons: [
-                        'copy', {extend: 'csv', title: `${control_condition}-vs-${perturb_condition}-${method}`}
+                        'copy', {extend: 'csv', title: name}
                     ]
-                });
+                });    
             }
-
-            
-
-            
-            
-
-
-
+            var genes = table.column(0).data()
+            genes = genes.map(x => x.replace(/<\/?[^>]+(>|$)/g, ""))
+            console.log(genes)
+            var genelist_buttons = 
+            `<div class="row justify-content-center mx-auto text-center">
+            <div class="mt-3 h7">Submit the </div>
+            <select id='dir' class='dirpicker m-2'>
+                <option value="top"selected>top</option>
+                <option value="bot">bottom</option>
+            </select>
+            <input id='numgenes' type='number' step='1' value='100' pattern='[0-9]' class='m-2' style='width: 60px;'/>
+            <div class="mt-3 h7">differentially expressed genes to</div>
+            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset('${genes.join(',')}')">Gene Set Queries</button>
+            <div class="mt-3 h7">or to</div>
+            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset_home('${genes.join(',')}', '${name}')">Diabetes Gene Set Library</button>
+            </div>`
+                
+            document.getElementById("geneset-buttons").innerHTML = (clear_button + genelist_buttons)
         });
     });
 

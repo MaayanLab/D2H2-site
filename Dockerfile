@@ -1,13 +1,22 @@
-FROM ubuntu:20.04
-
+FROM python:3.9-bullseye
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y git && apt-get install -y python3 && apt-get install -y r-base \
- python3-pip \
- python3-dev \
- python3-setuptools
+RUN set -x \
+  && echo "Preparing system..." \
+  && apt-get -y update \
+  && apt-get -y --no-install-recommends install \
+    git \
+    python3-dev \
+    python3-pip \
+    python3-setuptools \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip3 install --no-cache-dir --upgrade pip
 
-RUN pip3 install --upgrade pip
+RUN set -x \
+  && echo "Installing R..." \
+  && apt-get -y update \
+  && apt-get -y install r-base \
+  && rm -rf /var/lib/apt/lists/* 
 
 RUN mkdir D2H2
 
@@ -21,8 +30,8 @@ COPY . .
 
 WORKDIR /D2H2/app
 
-EXPOSE 5000
-
 RUN Rscript setup.R
+
+EXPOSE 5000
 
 CMD ["python3", "app.py"]

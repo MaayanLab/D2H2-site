@@ -263,6 +263,10 @@
             </div>
 
             <div id="dge-loading" class="m-3"></div>
+            <div id="dge-plot" class="centered"></div>
+            <div id="geneset-buttons" class="justify-content-center"></div>
+            <div class="col-10 justify-content-center mx-auto" id="dge-table-area"></div>
+    
 
             {% if 'Expression profiling by high throughput sequencing' == gse_metadata[species][geo_accession].get('type')[0] %}
             <div class="row justify-content-center mt-4">
@@ -304,8 +308,7 @@
 
 </div>
 
-<div id="dge-plot" class="centered"></div>
-<div class="col-6 justify-content-center mx-auto text-center align-items-center"><div id="dge-table-area"></div></div>
+
 
 
 
@@ -313,18 +316,5 @@
 {% endblock %}
 
 {% block footer %}
-<script>
-    if (localStorage.hasOwnProperty("gene")) {
-        $(document).ready(function () {
-            var gene = localStorage['gene']
-            localStorage.removeItem('gene');
-            var selectize = $("#gene-select")[0].selectize;
-            console.log(gene)
-            setTimeout(function () {
-                selectize.setValue(gene);
-            }, 500)
-        })
-    }
-</script>
 
 {% endblock %}
