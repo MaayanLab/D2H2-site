@@ -140,19 +140,19 @@ function gen_table(link, table_id, title, gene) {
 
 async function parseCsv(file) {
     return new Promise((resolve, reject) => {
-      Papa.parse(file, {
-        download: true,
-        header: true,
-        skipEmptyLines: true,
-        complete: (results) => {
-          return resolve(results);
-        },
-        error: (error ) => {
-          return reject(error);
-        },
-      });
+        Papa.parse(file, {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            complete: (results) => {
+            return resolve(results);
+            },
+            error: (error ) => {
+            return reject(error);
+            },
+        });
     });
-  }
+}
 
 
 // OPEN GENE LIST IN ENRICHR
@@ -1426,6 +1426,7 @@ $(document).ready(function() {
         });
     });
 
+    // PERFORM DIFFERENTIAL GENE ANALYSIS AND CREATE RELEVANT TABLE
     $('#dge-button').on('click', async function() {
         clear_dge()
         var control_condition = $('#condition-select-control').val();
@@ -1541,7 +1542,7 @@ $(document).ready(function() {
                 <option value="top"selected>top</option>
                 <option value="bot">bottom</option>
             </select>
-            <input id='numgenes' type='number' step='1' value='100' pattern='[0-9]' class='m-2' style='width: 60px;'/>
+            <input id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2' style='width: 60px;'/>
             <div class="mt-3 h7">differentially expressed genes to</div>
             <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset('${genes.join(',')}')">Gene Set Queries</button>
             <div class="mt-3 h7">or to</div>

@@ -272,13 +272,3 @@ def compute_dge(rnaseq_data_filename, meta_data_filename, diff_gex_method, contr
 	signatures, signature_label = get_signatures(classes, dataset, normalization, diff_gex_method, meta_class_column_name, filter_genes)
 
 	return signatures[signature_label], signature_label
-
-""" perturb = 'Male '
-control = 'Female (all non-diabetics)'
-method = 'limma'
-gse = 'GSE44035'
-species = 'human'
-expr_file = 'static/data/{species}/{gse}/{gse}_Expression.txt'.format(species=species, gse=gse)
-meta_file = 'static/data/{species}/{gse}/{gse}_Metadata.txt'.format(species=species, gse=gse)
-
-datajson = compute_dge(expr_file, meta_file, method, control, perturb) """

@@ -15,6 +15,9 @@ from twitterauth import update_tweets_table
 from dge import *
 
 create_meta = False
+base_url = 'static/data'
+
+
 
 app = Flask(__name__)
 
@@ -154,9 +157,12 @@ def dge():
 	gse = response_json['gse']
 	species = response_json['species']
 	norms = response_json['norms']
-	expr_file = 'static/data/{species}/{gse}/{gse}_Expression.txt'.format(species=species, gse=gse)
-	meta_file = 'static/data/{species}/{gse}/{gse}_Metadata.txt'.format(species=species, gse=gse)
-	data, title = compute_dge(expr_file, meta_file, method, control, perturb, norms['logCPM'], norms['log'], norms['z'], norms['q'])
+	expr_file = '{base_url}/{species}/{gse}/{gse}_Expression.txt'.format(species=species, gse=gse, baseurl=base_url)
+	meta_file = '{base_url}/{species}/{gse}/{gse}_Metadata.txt'.format(species=species, gse=gse)
+	if method == 'limma' or method == 'edgeR':
+		data, title = compute_dge(expr_file, meta_file, method, control, perturb, False, False, False, False)
+	else:
+		data, title = compute_dge(expr_file, meta_file, method, control, perturb, norms['logCPM'], norms['log'], norms['z'], norms['q'])
 
 	jsonplot = make_dge_plot(data,title, method)
 
@@ -224,7 +230,7 @@ def get_metadata(geo_accession, species_folder):
 		gse.metadata['pubmed_link'] = ["https://pubmed.ncbi.nlm.nih.gov/" + gse.metadata['pubmed_id'][0]]
 	
 	
-	metadata_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	metadata_file = f'{base_url}/{species_folder}/{geo_accession}/{geo_accession}_Metadata.txt'
 	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
 	gse.metadata['numsamples'] = metadata_dataframe.shape[0] - 1
 
@@ -254,7 +260,7 @@ def sort_studies(species_mapping):
 url_to_folder = {"human": "human", "mouse": "mouse"}
 folder_to_url = {folder:url for url, folder in url_to_folder.items()}
 
-species_mapping = species_to_studies('static/data')
+species_mapping = species_to_studies(base_url)
 species_mapping = sort_studies(species_mapping)
 # print(species_mapping)
 
@@ -287,7 +293,7 @@ def species_or_viewerpg(species_or_gse):
 		geo_accession = species_or_gse
 		species = study_to_species[geo_accession]
 		species_folder = url_to_folder[species]
-		metadata_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+		metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 		metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
 		metadata_dict = metadata_dataframe.groupby('Group')['Condition'].apply(set).to_dict()
 		metadata_dict_samples = metadata_dataframe.groupby('Condition')['Sample_geo_accession'].apply(list).to_dict()
@@ -328,7 +334,7 @@ def genes_api(geo_accession):
 		species_folder = url_to_folder[species]
 
 		# Get genes json
-		expression_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
+		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
 		expression_dataframe = pd.read_csv(expression_file, index_col = 0, sep='\t')
 
 		genes_json = json.dumps([{'gene_symbol': x} for x in expression_dataframe.index])
@@ -358,8 +364,8 @@ def plot_api(geo_accession):
 
 	assay = gse_metadata[species][geo_accession].get('type')[0]
 
-	expression_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
-	metadata_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
+	metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 	expression_dataframe = pd.read_csv(expression_file, index_col = 0, sep='\t')
 	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
 	
@@ -425,7 +431,7 @@ def plot_volcano_api():
 def conditions_api(geo_accession):
 	species = study_to_species[geo_accession]
 	species_folder = url_to_folder[species]
-	metadata_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	metadata_file = base_url+ '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
 	conditions = set(metadata_dataframe['Condition'])
 	return json.dumps([{'Condition': x} for x in conditions])
@@ -439,7 +445,7 @@ def samples_api(geo_accession):
 	species = study_to_species[geo_accession]
 	species_folder = url_to_folder[species]
 
-	metadata_file = 'static/data/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
 
 	conditions_mapping = metadata_dataframe.groupby('Condition')['Sample_geo_accession'].apply(list).to_dict()
@@ -456,8 +462,8 @@ def get_study_data():
 	perturb = response_json['perturb']
 	species = response_json['species']
 
-	metadata_file = 'static/data/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
-	expression_file = 'static/data/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
+	metadata_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	expression_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
 
 	
 

@@ -11,18 +11,6 @@ import matplotlib.cm as cm
 import matplotlib.colors as colors
 import numpy as np
 
-######################### UPDATE GENE LIST ############################
-
-def get_gene_json():
-
-    url = "https://www.genenames.org/cgi-bin/download/custom?col=gd_app_sym&status=Approved&status=Entry%20Withdrawn&hgnc_dbtag=on&order_by=gd_app_sym_sort&format=text&submit=submit"
-    data = requests.get(url).text
-
-    gene_list = data.split("\n")[1:-1]
-
-    with open('static/data/genes.json', 'w') as f:
-        json.dump(gene_list, f)
-
 
 ########################## QUERY ENRICHER ###############################
 
