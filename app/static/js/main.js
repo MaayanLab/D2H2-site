@@ -1272,6 +1272,10 @@ $(document).ready(function() {
                 inputvalue = await loadFileAsText(section, "\t").split("\t");
             }
 
+            if (inputvalue.length == 0 ) {
+                alert('Please enter a gene set')
+            }
+
             var genes = JSON.stringify({'genes': [inputvalue]});
 
             $.ajax({
@@ -1309,6 +1313,10 @@ $(document).ready(function() {
 
             if (fileDown) {
                 inputvalueDown = await loadFileAsText(section, "\t").split("\t");
+            }
+
+            if (inputvalueUp.length == 0 || inputvalueDown.length == 0) {
+                alert('Please enter an up and down gene set')
             }
 
             var genes = JSON.stringify({'genes': [inputvalueUp, inputvalueDown]});
