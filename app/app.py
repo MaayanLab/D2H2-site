@@ -11,7 +11,7 @@ import ftfy
 from functools import lru_cache
 import pickle
 from helpers import *
-from twitterauth import update_tweets_table
+#from twitterauth import update_tweets_table
 from dge import *
 
 create_meta = False
@@ -158,7 +158,7 @@ def dge():
 	species = response_json['species']
 	norms = response_json['norms']
 	expr_file = '{base_url}/{species}/{gse}/{gse}_Expression.txt'.format(species=species, gse=gse, base_url=base_url)
-	meta_file = '{base_url}/{species}/{gse}/{gse}_Metadata.txt'.format(species=species, gse=gse)
+	meta_file = '{base_url}/{species}/{gse}/{gse}_Metadata.txt'.format(species=species, gse=gse, base_url=base_url)
 	if method == 'limma' or method == 'edgeR':
 		data, title = compute_dge(expr_file, meta_file, method, control, perturb, False, False, False, False)
 	else:
