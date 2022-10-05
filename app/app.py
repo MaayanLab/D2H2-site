@@ -157,7 +157,7 @@ def dge():
 	gse = response_json['gse']
 	species = response_json['species']
 	norms = response_json['norms']
-	expr_file = '{base_url}/{species}/{gse}/{gse}_Expression.txt'.format(species=species, gse=gse, baseurl=base_url)
+	expr_file = '{base_url}/{species}/{gse}/{gse}_Expression.txt'.format(species=species, gse=gse, base_url=base_url)
 	meta_file = '{base_url}/{species}/{gse}/{gse}_Metadata.txt'.format(species=species, gse=gse)
 	if method == 'limma' or method == 'edgeR':
 		data, title = compute_dge(expr_file, meta_file, method, control, perturb, False, False, False, False)
