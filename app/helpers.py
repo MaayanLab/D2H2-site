@@ -14,7 +14,7 @@ import numpy as np
 
 ########################## QUERY ENRICHER ###############################
 
-@lru_cache
+@lru_cache()
 def query_enricher(gene):
     ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/genemap'
     query_string = '?json=true&setup=true&gene=%s'
@@ -41,7 +41,7 @@ def query_enricher(gene):
     return res
 
 
-@lru_cache
+@lru_cache()
 def query_enricher_diabetes(genelist, description):
     ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/addList'
 
@@ -80,7 +80,7 @@ def query_enricher_diabetes(genelist, description):
 ########################## QUERY KOMP API ###############################
 
 
-@lru_cache
+@lru_cache()
 def query_komp(gene: str):
 
     gene =  gene[0].upper() + (gene[1:]).lower()
@@ -95,7 +95,7 @@ def query_komp(gene: str):
 
 ######## QUERY MGI ##############
 
-@lru_cache
+@lru_cache()
 def query_mgi(gene: str):
     service = Service("https://www.mousemine.org/mousemine/service")
 
@@ -123,7 +123,7 @@ def query_mgi(gene: str):
 
 ######## QUERY GWAS ##############
 
-@lru_cache
+@lru_cache()
 def query_gwas(gene: str):
     gene = gene.upper()
     url = "https://www.ebi.ac.uk/gwas/api/search/downloads?q=ensemblMappedGenes:" + gene + "&pvalfilter=&orfilter=&betafilter=&datefilter=&genomicfilter=&genotypingfilter[]=&traitfilter[]=&dateaddedfilter=&facet=association&efo=true"
@@ -260,7 +260,7 @@ def sigcom_gene_set(gene_set):
 ############## GET RESOURCES TABLE FROM GOOGLE DRIVE ##############
 
 
-@lru_cache
+@lru_cache()
 def get_resources():
 
     table = pd.read_csv('./static/searchdata/resources.csv', index_col=0)
@@ -281,7 +281,7 @@ def update_resources():
 
 #update_resources()
 
-@lru_cache
+@lru_cache()
 def get_downloads():
 
     table = pd.read_csv('./static/searchdata/downloads.csv', index_col=0)
@@ -465,7 +465,7 @@ def download_link(df, fname, isRNA=False):
     return fname
 
 # get GEO links 
-@lru_cache
+@lru_cache()
 def geo_link(sig_name, clickable):
     gse_id = sig_name.split('_')[0].replace('* ', '')
     geo_path = 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc='
@@ -474,7 +474,7 @@ def geo_link(sig_name, clickable):
     else:
         return f'{geo_path}{gse_id}'
 
-@lru_cache
+@lru_cache()
 def appyter_link(sig_name, inst=''):
     text = f'Analysis of {sig_name}'
     return f'<a target="_blank" href="{inst}">{text}</a>'
@@ -502,7 +502,7 @@ def make_tables(comb_df, species, gene, is_upreg, isRNA=False):
     dir_df['Link to GEO Study'] = dir_df['Signature'].apply(geo_link, clickable=True)
     return dir_df
 
-@lru_cache
+@lru_cache()
 def send_plot(species, gene):
     pval_rna_df, fc_rna_df, inst_df_input, pval_micro_df, fc_micro_df, micro_exists = load_files(species, gene)
     comb_df_input = combine_data(pval_rna_df, fc_rna_df, gene, isRNA=True, inst_df=inst_df_input)

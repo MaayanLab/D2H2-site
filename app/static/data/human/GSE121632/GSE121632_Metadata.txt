@@ -1,0 +1,17 @@
+Sample_geo_accession	Condition	Group
+GSM3440295	 VCAF8	fibroblast
+GSM3440296	 VCAF8	fibroblast
+GSM3440297	 VCAF8	fibroblast
+GSM3440298	 VCAF2B	fibroblast
+GSM3440299	 VCAF2B	fibroblast
+GSM3440300	 VCAF2B	fibroblast
+GSM3440301	 OCAF1	fibroblast
+GSM3440302	 OCAF1	fibroblast
+GSM3440303	 OCAF1	fibroblast
+GSM3440304	 CerCAF	fibroblast
+GSM3440305	 CerCAF	fibroblast
+GSM3440306	 CerCAF	fibroblast
+GSM3440307	 MAF2	fibroblast
+GSM3440308	 MAF2	fibroblast
+GSM3440309	 1901T	fibroblast
+GSM3440310	 1901T	fibroblast

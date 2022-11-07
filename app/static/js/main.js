@@ -1486,7 +1486,6 @@ $(document).ready(function() {
             var tabletext = `<table id='${table_id}' class='styled-table'><thead><tr>`
             const clear_button = "<div class='mx-auto justify-content-center text-center'><button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_dge();'> Clear Results </button></div>"
             var api = currURL.filter(x => !x.includes('GSE')).join('/') + '/singlegene/'
-            console.log(api)
             var name = `${control_condition}-vs-${perturb_condition}-${method}`
 
             if (method === 'limma') {

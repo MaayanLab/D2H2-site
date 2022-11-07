@@ -1,0 +1,15 @@
+Sample_geo_accession	Condition	Group
+GSM4200600	 Pancreas	Pancreatic islets
+GSM4200601	 Pancreas	Pancreatic islets
+GSM4200602	 Pancreas	Pancreatic islets
+GSM4200603	 Pancreatic progenitor Reprogrammed fibroblast	Differentiated hiPSCs
+GSM4200604	 Pancreatic progenitor Reprogrammed fibroblast	Differentiated hiPSCs
+GSM4200605	 Pancreatic progenitor Reprogrammed fibroblast	Differentiated hiPSCs
+GSM4200606	 beta-like cells Reprogrammed fibroblast	Differentiated hiPSCs
+GSM4200607	 beta-like cells Reprogrammed fibroblast	Differentiated hiPSCs
+GSM4200608	 Pancreatic progenitor Reprogrammed fibroblast	Differentiated hiPSCs
+GSM4200609	 Pancreatic progenitor Reprogrammed fibroblast	Differentiated hiPSCs
+GSM4200610	 Pancreatic progenitor Reprogrammed fibroblast	Differentiated hiPSCs
+GSM4200611	 beta-like cells Reprogrammed fibroblast	Differentiated hiPSCs
+GSM4200612	 beta-like cells Reprogrammed fibroblast	Differentiated hiPSCs
+GSM4200613	 beta-like cells Reprogrammed fibroblast	Differentiated hiPSCs

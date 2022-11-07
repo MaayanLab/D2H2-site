@@ -1,0 +1,13 @@
+Sample_geo_accession	Condition	Group
+GSM4803237	 iPSC	PGP1
+GSM4803238	 iPSC	PGP1
+GSM4803239	 iPSC	PGP1
+GSM4803240	 iPSC	PGP1
+GSM4803241	 iPSC derived mesoderm	PGP1
+GSM4803242	 iPSC derived mesoderm	PGP1
+GSM4803243	 iPSC derived mesoderm	PGP1
+GSM4803244	 iPSC derived mesoderm	PGP1
+GSM4803245	 iPSC derived cardiomyocyte	PGP1
+GSM4803246	 iPSC derived cardiomyocyte	PGP1
+GSM4803247	 iPSC derived cardiomyocyte	PGP1
+GSM4803248	 iPSC derived cardiomyocyte	PGP1

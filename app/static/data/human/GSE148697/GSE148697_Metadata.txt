@@ -1,0 +1,7 @@
+Sample_geo_accession	Condition	Group
+GSM4476798	sars-Cov2	Hesc cells
+GSM4476799	sars-Cov2	Hesc cells
+GSM4476800	sars-Cov2	Hesc cells
+GSM4476801	Mock	Hesc cells
+GSM4476802	Mock	Hesc cells
+GSM4476803	Mock	Hesc cells
