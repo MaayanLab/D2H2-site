@@ -6,16 +6,16 @@
 
     <!-- Title -->
     <div class="row mt-4">
-        <div class="col-12">
-            <div class="h4 text-center">An Interactive Gene Expression Viewer</div>
+        <div class="col-12 text-center">
+            <h2>An Interactive Gene Expression Viewer</h2>
         </div>
     </div>
 
-    <div class="row mt-3">
+    <div class="row mt-1">
         <div class="col-12">
             <!-- Abstract large -->
             <div class="d-block">
-                <div class="text-center m-2 p-3">
+                <div class="text-center">
                     <p>
                         This module enables interactive visualization of gene expression data from Microarray and
                         RNA-seq experiments from the Gene Expression Omnibus (GEO). The
@@ -36,6 +36,7 @@
                 <th scope="col">Title</th>
                 <th scope="col">Organism</th>
                 <th scope="col">Assay</th>
+                <th scope="col">Num Samples</th>
                 <th scope="col">Submission Date</th>
                 <th scope="col">Study Design</th>
                 <th scope="col">PMID</th>
@@ -43,7 +44,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for gse_id, geo_metadata in gse_metadata[organ].items() %}
+            {% for gse_id, geo_metadata in gse_metadata[species].items() %}
             <tr>
                 <th scope="row"><a class="text-br-red" href="{{ geo_metadata.get('gse_link', ['#'])[0]|safe }}"
                         target="_blank" rel="noopener noreferrer">{{ gse_id }}</a></th>
@@ -63,19 +64,23 @@
                 <td>
                     {% if geo_metadata.get('type', ['No Assay'])|length > 1 %}
                     {% for assay in geo_metadata.get('type', ['No Assay']) %}
-                    <p>{{ assay|safe }}</p>
+                    {{ assay|safe }}
                     {% endfor %}
                     {% else %}
                     {{ geo_metadata.get('type', ['No Assay'])[0]|safe }}
                     {% endif %}
                 </td>
+                <td>
+                {{ geo_metadata.get('numsamples') }}
+
+                </td>
                 <td>{{ (geo_metadata.get('submission_date')[0][:-5] + ',' +
                     geo_metadata.get('submission_date')[0][-5:])|safe }}</td>
                 <td>
-                    <button class="btn btn-primary btn-group-sm btn-collapse collapsed d-flex align-items-center text-left"
+                    <button class="btn-custom btn-group-sm btn-collapse collapsed d-flex align-items-center text-center"
                         data-toggle="collapse" data-target="#studyDesignCollapse-{{gse_id}}" aria-expanded="false"
                         aria-controls="studyDesignCollapse-{{gse_id}}">
-                        {{ gse_id }} Study Design
+                        <div class="text">Show Study Design</div>
                     </button>
                     <div class="collapse" id="studyDesignCollapse-{{gse_id}}">
                         {{ geo_metadata.get('overall_design', ['No Study Design'])[0]|safe }}
@@ -91,7 +96,7 @@
                     <p>N/A</p>
                     {% endif %}
                 </td>
-                <td><a href="{{ url_for('organ_or_viewerpg', organ_or_gse=gse_id) }}"><button class="btn btn-primary btn-group-sm">{{ gse_id }} Gene Viewer</button></a></td>
+                <td><a href="{{ url_for('species_or_viewerpg', species_or_gse=gse_id) }}"><button class="btn btn-primary btn-group-sm">{{ gse_id }} Gene Viewer</button></a></td>
             </tr>
             {% endfor %}
         </tbody>

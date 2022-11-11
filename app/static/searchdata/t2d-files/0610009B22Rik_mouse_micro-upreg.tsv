@@ -1,0 +1,26 @@
+Signature	P-value	Log2 Fold Change	Gene Rank in Signature	Link to GEO Study
+GSE40439_Wildtype-vs-NCoR1-MKO_Mouse_Microarray_Muscle-Gastrocnemius	8.288e-05	0.2764	2902.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE40439
+GSE79164_Wildtype-vs-Rev-erbAlpha-KO_Mouse_Microarray_EpididymalWAT	1.766e-04	0.4408	400.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE79164
+GSE70681_Wildtype-vs-PtenDeletion_3Months_Mouse_Microarray_Liver	1.450e-03	0.4652	1816.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE70681
+GSE59141_NonPregnant-vs-Pregnant_PRLR-_-Genotype_Mouse_Microarray_Islet	2.663e-03	0.7122	734.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE59141
+GSE59141_NonPregnant-vs-Pregnant_PRLR+_+Genotype_Mouse_Microarray_Islet	3.314e-03	0.8937	224.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE59141
+GSE87854_Control-vs-HighFatDiet_Day5_Mouse_Microarray_Adipose	3.943e-03	0.1512	2678.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE87854
+GSE73036_Control-vs-HighFatDiet_Day42_Mouse_Microarray_SkeletalMuscle	1.353e-02	0.1482	3146.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE73036
+GSE26978_Wildtype-vs-GenotypeMen1flf-RIP-Cre_Mouse_Microarray_Islets	2.124e-02	0.5104	1850.5	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE26978
+GSE26978_Wildtype-vs-GenotypeMen1flf-Rbp2flfRIP-Cre_Mouse_Microarray_Islets	2.866e-02	0.5526	1015.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE26978
+GSE26978_Wildtype-vs-GenotypeRbp2flfRIP-Cre_Mouse_Microarray_Islets	5.222e-02	0.3350	1769.5	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE26978
+GSE41203_NOD.RAG-_-Vs-NOD-NonObeseDiabetic_2Weeks_Mouse_Microarray_Islets	5.764e-02	0.2426	1547.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE41203
+GSE46515_Wildtype-vs-RictorFloxed_Mouse_Microarray_Liver	6.110e-02	0.1747	1714.5	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE46515
+GSE40439_Wildtype-vs-Control_Mouse_Microarray_Muscle-Gastrocnemius	7.420e-02	0.0698	7100.5	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE40439
+GSE87854_Control-vs-HighFatDiet_Day14_Mouse_Microarray_Adipose	8.807e-02	0.1355	2693.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE87854
+GSE59143_NonPregnant-vs-Pregnant_Mouse_Microarray_Islets	1.197e-01	0.2034	1479.5	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE59143
+GSE39752_Control-vs-StreptozotocinSTZ_Mouse_Microarray_Liver	1.501e-01	0.1235	3029.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE39752
+GSE73036_Control-vs-HighFatDiet_Day5_Mouse_Microarray_SkeletalMuscle	2.125e-01	0.0559	5518.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE73036
+GSE37248_Wildtype-vs-hFXRBat-AdiposeSpecificHumanFXR-Overexpression_Mouse_Microarray_WAT	2.338e-01	0.0459	4553.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE37248
+GSE94846_Ctrl-vs-PAX8-Overexpression_Mouse_Microarray_Islet	4.631e-01	0.0684	6112.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE94846
+GSE41203_2Weeks-vs-6Weeks_NonObeseDiabetic_Mouse_Microarray_Islets	4.858e-01	0.0812	7915.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE41203
+GSE110569_WildtypeC57Bl6-vs-alb-SREBP-1a_Mouse_Microarray_Liver	5.552e-01	0.0510	5797.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE110569
+GSE43106_Control-vs-HighFatDiet_C3HeB_FeJ_Mouse_Microarray_Liver	7.076e-01	0.0579	4924.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE43106
+GSE41203_2Weeks-vs-4Weeks_NonObeseDiabetic_Mouse_Microarray_Islets	8.254e-01	0.0270	8858.5	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE41203
+GSE59143_NonPregnant-vs-Pregnant_FemaleIsletGraft_Mouse_Microarray_Islets	9.401e-01	0.0217	9847.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE59143
+GSE7196_Wildtype-vs-ERRa-Knockout_Mouse_Microarray_Heart	9.422e-01	0.0076	6822.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE7196

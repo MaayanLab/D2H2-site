@@ -1,0 +1,24 @@
+,Name,Description,URL,PMID,Keywords,NIH grants and RFAs
+0,dkNET,The NIDDK Information Network (dkNET) serves the needs of basic and clinical investigators by providing seamless access to large pools of data and research resources relevant to the mission of The National Institute of Diabetes Digestive and Kidney Diseases (NIDDK),https://dknet.org/,26393351.0,"knowledge portal, resources, search",U24DK097771
+1,T2DKP,Providing data and tools to promote understanding and treatment of type 2 diabetes and its complication,https://t2d.hugeamp.org/,,"knowledge portal, resources, search, variants, phenotypes, traits","U01DK105554, U54DK105566 "
+2,Secrepedia,Generating an encyclopedia of the white and brown adi pocyte secretome in mouse models and humans,http://secrepedia.org/,,"adipocytes, secretome",RC2DK129961
+3,White Adipose Atlas,Mouse white adipose tissue single cell atlas,https://gitlab.com/rosen-lab/white-adipose-atlas,35296864.0,"white adipose tissue, single cell atlas",RC2DK116691
+4,EGA Archive,The European Genome-phenome Archive,https://ega-archive.org/search/(%7B!join%20from%3Ddataset_studies%20to%3Did%20v%3D$q1%7D)%20OR%20(%22diabetes%22%20OR%20%22insulin%22)&q1=(%22diabetes%22%20OR%20%22insulin%22)/datasets/ega,34791407.0,"archive, datasets, resource, portal",
+5,Human Cell Atlas ,A repository of single cell datasets,https://data.humancellatlas.org/search?q=Diabetes,29206104.0,"single cell, gene expression, RNA",
+6,TIGER Data Portal,Translational Human Pancreatic Islet Genotype Tissue-Expression Resource,http://tiger.bsc.es/,34644572.0,"pancreatic islet, genotype, portal","U01-DK105535,U01-DK085545"
+7,HIRN Resource Browser,"A repository summarizing all of the resources generated through the HIRN. You will be able to view Bioreagents, Datasets, Protocols, and Technology (Assay, Code/Pipeline, Device/Equipment, Services and Software, Databases)",https://resourcebrowser.hirnetwork.org/,,"human, pancreatic isltic, genotype, search, protal",RFA-DK-13-015
+8,Attie Lab Diabetes Database,"Interactive database of gene expression
+and diabetes-related clinical phenotypes",http://diabetes.wisc.edu/,,"gene expression, diabetes, interactive visualization, database, portal",5R01DK101573-03
+9,T1DKP,Providing data and tools to promote understanding and treatment of type 1 diabetes and its complication,https://t1d.hugeamp.org/,,"knowledge portal, resources, search, variants, phenotypes, traits",
+10,IDF Diabetes Atlas,Worldwide tracking of diabetes cases,https://diabetesatlas.org/,34879977.0,"population, prevelance, global",
+11,PANC-DB,Data portal of The Human Pancreas Analysis Program,https://hpap.pmacs.upenn.edu/,31127054.0,"pancreas, human, T1D, T2D","UC4-DK-112217,U01-DK-123594,UC4-DK-112232,U01-DK-123716"
+12,TrialNet ,Type 1 diabetes clinical trials network,https://www.trialnet.org/,,"clinical trials, T1D",
+13,Nephroseq,Data portal that hosts gene expression data from human kidney,https://www.nephroseq.org/,,"kidney, gene expression, RNA-seq",
+14,Pancreatlas,A curated resource to share data from human pancreas samples,https://pancreatlas.org/,33294866.0,"pancreas, human, T1D, T2D",
+15,Human Protien Atlas,The open access resource for human proteins,https://www.proteinatlas.org/,25613900.0,"proteins, search, human, proteomics, tissue expression",
+16,KPMP,Kidney tissue atlas,https://atlas.kpmp.org/,35675394.0,"single cell, gene expression, RNA, tissue map",U2CDK114886     
+17,Liver Cell Atlas,Liver cell atlas,https://www.livercellatlas.org/,,"human, mouse, liver, gene expression, single cell",
+18,Huising islet cell transcriptomic data,"Gene expression in mouse alpha, beta, and delta cells",https://huisinglab.com/islet_txomes_2016/index.html,,"gene expression, mouse, alpha, beta, delta, cells",
+19,Islet Regulome Browser,Visualization tool that provides access to interactive exploration of pancreatic islet genomic data,http://pasqualilab.upf.edu/app/isletregulome,28261261.0,"islet, gene expression, pancreas, pancreatic islet",
+20,NIDDK Central Repository,"Resources for Research (NIDDK-CR R4R) facilitates sharing of data, biospecimens, and other resources generated from studies supported by NIDDK",https://repository.niddk.nih.gov/home/,,"NIDDK, repository, NIH",
+21,Diabetes Genes,Information for researchs and patients on genetic types of diabetes,https://www.diabetesgenes.org/,,"genetic, diabetes, genes",

@@ -1,0 +1,51 @@
+Sample_geo_accession	Condition	Group
+GSM4996198	 prior	muscle vastus lateralis
+GSM4996199	 + 2 min after exercise	muscle vastus lateralis
+GSM4996200	 + 1 h after exrecuse	muscle vastus lateralis
+GSM4996201	 + 3 h after exrecuse	muscle vastus lateralis
+GSM4996202	 + 6 h after exrecuse	muscle vastus lateralis
+GSM4996203	 prior	muscle vastus lateralis
+GSM4996204	 + 2 min after exercise	muscle vastus lateralis
+GSM4996205	 + 1 h after exrecuse	muscle vastus lateralis
+GSM4996206	 + 3 h after exrecuse	muscle vastus lateralis
+GSM4996207	 + 6 h after exrecuse	muscle vastus lateralis
+GSM4996208	 prior	muscle vastus lateralis
+GSM4996209	 + 2 min after exercise	muscle vastus lateralis
+GSM4996210	 + 1 h after exrecuse	muscle vastus lateralis
+GSM4996211	 + 3 h after exrecuse	muscle vastus lateralis
+GSM4996212	 + 6 h after exrecuse	muscle vastus lateralis
+GSM4996213	 prior	muscle vastus lateralis
+GSM4996214	 + 2 min after exercise	muscle vastus lateralis
+GSM4996215	 + 1 h after exrecuse	muscle vastus lateralis
+GSM4996216	 + 3 h after exrecuse	muscle vastus lateralis
+GSM4996217	 + 6 h after exrecuse	muscle vastus lateralis
+GSM4996218	 prior	muscle vastus lateralis
+GSM4996219	 + 2 min after exercise	muscle vastus lateralis
+GSM4996220	 + 1 h after exrecuse	muscle vastus lateralis
+GSM4996221	 + 3 h after exrecuse	muscle vastus lateralis
+GSM4996222	 + 6 h after exrecuse	muscle vastus lateralis
+GSM4996223	 prior	muscle vastus lateralis
+GSM4996224	 + 2 min after exercise	muscle vastus lateralis
+GSM4996225	 + 1 h after exrecuse	muscle vastus lateralis
+GSM4996226	 + 3 h after exrecuse	muscle vastus lateralis
+GSM4996227	 + 6 h after exrecuse	muscle vastus lateralis
+GSM4996228	 prior	muscle vastus lateralis
+GSM4996229	 + 2 min after exercise	muscle vastus lateralis
+GSM4996230	 + 1 h after exrecuse	muscle vastus lateralis
+GSM4996231	 + 3 h after exrecuse	muscle vastus lateralis
+GSM4996232	 + 6 h after exrecuse	muscle vastus lateralis
+GSM4996233	 prior	muscle vastus lateralis
+GSM4996234	 + 2 min after exercise	muscle vastus lateralis
+GSM4996235	 + 1 h after exrecuse	muscle vastus lateralis
+GSM4996236	 + 3 h after exrecuse	muscle vastus lateralis
+GSM4996237	 + 6 h after exrecuse	muscle vastus lateralis
+GSM4996238	 prior	muscle vastus lateralis
+GSM4996239	 + 2 min after exercise	muscle vastus lateralis
+GSM4996240	 + 1 h after exrecuse	muscle vastus lateralis
+GSM4996241	 + 3 h after exrecuse	muscle vastus lateralis
+GSM4996242	 + 6 h after exrecuse	muscle vastus lateralis
+GSM4996243	 prior	muscle vastus lateralis
+GSM4996244	 + 2 min after exercise	muscle vastus lateralis
+GSM4996245	 + 1 h after exrecuse	muscle vastus lateralis
+GSM4996246	 + 3 h after exrecuse	muscle vastus lateralis
+GSM4996247	 + 6 h after exrecuse	muscle vastus lateralis

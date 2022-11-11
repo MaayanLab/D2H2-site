@@ -1,0 +1,7 @@
+Sample_geo_accession	Condition	Group
+GSM4948156	 lean	Primary myotube
+GSM4948157	 lean	Primary myotube
+GSM4948158	 lean	Primary myotube
+GSM4948159	 obese	Primary myotube
+GSM4948160	 obese	Primary myotube
+GSM4948161	 obese	Primary myotube

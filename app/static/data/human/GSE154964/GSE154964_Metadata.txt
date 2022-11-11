@@ -1,0 +1,11 @@
+Sample_geo_accession	Condition	Group
+GSM4685031	 Liver Para-cancerous	liver hepatocellular carcinoma
+GSM4685032	 Liver Para-cancerous	liver hepatocellular carcinoma
+GSM4685033	 Liver Para-cancerous	liver hepatocellular carcinoma
+GSM4685034	 Liver Para-cancerous	liver hepatocellular carcinoma
+GSM4685035	 Liver Para-cancerous	liver hepatocellular carcinoma
+GSM4685036	 Liver Cancerous	liver hepatocellular carcinoma
+GSM4685037	 Liver Cancerous	liver hepatocellular carcinoma
+GSM4685038	 Liver Cancerous	liver hepatocellular carcinoma
+GSM4685039	 Liver Cancerous	liver hepatocellular carcinoma
+GSM4685040	 Liver Cancerous	liver hepatocellular carcinoma

@@ -1,0 +1,25 @@
+Sample_geo_accession	Condition	Group
+GSM4579759	 NT	bladder cancer cell line T24
+GSM4579760	 MCC	bladder cancer cell line T24
+GSM4579761	 NT	bladder cancer cell line T24
+GSM4579762	 MCC	bladder cancer cell line T24
+GSM4579763	 NT	bladder cancer cell line T24
+GSM4579764	 MCC	bladder cancer cell line T24
+GSM4579765	 NT	bladder cancer cell line 5637
+GSM4579766	 MCC	bladder cancer cell line 5637
+GSM4579767	 NT	bladder cancer cell line 5637
+GSM4579768	 MCC	bladder cancer cell line 5637
+GSM4579769	 NT	bladder cancer cell line 5637
+GSM4579770	 MCC	bladder cancer cell line 5637
+GSM4579771	 NT	bladder cancer cell line TCC-SUP
+GSM4579772	 MCC	bladder cancer cell line TCC-SUP
+GSM4579773	 NT	bladder cancer cell line TCC-SUP
+GSM4579774	 MCC	bladder cancer cell line TCC-SUP
+GSM4579775	 NT	bladder cancer cell line TCC-SUP
+GSM4579776	 MCC	bladder cancer cell line TCC-SUP
+GSM4579777	 NT	bladder cancer cell line CLS-439
+GSM4579778	 MCC	bladder cancer cell line CLS-439
+GSM4579779	 NT	bladder cancer cell line CLS-439
+GSM4579780	 MCC	bladder cancer cell line CLS-439
+GSM4579781	 NT	bladder cancer cell line CLS-439
+GSM4579782	 MCC	bladder cancer cell line CLS-439

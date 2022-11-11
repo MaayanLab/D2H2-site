@@ -1,4 +1,5 @@
 
+  
 
 h1 { color: #0f0724; font-family:  "IBM Plex Sans", sans-serif; font-size: 36px; font-weight: 350; line-height: 40px; margin: 0 0 16px; /* border: #d0d0d0; border-left-style: solid; border-right-style: solid; border-width: 2px; */}
 
@@ -10,6 +11,7 @@ h4 { color: #050a2f; font-family:  "IBM Plex Sans", sans-serif; font-size: 22px;
 
 h5 { color: #050a2f; font-family:  "IBM Plex Sans", sans-serif; font-size: 22px; font-weight: 340; line-height: 32px; margin: 0 0 14px; }
 
+.h7 { color: #050a2f; font-family:  "IBM Plex Sans", sans-serif; font-size: 16px; font-weight: 300; line-height: 32px; margin: 0 0 14px; }
 
 p { color: #222; font-family: "IBM Plex Sans", sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; margin: 0 0 14px; }
 
@@ -27,25 +29,31 @@ label {
     font-family: "IBM Plex Sans", sans-serif;
 }
 
-/* .btn-primary {
-    background-color: lightgray !important;
-} */
-
-/* .btn-secondary {
-    background-color: darkgray !important;
-} */
 
 .selectize-dropdown {
     position: absolute !important;
-    z-index: 10000000000 !important; /* adjust as necessary */
+    z-index: 10000000000 !important; 
     border: 1px solid #d0d0d0 !important;
     background: #ffffff !important;
     margin: -1px 0 0 0 !important;
-    border-top: 0 none !important;  
+    border-top: 0 none !important;
+    font: "IBM Plex Sans", sans-serif !important;
+}
+
+.selectize-nav {
+    position: relative !important;
+    border: 1px solid #801414 !important;
+
+    margin: -1px 0 0 0 !important;
+    border-top: 0 none !important; 
+    display: none;
+}
+
+.navbar-toggler-icon {
+    background-image: url('../img/hamburger.png');
 }
 
 
-a {  color: rgb(10, 13, 149); text-decoration: none; }
 
 .title-border {
     border-bottom-style: solid !important;
@@ -75,13 +83,15 @@ a {  color: rgb(10, 13, 149); text-decoration: none; }
 }
 
 .page-container {
-    position: relative;
-    min-height: 80vh;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
   }
   
 .content-wrap {
-    padding-bottom: 2.5rem;    /* Footer height */
-  }
+    padding-bottom: 3rem;    /* Footer height */
+}
   
 
 #sigcomslogo {
@@ -132,19 +142,27 @@ body {
     font-size: 15px; 
     font-weight: 400; 
     line-height: 24px; 
-    margin: 0 0 14px;
    /*  background-image: linear-gradient(to right, whitesmoke, rgb(166, 217, 241)); */
     background-color: #B0BEC5;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    padding-bottom: 0;
+    flex-grow: 1;
+    margin-bottom: 60px; /* Margin bottom by footer height */
 }
 
-.footer{
-    margin-top: auto;
+
+    
+.footer {
+    position: relative;
     background-color: #ECEFF1;
+    bottom: 0;
     width: 100%;
+    height: 135px; /* Set the fixed height of the footer here */
+    line-height: 60px; /* Vertically center the text there */
 }
+
 
 .btn-primary:hover {
     background-color: #71477a;
@@ -155,16 +173,20 @@ body {
 
 }
 
-
-div {
-    border-bottom-color: black;
+.btn-custom {
+    border: lightgray;
+    border-style: solid;
+    width: 140px;
 }
+
+
+
 
 .custom-col {
     border: rgb(182, 182, 182);
     background-color: #CFD8DC;
     border-width: 1.5px;
-    overflow: hidden;
+    overflow: scroll;
     border-style: solid;
     border-radius: 1%;
     
@@ -187,6 +209,14 @@ div {
     border-radius: 1%;
 }
 
+.libpicker {
+    background-color: #9a8fc1;
+    color: white;
+    border-radius: 1%;
+    border-style: none;
+    font-family: "IBM Plex Sans", sans-serif;
+}
+
 
 
 .banner {
@@ -206,8 +236,32 @@ header#masthead {
     padding-bottom: 0;
 }
 
-.a {
-    color: darkblue;
+a {
+    color: black;
+}
+
+.centered {
+    display : block;
+    margin : 0 auto;
+    text-align: center;
+    width: 700px;
+}
+.query-list {
+    border-style: solid;
+    border-color: rgb(145, 145, 145);
+    border-width: 1px;
+    border-radius: 2%;
+} 
+.query-list li {
+    margin: 10px 0;
+}
+
+.queries {
+    text-shadow: #71477a;
+    font-size: 16px;
+    font-weight:normal;
+    color: rgb(23, 30, 82);
+    text-decoration: underline;
 }
 
 .img-logo {
@@ -225,6 +279,7 @@ header#masthead {
     font-family: "IBM Plex Sans", sans-serif !important;
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    overflow: scroll;
 }
 
 .styled-table th,
@@ -280,11 +335,13 @@ nav[data-toggle="toc"] {
 
   
   /* small screens */
-@media (max-width: 768px) {
+@media (max-width: 700px) {
 /* override stickyness so that the navigation does not follow scrolling */
 
     nav[data-toggle="toc"] {
         margin-bottom: 42px;
+        margin-left: 0px;
+        padding-left: 0px;
         position: static;
     }
 
@@ -304,10 +361,12 @@ nav[data-toggle="toc"] {
     border: 16px solid #f3f3f3; /* Light grey */
     border-top: 16px solid #3498db; /* Blue */
     border-radius: 50%;
-
+    left: 48%;
+    position: relative;
     width: 40px;
     height: 40px;
     animation: spin 1s linear infinite;
+    justify-content: center;
   }
   
   @keyframes spin {
@@ -322,6 +381,7 @@ nav[data-toggle="toc"] {
 .navbar .active {
     color: white !important;
 }
+
   
 
   /* Current Menu Item */
@@ -330,8 +390,167 @@ nav[data-toggle="toc"] {
 .active{
     font-weight: bolder !important;
 }
-  
-
 
   
+nav select {
+    display: none;
+}
+
+@media (min-width: 950px) {
+    nav ul     { display: none; }
+    nav select { display: inline-block; }
+}
+
+
+.toggle {
+    --width: 100px;
+    --height: calc(var(--width) / 3);
+
+    position: relative;
+    display: inline-block;
+    width: var(--width);
+    height: var(--height);
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+    border-radius: var(--height);
+    cursor: pointer;
+  }
+
+  .toggle input {
+    display: none;
+  }
+
+  .toggle .slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--height);
+    background-color: #9a8fc1;
+    transition: all 0.4s ease-in-out;
+  }
+
+  .toggle .slider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(var(--height));
+    height: calc(var(--height));
+    border-radius: calc(var(--height) / 2);
+    background-color: #fff;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s ease-in-out;
+  }
+
+  .toggle input:checked+.slider {
+    background-color: #9a8fc1;
+  }
+
+  .toggle input:checked+.slider::before {
+    transform: translateX(calc(var(--width) - var(--height)));
+  }
+
+  .toggle .labels {
+    position: absolute;
+    top: 8px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 14px;
+    font-family: "IBM Plex Sans", sans-serif;
+    transition: all 0.4s ease-in-out;
+  }
+
+.toggle .labels::after {
+    content: attr(data-off);
+    position: absolute;
+    right: 10px;
+    bottom: 12px;
+    color: #ffffff;
+    opacity: 1;
+    transition: all 0.4s ease-in-out;
+}
+
+.toggle .labels::before {
+    content: attr(data-on);
+    position: absolute;
+    left: 10px;
+    bottom: 12px;
+    color: #ffffff;
+    opacity: 0;
+    transition: all 0.4s ease-in-out;
+}
+
+.toggle input:checked~.labels::after {
+    opacity: 0;
+}
+
+  .toggle input:checked~.labels::before {
+    opacity: 1;
+}
+
+
+
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
   
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #9a8fc1;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #9a8fc1;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
