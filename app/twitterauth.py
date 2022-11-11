@@ -9,6 +9,7 @@ import requests
 # Use load_env to trace the path of .env:
 #load_dotenv('.env') 
 
+
 auth = tweepy.OAuthHandler(os.environ.get("API_KEY"), os.environ.get("API_KEY_SECRET"))
 auth.set_access_token(os.environ.get("ACCESS_TOKEN"), os.environ.get("ACCESS_TOKEN_SECRET"))
 
