@@ -1,0 +1,13 @@
+Sample_geo_accession	Condition	Group
+GSM2517014	 Isolated islet	islet
+GSM2517015	 Isolated islet	islet
+GSM2517016	 Isolated islet	islet
+GSM2517017	 Isolated islet	islet
+GSM2517018	 Transplanted islet day 60	islet
+GSM2517019	 Transplanted islet day 60	islet
+GSM2517020	 Transplanted islet day 60	islet
+GSM2517021	 Transplanted islet day 60	islet
+GSM2517022	 Transplanted islet day 120	islet
+GSM2517023	 Transplanted islet day 120	islet
+GSM2517024	 Transplanted islet day 120	islet
+GSM2517025	 Transplanted islet day 120	islet

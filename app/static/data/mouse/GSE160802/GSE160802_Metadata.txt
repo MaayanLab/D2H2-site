@@ -1,0 +1,60 @@
+Sample_geo_accession	Condition	Group
+GSM4879425	 Vehicle	Paraventricular Nucleus, hypothalamus
+GSM4879426	 Vehicle	Paraventricular Nucleus, hypothalamus
+GSM4879427	 IP118/PY115	Paraventricular Nucleus, hypothalamus
+GSM4879428	 IP118/PY115	Paraventricular Nucleus, hypothalamus
+GSM4879429	 Vehicle	Paraventricular Nucleus, hypothalamus
+GSM4879430	 IP118/PY115	Paraventricular Nucleus, hypothalamus
+GSM4879431	 IP118/PY115	Paraventricular Nucleus, hypothalamus
+GSM4879432	 Vehicle	Paraventricular Nucleus, hypothalamus
+GSM4879433	 IP118/PY115	Paraventricular Nucleus, hypothalamus
+GSM4879434	 IP118/PY115	Paraventricular Nucleus, hypothalamus
+GSM4879435	 Vehicle	Paraventricular Nucleus, hypothalamus
+GSM4879436	 IP118/PY115	Paraventricular Nucleus, hypothalamus
+GSM4879437	 IP118/PY115	Paraventricular Nucleus, hypothalamus
+GSM4879438	 Vehicle	Paraventricular Nucleus, hypothalamus
+GSM4879439	 Vehicle	Paraventricular Nucleus, hypothalamus
+GSM4879440	 IP118/PY115	Paraventricular Nucleus, hypothalamus
+GSM4879441	 IP118/PY115	Paraventricular Nucleus, hypothalamus
+GSM4879442	 Vehicle	Arcuate nucelus, hypothalamus
+GSM4879443	 Vehicle	Arcuate nucelus, hypothalamus
+GSM4879444	 IP118/PY115	Arcuate nucelus, hypothalamus
+GSM4879445	 IP118/PY115	Arcuate nucelus, hypothalamus
+GSM4879446	 Vehicle	Arcuate nucelus, hypothalamus
+GSM4879447	 Vehicle	Arcuate nucelus, hypothalamus
+GSM4879448	 IP118/PY115	Arcuate nucelus, hypothalamus
+GSM4879449	 IP118/PY115	Arcuate nucelus, hypothalamus
+GSM4879450	 Vehicle	Arcuate nucelus, hypothalamus
+GSM4879451	 IP118/PY115	Arcuate nucelus, hypothalamus
+GSM4879452	 IP118/PY115	Arcuate nucelus, hypothalamus
+GSM4879453	 Vehicle	Arcuate nucelus, hypothalamus
+GSM4879454	 Vehicle	Arcuate nucelus, hypothalamus
+GSM4879455	 IP118/PY115	Arcuate nucelus, hypothalamus
+GSM4879456	 IP118/PY115	Arcuate nucelus, hypothalamus
+GSM4879457	 IP118/PY115	Arcuate nucelus, hypothalamus
+GSM4879458	 IP118/PY115	Arcuate nucelus, hypothalamus
+GSM4879459	 Vehicle	Paraventricular Nucleus, hypothalamus
+GSM4879460	 Vehicle	Paraventricular Nucleus, hypothalamus
+GSM4879461	 Vehicle	Paraventricular Nucleus, hypothalamus
+GSM4879462	 Vehicle	Arcuate nucelus, hypothalamus
+GSM4879463	 Vehicle	Arcuate nucelus, hypothalamus
+GSM4879464	 Vehicle	Nucleus of the solitary tract, brainstem
+GSM4879465	 Vehicle	Nucleus of the solitary tract, brainstem
+GSM4879466	 IP118/PY115	Nucleus of the solitary tract, brainstem
+GSM4879467	 IP118/PY115	Nucleus of the solitary tract, brainstem
+GSM4879468	 Vehicle	Nucleus of the solitary tract, brainstem
+GSM4879469	 Vehicle	Nucleus of the solitary tract, brainstem
+GSM4879470	 IP118/PY115	Nucleus of the solitary tract, brainstem
+GSM4879471	 IP118/PY115	Nucleus of the solitary tract, brainstem
+GSM4879472	 Vehicle	Nucleus of the solitary tract, brainstem
+GSM4879473	 Vehicle	Nucleus of the solitary tract, brainstem
+GSM4879474	 IP118/PY115	Nucleus of the solitary tract, brainstem
+GSM4879475	 IP118/PY115	Nucleus of the solitary tract, brainstem
+GSM4879476	 Vehicle	Nucleus of the solitary tract, brainstem
+GSM4879477	 Vehicle	Nucleus of the solitary tract, brainstem
+GSM4879478	 IP118/PY115	Nucleus of the solitary tract, brainstem
+GSM4879479	 IP118/PY115	Nucleus of the solitary tract, brainstem
+GSM4879480	 Vehicle	Nucleus of the solitary tract, brainstem
+GSM4879481	 Vehicle	Nucleus of the solitary tract, brainstem
+GSM4879482	 IP118/PY115	Nucleus of the solitary tract, brainstem
+GSM4879483	 IP118/PY115	Nucleus of the solitary tract, brainstem

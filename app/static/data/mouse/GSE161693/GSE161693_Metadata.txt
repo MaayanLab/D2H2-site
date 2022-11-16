@@ -1,0 +1,25 @@
+Sample_geo_accession	Condition	Group
+GSM4912796	 Control	Gastrocnemius muscle
+GSM4912797	 Control	Gastrocnemius muscle
+GSM4912798	 Control	Gastrocnemius muscle
+GSM4912799	 Control	Gastrocnemius muscle
+GSM4912800	 7-days hindlimb suspension	Gastrocnemius muscle
+GSM4912801	 7-days hindlimb suspension	Gastrocnemius muscle
+GSM4912802	 7-days hindlimb suspension	Gastrocnemius muscle
+GSM4912803	 7-days hindlimb suspension	Gastrocnemius muscle
+GSM4912804	 14 days after STZ injection	Gastrocnemius muscle
+GSM4912805	 14 days after STZ injection	Gastrocnemius muscle
+GSM4912806	 14 days after STZ injection	Gastrocnemius muscle
+GSM4912807	 14 days after STZ injection	Gastrocnemius muscle
+GSM4912808	 Control	Gastrocnemius muscle
+GSM4912809	 Control	Gastrocnemius muscle
+GSM4912810	 Control	Gastrocnemius muscle
+GSM4912811	 Control	Gastrocnemius muscle
+GSM4912812	 7-days hindlimb suspension	Gastrocnemius muscle
+GSM4912813	 7-days hindlimb suspension	Gastrocnemius muscle
+GSM4912814	 7-days hindlimb suspension	Gastrocnemius muscle
+GSM4912815	 7-days hindlimb suspension	Gastrocnemius muscle
+GSM4912816	 14 days after STZ injection	Gastrocnemius muscle
+GSM4912817	 14 days after STZ injection	Gastrocnemius muscle
+GSM4912818	 14 days after STZ injection	Gastrocnemius muscle
+GSM4912819	 14 days after STZ injection	Gastrocnemius muscle
