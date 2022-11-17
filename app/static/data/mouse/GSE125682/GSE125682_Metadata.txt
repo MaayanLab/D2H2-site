@@ -1,0 +1,9 @@
+Sample_geo_accession	Condition	Group
+GSM3580178	 glucose (G)	Lineage- Sca-1+ c-Kit+ cells
+GSM3580179	 glucose (G)	Lineage- Sca-1+ c-Kit+ cells
+GSM3580180	 glucose+lipid (G+L)	Lineage- Sca-1+ c-Kit+ cells
+GSM3580181	 glucose+lipid (G+L)	Lineage- Sca-1+ c-Kit+ cells
+GSM3580182	 PBS control	Lineage- Sca-1+ c-Kit+ cells
+GSM3580183	 PBS control	Lineage- Sca-1+ c-Kit+ cells
+GSM3580184	 PBS control	Lineage- Sca-1+ c-Kit+ cells
+GSM3580185	 PBS control	Lineage- Sca-1+ c-Kit+ cells
