@@ -1,0 +1,13 @@
+Sample_geo_accession	Condition	Group
+GSM3671511	 HNF1A WT	Endocrine cells
+GSM3671512	 HNF1A WT	Endocrine cells
+GSM3671513	 HNF1A KO	Endocrine cells
+GSM3671514	 HNF1A KO	Endocrine cells
+GSM3671515	 HNF1A R200Q homozygous	Endocrine cells
+GSM3671516	 HNF1A R200Q homozygous	Endocrine cells
+GSM3671517	 HNF1A WT	Endocrine cells
+GSM3671518	 HNF1A WT	Endocrine cells
+GSM3671519	 HNF1A WT	Endocrine cells
+GSM3671520	 HNF1A KO	Endocrine cells
+GSM3671521	 HNF1A KO	Endocrine cells
+GSM4908643	 HNF1A Het	Endocrine cells

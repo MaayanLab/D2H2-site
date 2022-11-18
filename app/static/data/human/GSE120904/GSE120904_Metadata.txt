@@ -1,0 +1,88 @@
+Sample_geo_accession	Condition	Group
+GSM3418205	 IL15	Intestinal epithelial cells
+GSM3418206	 IL15 + BNZ	Intestinal epithelial cells
+GSM3418207	 IL15 + IL21	Intestinal epithelial cells
+GSM3418208	 IL15 + IL21 + BNZ	Intestinal epithelial cells
+GSM3418209	 IL21	Intestinal epithelial cells
+GSM3418210	 IL21 + BNZ	Intestinal epithelial cells
+GSM3418211	 UN	Intestinal epithelial cells
+GSM3418212	 IL15	Intestinal epithelial cells
+GSM3418213	 IL15 + BNZ	Intestinal epithelial cells
+GSM3418214	 IL15 + IL21	Intestinal epithelial cells
+GSM3418215	 IL15 + IL21 + BNZ	Intestinal epithelial cells
+GSM3418216	 IL21	Intestinal epithelial cells
+GSM3418217	 IL21 + BNZ	Intestinal epithelial cells
+GSM3418218	 UN	Intestinal epithelial cells
+GSM3418219	 IL15	Intestinal epithelial cells
+GSM3418220	 IL15 + BNZ	Intestinal epithelial cells
+GSM3418221	 IL15 + IL21	Intestinal epithelial cells
+GSM3418222	 IL15 + IL21 + BNZ	Intestinal epithelial cells
+GSM3418223	 IL21	Intestinal epithelial cells
+GSM3418224	 IL21 + BNZ	Intestinal epithelial cells
+GSM3418225	 UN	Intestinal epithelial cells
+GSM3418226	 IL15	Intestinal epithelial cells
+GSM3418227	 IL15 + BNZ	Intestinal epithelial cells
+GSM3418228	 IL15 + IL21	Intestinal epithelial cells
+GSM3418229	 IL15 + IL21 + BNZ	Intestinal epithelial cells
+GSM3418230	 IL21	Intestinal epithelial cells
+GSM3418231	 IL21 + BNZ	Intestinal epithelial cells
+GSM3418232	 UN	Intestinal epithelial cells
+GSM3418233	 IL15	Intestinal epithelial cells
+GSM3418234	 IL15 + BNZ	Intestinal epithelial cells
+GSM3418235	 IL15 + IL21	Intestinal epithelial cells
+GSM3418236	 IL15 + IL21 + BNZ	Intestinal epithelial cells
+GSM3418237	 IL21	Intestinal epithelial cells
+GSM3418238	 IL21 + BNZ	Intestinal epithelial cells
+GSM3418239	 UN	Intestinal epithelial cells
+GSM3418240	 IL15	Intestinal intraepithelial cytotoxic T cells
+GSM3418241	 IL15 + BNZ	Intestinal intraepithelial cytotoxic T cells
+GSM3418242	 IL15 + CP	Intestinal intraepithelial cytotoxic T cells
+GSM3418243	 IL15 + IL21	Intestinal intraepithelial cytotoxic T cells
+GSM3418244	 IL15 + IL21 + BNZ	Intestinal intraepithelial cytotoxic T cells
+GSM3418245	 IL15 + IL21 + CP	Intestinal intraepithelial cytotoxic T cells
+GSM3418246	 IL21	Intestinal intraepithelial cytotoxic T cells
+GSM3418247	 IL21 + BNZ	Intestinal intraepithelial cytotoxic T cells
+GSM3418248	 IL21 + CP	Intestinal intraepithelial cytotoxic T cells
+GSM3418249	 UN	Intestinal intraepithelial cytotoxic T cells
+GSM3418250	 IL15	Intestinal intraepithelial cytotoxic T cells
+GSM3418251	 IL15 + BNZ	Intestinal intraepithelial cytotoxic T cells
+GSM3418252	 IL15 + CP	Intestinal intraepithelial cytotoxic T cells
+GSM3418253	 IL15 + IL21	Intestinal intraepithelial cytotoxic T cells
+GSM3418254	 IL15 + IL21 + BNZ	Intestinal intraepithelial cytotoxic T cells
+GSM3418255	 IL15 + IL21 + CP	Intestinal intraepithelial cytotoxic T cells
+GSM3418256	 IL21	Intestinal intraepithelial cytotoxic T cells
+GSM3418257	 IL21 + BNZ	Intestinal intraepithelial cytotoxic T cells
+GSM3418258	 IL21 + CP	Intestinal intraepithelial cytotoxic T cells
+GSM3418259	 UN	Intestinal intraepithelial cytotoxic T cells
+GSM3418260	 IL15	Intestinal intraepithelial cytotoxic T cells
+GSM3418261	 IL15 + BNZ	Intestinal intraepithelial cytotoxic T cells
+GSM3418262	 IL15 + CP	Intestinal intraepithelial cytotoxic T cells
+GSM3418263	 IL15 + IL21	Intestinal intraepithelial cytotoxic T cells
+GSM3418264	 IL15 + IL21 + BNZ	Intestinal intraepithelial cytotoxic T cells
+GSM3418265	 IL15 + IL21 + CP	Intestinal intraepithelial cytotoxic T cells
+GSM3418266	 IL21	Intestinal intraepithelial cytotoxic T cells
+GSM3418267	 IL21 + BNZ	Intestinal intraepithelial cytotoxic T cells
+GSM3418268	 IL21 + CP	Intestinal intraepithelial cytotoxic T cells
+GSM3418269	 UN	Intestinal intraepithelial cytotoxic T cells
+GSM3418270	 IL15	Intestinal intraepithelial cytotoxic T cells
+GSM3418271	 IL15 + BNZ	Intestinal intraepithelial cytotoxic T cells
+GSM3418272	 IL15 + CP	Intestinal intraepithelial cytotoxic T cells
+GSM3418273	 IL15 + IL21	Intestinal intraepithelial cytotoxic T cells
+GSM3418274	 IL15 + IL21 + BNZ	Intestinal intraepithelial cytotoxic T cells
+GSM3418275	 IL15 + IL21 + CP	Intestinal intraepithelial cytotoxic T cells
+GSM3418276	 IL21	Intestinal intraepithelial cytotoxic T cells
+GSM3418277	 IL21 + BNZ	Intestinal intraepithelial cytotoxic T cells
+GSM3418278	 IL21 + CP	Intestinal intraepithelial cytotoxic T cells
+GSM3418279	 UN	Intestinal intraepithelial cytotoxic T cells
+GSM3418280	 IL21	Intestinal intraepithelial cytotoxic T cells
+GSM3418281	 IL21 + BNZ	Intestinal intraepithelial cytotoxic T cells
+GSM3418282	 IL21 + CP	Intestinal intraepithelial cytotoxic T cells
+GSM3418283	 UN	Intestinal intraepithelial cytotoxic T cells
+GSM3418284	 IL21	Intestinal intraepithelial cytotoxic T cells
+GSM3418285	 IL21 + BNZ	Intestinal intraepithelial cytotoxic T cells
+GSM3418286	 IL21 + CP	Intestinal intraepithelial cytotoxic T cells
+GSM3418287	 UN	Intestinal intraepithelial cytotoxic T cells
+GSM3418288	 IL21	Intestinal intraepithelial cytotoxic T cells
+GSM3418289	 IL21 + BNZ	Intestinal intraepithelial cytotoxic T cells
+GSM3418290	 IL21 + CP	Intestinal intraepithelial cytotoxic T cells
+GSM3418291	 UN	Intestinal intraepithelial cytotoxic T cells
