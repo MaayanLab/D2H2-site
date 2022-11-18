@@ -1,0 +1,339 @@
+Sample_geo_accession	Condition	Group
+GSM2068872	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2068873	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2068874	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2068875	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2068876	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2068877	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2068878	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068879	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068880	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068881	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068882	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068883	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068884	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068885	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068886	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068887	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068888	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068889	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068890	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068891	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068892	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2068893	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2068894	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2068895	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2068896	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2068897	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2068898	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2068899	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2068900	 Regular Chow (RC) D02	pancreatic islets
+GSM2068901	 Regular Chow (RC) D02	pancreatic islets
+GSM2068902	 Regular Chow (RC) D02	pancreatic islets
+GSM2068903	 Regular Chow (RC) D02	pancreatic islets
+GSM2068904	 Regular Chow (RC) D02	pancreatic islets
+GSM2068905	 Regular Chow (RC) D02	pancreatic islets
+GSM2068906	 Regular Chow (RC) D10	pancreatic islets
+GSM2068907	 Regular Chow (RC) D10	pancreatic islets
+GSM2068908	 Regular Chow (RC) D10	pancreatic islets
+GSM2068909	 Regular Chow (RC) D10	pancreatic islets
+GSM2068910	 Regular Chow (RC) D10	pancreatic islets
+GSM2068911	 Regular Chow (RC) D10	pancreatic islets
+GSM2068912	 Regular Chow (RC) D30	pancreatic islets
+GSM2068913	 Regular Chow (RC) D30	pancreatic islets
+GSM2068914	 Regular Chow (RC) D30	pancreatic islets
+GSM2068915	 Regular Chow (RC) D30	pancreatic islets
+GSM2068916	 Regular Chow (RC) D30	pancreatic islets
+GSM2068917	 Regular Chow (RC) D30	pancreatic islets
+GSM2068918	 Regular Chow (RC) D30	pancreatic islets
+GSM2068919	 Regular Chow (RC) D30	pancreatic islets
+GSM2068920	 Regular Chow (RC) D90	pancreatic islets
+GSM2068921	 Regular Chow (RC) D90	pancreatic islets
+GSM2068922	 Regular Chow (RC) D90	pancreatic islets
+GSM2068923	 Regular Chow (RC) D90	pancreatic islets
+GSM2068924	 Regular Chow (RC) D90	pancreatic islets
+GSM2068925	 Regular Chow (RC) D90	pancreatic islets
+GSM2068926	 Regular Chow (RC) D90	pancreatic islets
+GSM2068927	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2068928	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2068929	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2068930	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2068931	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2068932	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2068933	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068934	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068935	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068936	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068937	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068938	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068939	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068940	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068941	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068942	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068943	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068944	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068945	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068946	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068947	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2068948	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2068949	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2068950	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2068951	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2068952	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2068953	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2068954	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2068955	 Regular Chow (RC) D02	pancreatic islets
+GSM2068956	 Regular Chow (RC) D02	pancreatic islets
+GSM2068957	 Regular Chow (RC) D02	pancreatic islets
+GSM2068958	 Regular Chow (RC) D10	pancreatic islets
+GSM2068959	 Regular Chow (RC) D10	pancreatic islets
+GSM2068960	 Regular Chow (RC) D10	pancreatic islets
+GSM2068961	 Regular Chow (RC) D10	pancreatic islets
+GSM2068962	 Regular Chow (RC) D10	pancreatic islets
+GSM2068963	 Regular Chow (RC) D30	pancreatic islets
+GSM2068964	 Regular Chow (RC) D30	pancreatic islets
+GSM2068965	 Regular Chow (RC) D30	pancreatic islets
+GSM2068966	 Regular Chow (RC) D30	pancreatic islets
+GSM2068967	 Regular Chow (RC) D30	pancreatic islets
+GSM2068968	 Regular Chow (RC) D30	pancreatic islets
+GSM2068969	 Regular Chow (RC) D30	pancreatic islets
+GSM2068970	 Regular Chow (RC) D30	pancreatic islets
+GSM2068971	 Regular Chow (RC) D90	pancreatic islets
+GSM2068972	 Regular Chow (RC) D90	pancreatic islets
+GSM2068973	 Regular Chow (RC) D90	pancreatic islets
+GSM2068974	 Regular Chow (RC) D90	pancreatic islets
+GSM2068975	 Regular Chow (RC) D90	pancreatic islets
+GSM2068976	 Regular Chow (RC) D90	pancreatic islets
+GSM2068977	 Regular Chow (RC) D90	pancreatic islets
+GSM2068978	 Regular Chow (RC) D90	pancreatic islets
+GSM2068979	 Regular Chow (RC) D02	pancreatic islets
+GSM2068980	 Regular Chow (RC) D02	pancreatic islets
+GSM2068981	 Regular Chow (RC) D02	pancreatic islets
+GSM2068982	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2068983	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068984	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068985	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068986	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068987	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068988	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2068989	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2068990	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068991	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068992	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068993	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068994	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068995	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2068996	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068997	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068998	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2068999	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069000	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069001	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069002	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069003	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069004	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069005	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069006	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069007	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069008	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069009	 Regular Chow (RC) D02	pancreatic islets
+GSM2069010	 Regular Chow (RC) D10	pancreatic islets
+GSM2069011	 Regular Chow (RC) D10	pancreatic islets
+GSM2069012	 Regular Chow (RC) D10	pancreatic islets
+GSM2069013	 Regular Chow (RC) D10	pancreatic islets
+GSM2069014	 Regular Chow (RC) D10	pancreatic islets
+GSM2069015	 Regular Chow (RC) D10	pancreatic islets
+GSM2069016	 Regular Chow (RC) D02	pancreatic islets
+GSM2069017	 Regular Chow (RC) D30	pancreatic islets
+GSM2069018	 Regular Chow (RC) D30	pancreatic islets
+GSM2069019	 Regular Chow (RC) D30	pancreatic islets
+GSM2069020	 Regular Chow (RC) D30	pancreatic islets
+GSM2069021	 Regular Chow (RC) D30	pancreatic islets
+GSM2069022	 Regular Chow (RC) D02	pancreatic islets
+GSM2069023	 Regular Chow (RC) D30	pancreatic islets
+GSM2069024	 Regular Chow (RC) D30	pancreatic islets
+GSM2069025	 Regular Chow (RC) D30	pancreatic islets
+GSM2069026	 Regular Chow (RC) D02	pancreatic islets
+GSM2069027	 Regular Chow (RC) D90	pancreatic islets
+GSM2069028	 Regular Chow (RC) D90	pancreatic islets
+GSM2069029	 Regular Chow (RC) D90	pancreatic islets
+GSM2069030	 Regular Chow (RC) D90	pancreatic islets
+GSM2069031	 Regular Chow (RC) D90	pancreatic islets
+GSM2069032	 Regular Chow (RC) D90	pancreatic islets
+GSM2069033	 Regular Chow (RC) D90	pancreatic islets
+GSM2069034	 Regular Chow (RC) D90	pancreatic islets
+GSM2069035	 Regular Chow (RC) D02	pancreatic islets
+GSM2069036	 Regular Chow (RC) D02	pancreatic islets
+GSM2069037	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069038	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069039	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069040	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069041	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069042	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069043	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069044	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069045	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069046	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069047	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069048	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069049	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069050	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069051	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069052	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069053	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069054	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069055	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069056	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069057	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069058	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069059	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069060	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069061	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069062	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069063	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069064	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069065	 Regular Chow (RC) D02	pancreatic islets
+GSM2069066	 Regular Chow (RC) D10	pancreatic islets
+GSM2069067	 Regular Chow (RC) D10	pancreatic islets
+GSM2069068	 Regular Chow (RC) D10	pancreatic islets
+GSM2069069	 Regular Chow (RC) D10	pancreatic islets
+GSM2069070	 Regular Chow (RC) D02	pancreatic islets
+GSM2069071	 Regular Chow (RC) D30	pancreatic islets
+GSM2069072	 Regular Chow (RC) D30	pancreatic islets
+GSM2069073	 Regular Chow (RC) D30	pancreatic islets
+GSM2069074	 Regular Chow (RC) D30	pancreatic islets
+GSM2069075	 Regular Chow (RC) D30	pancreatic islets
+GSM2069076	 Regular Chow (RC) D02	pancreatic islets
+GSM2069077	 Regular Chow (RC) D30	pancreatic islets
+GSM2069078	 Regular Chow (RC) D30	pancreatic islets
+GSM2069079	 Regular Chow (RC) D30	pancreatic islets
+GSM2069080	 Regular Chow (RC) D02	pancreatic islets
+GSM2069081	 Regular Chow (RC) D90	pancreatic islets
+GSM2069082	 Regular Chow (RC) D90	pancreatic islets
+GSM2069083	 Regular Chow (RC) D90	pancreatic islets
+GSM2069084	 Regular Chow (RC) D90	pancreatic islets
+GSM2069085	 Regular Chow (RC) D90	pancreatic islets
+GSM2069086	 Regular Chow (RC) D90	pancreatic islets
+GSM2069087	 Regular Chow (RC) D90	pancreatic islets
+GSM2069088	 Regular Chow (RC) D90	pancreatic islets
+GSM2069089	 Regular Chow (RC) D02	pancreatic islets
+GSM2069090	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069091	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069092	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069093	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069094	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069095	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069096	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069097	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069098	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069099	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069100	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069101	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069102	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069103	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069104	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069105	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069106	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069107	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069108	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069109	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069110	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069111	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069112	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069113	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069114	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069115	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069116	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069117	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069118	 Regular Chow (RC) D02	pancreatic islets
+GSM2069119	 Regular Chow (RC) D10	pancreatic islets
+GSM2069120	 Regular Chow (RC) D10	pancreatic islets
+GSM2069121	 Regular Chow (RC) D10	pancreatic islets
+GSM2069122	 Regular Chow (RC) D10	pancreatic islets
+GSM2069123	 Regular Chow (RC) D10	pancreatic islets
+GSM2069124	 Regular Chow (RC) D10	pancreatic islets
+GSM2069125	 Regular Chow (RC) D02	pancreatic islets
+GSM2069126	 Regular Chow (RC) D30	pancreatic islets
+GSM2069127	 Regular Chow (RC) D30	pancreatic islets
+GSM2069128	 Regular Chow (RC) D30	pancreatic islets
+GSM2069129	 Regular Chow (RC) D30	pancreatic islets
+GSM2069130	 Regular Chow (RC) D30	pancreatic islets
+GSM2069131	 Regular Chow (RC) D02	pancreatic islets
+GSM2069132	 Regular Chow (RC) D30	pancreatic islets
+GSM2069133	 Regular Chow (RC) D30	pancreatic islets
+GSM2069134	 Regular Chow (RC) D30	pancreatic islets
+GSM2069135	 Regular Chow (RC) D02	pancreatic islets
+GSM2069136	 Regular Chow (RC) D90	pancreatic islets
+GSM2069137	 Regular Chow (RC) D90	pancreatic islets
+GSM2069138	 Regular Chow (RC) D90	pancreatic islets
+GSM2069139	 Regular Chow (RC) D90	pancreatic islets
+GSM2069140	 Regular Chow (RC) D90	pancreatic islets
+GSM2069141	 Regular Chow (RC) D90	pancreatic islets
+GSM2069142	 Regular Chow (RC) D90	pancreatic islets
+GSM2069143	 Regular Chow (RC) D90	pancreatic islets
+GSM2069144	 Regular Chow (RC) D02	pancreatic islets
+GSM2069145	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069146	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069147	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069148	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069149	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069150	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069151	 High Fat, High Sugar (HFHS) D10	pancreatic islets
+GSM2069152	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069153	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069154	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069155	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069156	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069157	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069158	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069159	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069160	 High Fat, High Sugar (HFHS) D30	pancreatic islets
+GSM2069161	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069162	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069163	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069164	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069165	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069166	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069167	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069168	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069169	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069170	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069171	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069172	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069173	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069174	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069175	 High Fat, High Sugar (HFHS) D02	pancreatic islets
+GSM2069176	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069177	 High Fat, High Sugar (HFHS) D90	pancreatic islets
+GSM2069178	 Regular Chow (RC) D02	pancreatic islets
+GSM2069179	 Regular Chow (RC) D10	pancreatic islets
+GSM2069180	 Regular Chow (RC) D10	pancreatic islets
+GSM2069181	 Regular Chow (RC) D10	pancreatic islets
+GSM2069182	 Regular Chow (RC) D10	pancreatic islets
+GSM2069183	 Regular Chow (RC) D10	pancreatic islets
+GSM2069184	 Regular Chow (RC) D02	pancreatic islets
+GSM2069185	 Regular Chow (RC) D30	pancreatic islets
+GSM2069186	 Regular Chow (RC) D30	pancreatic islets
+GSM2069187	 Regular Chow (RC) D30	pancreatic islets
+GSM2069188	 Regular Chow (RC) D30	pancreatic islets
+GSM2069189	 Regular Chow (RC) D30	pancreatic islets
+GSM2069190	 Regular Chow (RC) D02	pancreatic islets
+GSM2069191	 Regular Chow (RC) D30	pancreatic islets
+GSM2069192	 Regular Chow (RC) D30	pancreatic islets
+GSM2069193	 Regular Chow (RC) D30	pancreatic islets
+GSM2069194	 Regular Chow (RC) D02	pancreatic islets
+GSM2069195	 Regular Chow (RC) D90	pancreatic islets
+GSM2069196	 Regular Chow (RC) D90	pancreatic islets
+GSM2069197	 Regular Chow (RC) D90	pancreatic islets
+GSM2069198	 Regular Chow (RC) D90	pancreatic islets
+GSM2069199	 Regular Chow (RC) D90	pancreatic islets
+GSM2069200	 Regular Chow (RC) D90	pancreatic islets
+GSM2069201	 Regular Chow (RC) D90	pancreatic islets
+GSM2069202	 Regular Chow (RC) D02	pancreatic islets
+GSM2069203	 Regular Chow (RC) D02	pancreatic islets
+GSM2069204	 Regular Chow (RC) D02	pancreatic islets
+GSM2069205	 Regular Chow (RC) D02	pancreatic islets
+GSM2069206	 Regular Chow (RC) D90	pancreatic islets
+GSM2069207	 Regular Chow (RC) D90	pancreatic islets
+GSM2069208	 Regular Chow (RC) D90	pancreatic islets
+GSM2069209	 Regular Chow (RC) D90	pancreatic islets
