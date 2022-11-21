@@ -9,6 +9,7 @@ intermine
 waitress
 bokeh==2.4.3
 matplotlib
+scikit-learn
 tweepy
 pyarrow
 rpy2==3.4.5
