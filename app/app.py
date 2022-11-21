@@ -10,13 +10,14 @@ import GEOparse
 import ftfy
 from functools import lru_cache
 import pickle
+import datetime
 from helpers import *
-#from twitterauth import update_tweets_table
+from twitterauth import update_tweets_table
 from dge import *
+
 
 create_meta = False
 base_url = 'static/data'
-
 
 
 app = Flask(__name__)
@@ -24,7 +25,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-	#update_tweets_table()
+	update_tweets_table(datetime.datetime.date)
 	return render_template('home.html')
 
 @app.route("/about", methods=['GET', 'POST'])
@@ -507,6 +508,6 @@ def get_study_data():
 #######################################################
 if __name__ == "__main__":
 	
-	serve(app, host="0.0.0.0", port=5000)
-	# app.run(debug=True, host="0.0.0.0")
+	#serve(app, host="0.0.0.0", port=5000)
+	app.run(debug=True, host="0.0.0.0")
 
