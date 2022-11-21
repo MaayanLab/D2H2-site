@@ -89,7 +89,9 @@ function submit_geneset(genelist, sigs) {
 
 function submit_geneset_home(genelist, sigs, descset) {
     genelist = genelist.split(',')
-    sigs = sigs.split(',')
+    sigs = sigs.split(',').map(function(item) {
+        return parseInt(item, 10);
+    });
     var numgenes = document.getElementById('numgenes').value
     var signifigance = document.getElementById('signifigance').value
     var dir = document.getElementById('dir').value
@@ -100,9 +102,9 @@ function submit_geneset_home(genelist, sigs, descset) {
         }
     }
     if (dir === 'top') {
-        var genes = genelist.splice(0, numgenes).join('&')
+        var genes = genes_valid.splice(0, numgenes).join('&')
     } else {
-        var genes = genelist.slice(-numgenes).join('&')
+        var genes = genes_valid.slice(-numgenes).join('&')
     }
     localStorage.setItem('genes', genes)
     localStorage.setItem('descset', `${descset}-${dir}-${numgenes}`)
