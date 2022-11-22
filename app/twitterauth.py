@@ -46,7 +46,7 @@ def parse_tweet(tweet_text, html) -> list:
         prev_word = word
     title = title.strip()
     article_link = html.split(title.split(' ')[-1] + '<')[1].split('href=')[1].split('\"')[1]
-    article_link = requests.head(article_link).headers['location']
+    #article_link = requests.head(article_link).headers['location']
     enrichr = 'https://maayanlab.cloud/Enrichr/#find!gene=' + gene
     harmonizome = 'https://maayanlab.cloud/Harmonizome/gene/' + gene
     D2H2 = 'https://d2h2.dev.maayanlab.cloud/singlegene/' + gene
