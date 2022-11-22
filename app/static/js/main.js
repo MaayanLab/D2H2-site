@@ -61,7 +61,7 @@ function clear_home() {
 function submit_geneset(genelist, sigs) {
     genelist = genelist.split(',')
     sigs = sigs.split(',').map(function(item) {
-        return parseInt(item, 10);
+        return parseFloat(item);
     });
     var numgenes = document.getElementById('numgenes').value
     var signifigance = document.getElementById('signifigance').value
@@ -90,11 +90,13 @@ function submit_geneset(genelist, sigs) {
 function submit_geneset_home(genelist, sigs, descset) {
     genelist = genelist.split(',')
     sigs = sigs.split(',').map(function(item) {
-        return parseInt(item, 10);
+        return parseFloat(item);
     });
     var numgenes = document.getElementById('numgenes').value
     var signifigance = document.getElementById('signifigance').value
     var dir = document.getElementById('dir').value
+
+    console.log(signifigance)
 
     for (i=0; i < genelist.length; i++ ){
         if (sigs[i] <= signifigance) {
