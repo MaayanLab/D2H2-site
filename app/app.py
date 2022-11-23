@@ -26,40 +26,40 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def home():
 	update_tweets_table(datetime.datetime.date)
-	return render_template('home.html', numstudies=[len(gse_metadata['human'].keys()), len(gse_metadata['mouse'].keys())])
+	return render_template('home.html', gse_metadata=gse_metadata, numstudies=[len(gse_metadata['human'].keys()), len(gse_metadata['mouse'].keys())])
 
 @app.route("/about", methods=['GET', 'POST'])
 def about():
-    return render_template("about.html")
+    return render_template("about.html", gse_metadata=gse_metadata)
 
 
 @app.route("/singlegene/<gene>", methods=['GET', 'POST'])
 def singlegene(gene):
-    return render_template("singlegene.html", gene=gene)
+    return render_template("singlegene.html", gene=gene, gse_metadata=gse_metadata)
 
 @app.route("/singlegene", methods=['GET', 'POST'])
 def singlegene_home():
-    return render_template("singlegene.html")
+    return render_template("singlegene.html", gse_metadata=gse_metadata)
 
 @app.route("/geneset", methods=['GET', 'POST'])
 def geneset_home():
-    return render_template("geneset.html")
+    return render_template("geneset.html", gse_metadata=gse_metadata)
 
 @app.route("/geneset/<geneset>", methods=['GET', 'POST'])
 def geneset(geneset):
-    return render_template("geneset.html", genes=geneset)
+    return render_template("geneset.html", genes=geneset, gse_metadata=gse_metadata)
 
 @app.route('/scg', methods=['GET', 'POST'])
 def scg():
-	return render_template('scg.html')
+	return render_template('scg.html', gse_metadata=gse_metadata)
 
 @app.route('/resources', methods=['GET', 'POST'])
 def resources():
-	return render_template('resources.html')
+	return render_template('resources.html', gse_metadata=gse_metadata)
 
 @app.route('/downloads', methods=['GET', 'POST'])
 def downloads():
-	return render_template('downloads.html')
+	return render_template('downloads.html', gse_metadata=gse_metadata)
 
 @app.route('/getgwas', methods=['GET','POST'])
 def get_gwas():
@@ -288,7 +288,8 @@ study_to_species = {study:species_name for species_name, studies_metadata in gse
 def species_or_viewerpg(species_or_gse):
 	# test if species
 	if species_or_gse in gse_metadata:
-		return render_template('species.html', species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping)
+		num_samples = sum(map(lambda x: x.get('numsamples'), gse_metadata[species_or_gse].values()))
+		return render_template('species.html', species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, num_studies= len(gse_metadata[species_or_gse]))
 	# test if gsea
 	elif species_or_gse in study_to_species:
 		geo_accession = species_or_gse
