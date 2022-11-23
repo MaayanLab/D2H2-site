@@ -1,0 +1,22 @@
+Sample_geo_accession	Condition	Group
+GSM6078547	 WT Primary cell isolation	Primary adipocyte
+GSM6078549	 WT Primary cell isolation	Primary adipocyte
+GSM6078550	 WT Primary cell isolation	Primary adipocyte
+GSM6078551	 WT hESC-adipocyte differentiation	hESC
+GSM6078552	 WT hESC-adipocyte differentiation	hESC
+GSM6078553	 WT hESC-adipocyte differentiation	hESC
+GSM6078554	 WT hESC-adipocyte differentiation, then 5 days low-glucose DMEM+100pM insulin	hESC
+GSM6078556	 WT hESC-adipocyte differentiation, then 5 days low-glucose DMEM+100pM insulin	hESC
+GSM6078557	 WT hESC-adipocyte differentiation, then 5 days low-glucose DMEM+100pM insulin	hESC
+GSM6078558	 WT hESC-adipocyte differentiation, then 5 days low-glucose DMEM+3nM insulin	hESC
+GSM6078559	 WT hESC-adipocyte differentiation, then 5 days low-glucose DMEM+3nM insulin	hESC
+GSM6078560	 WT hESC-adipocyte differentiation, then 5 days low-glucose DMEM+3nM insulin	hESC
+GSM6078561	 WT hESC-adipocyte differentiation	hESC
+GSM6078563	 WT hESC-adipocyte differentiation	hESC
+GSM6078564	 WT hESC-adipocyte differentiation	hESC
+GSM6078565	 WT hESC-adipocyte differentiation, then 5 days low-glucose DMEM+100pM insulin	hESC
+GSM6078566	 WT hESC-adipocyte differentiation, then 5 days low-glucose DMEM+100pM insulin	hESC
+GSM6078567	 WT hESC-adipocyte differentiation, then 5 days low-glucose DMEM+100pM insulin	hESC
+GSM6078568	 WT hESC-adipocyte differentiation, then 5 days low-glucose DMEM+3nM insulin	hESC
+GSM6078569	 WT hESC-adipocyte differentiation, then 5 days low-glucose DMEM+3nM insulin	hESC
+GSM6078571	 WT hESC-adipocyte differentiation, then 5 days low-glucose DMEM+3nM insulin	hESC

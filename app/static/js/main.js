@@ -1,3 +1,42 @@
+///////// anitmated number counters /////////////
+
+// How long you want the animation to take, in ms
+const animationDuration = 2000;
+// Calculate how long each ‘frame’ should last if we want to update the animation 60 times per second
+const frameDuration = 1000 / 60;
+// Use that to calculate how many frames we need to complete the animation
+const totalFrames = Math.round( animationDuration / frameDuration );
+// An ease-out function that slows the count as it progresses
+const easeOutQuad = t => t * ( 2 - t );
+
+// The animation function, which takes an Element
+const animateCountUp = el => {
+  let frame = 0;
+  const countTo = parseInt( el.innerHTML, 10 );
+  // Start the animation running 60 times per second
+  const counter = setInterval( () => {
+    frame++;
+    // Calculate our progress as a value between 0 and 1
+    // Pass that value to our easing function to get our
+    // progress on a curve
+    const progress = easeOutQuad( frame / totalFrames );
+    // Use the progress value to calculate the current count
+    const currentCount = Math.round( countTo * progress );
+
+    // If the current count has changed, update the element
+    if ( parseInt( el.innerHTML, 10 ) !== currentCount ) {
+      el.innerHTML = currentCount;
+    }
+
+    // If we’ve reached our last frame, stop the animation
+    if ( frame === totalFrames ) {
+      clearInterval( counter );
+    }
+  }, frameDuration );
+};
+
+
+
 
 function createTweetsTable() {
     document.getElementById("tweets-res").innerHTML = "<div class='loader justify-content-center'></div>";
@@ -39,7 +78,7 @@ function createTweetsTable() {
 
         $(document).ready(function(){
             document.getElementById("tweets-res").innerHTML = tabletext;
-            table = $('#table-twitter').DataTable();
+            table = $('#table-twitter').DataTable({"pageLength": 5});
         });
 
     });
@@ -58,30 +97,55 @@ function clear_home() {
 
 }
 
-function submit_geneset(genelist) {
+function submit_geneset(genelist, sigs) {
     genelist = genelist.split(',')
+    sigs = sigs.split(',').map(function(item) {
+        return parseFloat(item);
+    });
     var numgenes = document.getElementById('numgenes').value
+    var signifigance = document.getElementById('signifigance').value
     var dir = document.getElementById('dir').value
+    var genes_valid = []
 
-    if (dir === 'top') {
-        var genes = genelist.splice(0, numgenes).join('&')
-    } else {
-        var genes = genelist.slice(-numgenes).join('&')
+    for (i=0; i < genelist.length; i++ ){
+        if (sigs[i] <= signifigance) {
+            genes_valid.push(genelist[i])
+        }
     }
+    if (dir === 'top') {
+        var genes = genes_valid.splice(0, numgenes).join('&')
+        
+    } else {
+        var genes = genes_valid.slice(-numgenes).join('&')
+    }
+
+
     const currURL = window.location.href.split('/')
     var url = currURL.splice(0, 3).join('/') + '/geneset/' + genes
+    console.log(url)
     window.open(url, '_blank')
 }
 
-function submit_geneset_home(genelist, descset) {
+function submit_geneset_home(genelist, sigs, descset) {
     genelist = genelist.split(',')
+    sigs = sigs.split(',').map(function(item) {
+        return parseFloat(item);
+    });
     var numgenes = document.getElementById('numgenes').value
+    var signifigance = document.getElementById('signifigance').value
     var dir = document.getElementById('dir').value
 
+    console.log(signifigance)
+
+    for (i=0; i < genelist.length; i++ ){
+        if (sigs[i] <= signifigance) {
+            genes_valid.append(genes[i])
+        }
+    }
     if (dir === 'top') {
-        var genes = genelist.splice(0, numgenes).join('&')
+        var genes = genes_valid.splice(0, numgenes).join('&')
     } else {
-        var genes = genelist.slice(-numgenes).join('&')
+        var genes = genes_valid.slice(-numgenes).join('&')
     }
     localStorage.setItem('genes', genes)
     localStorage.setItem('descset', `${descset}-${dir}-${numgenes}`)
@@ -1487,7 +1551,7 @@ $(document).ready(function() {
             const clear_button = "<div class='mx-auto justify-content-center text-center'><button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_dge();'> Clear Results </button></div>"
             var api = currURL.filter(x => !x.includes('GSE')).join('/') + '/singlegene/'
             var name = `${control_condition}-vs-${perturb_condition}-${method}`
-
+            var pvals;
             if (method === 'limma') {
                 tabletext += "<th></th><th>logFC</th><th>AvgExpr</th><th>t</th><th>P Value</th><th>Adj. P Value</th><th>B</th></tr><tbody>"
                 rows.forEach(function(row) {
@@ -1504,6 +1568,7 @@ $(document).ready(function() {
                         'copy', {extend: 'csv', title: name}
                     ]
                 });
+                pvals = table.column(4).data()
 
             } else if (method === 'edgeR') {
                 tabletext += "<th></th><th>logFC</th><th>logCPM</th><th>PValue</th><th>FDR</th></tr><tbody>"
@@ -1521,6 +1586,7 @@ $(document).ready(function() {
                         'copy', {extend: 'csv', title: name}
                     ]
                 });
+                pvals = table.column(3).data()
 
             } else if (method === 'DESeq2') {
                 tabletext += "<th></th><th>baseMean</th><th>log2FC</th><th>lfcSE</th><th>stat</th><th>P-value</th><th>Adj. P-value</th></tr><tbody>"
@@ -1538,10 +1604,13 @@ $(document).ready(function() {
                         'copy', {extend: 'csv', title: name}
                     ]
                 });    
+                pvals = table.column(5).data()
             }
             var genes = table.column(0).data()
+
+            
             genes = genes.map(x => x.replace(/<\/?[^>]+(>|$)/g, ""))
-            console.log(genes)
+
             var genelist_buttons = 
             `<div class="row justify-content-center mx-auto text-center">
             <div class="mt-3 h7">Submit the </div>
@@ -1550,11 +1619,16 @@ $(document).ready(function() {
                 <option value="bot">bottom</option>
             </select>
             <input id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2' style='width: 60px;'/>
-            <div class="mt-3 h7">differentially expressed genes to</div>
-            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset('${genes.join(',')}')">Gene Set Queries</button>
+            <div class="mt-3 h7">differentially expressed genes with a p-value less than</div>
+            <input id='signifigance' type='number' step='.001' value='.05' max='1' class='m-2' style='width: 60px;'/>
+            <div class="mt-3 h7">to</div>
+            </div>
+            <div class="row justify-content-center mx-auto text-center">
+            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset('${genes.join(',')}', '${pvals.join(',')}')">Gene Set Queries</button>
             <div class="mt-3 h7">or to</div>
-            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset_home('${genes.join(',')}', '${name}')">Diabetes Gene Set Library</button>
-            </div>`
+            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset_home('${genes.join(',')}', '${pvals.join(',')}', '${name}')">Diabetes Gene Set Library</button>
+            </div>
+            `
                 
             document.getElementById("geneset-buttons").innerHTML = (clear_button + genelist_buttons)
         });
@@ -1656,3 +1730,11 @@ $(document).ready(function() {
 
 
 })
+
+
+
+
+
+
+
+

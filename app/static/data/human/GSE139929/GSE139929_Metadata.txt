@@ -1,0 +1,10 @@
+Sample_geo_accession	Condition	Group
+GSM4149705	Insulin induction and APBBR treatment	HepG2
+GSM4149706	Insulin induction and APBBR treatment	HepG2
+GSM4149707	Insulin induction and APBBR treatment	HepG2
+GSM4149708	none	HepG2
+GSM4149709	none	HepG2
+GSM4149710	none	HepG2
+GSM4149711	Insulin induction	HepG2
+GSM4149712	Insulin induction	HepG2
+GSM4149713	Insulin induction	HepG2

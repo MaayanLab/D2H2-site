@@ -16,7 +16,7 @@
           </div>
         </div>
 
-        <div class="row justify-content-center m-2 mt-5 text-center">
+        <div class="row justify-content-center m-2 mt-3 text-center">
           <h5 style="font-weight: 450 !important;">Diabetes Data and Hypothesis Hub (D2H2)</h5>
           <h5> A platform that facilitates data-driven hypothesis generation for the diabetes and related metabolic
             disorder research community. </h5>
@@ -27,6 +27,20 @@
             transcriptomics signatures can be <a href="{{ url_for('downloads') }}">downloaded</a>, <a
               href="#visualize">visualized </a>, and <a href="#enrichranalysis">used for enrichment analysis</a>.</p>
         </div>
+
+        <div class="text-center mt-4"><h5>Processed Bulk RNA-seq and Microarray Studies</h5></div>
+        <div class="row">
+          
+          <div class="col text-right mr-5">
+            <h6>Human</h6>
+            <div class="countup num-style">{{ numstudies[0] }}</div>
+          </div>
+          <div class="col text-left ml-5">
+            <h6>Mouse</h6>
+            <div class="countup num-style">{{ numstudies[1] }}</div>
+          </div>
+        </div>
+        
 
       </div>
 
@@ -77,7 +91,7 @@
           </button>
           </a>
         </div>
-        <div id="volcano-loading""></div>
+        <div id="volcano-loading"></div>
       </div>
     </div>
 
@@ -232,7 +246,7 @@
         </div>
 
         <div class="col-md-6 col-sm-7 col-lg-3 text-center custom-col mb-4 mr-2 ml-2">
-          <a class="twitter-timeline" data-width="1500" data-height="450" data-chrome="nofooter noborders transparent" href="https://twitter.com/D2H2Bot?ref_src=twsrc%5Etfw">Tweets by D2H2Bot</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+          <a class="twitter-timeline" data-width="1500" data-height="550" data-chrome="nofooter noborders transparent" href="https://twitter.com/D2H2Bot?ref_src=twsrc%5Etfw">Tweets by D2H2Bot</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
         </div>
       </div>
     </div>
@@ -261,6 +275,8 @@
           document.getElementById('diabetesEnrichr-query').click();
       })
   }
+const countupEls = document.querySelectorAll( '.countup' );
+countupEls.forEach( animateCountUp );
 </script>
 
 {% endblock %}

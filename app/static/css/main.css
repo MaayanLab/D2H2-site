@@ -553,4 +553,8 @@ nav select {
   
   .slider.round:before {
     border-radius: 50%;
-  }
+}
+
+.num-style {
+    font-size: xx-large;
+}

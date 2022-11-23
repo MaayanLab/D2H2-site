@@ -104,6 +104,7 @@ def get_signatures(classes, dataset, normalization, method, meta_class_column_na
     return (results) 
     }
     ''')
+    
     robjects.r('''deseq2 <- function(rawcount_dataframe, g1, g2) {
     # Load packages
     suppressMessages(require(DESeq2))

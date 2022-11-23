@@ -26,6 +26,17 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col text-right mr-5">
+                Total Studies
+        <div class="countup num-style">{{ num_studies }}</div>
+        </div>
+        <div class="col text-left mr-5">
+            Total Samples
+            <div class="countup num-style">{{ num_samples }}</div>
+        </div>
+    </div>
+    
 </div>
 
 <div class="container custom-col table-responsive-lg mb-4 p-3">
@@ -112,4 +123,17 @@
             rel="noopener noreferrer">RC2DK131995</a>.
     </p>
 </div>
+
+
+{% endblock %}
+
+{% block footer %}
+<script>
+
+const countupEls = document.querySelectorAll( '.countup' );
+countupEls.forEach( animateCountUp );
+
+</script>
+
+
 {% endblock %}
