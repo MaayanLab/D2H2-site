@@ -1553,58 +1553,58 @@ $(document).ready(function() {
             var name = `${control_condition}-vs-${perturb_condition}-${method}`
             var pvals;
             if (method === 'limma') {
-                tabletext += "<th></th><th>logFC</th><th>AvgExpr</th><th>t</th><th>P Value</th><th>Adj. P Value</th><th>B</th></tr><tbody>"
+                tabletext += "<th></th><th>Adj. P Value</th><th>P Value</th><th>t</th><th>AvgExpr</th><th>logFC</th><th>B</th></tr><tbody>"
                 rows.forEach(function(row) {
                     var vals = row.replace(/\s\s+/g, ' ').split(' ');
-                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>`  + vals[0] + "</a></td><td>" + vals[1]+"</td><td>" + vals[2] +"</td><td>"+ vals[3] + "</td><td>"+ vals[4] + "</td><td>"+ vals[5] + "</td><td>"+ vals[6] + "</td></tr>"
+                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>`  + vals[0] + "</a></td><td>" + vals[5]+"</td><td>" + vals[4] +"</td><td>"+ vals[3] + "</td><td>"+ vals[2] + "</td><td>"+ vals[1] + "</td><td>"+ vals[6] + "</td></tr>"
                 });
                 tabletext += "</tbody></table>";
 
                 document.getElementById("dge-table-area").innerHTML += tabletext
                 var table = $(`#${table_id}`).DataTable({
-                    order: [[1, 'desc']],
+                    order: [[1, 'asc']],
                     dom: 'Bfrtip',
                     buttons: [
                         'copy', {extend: 'csv', title: name}
                     ]
                 });
-                pvals = table.column(4).data()
+                pvals = table.column(1).data()
 
             } else if (method === 'edgeR') {
-                tabletext += "<th></th><th>logFC</th><th>logCPM</th><th>PValue</th><th>FDR</th></tr><tbody>"
+                tabletext += "<th></th><th>PValue</th><th>logCPM</th><th>logFC</th><th>FDR</th></tr><tbody>"
                 rows.forEach(function(row) {
                     var vals = row.replace(/\s\s+/g, ' ').split(' ');
-                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>`  +vals[0] + "</a></td><td>" + vals[1]+"</td><td>" + vals[2] +"</td><td>"+ vals[3] + "</td><td>"+ vals[4] + "</td></tr>"
+                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>`  +vals[0] + "</a></td><td>" + vals[3]+"</td><td>" + vals[2] +"</td><td>"+ vals[1] + "</td><td>"+ vals[4] + "</td></tr>"
                 });
                 tabletext += "</tbody></table>";
 
                 document.getElementById("dge-table-area").innerHTML += tabletext 
                 var table = $(`#${table_id}`).DataTable({
-                    order: [[1, 'desc']],
+                    order: [[1, 'asc']],
                     dom: 'Bfrtip',
                     buttons: [
                         'copy', {extend: 'csv', title: name}
                     ]
                 });
-                pvals = table.column(3).data()
+                pvals = table.column(1).data()
 
             } else if (method === 'DESeq2') {
-                tabletext += "<th></th><th>baseMean</th><th>log2FC</th><th>lfcSE</th><th>stat</th><th>P-value</th><th>Adj. P-value</th></tr><tbody>"
+                tabletext += "<th></th><th>Adj. P-value</th><th>P-value/th><th>lfcSE</th><th>stat</th><th>baseMean</th><th>log2FC<</th></tr><tbody>"
                 rows.forEach(function(row) {
                     var vals = row.replace(/\s\s+/g, ' ').split(' ');
-                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>` +vals[0] +"</a></td><td>" + vals[1]+"</td><td>" + vals[2] +"</td><td>"+ vals[3] + "</td><td>"+ vals[4] + "</td><td>" + vals[5] + "</td><td>" + vals[6] + "</td></tr>"
+                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>` +vals[0] +"</a></td><td>" + vals[6]+"</td><td>" + vals[5] +"</td><td>"+ vals[3] + "</td><td>"+ vals[4] + "</td><td>" + vals[1] + "</td><td>" + vals[2] + "</td></tr>"
                 });
                 tabletext += "</tbody></table>";
 
                 document.getElementById("dge-table-area").innerHTML += tabletext
                 var table = $(`#${table_id}`).DataTable({
-                    order: [[2, 'desc']],
+                    order: [[1, 'asc']],
                     dom: 'Bfrtip',
                     buttons: [
                         'copy', {extend: 'csv', title: name}
                     ]
                 });    
-                pvals = table.column(5).data()
+                pvals = table.column(1).data()
             }
             var genes = table.column(0).data()
 
@@ -1619,8 +1619,8 @@ $(document).ready(function() {
                 <option value="bot">bottom</option>
             </select>
             <input id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2' style='width: 60px;'/>
-            <div class="mt-3 h7">differentially expressed genes with a p-value less than</div>
-            <input id='signifigance' type='number' step='.001' value='.05' max='1' class='m-2' style='width: 60px;'/>
+            <div class="mt-3 h7">differentially expressed genes with a adjusted p-value less than</div>
+            <input id='signifigance' type='number' step='.01' value='.05' max='1' class='m-2' style='width: 60px;'/>
             <div class="mt-3 h7">to</div>
             </div>
             <div class="row justify-content-center mx-auto text-center">
