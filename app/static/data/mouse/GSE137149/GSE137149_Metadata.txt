@@ -1,9 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM4072018	control	Brown Adipose Tissue
-GSM4072019	control	Brown Adipose Tissue
-GSM4072020	control	Brown Adipose Tissue
-GSM4072021	control	Brown Adipose Tissue
-GSM4072022	Adipocyte-specific Nampt knockout	Brown Adipose Tissue
-GSM4072023	Adipocyte-specific Nampt knockout	Brown Adipose Tissue
-GSM4072024	Adipocyte-specific Nampt knockout	Brown Adipose Tissue
-GSM4072025	Adipocyte-specific Nampt knockout	Brown Adipose Tissue

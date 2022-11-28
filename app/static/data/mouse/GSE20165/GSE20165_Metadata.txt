@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM506033	 per2-/-	20-week-old male mice
-GSM506034	 per2-/-	20-week-old male mice
-GSM506035	 per2-/-	20-week-old male mice
-GSM506030	per2+/+ 	20-week-old male mice
-GSM506031	per2+/+ 	20-week-old male mice
-GSM506032	per2+/+ 	20-week-old male mice

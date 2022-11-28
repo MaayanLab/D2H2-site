@@ -9,9 +9,10 @@ from itertools import combinations
 import warnings
 import numpy as np
 import scipy.stats as ss
+import s3fs
 
 
-
+s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': 'https://minio.dev.maayanlab.cloud/'})
 
 def qnormalization(data):
   
@@ -217,11 +218,11 @@ def check_df(df, col):
 def compute_dge(rnaseq_data_filename, meta_data_filename, diff_gex_method, control_name, perturb_name, logCPM_normalization, log_normalization, z_normalization, q_normalization):
 	meta_class_column_name = 'Condition'
 
-	meta_df = pd.read_csv(meta_data_filename, sep="\t", index_col=0, dtype=str)
+	meta_df = pd.read_csv(s3.open(meta_data_filename), sep="\t", index_col=0, dtype=str)
 	meta_df = meta_df[meta_df[meta_class_column_name].isin([control_name, perturb_name])]
 
 	meta_df.index = meta_df.index.map(str)
-	expr_df = pd.read_csv(rnaseq_data_filename, index_col=0, sep="\t").sort_index()
+	expr_df = pd.read_csv(s3.open(rnaseq_data_filename), index_col=0, sep="\t").sort_index()
 	expr_df = expr_df.loc[expr_df.sum(axis=1) > 0, :]
 
 	# Match samples between the metadata and the datasets

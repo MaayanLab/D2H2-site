@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 from waitress import serve
 import os
 import json
+import s3fs
 import plotly
 import plotly.graph_objects as go
 import pandas as pd
@@ -16,9 +17,9 @@ from twitterauth import update_tweets_table
 from dge import *
 
 
-create_meta = False
-base_url = 'static/data'
+base_url = 'd2h2/data'
 
+s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': 'https://minio.dev.maayanlab.cloud/'})
 
 app = Flask(__name__)
 
@@ -201,10 +202,7 @@ def get_metadata(geo_accession, species_folder):
 	else:
 		geo_accession_num = geo_accession
     # Get gse from GEO
-	if f'{geo_accession}_family.soft.gz' not in os.listdir(f'./static/data/{species_folder}/{geo_accession}'):
-		gse = GEOparse.get_GEO(geo = geo_accession_num, destdir = f'./static/data/{species_folder}/{geo_accession}', silent=True)
-	else:
-		gse = GEOparse.get_GEO(filepath = f'./static/data/{species_folder}/{geo_accession}/{geo_accession}_family.soft.gz', silent=True)
+	gse = GEOparse.get_GEO(geo = geo_accession_num, silent=True)
 
 	if "-" in geo_accession:
 		gse.metadata['cur_gpl'] = [gpl_num]
@@ -232,54 +230,38 @@ def get_metadata(geo_accession, species_folder):
 	
 	
 	metadata_file = f'{base_url}/{species_folder}/{geo_accession}/{geo_accession}_Metadata.txt'
-	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
+	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 	gse.metadata['numsamples'] = metadata_dataframe.shape[0] - 1
-
 
 	return gse.metadata
 
-ignore_list = ['mouse_matrix_v11.h5', 'human_matrix_v11.h5', '.DS_Store', 'allgenes.json']
 
-def species_to_studies(path):
-	species_mapping = {}
-	for species_name in os.listdir(path):
-		if species_name not in ignore_list:
-			species_mapping[species_name] = []
-			for study_name in os.listdir(os.path.join(path, species_name)):
-				if study_name not in ignore_list:
-					species_mapping[species_name].append(study_name)
-	return species_mapping
 
-def sort_studies(species_mapping):
-	species_url_mapping = {}
-	for species_folder, studies_list in species_mapping.items():
-		if species_folder not in ignore_list:
-			species = folder_to_url[species_folder]
-			species_url_mapping[species] = sorted(studies_list, key=lambda x: (int(x.split('-', 1)[0][3:])))
-	return species_url_mapping
+
+#### CHECK IF METADATA IS COMPLETE/ IF NEW STUDIES WERE ADDED, ADD THEM TO METADATA
+
+with open('static/searchdata/metadata-v1.pickle', 'rb') as f:	
+		gse_metadata = pickle.load(f)
+
+numstudies= [len(gse_metadata['human'].keys()), len(gse_metadata['mouse'].keys())]
+mouse_gses = list(s3.walk('d2h2/data/mouse', maxdepth=1))[0][1]
+human_gses = list(s3.walk('d2h2/data/human', maxdepth=1))[0][1]
 
 url_to_folder = {"human": "human", "mouse": "mouse"}
 folder_to_url = {folder:url for url, folder in url_to_folder.items()}
 
-species_mapping = species_to_studies(base_url)
-species_mapping = sort_studies(species_mapping)
-# print(species_mapping)
+species_mapping = {'human': human_gses, 'mouse': mouse_gses}
 
-
-
-if create_meta:
-	gse_metadata = {}
+if numstudies[0] == len(human_gses) and numstudies[1] == len(mouse_gses):
 	for species, geo_accession_ids in species_mapping.items():
-		gse_metadata[species] = {}
+		if species not in gse_metadata:
+			gse_metadata[species] = {}
 		for geo_accession in geo_accession_ids:
-			gse_metadata[species][geo_accession] = get_metadata(geo_accession, url_to_folder[species])
+			if geo_accession not in gse_metadata[species]:
+				gse_metadata[species][geo_accession] = get_metadata(geo_accession, url_to_folder[species])
 	with open('static/searchdata/metadata-v1.pickle', 'wb') as f:
 		pickle.dump(gse_metadata, f, protocol=pickle.HIGHEST_PROTOCOL)
-else:
-	with open('static/searchdata/metadata-v1.pickle', 'rb') as f:	
-		gse_metadata = pickle.load(f)
-
-
+	
 
 study_to_species = {study:species_name for species_name, studies_metadata in gse_metadata.items() for study in studies_metadata.keys()}
 
@@ -296,7 +278,7 @@ def species_or_viewerpg(species_or_gse):
 		species = study_to_species[geo_accession]
 		species_folder = url_to_folder[species]
 		metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
-		metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
+		metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 		metadata_dict = metadata_dataframe.groupby('Group')['Condition'].apply(set).to_dict()
 		metadata_dict_samples = metadata_dataframe.groupby('Condition')['Sample_geo_accession'].apply(list).to_dict()
 		sample_dict = {}
@@ -337,7 +319,7 @@ def genes_api(geo_accession):
 
 		# Get genes json
 		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
-		expression_dataframe = pd.read_csv(expression_file, index_col = 0, sep='\t')
+		expression_dataframe = pd.read_csv(s3.open(expression_file), index_col = 0, sep='\t')
 
 		genes_json = json.dumps([{'gene_symbol': x} for x in expression_dataframe.index])
 
@@ -368,8 +350,8 @@ def plot_api(geo_accession):
 
 	expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
 	metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
-	expression_dataframe = pd.read_csv(expression_file, index_col = 0, sep='\t')
-	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
+	expression_dataframe = pd.read_csv(s3.open(expression_file), index_col = 0, sep='\t')
+	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 	
 	# Get data
 	data = request.json
@@ -434,7 +416,7 @@ def conditions_api(geo_accession):
 	species = study_to_species[geo_accession]
 	species_folder = url_to_folder[species]
 	metadata_file = base_url+ '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
-	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
+	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 	conditions = set(metadata_dataframe['Condition'])
 	return json.dumps([{'Condition': x} for x in conditions])
 
@@ -448,7 +430,7 @@ def samples_api(geo_accession):
 	species_folder = url_to_folder[species]
 
 	metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
-	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
+	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 
 	conditions_mapping = metadata_dataframe.groupby('Condition')['Sample_geo_accession'].apply(list).to_dict()
 

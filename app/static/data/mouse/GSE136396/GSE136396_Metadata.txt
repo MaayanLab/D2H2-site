@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM4048022	Cold-Sensitive 	Neurons from the pre-optic area of hypothalamus
-GSM4048023	Cold-Sensitive 	Neurons from the pre-optic area of hypothalamus
-GSM4048024	Cold-Sensitive 	Neurons from the pre-optic area of hypothalamus
-GSM4048025	 Cold-Insensitive	Neurons from the pre-optic area of hypothalamus
-GSM4048026	 Cold-Insensitive	Neurons from the pre-optic area of hypothalamus
-GSM4048027	 Cold-Insensitive	Neurons from the pre-optic area of hypothalamus
