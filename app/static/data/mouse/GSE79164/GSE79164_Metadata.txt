@@ -1,9 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM2087154	Wildtype 	Epididymal White Adipose Tissue
-GSM2087155	Wildtype 	Epididymal White Adipose Tissue
-GSM2087156	Wildtype 	Epididymal White Adipose Tissue
-GSM2087157	Wildtype 	Epididymal White Adipose Tissue
-GSM2087158	 Rev-erb alpha KO	Epididymal White Adipose Tissue
-GSM2087159	 Rev-erb alpha KO	Epididymal White Adipose Tissue
-GSM2087160	 Rev-erb alpha KO	Epididymal White Adipose Tissue
-GSM2087161	 Rev-erb alpha KO	Epididymal White Adipose Tissue

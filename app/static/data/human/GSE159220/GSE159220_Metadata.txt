@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM4823246	 Hepatocellular carcinoma tissue	HCC Tissue
-GSM4823247	 Hepatocellular carcinoma tissue	HCC Tissue
-GSM4823248	 Hepatocellular carcinoma tissue	HCC Tissue
-GSM4823249	 martched normal liver tissue	HCC Tissue
-GSM4823250	 martched normal liver tissue	HCC Tissue
-GSM4823251	 martched normal liver tissue	HCC Tissue

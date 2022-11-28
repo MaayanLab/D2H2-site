@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM338989	 30 Degrees C	Male C57/BL6 mice age 6-8 weeks
-GSM338990	 30 Degrees C	Male C57/BL6 mice age 6-8 weeks
-GSM338991	 30 Degrees C	Male C57/BL6 mice age 6-8 weeks
-GSM338992	4 Degrees C 	Male C57/BL6 mice age 6-8 weeks
-GSM338993	4 Degrees C 	Male C57/BL6 mice age 6-8 weeks
-GSM338994	4 Degrees C 	Male C57/BL6 mice age 6-8 weeks

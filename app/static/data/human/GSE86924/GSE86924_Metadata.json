@@ -1,9 +1,0 @@
-{"Human Islets 1.1B4": {
-"Control cells" : ["GSM2310360", "GSM2310362", "GSM2310364"],
-"NR4A3 siRNA Treated 1 Hour": ["GSM2310361"],
-"NR4A3 siRNA Treated 2 Hour": ["GSM2310363"],
-"NR4A3 siRNA Treated 3 Hour": ["GSM2310365"],
-"100mM H2O2 Treated 2 Hour": ["GSM2310366"],
-"100mM H2O2 & NR4A3 siRNA 2 Hour": ["GSM2310367"]
-}
-}

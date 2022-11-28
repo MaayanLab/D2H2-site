@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM341700	Wildtype 	Liver
-GSM341701	Wildtype 	Liver
-GSM341702	Wildtype 	Liver
-GSM341697	 KRAP Knockout	Liver
-GSM341698	 KRAP Knockout	Liver
-GSM341699	 KRAP Knockout	Liver

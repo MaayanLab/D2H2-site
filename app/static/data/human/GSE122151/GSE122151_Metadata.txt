@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM3456189	control	HepaRG
-GSM3456190	control	HepaRG
-GSM3456191	control	HepaRG
-GSM3456192	Treatment	HepaRG
-GSM3456193	Treatment	HepaRG
-GSM3456194	Treatment	HepaRG

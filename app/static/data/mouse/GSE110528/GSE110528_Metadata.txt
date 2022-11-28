@@ -1,8 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM2995265	control	Duodenum
-GSM2995266	control	Duodenum
-GSM2995267	control	Duodenum
-GSM2995268	control	Duodenum
-GSM2995269	Synthetic LXR ligand T0901317	Duodenum
-GSM2995270	Synthetic LXR ligand T0901317	Duodenum
-GSM2995271	Synthetic LXR ligand T0901317	Duodenum

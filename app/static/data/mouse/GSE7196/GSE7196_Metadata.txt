@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM173005	Wildtype 	Heart
-GSM173006	Wildtype 	Heart
-GSM173007	Wildtype 	Heart
-GSM173008	 ERRa Knockout	Heart
-GSM173009	 ERRa Knockout	Heart
-GSM173010	 ERRa Knockout	Heart

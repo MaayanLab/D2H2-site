@@ -1,8 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM4743733	Whole-body knockout (all tissues) 	Maternal islet cells
-GSM4743734	Whole-body knockout (all tissues) 	Maternal islet cells
-GSM4743735	Whole-body knockout (all tissues) 	Maternal islet cells
-GSM4743729	 pancreatic beta cells knockout	Maternal islet cells
-GSM4743730	 pancreatic beta cells knockout	Maternal islet cells
-GSM4743731	 pancreatic beta cells knockout	Maternal islet cells
-GSM4743732	 pancreatic beta cells knockout	Maternal islet cells

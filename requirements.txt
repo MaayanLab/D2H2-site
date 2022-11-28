@@ -16,3 +16,4 @@ rpy2==3.4.5
 git+https://github.com/Maayanlab/maayanlab-bioinformatics.git
 scipy
 python-dotenv
+s3fs
