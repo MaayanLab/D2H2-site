@@ -80,5 +80,3 @@ def update_tweets_table(day):
     df = pd.DataFrame(tweets_table, columns=["Gene","Title","Author(s)", "Journal" ,"Article", "Analyze"])
     df.to_csv('static/searchdata/tweets.csv', index=False)
 
-
-#update_tweets_table(1)
