@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM4222742	Whole Brain	Human Brain
-GSM4222743	Whole Brain	Human Brain
-GSM4222744	Whole Brain	Human Brain
-GSM4222739	Brain Microvessels	Human Brain
-GSM4222740	Brain Microvessels	Human Brain
-GSM4222741	Brain Microvessels	Human Brain

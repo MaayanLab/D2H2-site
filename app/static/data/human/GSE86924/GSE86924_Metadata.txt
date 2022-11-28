@@ -1,9 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM2310360	Control cells	Human Islets 1.1B4
-GSM2310362	Control cells	Human Islets 1.1B4
-GSM2310364	Control cells	Human Islets 1.1B4
-GSM2310361	NR4A3 siRNA Treated 1 Hour	Human Islets 1.1B4
-GSM2310363	NR4A3 siRNA Treated 2 Hour	Human Islets 1.1B4
-GSM2310365	NR4A3 siRNA Treated 3 Hour	Human Islets 1.1B4
-GSM2310366	100mM H2O2 Treated 2 Hour	Human Islets 1.1B4
-GSM2310367	100mM H2O2 & NR4A3 siRNA 2 Hour	Human Islets 1.1B4

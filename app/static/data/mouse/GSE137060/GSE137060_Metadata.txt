@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM4066398	 control Hltf +/+	pancreas
-GSM4066399	 control Hltf +/+	pancreas
-GSM4066400	 control Hltf +/+	pancreas
-GSM4066401	 beta cell specific Hltf-/-	pancreas
-GSM4066402	 beta cell specific Hltf-/-	pancreas
-GSM4066403	 beta cell specific Hltf-/-	pancreas

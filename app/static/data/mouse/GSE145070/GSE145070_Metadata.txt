@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM4305739	Bscl2f/f 	Brown Adipose Tissue
-GSM4305740	Bscl2f/f 	Brown Adipose Tissue
-GSM4305741	Bscl2f/f 	Brown Adipose Tissue
-GSM4305742	Bscl2f/f Ucp1Cre (BKO)	Brown Adipose Tissue
-GSM4305743	Bscl2f/f Ucp1Cre (BKO)	Brown Adipose Tissue
-GSM4305744	Bscl2f/f Ucp1Cre (BKO)	Brown Adipose Tissue

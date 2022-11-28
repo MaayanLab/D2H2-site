@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM2677826	NRG1 knockdown Day 5	thyroid primary cells
-GSM2677827	NRG1 knockdown Day 5	thyroid primary cells
-GSM2677828	NRG1 knockdown Day 5	thyroid primary cells
-GSM2679823	control Day 5	thyroid primary cells
-GSM2679824	control Day 5	thyroid primary cells
-GSM2679825	control Day 5	thyroid primary cells

@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM4274984	Female 	Hypothalamus
-GSM4274985	Female 	Hypothalamus
-GSM4274986	Female 	Hypothalamus
-GSM4274987	 Male	Hypothalamus
-GSM4274988	 Male	Hypothalamus
-GSM4274989	 Male	Hypothalamus

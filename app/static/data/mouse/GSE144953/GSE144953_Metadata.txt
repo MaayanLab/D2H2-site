@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM4301400	Neurog3:cre alone 	Pancreas
-GSM4301401	Neurog3:cre alone 	Pancreas
-GSM4301402	Neurog3:cre alone 	Pancreas
-GSM4301403	 Neurog3:cre;RARdnfl/fl	Pancreas
-GSM4301404	 Neurog3:cre;RARdnfl/fl	Pancreas
-GSM4301405	 Neurog3:cre;RARdnfl/fl	Pancreas

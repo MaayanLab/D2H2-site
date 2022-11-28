@@ -7,6 +7,7 @@ from functools import lru_cache
 
 
 
+
 def parse_tweet(tweet_text, html) -> list:
     hashtags_ignore = ['#D2H2', '#Enrichr', '#harmonizome', '#Harmonizome', "#T2D", '#diabetes', '(@D2H2Bot)']
     journal_dict = {
@@ -33,9 +34,14 @@ def parse_tweet(tweet_text, html) -> list:
     seen_author = False
     prev_word = ''
     for i, word in enumerate(words):
+
         if '#' in word and not(word in hashtags_ignore) and 'http' not in word:
             gene = word.replace('#', '')
-            title = " ".join(words[title_start:i-1]).replace('\n', '').split('#')[0]
+            title_range = words[title_start:i]
+            title = " ".join(filter(lambda x: 'http' not in x and '#' not in x, title_range)).replace('\n', '')
+            article_link= list(filter(lambda x: 'http' in x, title_range))[0]
+            print(title)
+            print(article_link)
         elif '@' in word and word not in hashtags_ignore:
             journal = journal_dict[word]
         elif prev_word == 'by' and not seen_author:
@@ -45,7 +51,8 @@ def parse_tweet(tweet_text, html) -> list:
             
         prev_word = word
     title = title.strip()
-    article_link = html.split(title.split(' ')[-1] + '<')[1].split('href=')[1].split('\"')[1]
+
+    #article_link = html.split(title.split(' ')[-1] + '<')[1].split('href=')[1].split('\"')[1]
     #article_link = requests.head(article_link).headers['location']
     enrichr = 'https://maayanlab.cloud/Enrichr/#find!gene=' + gene
     harmonizome = 'https://maayanlab.cloud/Harmonizome/gene/' + gene
@@ -56,11 +63,11 @@ def parse_tweet(tweet_text, html) -> list:
 @lru_cache()
 def update_tweets_table(day):
     tweets_table = []
-    root = ET.fromstring(requests.get('https://rss.app/feeds/YCahUD16zxRyTdiq.xml').text)
+    root = ET.fromstring(requests.get('https://nitter.net/D2H2Bot/rss').text)
     tweets = []
     for item in root[0].findall('item'):
         t =[]
-        t.append(item.find('title').text[10:])
+        t.append(item.find('title').text)
         t.append(item.find('description').text)
         tweets.append(t)
 
@@ -72,9 +79,4 @@ def update_tweets_table(day):
 
     df = pd.DataFrame(tweets_table, columns=["Gene","Title","Author(s)", "Journal" ,"Article", "Analyze"])
     df.to_csv('static/searchdata/tweets.csv', index=False)
-
-
-
-
-
 

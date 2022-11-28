@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM4795609	 SLPI overexpression	HK-2
-GSM4795610	 SLPI overexpression	HK-2
-GSM4795611	 SLPI overexpression	HK-2
-GSM4795612	 empty vetor	HK-2
-GSM4795613	 empty vetor	HK-2
-GSM4795614	 empty vetor	HK-2

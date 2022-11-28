@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM3972712	Wildtype 	Muscle: Quadriceps
-GSM3972713	Wildtype 	Muscle: Quadriceps
-GSM3972714	Wildtype 	Muscle: Quadriceps
-GSM3972715	 mTUGUBX-Cter Genotype	Muscle: Quadriceps
-GSM3972716	 mTUGUBX-Cter Genotype	Muscle: Quadriceps
-GSM3972717	 mTUGUBX-Cter Genotype	Muscle: Quadriceps

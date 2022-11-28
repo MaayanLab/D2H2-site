@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM3559820	 control	Pancreatic Progenitor Cells
-GSM3559821	 control	Pancreatic Progenitor Cells
-GSM3559822	 Glis3 knockdown	Pancreatic Progenitor Cells
-GSM3559823	 Glis3 knockdown	Pancreatic Progenitor Cells
-GSM3559824	 CD133 knockdown	Pancreatic Progenitor Cells
-GSM3559825	 CD133 knockdown	Pancreatic Progenitor Cells

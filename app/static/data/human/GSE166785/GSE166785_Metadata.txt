@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM5082473	 WT	hESC derived INS-GFP+ cells
-GSM5082474	 WT	hESC derived INS-GFP+ cells
-GSM5082475	 WT	hESC derived INS-GFP+ cells
-GSM5082476	 PTPN2-/-	hESC derived INS-GFP+ cells
-GSM5082477	 PTPN2-/-	hESC derived INS-GFP+ cells
-GSM5082478	 PTPN2-/-	hESC derived INS-GFP+ cells
