@@ -1,5 +1,11 @@
-///////// anitmated number counters /////////////
 
+
+const human_list = fetch(
+    "static/searchdata/allgenes.json"
+).then(data => data.json());                 
+
+
+///////// anitmated number counters /////////////
 // How long you want the animation to take, in ms
 const animationDuration = 2000;
 // Calculate how long each ‘frame’ should last if we want to update the animation 60 times per second
@@ -550,6 +556,8 @@ $(document).ready(function() {
                             var gene = localStorage['gene']
                             localStorage.removeItem('gene');
                             $gene_select[0].selectize.setValue(gene);
+                        } else {
+                            $gene_select[0].selectize.setValue(res[0]['gene_symbol']);
                         }
                     }
                 });
@@ -635,7 +643,6 @@ $(document).ready(function() {
                     gen_table(tables[1], `${species}_down`, titleRNA, gene)
                     if (micro) gen_table(tables[3], `${species}_micro_down`, titlemicro, gene)
 
-                    
 
                 }
             });
@@ -645,13 +652,35 @@ $(document).ready(function() {
         }
     });
 
-    $('#appyter-url1').click(function() {  
+    $('#appyter-url1').click( async function() {  
         var selectize = $(`#search1`)[0].selectize;
         var gene = selectize.getValue();
         if (gene) {
-            $('#appyter-url1').prop('href', "https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/#/?args.gene=" + gene + "&submit");
+            var check_list = await human_list
+            
+            if (check_list.includes(gene)) {
+                var species = 'Human';
+                var arg = 'human_gene';
+            } else{
+                var species = 'Mouse';
+                var arg = 'mouse_gene';
+            }
+            const formData = new FormData()
+            formData.append('species_input', species)
+            formData.append(arg, gene)
+            var res = await fetch("https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                },
+                body: formData,
+            })
+            const id = await res.json()
+            window.open("https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/" + id.session_id, target='_blank')
+
+
         } else {
-            $('#appyter-url1').prop('href', "https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/")
+            window.open("https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/", target='_blank')
         }
     });
 
@@ -676,21 +705,46 @@ $(document).ready(function() {
         }
     });
 
-    $('#appyter-url2').click(function() {  
+    $('#appyter-url2').click(async function() {  
         if ($("#search2").val()) {
             var inputvalue = $("#search2").val();
-            $('#appyter-url2').prop('href', "https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/#/?args.human_gene=" +inputvalue + "&submit");
+            var check_list = await human_list
+            
+            if (check_list.includes(inputvalue)) {
+                var species = 'Human';
+                var arg = 'human_gene';
+            } else{
+                var species = 'Mouse';
+                var arg = 'mouse_gene';
+            }
+            const formData = new FormData()
+            formData.append('species_input', species)
+            formData.append(arg, inputvalue)
+            var res = await fetch("https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                },
+                body: formData,
+            })
+            const id = await res.json()
+            window.open("https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/" + id.session_id, target='_blank')
         } else {
-            $('#appyter-url2').prop('href', "https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/")
+            window.open("https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/", target='_blank');
         }
     });
 
-    $('#appyter-url3').click(function() {  
+    $('#appyter-url3').click(async function() {  
         if ($("#search2").val()) {
             var inputvalue = $("#search2").val();
-            $('#appyter-url3').prop('href', "https://appyters.maayanlab.cloud/L1000_RNAseq_Gene_Search/#/?args.gene=" +inputvalue + "&submit");
+            var check_list = await human_list 
+            if (!check_list.includes(inputvalue)) {
+                alert('This Appyter only accepts Human gene symbols.')
+                return;
+            }
+            window.open("https://appyters.maayanlab.cloud/L1000_RNAseq_Gene_Search/#/?args.gene=" +inputvalue + "&submit", target='_blank');
         } else {
-            $('#appyter-url3').prop('href', "https://appyters.maayanlab.cloud/L1000_RNAseq_Gene_Search/")
+            window.open("https://appyters.maayanlab.cloud/L1000_RNAseq_Gene_Search/", target='_blank');
         }
     });
 
@@ -1130,7 +1184,7 @@ $(document).ready(function() {
     })
 
     // 3. Plot
-    boxplot(); // for initial plotting?
+    //boxplot(); // for initial plotting?
 
 
 
@@ -1556,7 +1610,7 @@ $(document).ready(function() {
                 tabletext += "<th></th><th>Adj. P Value</th><th>P Value</th><th>t</th><th>AvgExpr</th><th>logFC</th><th>B</th></tr><tbody>"
                 rows.forEach(function(row) {
                     var vals = row.replace(/\s\s+/g, ' ').split(' ');
-                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>`  + vals[0] + "</a></td><td>" + vals[5]+"</td><td>" + vals[4] +"</td><td>"+ vals[3] + "</td><td>"+ vals[2] + "</td><td>"+ vals[1] + "</td><td>"+ vals[6] + "</td></tr>"
+                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>`  + vals[0] + "</a></td><td>" + Number(vals[5]).toPrecision(4)+"</td><td>" + Number(vals[4]).toPrecision(4) +"</td><td>"+ Number(vals[3]).toPrecision(4) + "</td><td>"+ Number(vals[2]).toPrecision(4) + "</td><td>"+ Number(vals[1]).toPrecision(4) + "</td><td>"+ Number(vals[6]).toPrecision(4) + "</td></tr>"
                 });
                 tabletext += "</tbody></table>";
 
@@ -1574,7 +1628,7 @@ $(document).ready(function() {
                 tabletext += "<th></th><th>PValue</th><th>logCPM</th><th>logFC</th><th>FDR</th></tr><tbody>"
                 rows.forEach(function(row) {
                     var vals = row.replace(/\s\s+/g, ' ').split(' ');
-                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>`  +vals[0] + "</a></td><td>" + vals[3]+"</td><td>" + vals[2] +"</td><td>"+ vals[1] + "</td><td>"+ vals[4] + "</td></tr>"
+                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>`  +vals[0] + "</a></td><td>" + Number(vals[3]).toPrecision(4)+"</td><td>" + Number(vals[2]).toPrecision(4) +"</td><td>"+ Number(vals[1]).toPrecision(4) + "</td><td>"+ Number(vals[4]).toPrecision(4) + "</td></tr>"
                 });
                 tabletext += "</tbody></table>";
 
@@ -1592,7 +1646,7 @@ $(document).ready(function() {
                 tabletext += "<th></th><th>Adj. P-value</th><th>P-value/th><th>lfcSE</th><th>stat</th><th>baseMean</th><th>log2FC<</th></tr><tbody>"
                 rows.forEach(function(row) {
                     var vals = row.replace(/\s\s+/g, ' ').split(' ');
-                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>` +vals[0] +"</a></td><td>" + vals[6]+"</td><td>" + vals[5] +"</td><td>"+ vals[3] + "</td><td>"+ vals[4] + "</td><td>" + vals[1] + "</td><td>" + vals[2] + "</td></tr>"
+                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>` +vals[0] +"</a></td><td>" + Number(vals[6]).toPrecision(4)+"</td><td>" + Number(vals[5]).toPrecision(4) +"</td><td>"+  Number(vals[3]).toPrecision(4)  + "</td><td>"+  Number(vals[4]).toPrecision(4)  + "</td><td>" +  Number(vals[1]).toPrecision(4)  + "</td><td>" +  Number(vals[2]).toPrecision(4)  + "</td></tr>"
                 });
                 tabletext += "</tbody></table>";
 
