@@ -33,11 +33,6 @@ def home():
 def about():
     return render_template("about.html", gse_metadata=gse_metadata)
 
-
-@app.route("/singlegene/<gene>", methods=['GET', 'POST'])
-def singlegene(gene):
-    return render_template("singlegene.html", gene=gene, gse_metadata=gse_metadata)
-
 @app.route("/singlegene", methods=['GET', 'POST'])
 def singlegene_home():
     return render_template("singlegene.html", gse_metadata=gse_metadata)
@@ -314,11 +309,11 @@ def genes_api(geo_accession):
 			mouse_genes = json.load(f)
 		genes_json = json.dumps([{'gene_symbol': x} for x in mouse_genes['mouse_genes']])
 	elif geo_accession == 'combined':
-		with open('static/searchdata/t2d-human.json', 'r') as f:
+		with open('static/searchdata/allgenes-comb.json', 'r') as f:
 			human_genes = json.load(f)
 		with open('static/searchdata/t2d-mouse.json', 'r') as f:
 			mouse_genes = json.load(f)
-		all_genes = human_genes['human_genes'] + mouse_genes['mouse_genes']	
+		all_genes = human_genes + mouse_genes['mouse_genes']	
 		genes_json = json.dumps([{'gene_symbol': x} for x in all_genes])
 	else:
 		species = study_to_species[geo_accession]
