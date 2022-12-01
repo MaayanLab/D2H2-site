@@ -260,6 +260,7 @@
 
 {% block footer %}
 <script>
+  setGene('')
   createTweetsTable()
   if (localStorage.hasOwnProperty("genes")) {
       $(document).ready(function () {

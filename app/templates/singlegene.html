@@ -362,8 +362,11 @@
 {% block footer %}
 <script>
   $(document).ready(function() {
-    var gene = "{{ gene }}"
-    console.log(gene)
+    if (localStorage.hasOwnProperty("gene")) {
+      var gene = localStorage['gene']
+      localStorage.removeItem('gene');
+    } else {var gene = ''}
+
     const searchArray = Array.from(document.querySelectorAll('.search'));
     searchArray.forEach(function(item) {
       var url = item.getAttribute('data-url')
@@ -398,6 +401,8 @@
     }) 
     })
   document.getElementById('singlegenenav').className = document.getElementById('singlegenenav').className + ' active';
+
+
   })
 </script>
 {% endblock %}
