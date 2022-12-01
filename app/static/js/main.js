@@ -1,7 +1,7 @@
 
 
 const human_list = fetch(
-    "static/searchdata/allgenes.json"
+    "static/searchdata/allgenes-comb.json"
 ).then(data => data.json());                 
 
 
@@ -675,6 +675,7 @@ $(document).ready(function() {
                 },
                 body: formData,
             })
+            console.log(res)
             const id = await res.json()
             window.open("https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/" + id.session_id, target='_blank')
 
@@ -812,9 +813,9 @@ $(document).ready(function() {
 
             for (var k = 0; k < data.length; k++) {
                 tabletext += "<tr><td>" + data[k][0] + "</td><td>"+ data[k][1] +"</td><td>" + Number(data[k][2]).toPrecision(4) + "</td><td>"+Number(data[k][3]).toPrecision(4) +"</td><td>" + Number(data[k][4]).toPrecision(4) + "</td><td>"
-                var api = currURL.join('/') + 'singlegene/'
+                var url = currURL.join('/') + 'singlegene'
                 var api2 = currURL.join('/') + 'geneset/'
-                var gene_arr = data[k][5].map(g => `<a href='${api}${g}' target='_blank'>${g}<a/>`);
+                var gene_arr = data[k][5].map(g => `<a href='${url}' onclick="setGene('${g}')" target='_blank'>${g}<a/>`);
     
                 tabletext += `<button class="btn-custom btn-group-sm btn-collapse collapsed d-flex align-items-start text-left"
                         data-toggle="collapse" data-target="#genesoverlap-${data[k][0]}" aria-expanded="false"
@@ -1603,14 +1604,13 @@ $(document).ready(function() {
             var table_id = 'dge-table'
             var tabletext = `<table id='${table_id}' class='styled-table'><thead><tr>`
             const clear_button = "<div class='mx-auto justify-content-center text-center'><button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_dge();'> Clear Results </button></div>"
-            var api = currURL.filter(x => !x.includes('GSE')).join('/') + '/singlegene/'
-            var name = `${control_condition}-vs-${perturb_condition}-${method}`
+            var url = currURL.filter(x => !x.includes('GSE')).join('/') + '/singlegene'
             var pvals;
             if (method === 'limma') {
                 tabletext += "<th></th><th>Adj. P Value</th><th>P Value</th><th>t</th><th>AvgExpr</th><th>logFC</th><th>B</th></tr><tbody>"
                 rows.forEach(function(row) {
                     var vals = row.replace(/\s\s+/g, ' ').split(' ');
-                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>`  + vals[0] + "</a></td><td>" + Number(vals[5]).toPrecision(4)+"</td><td>" + Number(vals[4]).toPrecision(4) +"</td><td>"+ Number(vals[3]).toPrecision(4) + "</td><td>"+ Number(vals[2]).toPrecision(4) + "</td><td>"+ Number(vals[1]).toPrecision(4) + "</td><td>"+ Number(vals[6]).toPrecision(4) + "</td></tr>"
+                    tabletext += `<tr><td><a onclick="setGene('${vals[0]}')" href='${url}' target='_blank'>`  + vals[0] + "</a></td><td>" + Number(vals[5]).toPrecision(4)+"</td><td>" + Number(vals[4]).toPrecision(4) +"</td><td>"+ Number(vals[3]).toPrecision(4) + "</td><td>"+ Number(vals[2]).toPrecision(4) + "</td><td>"+ Number(vals[1]).toPrecision(4) + "</td><td>"+ Number(vals[6]).toPrecision(4) + "</td></tr>"
                 });
                 tabletext += "</tbody></table>";
 
@@ -1628,7 +1628,7 @@ $(document).ready(function() {
                 tabletext += "<th></th><th>PValue</th><th>logCPM</th><th>logFC</th><th>FDR</th></tr><tbody>"
                 rows.forEach(function(row) {
                     var vals = row.replace(/\s\s+/g, ' ').split(' ');
-                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>`  +vals[0] + "</a></td><td>" + Number(vals[3]).toPrecision(4)+"</td><td>" + Number(vals[2]).toPrecision(4) +"</td><td>"+ Number(vals[1]).toPrecision(4) + "</td><td>"+ Number(vals[4]).toPrecision(4) + "</td></tr>"
+                    tabletext += `<tr><td><a onclick="setGene('${vals[0]}')" href='${url}' target='_blank'>`  +vals[0] + "</a></td><td>" + Number(vals[3]).toPrecision(4)+"</td><td>" + Number(vals[2]).toPrecision(4) +"</td><td>"+ Number(vals[1]).toPrecision(4) + "</td><td>"+ Number(vals[4]).toPrecision(4) + "</td></tr>"
                 });
                 tabletext += "</tbody></table>";
 
@@ -1643,10 +1643,10 @@ $(document).ready(function() {
                 pvals = table.column(1).data()
 
             } else if (method === 'DESeq2') {
-                tabletext += "<th></th><th>Adj. P-value</th><th>P-value/th><th>lfcSE</th><th>stat</th><th>baseMean</th><th>log2FC<</th></tr><tbody>"
+                tabletext += "<th></th><th>Adj. P-value</th><th>P-value</th><th>lfcSE</th><th>stat</th><th>baseMean</th><th>log2FC</th></tr><tbody>"
                 rows.forEach(function(row) {
                     var vals = row.replace(/\s\s+/g, ' ').split(' ');
-                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>` +vals[0] +"</a></td><td>" + Number(vals[6]).toPrecision(4)+"</td><td>" + Number(vals[5]).toPrecision(4) +"</td><td>"+  Number(vals[3]).toPrecision(4)  + "</td><td>"+  Number(vals[4]).toPrecision(4)  + "</td><td>" +  Number(vals[1]).toPrecision(4)  + "</td><td>" +  Number(vals[2]).toPrecision(4)  + "</td></tr>"
+                    tabletext += `<tr><td><a onclick="setGene('${vals[0]}')" href='${url}' target='_blank'>` +vals[0] +"</a></td><td>" + Number(vals[6]).toPrecision(4)+"</td><td>" + Number(vals[5]).toPrecision(4) +"</td><td>"+  Number(vals[3]).toPrecision(4)  + "</td><td>"+  Number(vals[4]).toPrecision(4)  + "</td><td>" +  Number(vals[1]).toPrecision(4)  + "</td><td>" +  Number(vals[2]).toPrecision(4)  + "</td></tr>"
                 });
                 tabletext += "</tbody></table>";
 
