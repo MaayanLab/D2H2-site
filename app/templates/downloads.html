@@ -19,3 +19,56 @@
 </div>
 
 {% endblock %}
+
+
+{% block footer %}
+<script>
+function createDownloadsTable() {
+    document.getElementById("downloads").innerHTML = "<div class='loader justify-content-center'></div>";
+    $.ajax({
+        url: "/getdownloads",
+        type: "POST",
+        data: {},
+        dataType: 'json',
+    }).done(function(response) {
+
+        const data = response['downloads']
+
+        var headers = data[0]
+
+        var tabletext = "<table id='table-downloads' class='styled-table mb-5'><thead><tr>"
+
+        headers.forEach(function(header) {
+            tabletext += "<th>" + header + "</th>"
+        });
+        tabletext += "</tr><tbody>"
+
+        for (var k = 1; k < data.length; k++) {
+            tabletext += "<tr><td>"+ data[k][0]+"</td><td>"+ data[k][1]+ "</td><td>"+ data[k][2]+ "</td><td>"
+
+            var links = data[k][3].split(',')
+            links.forEach(function(link) {
+                var types = link.split('.')
+                var type = types[types.length - 1]
+                if (type === 'f') {
+                    type = 'feather';
+                }
+                tabletext += "<a href='" + link + "'><img src='static/img/download.png' alt='' style='width: 12px;'>"+ "<img class='mr-2 ml-1' src='static/img/" + type + ".png' alt='' style='width: 15px;'></a>";
+            });
+            tabletext += "</td></tr>"
+        }
+
+        tabletext += "</tbody></table>";
+
+
+        $(document).ready(function(){
+            document.getElementById("downloads").innerHTML = tabletext;
+            table = $('#table-downloads').DataTable();
+        });
+    });
+}
+createDownloadsTable()
+
+</script>
+
+{% endblock %}
