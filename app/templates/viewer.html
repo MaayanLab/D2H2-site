@@ -332,44 +332,8 @@ el.addEventListener('change', function handleChange(event) {
     box.style.display = 'none';
   }
 });
-
-
-/* var first_load = true;
-
-var $gene_select = $('#gene-select').selectize({
-    preload: true,
-    valueField: 'gene_symbol',
-    labelField: 'gene_symbol',
-    searchField: 'gene_symbol',
-    render: {
-        option: function (item, escape) {
-            return '<div class="pt-2 light">'+item.gene_symbol+'</div>';
-        }
-    },
-    load: function (query, callback) {
-        // if (!query.length) return callback();
-        $.ajax({
-            url: $('#gene-select').attr('data-url-genes'),
-            dataType: 'json',
-            error: function () {
-                callback();
-            },
-            success: function (res) {
-                gene_list = res;
-                callback(res);
-                if (localStorage.hasOwnProperty("gene")) {
-                    var gene = localStorage['gene']
-                    localStorage.removeItem('gene');
-                    $gene_select[0].selectize.setValue(gene);
-                }  else if (first_load) {
-                    $gene_select[0].selectize.setValue(gene_list[0]['gene_symbol']);
-                    first_load = false;
-                } 
-            }
-        });
-    },
-    persist: true,
-}); */
+$("#viewer").addClass('active'); 
+$("#viewer").parents('li').addClass('active');
 
 </script>
 
