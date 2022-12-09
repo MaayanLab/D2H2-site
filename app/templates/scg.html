@@ -60,3 +60,49 @@
 </div>
 
 {% endblock %}
+
+{% block footer %}
+<script>
+function createWorkflowsTable() {
+    document.getElementById("workflows").innerHTML = "<div class='loader justify-content-center'></div>";
+    $.ajax({
+        url: "/getworkflows",
+        type: "POST",
+        data: {},
+        dataType: 'json',
+    }).done(function(response) {
+
+        const data = response['workflows']
+
+        var headers = data[0]
+
+        var tabletext = "<table id='table-workflows' class='styled-table'><thead><tr>"
+
+        headers.forEach(function(header) {
+            tabletext += "<th>" + header + "</th>"
+        });
+        tabletext += "</tr><tbody>"
+
+        for (var k = 1; k < data.length; k++) {
+            tabletext += "<tr><td>"+ data[k][0]+"</td><td>"+ data[k][1]+ "</td>"
+            tabletext += `<td><a id="scg-link" href="${data[k][2]}" target="_blank">
+                                <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3">
+                                    Open in<img src="/static/img/scglogo.png" class="img-fluid" style="width: 50px" alt="SCG">
+                                </button>
+                          </a></td></tr>`
+        }
+
+        tabletext += "</tbody></table>";
+
+
+        $(document).ready(function(){
+            document.getElementById("workflows").innerHTML = tabletext;
+            table = $('#table-workflows').DataTable();
+        });
+
+    });
+}
+
+createWorkflowsTable()
+</script>
+{% endblock %}

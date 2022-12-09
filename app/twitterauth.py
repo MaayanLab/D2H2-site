@@ -40,8 +40,6 @@ def parse_tweet(tweet_text, html) -> list:
             title_range = words[title_start:i]
             title = " ".join(filter(lambda x: 'http' not in x and '#' not in x, title_range)).replace('\n', '')
             article_link= list(filter(lambda x: 'http' in x, title_range))[0]
-            print(title)
-            print(article_link)
         elif '@' in word and word not in hashtags_ignore:
             journal = journal_dict[word]
         elif prev_word == 'by' and not seen_author:
@@ -63,7 +61,10 @@ def parse_tweet(tweet_text, html) -> list:
 @lru_cache()
 def update_tweets_table(day):
     tweets_table = []
-    root = ET.fromstring(requests.get('https://nitter.net/D2H2Bot/rss').text)
+    try:
+        root = ET.fromstring(requests.get('https://nitter.net/D2H2Bot/rss').text)
+    except:
+        return
     tweets = []
     for item in root[0].findall('item'):
         t =[]

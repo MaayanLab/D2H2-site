@@ -26,12 +26,16 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-	#update_tweets_table(datetime.datetime.date)
+	update_tweets_table(datetime.datetime.date)
 	return render_template('home.html', gse_metadata=gse_metadata, numstudies=[len(gse_metadata['human'].keys()), len(gse_metadata['mouse'].keys())])
 
 @app.route("/about", methods=['GET', 'POST'])
 def about():
     return render_template("about.html", gse_metadata=gse_metadata)
+
+@app.route("/help", methods=['GET', 'POST'])
+def help():
+    return render_template("help.html", gse_metadata=gse_metadata)
 
 @app.route("/singlegene", methods=['GET', 'POST'])
 def singlegene_home():

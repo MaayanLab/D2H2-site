@@ -261,6 +261,51 @@
 {% block footer %}
 <script>
   setGene('')
+  function createTweetsTable() {
+    document.getElementById("tweets-res").innerHTML = "<div class='loader justify-content-center'></div>";
+    $.ajax({
+        url: "/gettweets",
+        type: "POST",
+        data: {},
+        dataType: 'json',
+    }).done(function(response) {
+
+        const data = response['tweets']
+
+        var headers = data[0]
+        const singlegene_link = window.location.href + '/singlegene'
+        var tabletext = "<table id='table-twitter' class='styled-table'><thead><tr>"
+
+        headers.forEach(function(header) {
+            tabletext += "<th>" + header + "</th>"
+        });
+
+        tabletext += "</tr><tbody>"
+        
+        for (var k = 1; k < data.length; k++) {
+
+
+            tabletext += "<tr><td>"+ data[k][0]+"</td><td>"+ data[k][1]+ "</td><td>" + data[k][2] + "</td><td>"+ data[k][3] + "</td>"
+            tabletext += "<td><a href='" + data[k][4] +"' target='_blank'>"+ 'link' +"</a></td>"
+
+            var analyze = data[k][5].replaceAll('[', '').replaceAll(']', '').replaceAll(' ', '').replaceAll("'","").split(',')
+            tabletext += `<td><a href="${singlegene_link}" target='_blank',  onclick="setGene('${data[k][0]}')"><img class='mr-2' src='static/img/d2h2logo.png' style='width: 25px;'/></a>`
+            tabletext += "<a href='" + analyze[1] +"' target='_blank'>"+ "<img class='mr-2' src='static/img/enrichrlogo.png' style='width: 25px;'/>" +"</a>"
+            tabletext += "<a href='" + analyze[2] +"' target='_blank'>"+ "<img class='mr-2' src='static/img/harmonizomelogo.png' style='width: 25px;'/>" +"</a>"
+            tabletext += "</td></tr>"
+            
+        }
+        
+        tabletext += "</tbody></table>";
+
+
+        $(document).ready(function(){
+            document.getElementById("tweets-res").innerHTML = tabletext;
+            table = $('#table-twitter').DataTable({"pageLength": 5});
+        });
+
+    });
+}
   createTweetsTable()
   if (localStorage.hasOwnProperty("genes")) {
       $(document).ready(function () {
