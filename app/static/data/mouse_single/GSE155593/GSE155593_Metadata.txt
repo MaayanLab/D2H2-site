@@ -1,0 +1,3 @@
+Sample_geo_accession	Condition	Group
+GSM4708389	 7 weeks old	immune cells isolated from pancreatic islets
+GSM4708390	 12 weeks old	immune cells isolated from pancreatic islets

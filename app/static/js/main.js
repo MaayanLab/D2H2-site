@@ -1,4 +1,36 @@
+// This function will generate the umap, tsne, and pca plots for each indivdual study for a specific condition
+function generate_single_plots(){
+    document.getElementById("umap-plot").innerHTML = "";
+    document.getElementById("tsne-plot").innerHTML = "";
+    document.getElementById("pca-plot").innerHTML = "";
+    document.getElementById("singleplots-loading").innerHTML = "<div class='loader justify-content-center'></div>";
+    var gse = document.getElementById("singlegse").innerText
+    var species = document.getElementById("species").innerText
+    var condition_group = document.getElementById("methodsingle").value
+    console.log(gse)
+    console.log(condition_group)
+    var gsedata = JSON.stringify({'gse': gse, 'species': species, 'conditiongroup':condition_group});
+    $.ajax({
+        url: "/singleplots",
+        contentType: 'application/json',
+        type: "POST",
+        dataType: 'json',
+        data: gsedata,
+    }).done(function(response) {
+        document.getElementById("singleplots-loading").innerHTML = "";
+        var umap_plot = response['umapplot']
+        var pca_plot = response['pcaplot']
+        var tsne_plot = response['tsneplot']
 
+        window.Bokeh.embed.embed_item(umap_plot)
+        window.Bokeh.embed.embed_item(pca_plot)
+        window.Bokeh.embed.embed_item(tsne_plot)
+
+
+    });
+    $("#boxplot").attr("data-url-plot", `/api/plot_single/${gse}/${condition_group}`)
+    console.log($("#boxplot").attr("data-url-plot"))
+}
 function createTweetsTable() {
     document.getElementById("tweets-res").innerHTML = "<div class='loader justify-content-center'></div>";
     $.ajax({
@@ -449,10 +481,10 @@ $(document).ready(function() {
             $(this).addClass('active'); 
             $(this).parents('li').addClass('active');
         }
-        if (url.split('/')[3].startsWith('GSE')) {
-            $("#viewer").addClass('active'); 
-            $("#viewer").parents('li').addClass('active');
-        }
+        // if (url.split('/')[3].startsWith('GSE')) {
+        //     $("#viewer").addClass('active'); 
+        //     $("#viewer").parents('li').addClass('active');
+        // }
     });
     
 
@@ -460,7 +492,7 @@ $(document).ready(function() {
 
 
 
-
+//this gene select variable is storing all the config information for the selectize element
         // SELECTIZE FOR VIEWER AND HOME PAGE APPYTER T2D
     var $gene_select = $('#gene-select').selectize({
             preload: true,
@@ -486,6 +518,11 @@ $(document).ready(function() {
                             var gene = localStorage['gene']
                             localStorage.removeItem('gene');
                             $gene_select[0].selectize.setValue(gene);
+                        }
+                        else{
+                            console.log(res)
+                            console.log(res[0])
+                            $gene_select[0].selectize.setValue(res[0]['gene_symbol']);
                         }
                     }
                 });
@@ -1000,28 +1037,30 @@ $(document).ready(function() {
     function boxplot() {
 
         // Change Status
-        $('#boxplot').addClass('loading');
+        $('#boxplotloader').addClass('loader');
 
         // Gene
         var gene_symbol = $('#gene-select').val();
+        console.log(gene_symbol)
+        // if (!gene_symbol) {
 
-        if (!gene_symbol) {
+        //     gene_symbol = 'A1CF';
 
-            gene_symbol = 'A1CF';
+        //     if(document.getElementById("species")) {
+        //         var species = document.getElementById("species").innerText
+        //     }
 
-            if(document.getElementById("species")) {
-                var species = document.getElementById("species").innerText
-            }
-
-            if (species === 'mouse') {
-                gene_symbol = '0610007P14Rik';
-            }
-        }
-
-        // Conditions
+        //     if (species === 'mouse') {
+        //         gene_symbol = '0610007P14Rik';
+        //     }
+        // }
+        
+        // Conditions FOR SINGLE CELL NEED TO CHANGE BUT FOR CLUSTERS NOW WHAT ARE THE SELECTED CLUSTERS
         var conditions = [];
         $('.condition-btn.plotted').each(function() { conditions.push($(this).attr('data-group_label')) }); conditions
-
+        // console.log($('.condition-btn.plotted').innerHTML)
+        // console.log($(this).attr('data-group_label'))
+        console.log(conditions)
         // AJAX Query
         $.ajax({
             url: $('#boxplot').attr('data-url-plot'), //"{{ url_for('plot_api') }} + "/" + $('#boxplot').attr('data-geo-acc'),
@@ -1033,7 +1072,7 @@ $(document).ready(function() {
                 "<p> Gene not found <\p>"
             },
             success: function (res) {
-                $('#boxplot').removeClass('loading');
+                $('#boxplotloader').removeClass('loader');
                 layout= {
                     plot_bgcolor: "#00FFFFFF",
                     paper_bgcolor:"#00FFFFFF"
@@ -1050,7 +1089,7 @@ $(document).ready(function() {
     if (currURL[3].startsWith('GSE')) {
         var boxplot_selectize = $gene_select[0].selectize;
         boxplot_selectize.on('change', function(value) {
-            boxplot();
+        boxplot();
         })
     }
     
@@ -1061,12 +1100,14 @@ $(document).ready(function() {
     
     // Conditions
     $('.condition-btn').on('click', function(evt) {
+        console.log($(this))
         $(this).toggleClass('plotted'); // making a specific button plotted or not
+        console.log($(this))
         boxplot();
     })
 
     // 3. Plot
-    boxplot(); // for initial plotting?
+    // boxplot(); // for initial plotting?
 
 
 
@@ -1655,4 +1696,84 @@ $(document).ready(function() {
     })
 
 
+    //This listener is for when we click on a different group of sample individuals to look at for a study within the single cell viewer on the dropdown select menu. 
+    $('#methodsingle').on('change', function() {
+        var gse = document.getElementById("singlegse").innerText
+        var species = document.getElementById("species").innerText
+        var condition_group = document.getElementById("methodsingle").value
+        var gsedata = JSON.stringify({'gse': gse, 'species': species, 'conditiongroup':condition_group});
+        generate_single_plots()
+        console.log('In the change in viewer')
+        $.ajax({
+            url: "/getclusterdata",
+            contentType: 'application/json',
+            type: "POST",
+            data: gsedata,
+            dataType: 'json',
+            async: false
+        }).done(function(response) {
+    
+            const classes = response['classes']
+            const metadict = response['metadict']
+            console.log(classes)
+            console.log(metadict)
+            document.getElementById("singlecell").innerHTML = ''
+            tabletext = ''
+            for (var k = 0; k < classes.length; k++) {
+                    tabletext += `<tr>
+                            <td class="p-0 ml-3 border"><button
+                                    style="background-color: #ECEFF1; color: black; width: max-content;"
+                                    class="btn m-0 rounded-0 py-0 condition-btn active plotted " data-toggle="button"
+                                    autocomplete="off"
+                                    data-group_label="${classes[k]}">${classes[k]}</button>
+                            </td>
+    
+                            <td class="border" style="padding: 0px 18px; width: max-content;">
+                                <button
+                                    style="width: max-content;"
+                                    class="btn-custom btn-group-sm btn-collapse collapsed d-flex align-items-center text-center"
+                                    data-toggle="collapse" data-target="#samples-${gse}" aria-expanded="false"
+                                    aria-controls="samples-${gse}">
+                                    <div class="text">${metadict[classes[k]]} Cells
+                                    </div>
+                                </button>
+    
+    
+                            </td>
+                            </tr>`
+                }
+            document.getElementById("singlecell").innerHTML = tabletext
+            //Add the listener for the condition buttons back in this function 
+            $('.condition-btn').on('click', function(evt) {
+                console.log($(this))
+                $(this).toggleClass('plotted'); // making a specific button plotted or not
+                console.log($(this))
+                boxplot();
+            })
+    
+    
+        });
+
+        //Fill up the gene selectize with the proper gene list based off each study. 
+        $gene_select[0].selectize.clearOptions();
+        $gene_select[0].selectize.load(function(callback) {
+        $.ajax({
+            url: `/api/genes/${gse}/${condition_group}`,
+            dataType: 'json',
+            error: function () {
+                callback();
+            },
+            success: function (res) {
+
+                callback(res);
+                console.log('before boxplot call')
+                $gene_select[0].selectize.setValue(res[0]['gene_symbol']);
+                $("#boxplot").attr("data-url-plot", `/api/plot_single/${gse}/${condition_group}`)
+                boxplot() 
+            }
+        });
+    });
+        
+
+    })
 })
