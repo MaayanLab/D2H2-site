@@ -295,7 +295,7 @@ def get_metadata(geo_accession, species_folder):
 	#Why was it -1
 	
 	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
-  gse.metadata['numsamples'] = metadata_dataframe.shape[0]
+	gse.metadata['numsamples'] = metadata_dataframe.shape[0]
 
 	return gse.metadata
 
@@ -393,8 +393,8 @@ print(study_to_species_single)
 def species_or_viewerpg(species_or_gse):
 	# test if species
 	if species_or_gse in gse_metadata:
-    num_samples = sum(map(lambda x: x.get('numsamples'), gse_metadata[species_or_gse].values()))
-    return render_template('species.html', species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, num_studies= len(gse_metadata[species_or_gse]))
+		num_samples = sum(map(lambda x: x.get('numsamples'), gse_metadata[species_or_gse].values()))
+		return render_template('species.html', species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, num_studies= len(gse_metadata[species_or_gse]))
 	#Checking for the single cell studies and loading that summary page
 	elif species_or_gse in gse_metadata_single:
 		return render_template('single_species.html', species=species_or_gse, gse_metadata=gse_metadata_single, species_mapping=species_mapping)
@@ -778,7 +778,7 @@ def get_study_data():
 #######################################################
 if __name__ == "__main__":
 
-	serve(app, host="0.0.0.0", port=5000)
-	#app.run(debug=True, host="0.0.0.0")
+	#serve(app, host="0.0.0.0", port=5000)
+	app.run(debug=True, host="0.0.0.0")
 
 
