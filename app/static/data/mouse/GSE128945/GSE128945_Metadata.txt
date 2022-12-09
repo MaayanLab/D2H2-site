@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM3688762	 control	Flow-Sorted islet beta cells
-GSM3688763	 control	Flow-Sorted islet beta cells
-GSM3688764	 control	Flow-Sorted islet beta cells
-GSM3688765	 BetaDKO	Flow-Sorted islet beta cells
-GSM3688766	 BetaDKO	Flow-Sorted islet beta cells
-GSM3688767	 BetaDKO	Flow-Sorted islet beta cells

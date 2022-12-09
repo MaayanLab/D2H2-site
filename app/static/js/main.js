@@ -25,57 +25,54 @@ function generate_single_plots(){
         window.Bokeh.embed.embed_item(umap_plot)
         window.Bokeh.embed.embed_item(pca_plot)
         window.Bokeh.embed.embed_item(tsne_plot)
-
-
     });
     $("#boxplot").attr("data-url-plot", `/api/plot_single/${gse}/${condition_group}`)
     console.log($("#boxplot").attr("data-url-plot"))
 }
-function createTweetsTable() {
-    document.getElementById("tweets-res").innerHTML = "<div class='loader justify-content-center'></div>";
-    $.ajax({
-        url: "/gettweets",
-        type: "POST",
-        data: {},
-        dataType: 'json',
-    }).done(function(response) {
-
-        const data = response['tweets']
-
-        var headers = data[0]
-
-        var tabletext = "<table id='table-twitter' class='styled-table'><thead><tr>"
-
-        headers.forEach(function(header) {
-            tabletext += "<th>" + header + "</th>"
-        });
-
-        tabletext += "</tr><tbody>"
-        
-        for (var k = 1; k < data.length; k++) {
 
 
-            tabletext += "<tr><td>"+ data[k][0]+"</td><td>"+ data[k][1]+ "</td><td>" + data[k][2] + "</td><td>"+ data[k][3] + "</td>"
-            tabletext += "<td><a href='" + data[k][4] +"' target='_blank'>"+ 'link' +"</a></td>"
-
-            var analyze = data[k][5].replaceAll('[', '').replaceAll(']', '').replaceAll(' ', '').replaceAll("'","").split(',')
-            tabletext += "<td><a href='" + analyze[0] +"' target='_blank'>"+ "<img class='mr-2' src='static/img/d2h2logo.png' style='width: 25px;'/>" +"</a>"
-            tabletext += "<a href='" + analyze[1] +"' target='_blank'>"+ "<img class='mr-2' src='static/img/enrichrlogo.png' style='width: 25px;'/>" +"</a>"
-            tabletext += "<a href='" + analyze[2] +"' target='_blank'>"+ "<img class='mr-2' src='static/img/harmonizomelogo.png' style='width: 25px;'/>" +"</a>"
-            tabletext += "</td></tr>"
-            
-        }
-        
-        tabletext += "</tbody></table>";
+const human_list = fetch(
+    "static/searchdata/allgenes-comb.json"
+).then(data => data.json());                 
 
 
-        $(document).ready(function(){
-            document.getElementById("tweets-res").innerHTML = tabletext;
-            table = $('#table-twitter').DataTable();
-        });
+///////// anitmated number counters /////////////
+// How long you want the animation to take, in ms
+const animationDuration = 2000;
+// Calculate how long each ‘frame’ should last if we want to update the animation 60 times per second
+const frameDuration = 1000 / 60;
+// Use that to calculate how many frames we need to complete the animation
+const totalFrames = Math.round( animationDuration / frameDuration );
+// An ease-out function that slows the count as it progresses
+const easeOutQuad = t => t * ( 2 - t );
 
-    });
-}
+// The animation function, which takes an Element
+const animateCountUp = el => {
+  let frame = 0;
+  const countTo = parseInt( el.innerHTML, 10 );
+  // Start the animation running 60 times per second
+  const counter = setInterval( () => {
+    frame++;
+    // Calculate our progress as a value between 0 and 1
+    // Pass that value to our easing function to get our
+    // progress on a curve
+    const progress = easeOutQuad( frame / totalFrames );
+    // Use the progress value to calculate the current count
+    const currentCount = Math.round( countTo * progress );
+
+    // If the current count has changed, update the element
+    if ( parseInt( el.innerHTML, 10 ) !== currentCount ) {
+      el.innerHTML = currentCount;
+    }
+
+    // If we’ve reached our last frame, stop the animation
+    if ( frame === totalFrames ) {
+      clearInterval( counter );
+    }
+  }, frameDuration );
+};
+
+
 // COUNT GENES IN TEXT BOXS ON geneset page
 
 function geneCount(gene_list, num) {
@@ -90,30 +87,54 @@ function clear_home() {
 
 }
 
-function submit_geneset(genelist) {
+function submit_geneset(genelist, sigs) {
     genelist = genelist.split(',')
+    sigs = sigs.split(',').map(function(item) {
+        return parseFloat(item);
+    });
     var numgenes = document.getElementById('numgenes').value
-    var dir = document.getElementById('dir').value
+    var signifigance = document.getElementById('signifigance').value
+    var dir = 'top'
+    var genes_valid = []
 
-    if (dir === 'top') {
-        var genes = genelist.splice(0, numgenes).join('&')
-    } else {
-        var genes = genelist.slice(-numgenes).join('&')
+    for (i=0; i < genelist.length; i++ ){
+        if (sigs[i] <= signifigance) {
+            genes_valid.push(genelist[i])
+        }
     }
+    if (dir === 'top') {
+        var genes = genes_valid.splice(0, numgenes).join('&')
+        
+    } else {
+        var genes = genes_valid.slice(-numgenes).join('&')
+    }
+
+
     const currURL = window.location.href.split('/')
-    var url = currURL.splice(0, 3).join('/') + '/geneset/' + genes
+    var url = currURL.filter(x => !x.includes('GSE')).join('/') + '/geneset/' + genes
     window.open(url, '_blank')
 }
 
-function submit_geneset_home(genelist, descset) {
+function submit_geneset_home(genelist, sigs, descset) {
     genelist = genelist.split(',')
+    sigs = sigs.split(',').map(function(item) {
+        return parseFloat(item);
+    });
     var numgenes = document.getElementById('numgenes').value
+    var signifigance = document.getElementById('signifigance').value
     var dir = document.getElementById('dir').value
 
+    console.log(signifigance)
+
+    for (i=0; i < genelist.length; i++ ){
+        if (sigs[i] <= signifigance) {
+            genes_valid.append(genes[i])
+        }
+    }
     if (dir === 'top') {
-        var genes = genelist.splice(0, numgenes).join('&')
+        var genes = genes_valid.splice(0, numgenes).join('&')
     } else {
-        var genes = genelist.slice(-numgenes).join('&')
+        var genes = genes_valid.slice(-numgenes).join('&')
     }
     localStorage.setItem('genes', genes)
     localStorage.setItem('descset', `${descset}-${dir}-${numgenes}`)
@@ -296,6 +317,7 @@ function setGene(gene) {
     localStorage.setItem('gene', gene)
 }
 
+
 $(document).ready(function() {
 
     // SMALL NAV MENU
@@ -324,159 +346,14 @@ $(document).ready(function() {
         window.location = $(this).find("option:selected").val();
     });
 
-    var currURL = window.location.href.split("/");
-
-    function createResourcesTable() {
-        document.getElementById("resources").innerHTML = "<div class='loader justify-content-center'></div>";
-        $.ajax({
-            url: "/getresources",
-            type: "POST",
-            data: {},
-            dataType: 'json',
-        }).done(function(response) {
-    
-            const data = response['resources']
-    
-            var headers = data[0]
-    
-            var tabletext = "<table id='table-resources' class='styled-table'><thead><tr>"
-    
-            headers.forEach(function(header) {
-                if (header != 'URL') {
-                    tabletext += "<th>" + header + "</th>"
-                }     
-            });
-            tabletext += "</tr><tbody>"
-    
-            for (var k = 1; k < data.length; k++) {
-                tabletext += "<tr><td><a href='" + data[k][2] +"' target='_blank'>"+data[k][0]+"</a></td><td>"+ data[k][1]+ "</td>"
-                if (data[k][3] != 'N/A') {
-                    tabletext += "<td><a href='https://pubmed.ncbi.nlm.nih.gov/" + data[k][3] +"' target='_blank'>"+data[k][3]+"</a></td>"
-                } else {
-                    tabletext += "<td>"+ data[k][3]+ "</td>"
-                }
-                tabletext += "<td>"+ data[k][4]+ "</td><td>" + data[k][5] + "</td></tr>"
-    
-            }
-    
-            tabletext += "</tbody></table>";
-    
-    
-            $(document).ready(function(){
-                document.getElementById("resources").innerHTML = tabletext;
-                table = $('#table-resources').DataTable({
-                    dom: 'Bfrtip',
-                    buttons: [
-                        'copy', {extend: 'csv', title: 'D2H2-resourceslist'}
-                    ]
-                });
-            });
-
-        });
-    }
-
-    if (currURL[3] == 'resources') {createResourcesTable();}
-    if (currURL[3] == 'downloads') {createDownloadsTable();}
-    if (currURL[3] == 'scg') {createWorkflowsTable();}
-
-    
-
-
-    function createWorkflowsTable() {
-        document.getElementById("workflows").innerHTML = "<div class='loader justify-content-center'></div>";
-        $.ajax({
-            url: "/getworkflows",
-            type: "POST",
-            data: {},
-            dataType: 'json',
-        }).done(function(response) {
-    
-            const data = response['workflows']
-    
-            var headers = data[0]
-    
-            var tabletext = "<table id='table-workflows' class='styled-table'><thead><tr>"
-    
-            headers.forEach(function(header) {
-                tabletext += "<th>" + header + "</th>"
-            });
-            tabletext += "</tr><tbody>"
-    
-            for (var k = 1; k < data.length; k++) {
-                tabletext += "<tr><td>"+ data[k][0]+"</td><td>"+ data[k][1]+ "</td>"
-                tabletext += `<td><a id="scg-link" href="${data[k][2]}" target="_blank">
-                                    <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3">
-                                        Open in<img src="/static/img/scglogo.png" class="img-fluid" style="width: 50px" alt="SCG">
-                                    </button>
-                              </a></td></tr>`
-            }
-    
-            tabletext += "</tbody></table>";
-    
-    
-            $(document).ready(function(){
-                document.getElementById("workflows").innerHTML = tabletext;
-                table = $('#table-workflows').DataTable();
-            });
-
-        });
-    }
-
-
-    function createDownloadsTable() {
-        document.getElementById("downloads").innerHTML = "<div class='loader justify-content-center'></div>";
-        $.ajax({
-            url: "/getdownloads",
-            type: "POST",
-            data: {},
-            dataType: 'json',
-        }).done(function(response) {
-    
-            const data = response['downloads']
-    
-            var headers = data[0]
-    
-            var tabletext = "<table id='table-downloads' class='styled-table mb-5'><thead><tr>"
-    
-            headers.forEach(function(header) {
-                tabletext += "<th>" + header + "</th>"
-            });
-            tabletext += "</tr><tbody>"
-    
-            for (var k = 1; k < data.length; k++) {
-                tabletext += "<tr><td>"+ data[k][0]+"</td><td>"+ data[k][1]+ "</td><td>"+ data[k][2]+ "</td><td>"
-
-                var links = data[k][3].split(',')
-                links.forEach(function(link) {
-                    var types = link.split('.')
-                    var type = types[types.length - 1]
-                    if (type === 'f') {
-                        type = 'feather';
-                    }
-                    tabletext += "<a href='" + link + "'><img src='static/img/download.png' alt='' style='width: 12px;'>"+ "<img class='mr-2 ml-1' src='static/img/" + type + ".png' alt='' style='width: 15px;'></a>";
-                });
-                tabletext += "</td></tr>"
-            }
-    
-            tabletext += "</tbody></table>";
-    
-    
-            $(document).ready(function(){
-                document.getElementById("downloads").innerHTML = tabletext;
-                table = $('#table-downloads').DataTable();
-            });
-        });
-    }
-
-
     // BOLD CURRENT PAGE
-    
+
     $('.nav-link').each(function(){
         var url = window.location.href
         if (url.includes('#')) {
             url = url.split('#')[0]
         }
-       
+    
         if ($(this).prop('href') == url) {
             $(this).addClass('active'); 
             $(this).parents('li').addClass('active');
@@ -486,49 +363,48 @@ $(document).ready(function() {
         //     $("#viewer").parents('li').addClass('active');
         // }
     });
-    
 
-    
-
+    var currURL = window.location.href.split("/");
 
 
-//this gene select variable is storing all the config information for the selectize element
-        // SELECTIZE FOR VIEWER AND HOME PAGE APPYTER T2D
+    var first_load = true;
+
+    // SELECTIZE FOR VIEWER AND HOME PAGE APPYTER T2D
+
     var $gene_select = $('#gene-select').selectize({
-            preload: true,
-            valueField: 'gene_symbol',
-            labelField: 'gene_symbol',
-            searchField: 'gene_symbol',
-            render: {
-                option: function (item, escape) {
-                    return '<div class="pt-2 light">'+item.gene_symbol+'</div>';
+        preload: true,
+        valueField: 'gene_symbol',
+        labelField: 'gene_symbol',
+        searchField: 'gene_symbol',
+        render: {
+            option: function (item, escape) {
+                return '<div class="pt-2 light">'+item.gene_symbol+'</div>';
+            }
+        },
+        load: function (query, callback) {
+            // if (!query.length) return callback();
+            $.ajax({
+                url: $('#gene-select').attr('data-url-genes'),
+                dataType: 'json',
+                error: function () {
+                    callback();
+                },
+                success: function (res) {
+                    callback(res);
+                    if (localStorage.hasOwnProperty("gene")) {
+                        var gene = localStorage['gene']
+                        localStorage.removeItem('gene');
+                        $gene_select[0].selectize.setValue(gene);
+                        first_load = false;
+                    }  else if (first_load) {
+                        $gene_select[0].selectize.setValue(res[0]['gene_symbol']);
+                        first_load = false;
+                    } 
                 }
-            },
-            load: function (query, callback) {
-                // if (!query.length) return callback();
-                $.ajax({
-                    url: $('#gene-select').attr('data-url-genes'),
-                    dataType: 'json',
-                    error: function () {
-                        callback();
-                    },
-                    success: function (res) {
-                        callback(res);
-                        if (localStorage.hasOwnProperty("gene")) {
-                            var gene = localStorage['gene']
-                            localStorage.removeItem('gene');
-                            $gene_select[0].selectize.setValue(gene);
-                        }
-                        else{
-                            console.log(res)
-                            console.log(res[0])
-                            $gene_select[0].selectize.setValue(res[0]['gene_symbol']);
-                        }
-                    }
-                });
-            },
-            persist: false,
-        });
+            });
+        },
+        persist: true,
+    });
     
         
     
@@ -608,7 +484,6 @@ $(document).ready(function() {
                     gen_table(tables[1], `${species}_down`, titleRNA, gene)
                     if (micro) gen_table(tables[3], `${species}_micro_down`, titlemicro, gene)
 
-                    
 
                 }
             });
@@ -618,13 +493,36 @@ $(document).ready(function() {
         }
     });
 
-    $('#appyter-url1').click(function() {  
+    $('#appyter-url1').click( async function() {  
         var selectize = $(`#search1`)[0].selectize;
         var gene = selectize.getValue();
         if (gene) {
-            $('#appyter-url1').prop('href', "https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/#/?args.gene=" + gene + "&submit");
+            var check_list = await human_list
+            
+            if (check_list.includes(gene)) {
+                var species = 'Human';
+                var arg = 'human_gene';
+            } else{
+                var species = 'Mouse';
+                var arg = 'mouse_gene';
+            }
+            const formData = new FormData()
+            formData.append('species_input', species)
+            formData.append(arg, gene)
+            var res = await fetch("https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                },
+                body: formData,
+            })
+            console.log(res)
+            const id = await res.json()
+            window.open("https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/" + id.session_id, target='_blank')
+
+
         } else {
-            $('#appyter-url1').prop('href', "https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/")
+            window.open("https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/", target='_blank')
         }
     });
 
@@ -649,21 +547,46 @@ $(document).ready(function() {
         }
     });
 
-    $('#appyter-url2').click(function() {  
+    $('#appyter-url2').click(async function() {  
         if ($("#search2").val()) {
             var inputvalue = $("#search2").val();
-            $('#appyter-url2').prop('href', "https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/#/?args.human_gene=" +inputvalue + "&submit");
+            var check_list = await human_list
+            
+            if (check_list.includes(inputvalue)) {
+                var species = 'Human';
+                var arg = 'human_gene';
+            } else{
+                var species = 'Mouse';
+                var arg = 'mouse_gene';
+            }
+            const formData = new FormData()
+            formData.append('species_input', species)
+            formData.append(arg, inputvalue)
+            var res = await fetch("https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                },
+                body: formData,
+            })
+            const id = await res.json()
+            window.open("https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/" + id.session_id, target='_blank')
         } else {
-            $('#appyter-url2').prop('href', "https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/")
+            window.open("https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/", target='_blank');
         }
     });
 
-    $('#appyter-url3').click(function() {  
+    $('#appyter-url3').click(async function() {  
         if ($("#search2").val()) {
             var inputvalue = $("#search2").val();
-            $('#appyter-url3').prop('href', "https://appyters.maayanlab.cloud/L1000_RNAseq_Gene_Search/#/?args.gene=" +inputvalue + "&submit");
+            var check_list = await human_list 
+            if (!check_list.includes(inputvalue)) {
+                alert('This Appyter only accepts Human gene symbols.')
+                return;
+            }
+            window.open("https://appyters.maayanlab.cloud/L1000_RNAseq_Gene_Search/#/?args.gene=" +inputvalue + "&submit", target='_blank');
         } else {
-            $('#appyter-url3').prop('href', "https://appyters.maayanlab.cloud/L1000_RNAseq_Gene_Search/")
+            window.open("https://appyters.maayanlab.cloud/L1000_RNAseq_Gene_Search/", target='_blank');
         }
     });
 
@@ -731,9 +654,9 @@ $(document).ready(function() {
 
             for (var k = 0; k < data.length; k++) {
                 tabletext += "<tr><td>" + data[k][0] + "</td><td>"+ data[k][1] +"</td><td>" + Number(data[k][2]).toPrecision(4) + "</td><td>"+Number(data[k][3]).toPrecision(4) +"</td><td>" + Number(data[k][4]).toPrecision(4) + "</td><td>"
-                var api = currURL.join('/') + 'singlegene/'
+                var url = currURL.join('/') + 'singlegene'
                 var api2 = currURL.join('/') + 'geneset/'
-                var gene_arr = data[k][5].map(g => `<a href='${api}${g}' target='_blank'>${g}<a/>`);
+                var gene_arr = data[k][5].map(g => `<a href='${url}' onclick="setGene('${g}')" target='_blank'>${g}<a/>`);
     
                 tabletext += `<button class="btn-custom btn-group-sm btn-collapse collapsed d-flex align-items-start text-left"
                         data-toggle="collapse" data-target="#genesoverlap-${data[k][0]}" aria-expanded="false"
@@ -1086,7 +1009,8 @@ $(document).ready(function() {
 
     // 2. Listeners
     // Gene
-    if (currURL[3].startsWith('GSE')) {
+    var is_gse = currURL.filter(x => x.includes('GSE'))
+    if (is_gse.length > 0) {
         var boxplot_selectize = $gene_select[0].selectize;
         boxplot_selectize.on('change', function(value) {
         boxplot();
@@ -1108,7 +1032,6 @@ $(document).ready(function() {
 
     // 3. Plot
     // boxplot(); // for initial plotting?
-
 
 
     // ADD LIST TO ENRICHR and Redirect
@@ -1424,7 +1347,7 @@ $(document).ready(function() {
 
         document.getElementById("dgea-loading").innerHTML = "<div class='loader justify-content-center'></div>";
 
-        var gse = currURL[3]
+        var gse = document.getElementById("gse").val()
         var gsedata = JSON.stringify({'gse': gse, 'control': control_condition, 'perturb': perturb_condition, 'species': species});
 
 
@@ -1526,79 +1449,88 @@ $(document).ready(function() {
             var table_id = 'dge-table'
             var tabletext = `<table id='${table_id}' class='styled-table'><thead><tr>`
             const clear_button = "<div class='mx-auto justify-content-center text-center'><button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_dge();'> Clear Results </button></div>"
-            var api = currURL.filter(x => !x.includes('GSE')).join('/') + '/singlegene/'
-            var name = `${control_condition}-vs-${perturb_condition}-${method}`
-
+            var url = currURL.filter(x => !x.includes('GSE')).join('/') + '/singlegene'
+            var pvals;
             if (method === 'limma') {
-                tabletext += "<th></th><th>logFC</th><th>AvgExpr</th><th>t</th><th>P Value</th><th>Adj. P Value</th><th>B</th></tr><tbody>"
+                tabletext += "<th></th><th>Adj. P Value</th><th>P Value</th><th>t</th><th>AvgExpr</th><th>logFC</th><th>B</th></tr><tbody>"
                 rows.forEach(function(row) {
                     var vals = row.replace(/\s\s+/g, ' ').split(' ');
-                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>`  + vals[0] + "</a></td><td>" + vals[1]+"</td><td>" + vals[2] +"</td><td>"+ vals[3] + "</td><td>"+ vals[4] + "</td><td>"+ vals[5] + "</td><td>"+ vals[6] + "</td></tr>"
+                    tabletext += `<tr><td><a onclick="setGene('${vals[0]}')" href='${url}' target='_blank'>`  + vals[0] + "</a></td><td>" + Number(vals[5]).toPrecision(4)+"</td><td>" + Number(vals[4]).toPrecision(4) +"</td><td>"+ Number(vals[3]).toPrecision(4) + "</td><td>"+ Number(vals[2]).toPrecision(4) + "</td><td>"+ Number(vals[1]).toPrecision(4) + "</td><td>"+ Number(vals[6]).toPrecision(4) + "</td></tr>"
                 });
                 tabletext += "</tbody></table>";
 
                 document.getElementById("dge-table-area").innerHTML += tabletext
                 var table = $(`#${table_id}`).DataTable({
-                    order: [[1, 'desc']],
+                    order: [[1, 'asc']],
                     dom: 'Bfrtip',
                     buttons: [
                         'copy', {extend: 'csv', title: name}
                     ]
                 });
+                pvals = table.column(1).data()
 
             } else if (method === 'edgeR') {
-                tabletext += "<th></th><th>logFC</th><th>logCPM</th><th>PValue</th><th>FDR</th></tr><tbody>"
+                tabletext += "<th></th><th>PValue</th><th>logCPM</th><th>logFC</th><th>FDR</th></tr><tbody>"
                 rows.forEach(function(row) {
                     var vals = row.replace(/\s\s+/g, ' ').split(' ');
-                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>`  +vals[0] + "</a></td><td>" + vals[1]+"</td><td>" + vals[2] +"</td><td>"+ vals[3] + "</td><td>"+ vals[4] + "</td></tr>"
+                    tabletext += `<tr><td><a onclick="setGene('${vals[0]}')" href='${url}' target='_blank'>`  +vals[0] + "</a></td><td>" + Number(vals[3]).toPrecision(4)+"</td><td>" + Number(vals[2]).toPrecision(4) +"</td><td>"+ Number(vals[1]).toPrecision(4) + "</td><td>"+ Number(vals[4]).toPrecision(4) + "</td></tr>"
                 });
                 tabletext += "</tbody></table>";
 
                 document.getElementById("dge-table-area").innerHTML += tabletext 
                 var table = $(`#${table_id}`).DataTable({
-                    order: [[1, 'desc']],
+                    order: [[1, 'asc']],
                     dom: 'Bfrtip',
                     buttons: [
                         'copy', {extend: 'csv', title: name}
                     ]
                 });
+                pvals = table.column(1).data()
 
             } else if (method === 'DESeq2') {
-                tabletext += "<th></th><th>baseMean</th><th>log2FC</th><th>lfcSE</th><th>stat</th><th>P-value</th><th>Adj. P-value</th></tr><tbody>"
+                tabletext += "<th></th><th>Adj. P-value</th><th>P-value</th><th>lfcSE</th><th>stat</th><th>baseMean</th><th>log2FC</th></tr><tbody>"
                 rows.forEach(function(row) {
                     var vals = row.replace(/\s\s+/g, ' ').split(' ');
-                    tabletext += `<tr><td><a href='${api}${vals[0]}' target='_blank'>` +vals[0] +"</a></td><td>" + vals[1]+"</td><td>" + vals[2] +"</td><td>"+ vals[3] + "</td><td>"+ vals[4] + "</td><td>" + vals[5] + "</td><td>" + vals[6] + "</td></tr>"
+                    tabletext += `<tr><td><a onclick="setGene('${vals[0]}')" href='${url}' target='_blank'>` +vals[0] +"</a></td><td>" + Number(vals[6]).toPrecision(4)+"</td><td>" + Number(vals[5]).toPrecision(4) +"</td><td>"+  Number(vals[3]).toPrecision(4)  + "</td><td>"+  Number(vals[4]).toPrecision(4)  + "</td><td>" +  Number(vals[1]).toPrecision(4)  + "</td><td>" +  Number(vals[2]).toPrecision(4)  + "</td></tr>"
                 });
                 tabletext += "</tbody></table>";
 
                 document.getElementById("dge-table-area").innerHTML += tabletext
                 var table = $(`#${table_id}`).DataTable({
-                    order: [[2, 'desc']],
+                    order: [[1, 'asc']],
                     dom: 'Bfrtip',
                     buttons: [
                         'copy', {extend: 'csv', title: name}
                     ]
                 });    
+                pvals = table.column(1).data()
             }
             var genes = table.column(0).data()
+
+            
             genes = genes.map(x => x.replace(/<\/?[^>]+(>|$)/g, ""))
-            console.log(genes)
+
             var genelist_buttons = 
             `<div class="row justify-content-center mx-auto text-center">
-            <div class="mt-3 h7">Submit the </div>
-            <select id='dir' class='dirpicker m-2'>
-                <option value="top"selected>top</option>
-                <option value="bot">bottom</option>
-            </select>
+            <div class="mt-3 h7">Submit the top</div>
             <input id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2' style='width: 60px;'/>
-            <div class="mt-3 h7">differentially expressed genes to</div>
-            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset('${genes.join(',')}')">Gene Set Queries</button>
+            <div class="mt-3 h7">differentially expressed genes with an adjusted p-value less than</div>
+            <input id='signifigance' type='number' step='.01' value='.05' max='1' class='m-2' style='width: 60px;'/>
+            <div class="mt-3 h7">to</div>
+            </div>
+            <div class="row justify-content-center mx-auto text-center">
+            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset('${genes.join(',')}', '${pvals.join(',')}')">Gene Set Queries</button>
             <div class="mt-3 h7">or to</div>
-            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset_home('${genes.join(',')}', '${name}')">Diabetes Gene Set Library</button>
-            </div>`
+            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset_home('${genes.join(',')}', '${pvals.join(',')}', '${name}')">Diabetes Gene Set Library</button>
+            </div>
+            `
                 
             document.getElementById("geneset-buttons").innerHTML = (clear_button + genelist_buttons)
-        });
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            alert('An internal server error occured, please try again')
+            document.getElementById("dge-loading").innerHTML = "";
+        })
     });
 
 
@@ -1777,3 +1709,11 @@ $(document).ready(function() {
 
     })
 })
+
+
+
+
+
+
+
+

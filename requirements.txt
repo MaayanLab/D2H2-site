@@ -9,6 +9,7 @@ intermine
 waitress
 bokeh==2.4.3
 matplotlib
+scikit-learn
 tweepy
 pyarrow
 rpy2==3.4.5
@@ -21,3 +22,5 @@ colorcet==3.0.0
 leidenalg==0.9.0
 numba==0.55.0
 umap-learn==0.5.2
+s3fs
+

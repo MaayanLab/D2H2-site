@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM3061037	Unidentified Ligand	20-week-old Male mice fed a Western diet for 12 weeks prior to experiment
-GSM3061038	Unidentified Ligand	20-week-old Male mice fed a Western diet for 12 weeks prior to experiment
-GSM3061039	Unidentified Ligand	20-week-old Male mice fed a Western diet for 12 weeks prior to experiment
-GSM3061034	control	20-week-old Male mice fed a Western diet for 12 weeks prior to experiment
-GSM3061035	control	20-week-old Male mice fed a Western diet for 12 weeks prior to experiment
-GSM3061036	control	20-week-old Male mice fed a Western diet for 12 weeks prior to experiment

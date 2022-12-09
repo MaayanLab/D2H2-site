@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM3408208	Healthy 	Kidney
-GSM3408209	Healthy 	Kidney
-GSM3408210	Healthy 	Kidney
-GSM3408211	 Methylmalonic acidemia (MMA)	Kidney
-GSM3408212	 Methylmalonic acidemia (MMA)	Kidney
-GSM3408213	 Methylmalonic acidemia (MMA)	Kidney

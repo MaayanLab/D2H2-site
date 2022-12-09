@@ -1,9 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM2830482	non-diabetic control	Human pancreatic islets
-GSM2830483	non-diabetic control	Human pancreatic islets
-GSM2830484	non-diabetic control	Human pancreatic islets
-GSM2830485	non-diabetic control	Human pancreatic islets
-GSM2830486	non-diabetic control	Human pancreatic islets
-GSM2830487	Type I diabetes	Human pancreatic islets
-GSM2830488	Type I diabetes	Human pancreatic islets
-GSM2830489	Type I diabetes	Human pancreatic islets

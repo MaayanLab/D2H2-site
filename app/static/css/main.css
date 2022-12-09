@@ -186,7 +186,7 @@ body {
     border: rgb(182, 182, 182);
     background-color: #CFD8DC;
     border-width: 1.5px;
-    overflow: scroll;
+    overflow: auto;
     border-style: solid;
     border-radius: 1%;
     
@@ -253,15 +253,15 @@ a {
     border-radius: 2%;
 } 
 .query-list li {
-    margin: 10px 0;
+    margin: 5px 15px;
 }
 
 .queries {
-    text-shadow: #71477a;
+    text-shadow: #9242a4;
     font-size: 16px;
     font-weight:normal;
-    color: rgb(23, 30, 82);
-    text-decoration: underline;
+    color: rgb(103, 20, 95);
+    margin-right: 5px;
 }
 
 .img-logo {
@@ -334,24 +334,7 @@ nav[data-toggle="toc"] {
 
 
   
-  /* small screens */
-@media (max-width: 700px) {
-/* override stickyness so that the navigation does not follow scrolling */
 
-    nav[data-toggle="toc"] {
-        margin-bottom: 42px;
-        margin-left: 0px;
-        padding-left: 0px;
-        position: static;
-    }
-
-    /* PICK ONE */
-    /* don't expand nested items, which pushes down the rest of the page when navigating */
-    nav[data-toggle="toc"] .nav .active .nav {
-        display: none;
-    }
-
-}
 
 .nav-item.dropdown .dropdown-item:hover, .dropdown-item:focus  {
     background-color: lightblue !important;
@@ -553,4 +536,30 @@ nav select {
   
   .slider.round:before {
     border-radius: 50%;
-  }
+}
+
+.num-style {
+    font-size: xx-large;
+}
+
+  /* small screens */
+  @media screen and (max-width: 900px) {
+    /* override stickyness so that the navigation does not follow scrolling */
+    
+    nav[data-toggle="toc"] {
+        margin-bottom: 42px;
+        margin-left: 0px;
+        padding-left: 0px;
+        position: static;
+    }
+
+    /* PICK ONE */
+    /* don't expand nested items, which pushes down the rest of the page when navigating */
+    nav[data-toggle="toc"] .nav .active .nav {
+        display: none;
+    }
+    
+}
+
+
+

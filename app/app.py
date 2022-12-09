@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 from waitress import serve
 import os
 import json
+import s3fs
 import plotly
 import plotly.graph_objects as go
 import pandas as pd
@@ -10,58 +11,60 @@ import GEOparse
 import ftfy
 from functools import lru_cache
 import pickle
+import datetime
 from helpers import *
-#from twitterauth import update_tweets_table
+from twitterauth import update_tweets_table
 from dge import *
 import anndata
 import scanpy as sc
 from sklearn.preprocessing import StandardScaler
-create_meta = False
+
 create_meta_single = True
-base_url = 'static/data'
+#### base_url = 'static/data' ####
 
+base_url = 'd2h2/data'
 
+s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': 'https://minio.dev.maayanlab.cloud/'})
 
 app = Flask(__name__)
 
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-	#update_tweets_table()
-	return render_template('home.html')
+	update_tweets_table(datetime.datetime.date)
+	return render_template('home.html', gse_metadata=gse_metadata, numstudies=[len(gse_metadata['human'].keys()), len(gse_metadata['mouse'].keys())])
 
 @app.route("/about", methods=['GET', 'POST'])
 def about():
-    return render_template("about.html")
+    return render_template("about.html", gse_metadata=gse_metadata)
 
-
-@app.route("/singlegene/<gene>", methods=['GET', 'POST'])
-def singlegene(gene):
-    return render_template("singlegene.html", gene=gene)
+@app.route("/help", methods=['GET', 'POST'])
+def help():
+    return render_template("help.html", gse_metadata=gse_metadata)
 
 @app.route("/singlegene", methods=['GET', 'POST'])
 def singlegene_home():
-    return render_template("singlegene.html")
+    return render_template("singlegene.html", gse_metadata=gse_metadata)
 
 @app.route("/geneset", methods=['GET', 'POST'])
 def geneset_home():
-    return render_template("geneset.html")
+    return render_template("geneset.html", gse_metadata=gse_metadata)
 
 @app.route("/geneset/<geneset>", methods=['GET', 'POST'])
 def geneset(geneset):
-    return render_template("geneset.html", genes=geneset)
+    return render_template("geneset.html", genes=geneset, gse_metadata=gse_metadata)
 
 @app.route('/scg', methods=['GET', 'POST'])
 def scg():
-	return render_template('scg.html')
+	return render_template('scg.html', gse_metadata=gse_metadata)
 
 @app.route('/resources', methods=['GET', 'POST'])
 def resources():
-	return render_template('resources.html')
+	return render_template('resources.html', gse_metadata=gse_metadata)
 
 @app.route('/downloads', methods=['GET', 'POST'])
 def downloads():
-	return render_template('downloads.html')
+	return render_template('downloads.html', gse_metadata=gse_metadata)
 
 @app.route('/getgwas', methods=['GET','POST'])
 def get_gwas():
@@ -261,10 +264,7 @@ def get_metadata(geo_accession, species_folder):
 	else:
 		geo_accession_num = geo_accession
     # Get gse from GEO
-	if f'{geo_accession}_family.soft.gz' not in os.listdir(f'./static/data/{species_folder}/{geo_accession}'):
-		gse = GEOparse.get_GEO(geo = geo_accession_num, destdir = f'./static/data/{species_folder}/{geo_accession}', silent=True)
-	else:
-		gse = GEOparse.get_GEO(filepath = f'./static/data/{species_folder}/{geo_accession}/{geo_accession}_family.soft.gz', silent=True)
+	gse = GEOparse.get_GEO(geo = geo_accession_num, silent=True)
 
 	if "-" in geo_accession:
 		gse.metadata['cur_gpl'] = [gpl_num]
@@ -292,12 +292,13 @@ def get_metadata(geo_accession, species_folder):
 	
 	
 	metadata_file = f'{base_url}/{species_folder}/{geo_accession}/{geo_accession}_Metadata.txt'
-	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
 	#Why was it -1
-	gse.metadata['numsamples'] = metadata_dataframe.shape[0]
-
+	
+	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
+  gse.metadata['numsamples'] = metadata_dataframe.shape[0]
 
 	return gse.metadata
+
 
 ignore_list = ['mouse_matrix_v11.h5', 'human_matrix_v11.h5', '.DS_Store', 'allgenes.json']
 # Making a dictionary that maps the the species_folder name to all the studies it matches to. 
@@ -337,19 +338,23 @@ species_mapping = sort_studies(species_mapping)
 print(species_mapping.keys())
 
 
-#Create the meta data for the bulk and single cell studies
-if create_meta:
-	gse_metadata = {}
-	for species, geo_accession_ids in species_mapping.items():
-		if species in url_to_folder_single:
-			gse_metadata[species] = {}
-			for geo_accession in geo_accession_ids:
-				gse_metadata[species][geo_accession] = get_metadata(geo_accession, url_to_folder[species])
-	with open('static/searchdata/metadata-v1.pickle', 'wb') as f:
-		pickle.dump(gse_metadata, f, protocol=pickle.HIGHEST_PROTOCOL)
-else:
-	with open('static/searchdata/metadata-v1.pickle', 'rb') as f:	
+
+
+#### CHECK IF METADATA IS COMPLETE/ IF NEW STUDIES WERE ADDED, ADD THEM TO METADATA
+
+with open('static/searchdata/metadata-v1.pickle', 'rb') as f:	
 		gse_metadata = pickle.load(f)
+
+numstudies= [len(gse_metadata['human'].keys()), len(gse_metadata['mouse'].keys())]
+mouse_gses = list(s3.walk('d2h2/data/mouse', maxdepth=1))[0][1]
+human_gses = list(s3.walk('d2h2/data/human', maxdepth=1))[0][1]
+
+url_to_folder = {"human": "human", "mouse": "mouse"}
+folder_to_url = {folder:url for url, folder in url_to_folder.items()}
+
+
+species_mapping = {'human': human_gses, 'mouse': mouse_gses}
+
 
 #Creating the metadata for the single files only here. Making it separate from the above in case of additions as the project continues.
 if create_meta_single:
@@ -366,6 +371,18 @@ else:
 		gse_metadata_single = pickle.load(f)
 
 #Bulk and microarray study to species name dictionary
+
+if numstudies[0] == len(human_gses) and numstudies[1] == len(mouse_gses):
+	for species, geo_accession_ids in species_mapping.items():
+		if species not in gse_metadata:
+			gse_metadata[species] = {}
+		for geo_accession in geo_accession_ids:
+			if geo_accession not in gse_metadata[species]:
+				gse_metadata[species][geo_accession] = get_metadata(geo_accession, url_to_folder[species])
+	with open('static/searchdata/metadata-v1.pickle', 'wb') as f:
+		pickle.dump(gse_metadata, f, protocol=pickle.HIGHEST_PROTOCOL)
+	
+
 study_to_species = {study:species_name for species_name, studies_metadata in gse_metadata.items() for study in studies_metadata.keys()}
 
 #Single cell studies from study to the species name
@@ -376,7 +393,8 @@ print(study_to_species_single)
 def species_or_viewerpg(species_or_gse):
 	# test if species
 	if species_or_gse in gse_metadata:
-		return render_template('species.html', species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping)
+    num_samples = sum(map(lambda x: x.get('numsamples'), gse_metadata[species_or_gse].values()))
+    return render_template('species.html', species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, num_studies= len(gse_metadata[species_or_gse]))
 	#Checking for the single cell studies and loading that summary page
 	elif species_or_gse in gse_metadata_single:
 		return render_template('single_species.html', species=species_or_gse, gse_metadata=gse_metadata_single, species_mapping=species_mapping)
@@ -386,7 +404,7 @@ def species_or_viewerpg(species_or_gse):
 		species = study_to_species[geo_accession]
 		species_folder = url_to_folder[species]
 		metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
-		metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
+		metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 		metadata_dict = metadata_dataframe.groupby('Group')['Condition'].apply(set).to_dict()
 		metadata_dict_samples = metadata_dataframe.groupby('Condition')['Sample_geo_accession'].apply(list).to_dict()
 		sample_dict = {}
@@ -460,13 +478,20 @@ def genes_api(geo_accession):
 		print(len([{'gene_symbol': x} for x in adata_df.index]))
 		genes_json = json.dumps([{'gene_symbol': x} for x in adata_df.index])
 		#go into anndata and get the genes for each human single
+	elif geo_accession == 'combined':
+		with open('static/searchdata/allgenes-comb.json', 'r') as f:
+			human_genes = json.load(f)
+		with open('static/searchdata/t2d-mouse.json', 'r') as f:
+			mouse_genes = json.load(f)
+		all_genes = human_genes + mouse_genes['mouse_genes']	
+		genes_json = json.dumps([{'gene_symbol': x} for x in all_genes])
 	else:
 		species = study_to_species[geo_accession]
 		species_folder = url_to_folder[species]
 
 		# Get genes json
 		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
-		expression_dataframe = pd.read_csv(expression_file, index_col = 0, sep='\t')
+		expression_dataframe = pd.read_csv(s3.open(expression_file), index_col = 0, sep='\t')
 
 		genes_json = json.dumps([{'gene_symbol': x} for x in expression_dataframe.index])
 
@@ -608,8 +633,8 @@ def plot_api(geo_accession):
 
 	expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
 	metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
-	expression_dataframe = pd.read_csv(expression_file, index_col = 0, sep='\t')
-	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
+	expression_dataframe = pd.read_csv(s3.open(expression_file), index_col = 0, sep='\t')
+	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 	
 	# Get data
 	data = request.json
@@ -678,7 +703,7 @@ def conditions_api(geo_accession):
 	species = study_to_species[geo_accession]
 	species_folder = url_to_folder[species]
 	metadata_file = base_url+ '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
-	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
+	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 	conditions = set(metadata_dataframe['Condition'])
 	return json.dumps([{'Condition': x} for x in conditions])
 
@@ -692,7 +717,7 @@ def samples_api(geo_accession):
 	species_folder = url_to_folder[species]
 
 	metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
-	metadata_dataframe = pd.read_csv(metadata_file, sep='\t')
+	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 
 	conditions_mapping = metadata_dataframe.groupby('Condition')['Sample_geo_accession'].apply(list).to_dict()
 
@@ -752,7 +777,8 @@ def get_study_data():
 #######################################################
 #######################################################
 if __name__ == "__main__":
-	
-	# serve(app, host="0.0.0.0", port=5000)
-	app.run(debug=True, host="0.0.0.0")
+
+	serve(app, host="0.0.0.0", port=5000)
+	#app.run(debug=True, host="0.0.0.0")
+
 

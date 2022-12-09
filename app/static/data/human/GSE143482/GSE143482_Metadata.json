@@ -1,7 +1,0 @@
-{"Esophagus Fibroblast":
-    {
-        "LIGHT 50 ng/ml": ["GSM4260265","GSM4260268", "GSM4260271", "GSM4260274"],
-        "TGF 5 ng/ml": ["GSM4260266", "GSM4260269", "GSM4260272", "GSM4260275"],
-        "Vehicle": ["GSM4260267", "GSM4260270", "GSM4260273", "GSM4260276"]
-    }
-}

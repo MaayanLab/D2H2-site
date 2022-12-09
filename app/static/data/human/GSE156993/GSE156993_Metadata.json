@@ -1,6 +1,0 @@
-{"Peripheral blood mononuclear cells (PBMC)": 
-{"control": ["GSM4749840", "GSM4749841", "GSM4749842", "GSM4749843", "GSM4749844", "GSM4749845"], 
-"Periodontitis + Dyslipidemia + Type 2 Diabetes (Poorly Controlled)": ["GSM4749816", "GSM4749817", "GSM4749818", "GSM4749819", "GSM4749820"], 
-"Periodontitis + Dyslipidemia + Type 2 Diabetes (Well Controlled)": ["GSM4749821", "GSM4749822", "GSM4749823", "GSM4749824", "GSM4749825", "GSM4749826", "GSM4749827"], 
-"Periodontitis + Dyslipidemia": ["GSM4749828", "GSM4749829", "GSM4749830", "GSM4749831", "GSM4749832", "GSM4749833"], 
-"Periodontitis": ["GSM4749834", "GSM4749835", "GSM4749836", "GSM4749837", "GSM4749838", "GSM4749839"]}}

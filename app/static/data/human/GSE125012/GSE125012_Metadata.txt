@@ -1,9 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM3561119	CD271-negative 	Adipose-Derived Stem Cells (ASCs)
-GSM3561120	CD271-negative 	Adipose-Derived Stem Cells (ASCs)
-GSM3561121	CD271-negative 	Adipose-Derived Stem Cells (ASCs)
-GSM3561122	CD271-negative 	Adipose-Derived Stem Cells (ASCs)
-GSM3561123	 CD271-positive	Adipose-Derived Stem Cells (ASCs)
-GSM3561124	 CD271-positive	Adipose-Derived Stem Cells (ASCs)
-GSM3561125	 CD271-positive	Adipose-Derived Stem Cells (ASCs)
-GSM3561126	 CD271-positive	Adipose-Derived Stem Cells (ASCs)

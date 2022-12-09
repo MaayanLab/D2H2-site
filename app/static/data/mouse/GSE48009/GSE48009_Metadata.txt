@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM1164972	Control 	Mammary Alveolar Cells
-GSM1164973	Control 	Mammary Alveolar Cells
-GSM1164974	Control 	Mammary Alveolar Cells
-GSM1164975	 Insulin Receptor Diminished	Mammary Alveolar Cells
-GSM1164976	 Insulin Receptor Diminished	Mammary Alveolar Cells
-GSM1164977	 Insulin Receptor Diminished	Mammary Alveolar Cells

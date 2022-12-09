@@ -1,7 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM4586358	Control	human islets
-GSM4586359	Control	human islets
-GSM4586360	Control	human islets
-GSM4586361	SRI-37330 Treated	human islets
-GSM4586362	SRI-37330 Treated	human islets
-GSM4586363	SRI-37330 Treated	human islets

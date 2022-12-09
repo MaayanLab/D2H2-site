@@ -1,9 +1,0 @@
-Sample_geo_accession	Condition	Group
-GSM4391959	Glucose-Inhibited (GI-ERαvlVMH) 	Hypothalamic neurons
-GSM4391960	Glucose-Inhibited (GI-ERαvlVMH) 	Hypothalamic neurons
-GSM4391961	Glucose-Inhibited (GI-ERαvlVMH) 	Hypothalamic neurons
-GSM4391962	Glucose-Inhibited (GI-ERαvlVMH) 	Hypothalamic neurons
-GSM4391955	 Glucose-Excited (GE-ERαvlVMH) Neurons	Hypothalamic neurons
-GSM4391956	 Glucose-Excited (GE-ERαvlVMH) Neurons	Hypothalamic neurons
-GSM4391957	 Glucose-Excited (GE-ERαvlVMH) Neurons	Hypothalamic neurons
-GSM4391958	 Glucose-Excited (GE-ERαvlVMH) Neurons	Hypothalamic neurons

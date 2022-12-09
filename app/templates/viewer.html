@@ -16,7 +16,7 @@
     </div>
 </div>
 
-
+<div id='gse' style="display: none;">{{ geo_accession }}</div>
 <div class="container px-4 pb-5" style="min-height: 100%;">
 
     <!-- Title -->
@@ -281,7 +281,8 @@
                             with an array of downstream analysis and visualization tools. The pipeline includes:
                             PCA analysis, Clustergrammer interactive heatmap, library size analysis,
                             differential gene expression analysis, enrichment analysis, and L1000 small molecule
-                            search.</p>
+                            search.
+                        </p>
                         <img src="static/img/bulkdeg-thumbnail.png" alt="" class="img-fluid img-thumbnail">
                     </div>
                 </div>
@@ -334,10 +335,6 @@ el.addEventListener('change', function handleChange(event) {
 $("#viewer").addClass('active'); 
 $("#viewer").parents('li').addClass('active');
 
-// var boxplot_selectize = $gene_select[0].selectize;
-// boxplot_selectize.on('change', function(value) {
-//     boxplot();
-// })
 </script>
 
 

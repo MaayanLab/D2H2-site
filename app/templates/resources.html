@@ -19,3 +19,57 @@
 
 {% endblock %}
 </div>
+
+{% block footer %}
+<script>
+function createResourcesTable() {
+  document.getElementById("resources").innerHTML = "<div class='loader justify-content-center'></div>";
+  $.ajax({
+      url: "/getresources",
+      type: "POST",
+      data: {},
+      dataType: 'json',
+  }).done(function(response) {
+
+      const data = response['resources']
+
+      var headers = data[0]
+
+      var tabletext = "<table id='table-resources' class='styled-table'><thead><tr>"
+
+      headers.forEach(function(header) {
+          if (header != 'URL') {
+              tabletext += "<th>" + header + "</th>"
+          }     
+      });
+      tabletext += "</tr><tbody>"
+
+      for (var k = 1; k < data.length; k++) {
+          tabletext += "<tr><td><a href='" + data[k][2] +"' target='_blank'>"+data[k][0]+"</a></td><td>"+ data[k][1]+ "</td>"
+          if (data[k][3] != 'N/A') {
+              tabletext += "<td><a href='https://pubmed.ncbi.nlm.nih.gov/" + data[k][3] +"' target='_blank'>"+data[k][3]+"</a></td>"
+          } else {
+              tabletext += "<td>"+ data[k][3]+ "</td>"
+          }
+          tabletext += "<td>"+ data[k][4]+ "</td><td>" + data[k][5] + "</td></tr>"
+
+      }
+
+      tabletext += "</tbody></table>";
+
+
+      $(document).ready(function(){
+          document.getElementById("resources").innerHTML = tabletext;
+          table = $('#table-resources').DataTable({
+              dom: 'Bfrtip',
+              buttons: [
+                  'copy', {extend: 'csv', title: 'D2H2-resourceslist'}
+              ]
+          });
+      });
+  });
+}
+
+createResourcesTable()
+</script>
+{% endblock %}
