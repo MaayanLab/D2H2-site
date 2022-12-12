@@ -6,13 +6,28 @@ import pandas as pd
 # bokeh
 from bokeh.plotting import figure
 from bokeh.embed import json_item
-from bokeh.models import ColumnDataSource
+from bokeh.models import ColumnDataSource, NumeralTickFormatter
+from bokeh.transform import factor_cmap
+
+import seaborn as sns
+
 import matplotlib.cm as cm
 import matplotlib.colors as colors
 import numpy as np
+# Sklearn
+from sklearn.manifold import TSNE
+
+import qnorm
+from scipy.stats import zscore
+import scanpy as sc
+import s3fs
 
 
+base_url = 'd2h2/data'
+
+s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': 'https://minio.dev.maayanlab.cloud/'})
 ########################## QUERY ENRICHER ###############################
+
 
 @lru_cache()
 def query_enricher(gene):
@@ -645,5 +660,95 @@ def make_dge_plot(data, title, method):
     return json_item(plot, 'dge-plot')
 
 
+
+
+def log2_normalize(x, offset=1.):
+    return np.log2(x + offset)
+
+
+@lru_cache
+def bulk_vis(expr_df, meta_df):
+
+    meta_df = pd.read_csv(s3.open(meta_df), header=0, index_col=0, sep='\t')
+    expr_df = pd.read_csv(s3.open(expr_df), header=0, index_col=0, sep='\t')
+
+    var = expr_df.var(axis = 1, numeric_only = True)
+
+    var.sort_values(inplace=True, ascending=False)
+    idx = var.index.values[:2500]
+    expr_df = expr_df.loc[idx]
+
+    df_data_norm = log2_normalize(expr_df, offset=1)
+
+    df_data_norm = qnorm.quantile_normalize(df_data_norm, axis=0)
+
+    expr_df = pd.DataFrame(zscore(df_data_norm, axis=0), index=df_data_norm.index, columns=df_data_norm.columns)
+
+    # Compute label and pca based on Leiden Algorithm 
+    leiden_df = sc.AnnData(expr_df,dtype=np.float32)
+    sc.pp.pca(leiden_df)
+    sc.pp.neighbors(leiden_df) 
+    sc.tl.leiden(leiden_df, key_added="leiden")
+    df_y = meta_df
+    #df_y['leiden'] = list(leiden_df.obs['leiden'].values)
+
+    # Data transformation for 2D visualization
+    # Normalize transformed data to have a better visualization on 3D plot
+    leiden_df.obsm['X_pca'] = zscore(leiden_df.obsm['X_pca'],axis=0)
+
+    pca_data = pd.DataFrame({'x':leiden_df.obsm['X_pca'][:,0],
+                        'y':leiden_df.obsm['X_pca'][:,1],
+                        'z':leiden_df.obsm['X_pca'][:,2]})
+    pca_df = df_y.reset_index().join(pca_data).set_index('Sample_geo_accession')
+
+    tsne = TSNE(n_components=3)
+    leiden_df.obsm['X_tsne'] = tsne.fit_transform(leiden_df.obsm['X_pca'])
+    leiden_df.obsm['X_tsne'] = zscore(leiden_df.obsm['X_tsne'],axis=0)
+    tsne_data = pd.DataFrame({'x':leiden_df.obsm['X_tsne'][:,0],
+                        'y':leiden_df.obsm['X_tsne'][:,1],
+                        'z':leiden_df.obsm['X_tsne'][:,2]})
+    tsne_df = df_y.reset_index().join(tsne_data).set_index('Sample_geo_accession')
+    sc.tl.umap(leiden_df, n_components=3)
+    leiden_df.obsm['X_umap'] = zscore(leiden_df.obsm['X_umap'],axis=0)
+    umap_data = pd.DataFrame({'x':leiden_df.obsm['X_umap'][:,0],
+                        'y':leiden_df.obsm['X_umap'][:,1],
+                        'z':leiden_df.obsm['X_umap'][:,2]})
+    umap_df = df_y.reset_index().join(umap_data).set_index('Sample_geo_accession')
+
+    print('returned dfs')
+    return pca_df, tsne_df, umap_df
+
+def generate_colors(input_df, feature):
+    pal = sns.color_palette()
+    color = factor_cmap(feature, palette=pal.as_hex(), factors=np.array(input_df[feature].unique()))
+    return color 
+
+def interactive_circle_plot(input_df, x_lab, y_lab, feature, name):
+    input_df['legend'] = input_df[feature]
+    input_df = input_df.reset_index()
+    source = ColumnDataSource(input_df)
+    TOOLTIPS = [
+        ("Sample", '@Sample_geo_accession'),
+        ("(x,y)", "($x, $y)"),
+        ("Condition", '@Condition'),
+        ("Group", '@Group')
+    ]
+    n = input_df[feature].nunique()
+    point_size = 10 if input_df.shape[0] < 100 else 5
+    p = figure(height=500, width=800, tooltips=TOOLTIPS,x_axis_label=x_lab, y_axis_label=y_lab,sizing_mode="scale_width")
+
+    color = generate_colors(input_df, feature)
+    p1 = p.circle('x', 'y', size=point_size, source=source, legend_field='legend',fill_color= color, line_color=color)
+    p.add_layout(p.legend[0], 'right')
+
+    p.xgrid.visible = False
+    p.ygrid.visible = False
+    p.xaxis.minor_tick_line_color = None 
+    p.yaxis.minor_tick_line_color = None 
+    p.xaxis.axis_label_text_font_size = '12pt'
+    p.yaxis.axis_label_text_font_size = '12pt'
+    p.xaxis[0].formatter = NumeralTickFormatter(format="0.0")
+    p.yaxis[0].formatter = NumeralTickFormatter(format="0.0")
+    return json_item(p, name)
 
 

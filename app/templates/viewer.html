@@ -198,6 +198,44 @@
     </div>
 </div>
 
+<div class="row justify-content-center mb-5 mt-2">
+    <div class="col-7">
+        <div class="custom-col justify-content-center" style="overflow: visible">
+            <div class="h4 pl-2 mt-4 mb-4 text-center">Visualize Samples</div>
+            <div id="singleplots-loading" class="m-3"></div>
+            <div class="row justify-content-center mt-4 singleplotclass centered">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" data-bs-target="#umap" href="#umap">UMAP</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" data-bs-target="#tsne" href="#tsne">tSNE</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" data-bs-target="#pca" href="#pca">PCA</a>
+                    </li>
+                    </ul>
+                    
+                    <!-- Tab panes -->
+                <div class="h4 pl-2 mt-4 mb-4 text-center">
+                    <div class="tab-content">
+                        <div class="tab-pane container active" id="umap">
+                            <div id="umap-plot" class="centered"></div>
+                        </div>
+                        <div class="tab-pane container fade" id="tsne">
+                            <div id="tsne-plot" class="centered"></div>
+                        </div>
+                        <div class="tab-pane container fade" id="pca">
+                            <div id="pca-plot" class="centered"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <div class="row justify-content-center mb-3 mt-2">
     <div class="col-7">
@@ -334,42 +372,41 @@ el.addEventListener('change', function handleChange(event) {
 });
 
 
-/* var first_load = true;
+function generate_plots(){
+    document.getElementById("umap-plot").innerHTML = "";
+    document.getElementById("tsne-plot").innerHTML = "";
+    document.getElementById("pca-plot").innerHTML = "";
 
-var $gene_select = $('#gene-select').selectize({
-    preload: true,
-    valueField: 'gene_symbol',
-    labelField: 'gene_symbol',
-    searchField: 'gene_symbol',
-    render: {
-        option: function (item, escape) {
-            return '<div class="pt-2 light">'+item.gene_symbol+'</div>';
-        }
-    },
-    load: function (query, callback) {
-        // if (!query.length) return callback();
-        $.ajax({
-            url: $('#gene-select').attr('data-url-genes'),
-            dataType: 'json',
-            error: function () {
-                callback();
-            },
-            success: function (res) {
-                gene_list = res;
-                callback(res);
-                if (localStorage.hasOwnProperty("gene")) {
-                    var gene = localStorage['gene']
-                    localStorage.removeItem('gene');
-                    $gene_select[0].selectize.setValue(gene);
-                }  else if (first_load) {
-                    $gene_select[0].selectize.setValue(gene_list[0]['gene_symbol']);
-                    first_load = false;
-                } 
-            }
-        });
-    },
-    persist: true,
-}); */
+    document.getElementById("singleplots-loading").innerHTML = "<div class='loader justify-content-center'></div>";
+    // $('#singleplots-loading').addClass('loader justify-content-center');
+    var gse = document.getElementById("gse").innerText
+    var species = document.getElementById("species").innerText
+
+    console.log(gse)
+
+    var gsedata = JSON.stringify({'gse': gse, 'species': species});
+    $.ajax({
+        url: "api/bulksampvis",
+        contentType: 'application/json',
+        type: "POST",
+        dataType: 'json',
+        data: gsedata,
+    }).done(function(response) {
+
+        document.getElementById("singleplots-loading").innerHTML = "";
+        console.log('IN THE DONE OF AJAX for GENERATE PLOTS')
+        // $('#singleplots-loading').removeClass('loader justify-content-center');
+        var umap_plot = response['umapplot']
+        var pca_plot = response['pcaplot']
+        var tsne_plot = response['tsneplot']
+
+        window.Bokeh.embed.embed_item(umap_plot)
+        window.Bokeh.embed.embed_item(pca_plot)
+        window.Bokeh.embed.embed_item(tsne_plot)
+    });
+}
+
+generate_plots()
 
 </script>
 

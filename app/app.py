@@ -151,7 +151,7 @@ def getdiabetesenrich():
 @app.route('/dgeapi',  methods=['GET','POST'])
 def dge():
 	response_json = request.get_json()
-	print(response_json)
+
 	perturb = response_json['perturb']
 	control = response_json['control']
 	method = response_json['method']
@@ -480,15 +480,25 @@ def get_study_data():
 	data_dict = {'meta': selected_meta, 'expression': expression_data}
 
 	return data_dict
-	
-	
+
+@app.route('/api/bulksampvis',  methods=['GET', 'POST'])
+def visualize_samps():
+	response_json = request.get_json()
+	geo_accession = response_json['gse']
+	species = response_json['species']
+	meta_df = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	expr_df = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
+
+	pca_df, tsne_df, umap_df = bulk_vis(expr_df, meta_df)
+
+	pca_plot = interactive_circle_plot(pca_df, "PC-1", "PC-2", pca_df.columns[0], 'pca')
+
+	tsne_plot = interactive_circle_plot(tsne_df, "t-SNE-1", "t-SNE-2", tsne_df.columns[0], 'tsne')
+
+	umap_plot = interactive_circle_plot(umap_df, "UMAP-1", "UMAP-2", umap_df.columns[0], 'umap')
 
 
-
-
-
-
-
+	return json.dumps({'pcaplot': pca_plot, 'tsneplot': tsne_plot, 'umapplot': umap_plot})
 
 
 #######################################################
