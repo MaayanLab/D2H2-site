@@ -1311,7 +1311,8 @@ $(document).ready(function() {
 
         document.getElementById("dgea-loading").innerHTML = "<div class='loader justify-content-center'></div>";
 
-        var gse = document.getElementById("gse").val()
+        var gse = document.getElementById('gse').innerHTML
+        console.log(gse)
         var gsedata = JSON.stringify({'gse': gse, 'control': control_condition, 'perturb': perturb_condition, 'species': species});
 
 

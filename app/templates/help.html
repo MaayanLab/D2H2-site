@@ -15,7 +15,7 @@
   <div class="custom-col col-lg-7 justify-content-center mx-auto mt-2">
     <div class="row justify-content-center mt-3 mb-2 text-center">
       <p class="p-2">
-        D2H2 offers a variety of ways to explore our curated collection of human and mouse studies processed from GEO as well as query information about single genes and gene sets. Here there is information about each page on the site. You can select one the sections below or simply read through the page. We also offer a tutorial of the site through a video format as well.
+        D2H2 offers a variety of ways to explore the curated collection of human and mouse studies processed from GEO.
       </p>
     </div>
 
@@ -40,64 +40,70 @@
 
   </div>
   <div id="homehelp" class="custom-col col-lg-7 justify-content-center mx-auto mt-2 text-center">
-    <h4 class="m-3" style="font-weight:bolder;">Home </h4>
+    <h4 class="m-3" style="font-weight:bolder;">Functionality Available from the Home </h4>
     <p>
-      The home page features two modules that let you explore a single gene or a gene set in the context of diabetes-related signatures from our processed studies.
-      
+      The D2H2 home page features two modules that enable users to explore knowledge about a single gene or a gene set in the context of diabetes-related signatures from the processed GEO studies. 
     </p>
     <p>
-      For single gene queries against the diabetes-related signatures the module is located at the top right of the homepage:
+      This is the interface for single gene queries against the diabetes-related processed signatures collection:
     </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/singlegenethumb.png')}}" alt="" style="width: 400px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
-    After selecting your gene of interest and clicking on the generate plot button, an interactive volcano plot and corresponding tables will appear below the module:
+      After selecting or typing a gene name and clicking on the generate plot button, an interactive volcano plot and corresponding tables will appear below the module. See an example below:
     </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/singlegenevolcanothumb.png')}}" alt="" style="width: 400px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <img class="mb-3" src="{{url_for('static',filename= 'img/singlegenetabthumb.png')}}" alt="" style="width: 600px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
-      By hovering over the points in the box plot you can see for which signatures the entered gene was most significant. Clicking on the GSE number will take you to the study entry on GEO and clicking on the Gene Viewer button to the far right of the table will navigate you to our customized box plot viewer for the selected study and immediately display the expression for the originally inputted gene.
+      By hovering over the points in the volcano plot you can see for which signatures are most significant in up- or down-regulating the expression of the queried gene. Clicking on the GSE number in the table will take the user to the study entry on GEO, and clicking on the Gene Viewer button to the far right of the table will navigate the browser to a dedicated page for the study that contains a customized box plot viewer that displays the expression of the queried gene across samples and conditions in the selected study. 
     </p>
     <p>
-      Also, on the home page, we feature a module where you can query a gene set against a diabetes-related gene set library:
+      Also, on the home page, there is a module where users can query a gene set against a diabetes-related gene set library:
     </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/genesetthumb.png')}}" alt="" style="width: 400px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
-      Here once a gene set is submitted a table is produced with the most significantly enriched diabetes-related signatures:
+      Here once a gene set is submitted, a table is produced with the most significantly enriched diabetes-related signatures:
     </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/genesettabthumb.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
-      You can expand the overlapping gene list by clicking the white button in the second to last column. This will reveal a comma-separated list of the overlapping genes:
+      Users can expand the content of the table to see the overlapping genes by clicking the white button in the second to last column of the results table. This will reveal a comma-separated list of the overlapping genes as seen in the example below:
     </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/genesetrowthumb.png')}}" alt="" style="width: 600px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
-      You can further investigate these genes by submitting them to the <a href="{{url_for('geneset_home')}}">Gene Set Queries</a> page by clicking on the purple button or investigate a single gene by clicking on it in the list, which will open the gene in the <a href="{{url_for('singlegene_home')}}">Single Gene Queries</a> page.
+      Users can further investigate these genes by submitting them to the <a href="{{url_for('geneset_home')}}">Gene Set Queries</a>  by clicking on the purple button, or investigate a single gene by clicking it in the list. This click will open the <a href="{{url_for('singlegene_home')}}">Single Gene Queries</a> page with the clicked gene populating the various query fields on the page.
     </p>
   </div>
 
   <div id="geoviewerhelp" class="custom-col col-lg-7 justify-content-center mx-auto mt-4 text-center">
     <h4 class="m-3" style="font-weight:bolder;">Processed GEO Study Viewer</h4>
     <p>
-      You can navigate to the processed GEO study viewer in multiple ways. The first is as previously described by looking at the enriched signatures from an inputted single gene on the home page. The second is through the navigation bar at the top of site. If you click on 'Processed GEO Study Viewer' option in the navigation bar, you are presented with either opening our collection of mouse or human studies. The number of studies per species is also shown here:
+      Users can explore landing pages about each processed GEO study in D2H2. These landing pages can be accessed by looking at the returned top ranked signatures from a  single gene query available from the D2H2 home page. The second option to access these pages is through the navigation bar at the top of the site. Users can click on the navigation bar, and then be presented with the option to browse through the collection of mouse or human studies. The number of processed studies is shown per species as seen below.
     </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/geonavthumb.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
-      After selecting the desired species a table with the available studies to view will be displayed:
+      After selecting the species, a table with the available studies to browse and view will be displayed.
     </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/geotabthumb.png')}}" alt="" style="width: 600px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
-      Here you can see the GSE, which is linked to the applicable page on GEO as well as some additional information about each study. Clicking the 'Show Study Design' button will reveal text with additional information about the study and clicking the purple Gene Viewer button to the far right of the table will open our customized boxplot viewer for the chosen study.
+      Here users can see the study's GEO ID (GSE), which is linked to the applicable page on GEO, as well as additional information about each study. Clicking the show study design will expand the entry for the study to show additional information about the study design. Clicking the purple Gene Viewer button to the far right of the table will open the study landing page which contains several features to explore the processed data in more detail.  
     </p>
     <h6 class="mt-4">Customized Boxplot Viewer</h6>
-    <p>
-      In the customized boxplot viewer, you can view the expression of a single gene across the various conditions of the study. The autocomplete menu above the boxplot allows you to change the gene to view and the table to the right allows certain conditions to be toggled on and off.
-    </p>
+
     <img class="mb-3" src="{{url_for('static',filename= 'img/boxplottumb.png')}}" alt="" style="width: 700px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
-      Scrolling down the page you will see an additional module with a summary of the experiment as well as a differential gene expression module. After selecting a control and perturbation condition, differential gene expression analysis can be performed with limma, DESeq2, or edgeR natively on the site. When DESeq2 is selected, normalization options will appear. The analysis can take from thirty seconds to a few minutes, depending on how many samples are contained in the selected conditions. You can also compare two conditions in the Bulk-RNA-seq Appyter which includes additional analysis. 
+      At the top of each study's dedicated landing page there is a customized boxplot viewer. Users can view the expression of a single gene across the various conditions of the study. The autocomplete dropbox above the boxplot facilitates users to change the gene to view and the table to the right enables selecting and deselecting the conditions to visualize. 
+    </p>
+    <p>
+      Scrolling down, users can see a summary of the study, and mechanisms to perform differential gene expression analysis on the fly.
     </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/geodgethumb.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
-      After the analysis completes you will be presented with an interactive volcano plot, as pictured below:
+      After selecting a control and a perturbation condition, differential gene expression analysis can be performed with 
+      <a href="https://bioconductor.org/packages/release/bioc/html/limma.html" target="_blank">limma,</a> <a href="https://bioconductor.org/packages/release/bioc/html/DESeq2.html" target="_blank">DESeq2</a>, or <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html" target="_blank">edgeR</a> natively on the site. When DESeq2 is selected, normalization options will appear. 
+      The differential expression analysis can take somewhere between 30 seconds to a few minutes, depending on how many samples are contained in the selected conditions. 
+      Users can also compare two conditions in the Bulk-RNA-seq Appyter which includes additional analyses and visualizations. 
+    </p>
+    <p>
+      After the analysis completes, the user is presented with an interactive volcano plot, as shown below:
     </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/geovolcanothumb.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
@@ -105,21 +111,23 @@
     </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/geodgetabhumb.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
-      Clicking on any of the genes in the left-most column will open them in the <a href="{{url_for('singlegene_home')}}">Single Gene Queries</a> page. You may also submit a specified number of genes from the table that satisfies the inputted adjusted p-value threshold to the <a href="{{url_for('geneset_home')}}">Gene Set Queries</a> page. The table can be sorted in ascending or descending order by any of the columns by clicking on the column name. The whole table is also available for download from the CSV button on the top left of the table. 
+      Clicking on any of the genes in the left-most column in this table opens the <a href="{{url_for('singlegene_home')}}">Single Gene Queries</a> page with the gene name loaded into the various querying options on this web-page. 
+      Additionally, users can submit a specified number of genes from the table, that satisfy the selected adjusted p-value threshold, to the <a href="{{url_for('geneset_home')}}">Gene Set Queries</a> page. 
+      The table can be sorted in ascending or descending order, by clicking on any of the table columns headers.
+      The table is also available for download in CSV format by clicking the button at the top left of the table. 
     </p>
   </div>
 
   <div id="querieshelp" class="custom-col col-lg-7 justify-content-center mx-auto mt-4 text-center">
-    <h4 class="m-3" style="font-weight:bolder;">Gene Queries</h4>
+    <h4 class="m-3" style="font-weight:bolder;">Single Gene and Gene Set Query Pages</h4>
 
     <p>
-      We utilize a variety of tools in order to provide information about both single genes and gene sets. The currently available queries can be seen on the home page:
+      Several tools and search engines are available from D2H2 to provide information about single genes and gene sets. The currently available queries can be accessed from the home page:
     </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/queriesthumb.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
       Or after selecting one of the query pages from the navigation bar, the available queries will appear on the left of the page, any of which can be selected and you will be navigated to the corresponding module.
     </p>
-
     <img class="mb-3" src="{{url_for('static',filename= 'img/querytocthumb.png')}}" alt="" style="width: 400px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
       On the <a href="{{url_for('singlegene_home')}}">Single Gene Queries</a>  page, entering a gene will propagate in the input field for all the questions so information about the gene of interest can be investigated more quickly. Here is an example of a single gene query module. On the button, it says 'Start a new appyter in' Appyters. This conveys that this will open a new page in Appyters.
@@ -130,11 +138,11 @@
     </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/singlequerythumb2.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
-      For the gene set queries page, we provide a text box to paste line-separated valid Entrez gene symbols. Gene sets can also be uploaded as files in CSV, TSV, and TXT formats.
+      For the gene set queries page, a text box is provided to paste line-separated valid Entrez gene symbols. Gene sets can also be uploaded as files in CSV, TSV, and TXT formats.
     </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/genesetquerythumb.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
-      An example gene set query module is shown above. For the SigCom LINCS, you may also choose to submit an up-and-down gene set by selecting the purple button below the file entry field.
+      An example gene set query module is shown above. For the SigCom LINCS, the user may also choose to submit an up-and-down gene set by selecting the purple button below the file entry field.
     </p>
   </div>
 
@@ -147,7 +155,7 @@
     </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/customworkflowthumb.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
-      Here when a new gene is entered at the top of the workflow the rest will update automatically to display various information about the gene. You may also <a href="https://scg.maayanlab.cloud/" target="_blank">create your own</a> customized workflows.
+      Here when a new gene is entered at the top of the workflow the rest will update automatically to display various information about the gene. Users may also <a href="https://scg.maayanlab.cloud/" target="_blank">create your own</a> customized workflows.
     </p>
     <h6 class="mt-4">Resources</h6>
     <p>

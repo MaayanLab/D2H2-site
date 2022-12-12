@@ -457,10 +457,10 @@ def get_study_data():
 
 	
 
-	with open(metadata_file, 'r') as f:
+	with s3.open(metadata_file, 'r') as f:
 		meta_data = f.read()
 
-	with open(expression_file, 'r') as f:
+	with s3.open(expression_file, 'r') as f:
 		expression_data = f.read()
 
 	selected_conditions = []
@@ -480,6 +480,7 @@ def get_study_data():
 	data_dict = {'meta': selected_meta, 'expression': expression_data}
 
 	return data_dict
+	
 	
 
 
