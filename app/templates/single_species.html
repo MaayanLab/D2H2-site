@@ -41,7 +41,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for gse_id, geo_metadata in gse_metadata[species].items() %}
+            {% for gse_id, geo_metadata in gse_metadata_single[species].items() %}
             <tr>
                 <td>{{ geo_metadata.get('title', ['No Title'])[0].replace('RTN1 IS A NOVEL MEDIATOR FOR PROGRESSION OF
                     KIDNEY DISEASE', 'RTN1 Is A Novel Mediator For Progression of Kidney Disease')|safe}}</td>

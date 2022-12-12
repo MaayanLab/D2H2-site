@@ -8,9 +8,9 @@
     <div class="container viewer-title d-flex align-items-center justify-content-center text-center mt-4">
         <h4>
             <a class="brand px-3 py-3 col-12"
-                href="{{ gse_metadata[species][geo_accession].get('gse_link', ['#'])[0]|safe }}" target="_blank"
+                href="{{ gse_metadata_single[species][geo_accession].get('gse_link', ['#'])[0]|safe }}" target="_blank"
                 rel="noopener noreferrer" style="text-decoration: none">{{ geo_accession }}: {{
-                gse_metadata[species][geo_accession].get('title', ["Title Not Found"])[0]|safe}}
+                    gse_metadata_single[species][geo_accession].get('title', ["Title Not Found"])[0]|safe}}
             </a>
         </h4>
     </div>
@@ -32,10 +32,10 @@
             <div class="h4 pl-2 mt-5 mb-2">Description (from GEO)</div>
             <div class="custom-col p-2">
                 <p class="text-br-red font-weight-bold">Submission Date: <span class="font-weight-normal"
-                        style="color:#212529">{{ (gse_metadata[species][geo_accession].get('submission_date')[0][:-5]
-                        + ',' + gse_metadata[species][geo_accession].get('submission_date')[0][-5:])|safe }}</span>
+                        style="color:#212529">{{ (gse_metadata_single[species][geo_accession].get('submission_date')[0][:-5]
+                        + ',' + gse_metadata_single[species][geo_accession].get('submission_date')[0][-5:])|safe }}</span>
                 </p>
-                {% for paragraph in gse_metadata[species][geo_accession].get('summary', ['Summary Not Found']) %}
+                {% for paragraph in gse_metadata_single[species][geo_accession].get('summary', ['Summary Not Found']) %}
                 {% if loop.first %}
                 <p class="text-br-red font-weight-bold">Summary: <span class="font-weight-normal"
                         style="color:#212529">{{ paragraph|safe }}</span></p>
@@ -45,16 +45,16 @@
                 {% endfor %}
                 <p class="text-br-red font-weight-bold">GEO Accession ID: <a class="font-weight-normal"
                         style="color: #0e63c4"
-                        href="{{ gse_metadata[species][geo_accession].get('gse_link', ['#'])[0]|safe }}" target="_blank"
+                        href="{{ gse_metadata_single[species][geo_accession].get('gse_link', ['#'])[0]|safe }}" target="_blank"
                         rel="noopener noreferrer">{{
-                        gse_metadata[species][geo_accession].get('geo_accession', ['GEO Accession ID Not Found'])[0]
+                            gse_metadata_single[species][geo_accession].get('geo_accession', ['GEO Accession ID Not Found'])[0]
                         }}</a></p>
-                {% if gse_metadata[species][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed
+                {% if gse_metadata_single[species][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed
                 ID' %}
                 <p class="text-br-red font-weight-bold">PMID: <a class="font-weight-normal" style="color: #0e63c4"
-                        href="{{ gse_metadata[species][geo_accession].get('pubmed_link', ['#'])[0]|safe }}"
+                        href="{{ gse_metadata_single[species][geo_accession].get('pubmed_link', ['#'])[0]|safe }}"
                         target="_blank" rel="noopener noreferrer">{{
-                        gse_metadata[species][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe }}</a></p>
+                            gse_metadata_single[species][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe }}</a></p>
                 {% else %}
                 <p class="text-br-red font-weight-bold">PMID: <span class="font-weight-normal"
                         style="color:#212529">N/A</span></p>
@@ -80,12 +80,13 @@
             <!-- <div class="row justify-content-center text-center">
                 <button id="singleplots-button" class="btn btn-primary mx-auto mt-2 mb-3" style="width: 125px"
                     data-url-samp="{{ url_for('samples_api', geo_accession=geo_accession) }}"
-                    data-gse-id="{{ gse_metadata[species][geo_accession].get('geo_accession', ['No GSE ID'])[0] }}"
-                    data-gpl-id="{{ gse_metadata[species][geo_accession].get('cur_gpl', ['No GPL ID'])[0] }}">
+                    data-gse-id="{{ gse_metadata_single[species][geo_accession].get('geo_accession', ['No GSE ID'])[0] }}"
+                    data-gpl-id="{{ gse_metadata_single[species][geo_accession].get('cur_gpl', ['No GPL ID'])[0] }}">
                     Compute Visualizations
                 </button>
             </div> -->
-            <div id="singleplots-loading" class="m-3 mx-auto"></div>
+            <!-- <div id="singleplots-loading" class="m-3 mx-auto"></div> -->
+            <div id="singleplots-loading" class="m-3"></div>
             <div class="row justify-content-center mt-4 singleplotclass centered">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
@@ -125,9 +126,9 @@
             
                     <div class="col-12">
                         <div class="h4 pl-2 mb-4">
-                            {% if gse_metadata[species][geo_accession].get('type') == ['Expression profiling by array'] %}
+                            {% if gse_metadata_single[species][geo_accession].get('type') == ['Expression profiling by array'] %}
                             Microarray Data Explorer
-                            {% elif gse_metadata[species][geo_accession].get('type') == ['Expression profiling by high throughput
+                            {% elif gse_metadata_single[species][geo_accession].get('type') == ['Expression profiling by high throughput
                             sequencing'] %}
                             RNA-Seq Data Explorer
                             {% else %}
@@ -253,8 +254,8 @@
             <div class="row justify-content-center">
                 <button id="dge-button" class="btn btn-primary mx-auto mt-2 mb-3" style="width: 125px"
                     data-url-samp="{{ url_for('samples_api', geo_accession=geo_accession) }}"
-                    data-gse-id="{{ gse_metadata[species][geo_accession].get('geo_accession', ['No GSE ID'])[0] }}"
-                    data-gpl-id="{{ gse_metadata[species][geo_accession].get('cur_gpl', ['No GPL ID'])[0] }}">
+                    data-gse-id="{{ gse_metadata_single[species][geo_accession].get('geo_accession', ['No GSE ID'])[0] }}"
+                    data-gpl-id="{{ gse_metadata_single[species][geo_accession].get('cur_gpl', ['No GPL ID'])[0] }}">
                     Compute DGE
                 </button>
             </div>
@@ -265,7 +266,7 @@
             <div class="col-10 justify-content-center mx-auto" id="dge-table-area"></div>
     
 
-            {% if 'Expression profiling by high throughput sequencing' == gse_metadata[species][geo_accession].get('type')[0] %}
+            {% if 'Expression profiling by high throughput sequencing' == gse_metadata_single[species][geo_accession].get('type')[0] %}
             <div class="row justify-content-center mt-4">
                 
                 <div class="h4 pl-2 mt-4 mb-4 text-center">Single Cell RNA-seq Appyter</div>
@@ -287,8 +288,8 @@
             <div class="row justify-content-center">
                 <button id="dgea-button" class="btn btn-primary mx-auto mt-2 mb-3"
                     data-url-samp="{{ url_for('samples_api', geo_accession=geo_accession) }}"
-                    data-gse-id="{{ gse_metadata[species][geo_accession].get('geo_accession', ['No GSE ID'])[0] }}"
-                    data-gpl-id="{{ gse_metadata[species][geo_accession].get('cur_gpl', ['No GPL ID'])[0] }}">
+                    data-gse-id="{{ gse_metadata_single[species][geo_accession].get('geo_accession', ['No GSE ID'])[0] }}"
+                    data-gpl-id="{{ gse_metadata_single[species][geo_accession].get('cur_gpl', ['No GPL ID'])[0] }}">
                     Open in <img src="{{ url_for('static', filename='img/appyters_logo.svg')}}" style="width: 100px;">
                 </button>
                 
@@ -329,38 +330,6 @@ el.addEventListener('change', function handleChange(event) {
 $("#singleviewer").addClass('active'); 
 $("#singleviewer").parents('li').addClass('active');
 
-// function generate_single_plots(){
-//     document.getElementById("umap-plot").innerHTML = "";
-//     document.getElementById("tsne-plot").innerHTML = "";
-//     document.getElementById("pca-plot").innerHTML = "";
-//     document.getElementById("singleplots-loading").innerHTML = "<div class='loader justify-content-center'></div>";
-//     var gse = document.getElementById("singlegse").innerText
-//     var species = document.getElementById("species").innerText
-//     var condition_group = document.getElementById("methodsingle").value
-//     console.log(gse)
-//     console.log(condition_group)
-//     var gsedata = JSON.stringify({'gse': gse, 'species': species, 'conditiongroup':condition_group});
-//     $.ajax({
-//         url: "/singleplots",
-//         contentType: 'application/json',
-//         type: "POST",
-//         dataType: 'json',
-//         data: gsedata
-//     }).done(async function(response) {
-//         document.getElementById("singleplots-loading").innerHTML = "";
-//         var umap_plot = response['umapplot']
-//         var pca_plot = response['pcaplot']
-//         var tsne_plot = response['tsneplot']
-
-//         window.Bokeh.embed.embed_item(umap_plot)
-//         window.Bokeh.embed.embed_item(pca_plot)
-//         window.Bokeh.embed.embed_item(tsne_plot)
-
-
-//     });
-//     $("#boxplot").attr("data-url-plot", `/api/plot_single/${gse}/${condition_group}`)
-//     console.log($("#boxplot").attr("data-url-plot"))
-// }
 
 generate_single_plots()
 const single_substudy = document.getElementById('methodsingle');

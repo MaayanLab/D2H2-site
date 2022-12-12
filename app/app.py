@@ -19,8 +19,6 @@ import anndata
 import scanpy as sc
 from sklearn.preprocessing import StandardScaler
 
-create_meta_single = True
-#### base_url = 'static/data' ####
 
 base_url = 'd2h2/data'
 
@@ -177,24 +175,25 @@ def dge():
 	return json.dumps({'table': string_data, 'plot': jsonplot})
 
 #This function makes the umap tsne and pca plots for the single cell data based off the precomputed coordinates for these plots. 
+#It is called in the generate_single_plots within the main.js file. 
 @app.route('/singleplots',  methods=['GET','POST'])
 def makesingleplots():
-	
 	response_json = request.get_json()
 	print(response_json)
 	gse = response_json['gse']
 	species = response_json['species']
 	condition_group = response_json['conditiongroup']
-	metajson = open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=gse, base_url=base_url),'r')
+	metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=gse, base_url=base_url),'r')
 	metadict = json.load(metajson)
 	base_expression_filename = metadict[condition_group]['filename']
 	expr_file = '{base_url}/{species}/{gse}/{file}'.format(species=species, gse=gse, base_url=base_url, file=base_expression_filename)
-	#The data is originally in genesxcells so transpose to make it cellsx genes
-	adata = anndata.read_h5ad(expr_file).T
+	#The data is originally in genesxcells so transpose to make it cells x genes
+	adata = anndata.read_h5ad(s3.open(expr_file)).T
 	values_dict = dict()
 	values_dict["Cluster"] = adata.obs["leiden"].values
 	category_list_dict = dict()
 	category_list_dict["Cluster"] = list(sorted(adata.obs["leiden"].unique()))
+	#Each of the values for the umap, tsne, and pca were precomputed so obtain them from the anndata object. 
 	umap_df = pd.DataFrame(adata.obsm['X_umap'])
 	umap_df.columns = ['x', 'y']
 	# scaler = StandardScaler().fit(adata.obsm['X_pca'][:,:2])
@@ -211,23 +210,23 @@ def makesingleplots():
 
 	return json.dumps({'umapplot': jsonplotumap, 'tsneplot':jsonplottsne, 'pcaplot':jsonplotpca })
 
-#This function gets the different computed leiden clusters from the expression matrix and returns it as json dict for the cluster table on the single viewer page. 
+#This function gets the different computed leiden clusters from the expression matrix and returns it as json dict for the cluster table on the single viewer page that is called when a new condition-profile is clicked.
 @app.route('/getclusterdata', methods=['GET', 'POST'])
 def getclusterinfo():
-	print("IN CLUSTER DATA")
+	print("IN GET CLUSTER DATA")
+	#The json below holds information about the conditiongroup that we are looking at for this data as well the specific species. 
 	response_json = request.get_json()
 	print(response_json)
 	gse = response_json['gse']
 	species = response_json['species']
 	condition_group = response_json['conditiongroup']
-	metajson = open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=gse, base_url=base_url),'r')
+	metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=gse, base_url=base_url),'r')
 	metadict = json.load(metajson)
 	base_expression_filename = metadict[condition_group]['filename']
-	# expr_file = '{base_url}/{species}/{gse}/{file}'.format(species=species, gse=gse, base_url=base_url, file=base_expression_filename)
 	expression_file = base_url + '/' + species + '/' + gse + '/' + base_expression_filename
-	adata = anndata.read_h5ad(expression_file).T
+	#Transposing to get the data with cells as rows and genes as columns. 
+	adata = anndata.read_h5ad(s3.open(expression_file)).T
 	classes = sorted(adata.obs["leiden"].unique().tolist())
-	print(adata.obs["leiden"].value_counts().to_dict())
 	classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
 	metadata_dict_counts = adata.obs["leiden"].value_counts().to_dict()
 	print(classes)
@@ -322,20 +321,6 @@ def sort_studies(species_mapping):
 	return species_url_mapping
 
 
-#For bulk and microarray studies
-url_to_folder = {"human": "human", "mouse": "mouse"}
-folder_to_url = {folder:url for url, folder in url_to_folder.items()}
-
-
-#For single cell studies
-url_to_folder_single = {"human_single": "human_single", "mouse_single": "mouse_single"}
-folder_to_url_single = {folder:url for url, folder in url_to_folder_single.items()}
-
-
-#Maps all the studies to each species type in the data folder
-species_mapping = species_to_studies(base_url)
-species_mapping = sort_studies(species_mapping)
-print(species_mapping.keys())
 
 
 
@@ -355,21 +340,6 @@ folder_to_url = {folder:url for url, folder in url_to_folder.items()}
 
 species_mapping = {'human': human_gses, 'mouse': mouse_gses}
 
-
-#Creating the metadata for the single files only here. Making it separate from the above in case of additions as the project continues.
-if create_meta_single:
-	gse_metadata_single = {}
-	for species, geo_accession_ids in species_mapping.items():
-		if species in url_to_folder_single:
-			gse_metadata_single[species] = {}
-			for geo_accession in geo_accession_ids:
-				gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
-	with open('static/searchdata/metadatasingle-v1.pickle', 'wb') as f:
-		pickle.dump(gse_metadata_single, f, protocol=pickle.HIGHEST_PROTOCOL)
-else:
-	with open('static/searchdata/metadatasingle-v1.pickle', 'rb') as f:	
-		gse_metadata_single = pickle.load(f)
-
 #Bulk and microarray study to species name dictionary
 
 if numstudies[0] == len(human_gses) and numstudies[1] == len(mouse_gses):
@@ -385,9 +355,42 @@ if numstudies[0] == len(human_gses) and numstudies[1] == len(mouse_gses):
 
 study_to_species = {study:species_name for species_name, studies_metadata in gse_metadata.items() for study in studies_metadata.keys()}
 
+######### SINGLE CELL METADATA CREATION BASED OFF ABOVE FOR BULK AND MICROARRAY#####
+create_meta_single = False
+mouse_singlegses = list(s3.walk('d2h2/data/mouse_single', maxdepth=1))[0][1]
+human_singlegses = list(s3.walk('d2h2/data/human_single', maxdepth=1))[0][1]
+
+#For single cell studies
+url_to_folder_single = {"human_single": "human_single", "mouse_single": "mouse_single"}
+folder_to_url_single = {folder:url for url, folder in url_to_folder_single.items()}
+species_mapping_single = {'human_single': human_singlegses, 'mouse_single': mouse_singlegses}
+#Creating the metadata for the single files only here. Making it separate from the above in case of additions/changes as the project continues.
+if create_meta_single:
+	gse_metadata_single = {}
+	for species, geo_accession_ids in species_mapping_single.items():
+		if species in url_to_folder_single:
+			gse_metadata_single[species] = {}
+			for geo_accession in geo_accession_ids:
+				gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
+	with open('static/searchdata/metadatasingle-v1.pickle', 'wb') as f:
+		pickle.dump(gse_metadata_single, f, protocol=pickle.HIGHEST_PROTOCOL)
+else:
+	with open('static/searchdata/metadatasingle-v1.pickle', 'rb') as f:	
+		gse_metadata_single = pickle.load(f)
+
+# numstudies_single= [len(gse_metadata_single['human_single'].keys()), len(gse_metadata_single['mouse_single'].keys())]
+
+# if numstudies_single[0] != len(human_singlegses) and numstudies_single[1] != len(mouse_singlegses):
+# 	for species, geo_accession_ids in species_mapping_single.items():
+# 		for geo_accession in geo_accession_ids:
+# 			if geo_accession not in gse_metadata_single[species]:
+# 				gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
+# 	with open('static/searchdata/metadatasingle-v1.pickle', 'wb') as f:
+# 		pickle.dump(gse_metadata_single, f, protocol=pickle.HIGHEST_PROTOCOL)
+	
 #Single cell studies from study to the species name
 study_to_species_single = {study:species_name for species_name, studies_metadata in gse_metadata_single.items() for study in studies_metadata.keys()}
-print(study_to_species_single)
+
 
 @app.route("/<species_or_gse>", methods=['GET', 'POST'])
 def species_or_viewerpg(species_or_gse):
@@ -397,7 +400,7 @@ def species_or_viewerpg(species_or_gse):
 		return render_template('species.html', species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, num_studies= len(gse_metadata[species_or_gse]))
 	#Checking for the single cell studies and loading that summary page
 	elif species_or_gse in gse_metadata_single:
-		return render_template('single_species.html', species=species_or_gse, gse_metadata=gse_metadata_single, species_mapping=species_mapping)
+		return render_template('single_species.html', species=species_or_gse, gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, gse_metadata=gse_metadata)
 	# test if gsea
 	elif species_or_gse in study_to_species:
 		geo_accession = species_or_gse
@@ -414,12 +417,12 @@ def species_or_viewerpg(species_or_gse):
 		return render_template('viewer.html', metadata_dict=metadata_dict, metadata_dict_samples=sample_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping)
 	#Check for the single study individual viewer page
 	elif species_or_gse in study_to_species_single:
-
 		geo_accession = species_or_gse
 		#Will be human_single or mouse_single not just species name
 		species = study_to_species_single[geo_accession]
 		species_folder = url_to_folder_single[species]
-		meta_file = open(base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_metasep.json', 'r')
+		#The metadata json is in form with key being the condition/profile and the value is a dictionary storing the file name and list of gsms that are part of that condition. 
+		meta_file = s3.open(base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_metasep.json', 'r')
 		metadata_json = json.load(meta_file)
 		print(metadata_json)
 		list_of_conditions = []
@@ -431,18 +434,14 @@ def species_or_viewerpg(species_or_gse):
 		print(expression_base_name)
 		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + expression_base_name
 		# expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.h5'
-		adata = anndata.read_h5ad(expression_file).T
+		adata = anndata.read_h5ad(s3.open(expression_file)).T
 		classes = sorted(adata.obs["leiden"].unique().tolist())
-		print(adata.obs["leiden"].value_counts().to_dict())
+		#Stores the list of cluster names. 
 		classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
-		print(classes)
-		leiden_vals = adata.obs["leiden"].tolist()
-		cell_names = adata.obs['column_names'].tolist()
-		print(len(leiden_vals))
-		print(len(cell_names))
+		#Stores the number of of cells correlated to each cluster. 
 		metadata_dict_counts = adata.obs["leiden"].value_counts().to_dict()
 		meta_file.close()
-		return render_template('single_viewer.html', study_conditions = list_of_conditions, metadata_dict=classes, metadata_dict_samples=metadata_dict_counts, geo_accession=geo_accession, gse_metadata=gse_metadata_single, species=species, species_mapping=species_mapping)
+		return render_template('single_viewer.html', study_conditions = list_of_conditions, metadata_dict=classes, metadata_dict_samples=metadata_dict_counts, geo_accession=geo_accession, gse_metadata_single=gse_metadata_single, species=species, species_mapping=species_mapping, gse_metadata=gse_metadata)
 	else:
 		return render_template('error.html', gse_metadata=gse_metadata, species_mapping=species_mapping)
 
@@ -475,7 +474,6 @@ def genes_api(geo_accession):
 		adata = anndata.read_h5ad(expression_file)
 		adata_df = adata.to_df()
 		print([{'gene_symbol': x} for x in adata_df.index][:10])
-		print(len([{'gene_symbol': x} for x in adata_df.index]))
 		genes_json = json.dumps([{'gene_symbol': x} for x in adata_df.index])
 		#go into anndata and get the genes for each human single
 	elif geo_accession == 'combined':
@@ -508,31 +506,17 @@ def genes_api_single(geo_accession, condition):
 	print("IN SINGLE API GENES")
 	print(geo_accession)
 	print(condition)
-	if geo_accession in study_to_species_single:
-		species_folder = study_to_species_single[geo_accession]
-		meta_file = open(base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_metasep.json', 'r')
-		metadata_json = json.load(meta_file)
-		expression_base_name = metadata_json[condition]['filename']
-		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + expression_base_name
-		adata = anndata.read_h5ad(expression_file)
-		adata_df = adata.to_df()
-		print([{'gene_symbol': x} for x in adata_df.index][:10])
-		print(len([{'gene_symbol': x} for x in adata_df.index]))
-		genes_json = json.dumps([{'gene_symbol': x} for x in adata_df.index])
-		print('IN IF FUNCTION')
-		#go into anndata and get the genes for each human single
-	else:
-		print('hello')
-		species = study_to_species[geo_accession]
-		species_folder = url_to_folder[species]
+	species_folder = study_to_species_single[geo_accession]
+	meta_file = s3.open(base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_metasep.json', 'r')
+	metadata_json = json.load(meta_file)
+	expression_base_name = metadata_json[condition]['filename']
+	expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + expression_base_name
+	adata = anndata.read_h5ad(s3.open(expression_file))
+	adata_df = adata.to_df()
+	print([{'gene_symbol': x} for x in adata_df.index][:10])
+	genes_json = json.dumps([{'gene_symbol': x} for x in adata_df.index])
+	#go into anndata and get the genes for each human single
 
-		# Get genes json
-		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
-		expression_dataframe = pd.read_csv(expression_file, index_col = 0, sep='\t')
-
-		genes_json = json.dumps([{'gene_symbol': x} for x in expression_dataframe.index])
-
-	# Return
 	return genes_json
 #############################################
 ########## 2. Plot
@@ -555,13 +539,12 @@ def plot_api_single(geo_accession, condition):
 	print("IN PLOT AP SINGLE")
 	print(condition)
 	assay = gse_metadata_single[species][geo_accession].get('type')[0]
-	meta_file = open(base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_metasep.json', 'r')
+	meta_file = s3.open(base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_metasep.json', 'r')
 	metadata_json = json.load(meta_file)
 	base_expression_name = metadata_json[condition]['filename']
 	expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + base_expression_name
-	expression_dataframe = anndata.read_h5ad(expression_file).raw.to_adata().to_df()
-	print(anndata.read_h5ad(expression_file).raw.to_adata().to_df().max())
-	adata = anndata.read_h5ad(expression_file).T
+	expression_dataframe = anndata.read_h5ad(s3.open(expression_file)).raw.to_adata().to_df()
+	adata = anndata.read_h5ad(s3.open(expression_file)).T
 	leiden_vals = adata.obs["leiden"].tolist()
 	cell_names = adata.obs['column_names'].tolist()
 	df_dict = {'Sample_geo_accession':cell_names, 'Condition':leiden_vals}
@@ -575,8 +558,6 @@ def plot_api_single(geo_accession, condition):
 
 	# Create a new dataframe that maps each sample to its condition
 	melted_dataframe = expression_dataframe.loc[gene_symbol].rename('expr_vals').rename_axis('Sample_geo_accession').reset_index().merge(metadata_dataframe, on="Sample_geo_accession")
-	print(melted_dataframe.shape)
-	print(melted_dataframe.head())
 
 	# Get plot dataframe
 	plot_dataframe = melted_dataframe.groupby('Condition')['expr_vals'].agg([np.mean, np.std, lambda x: list(x)])#.rename(columns={'<lambda>': 'points'})#.reindex(conditions)
@@ -584,7 +565,6 @@ def plot_api_single(geo_accession, condition):
 	print(plot_dataframe)
 	plot_dataframe = plot_dataframe.rename(columns={plot_dataframe.columns[-1]: 'points'})
 	print(plot_dataframe)
-	# print(plot_dataframe)
 
 	# Initialize figure
 	fig = go.Figure()
@@ -654,7 +634,6 @@ def plot_api(geo_accession):
 	print(plot_dataframe)
 	plot_dataframe = plot_dataframe.rename(columns={plot_dataframe.columns[-1]: 'points'})
 	print(plot_dataframe)
-	# print(plot_dataframe)
 
 	# Initialize figure
 	fig = go.Figure()

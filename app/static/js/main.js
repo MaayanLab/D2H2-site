@@ -1,9 +1,12 @@
+
 // This function will generate the umap, tsne, and pca plots for each indivdual study for a specific condition
 function generate_single_plots(){
     document.getElementById("umap-plot").innerHTML = "";
     document.getElementById("tsne-plot").innerHTML = "";
     document.getElementById("pca-plot").innerHTML = "";
+    console.log('IN GENERATE PLOTS')
     document.getElementById("singleplots-loading").innerHTML = "<div class='loader justify-content-center'></div>";
+    // $('#singleplots-loading').addClass('loader justify-content-center');
     var gse = document.getElementById("singlegse").innerText
     var species = document.getElementById("species").innerText
     var condition_group = document.getElementById("methodsingle").value
@@ -18,6 +21,8 @@ function generate_single_plots(){
         data: gsedata,
     }).done(function(response) {
         document.getElementById("singleplots-loading").innerHTML = "";
+        console.log('IN THE DONE OF AJAX for GENERATE PLOTS')
+        // $('#singleplots-loading').removeClass('loader justify-content-center');
         var umap_plot = response['umapplot']
         var pca_plot = response['pcaplot']
         var tsne_plot = response['tsneplot']
