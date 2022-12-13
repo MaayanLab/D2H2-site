@@ -224,7 +224,7 @@
           <div class="justify-content-center row text-center mt-1">
             <a id="diabetesEnrichr-query">
               <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Submit to Enrichr
-                <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
+                <img src="{{ url_for('static', filename='img/enrichrlogo.png') }}" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
               </button>
             </a>
           </div>
@@ -264,7 +264,7 @@
   function createTweetsTable() {
     document.getElementById("tweets-res").innerHTML = "<div class='loader justify-content-center'></div>";
     $.ajax({
-        url: "/gettweets",
+        url: "gettweets",
         type: "POST",
         data: {},
         dataType: 'json',

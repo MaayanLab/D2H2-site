@@ -14,7 +14,15 @@ import matplotlib.colors as colors
 import numpy as np
 import anndata
 import s3fs
+<<<<<<< Updated upstream
 import h5py
+=======
+import os
+
+
+base_url = os.environ.get('BASE_URL')
+
+>>>>>>> Stashed changes
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': 'https://minio.dev.maayanlab.cloud/'})
 
 ########################## QUERY ENRICHER ###############################
@@ -674,6 +682,7 @@ def make_dge_plot(data, title, method, id_plot='dge-plot'):
     plot.title.align = 'center'
     plot.title.text_font_size = '14px'
     print("made_plot")
+<<<<<<< Updated upstream
     return json_item(plot, id_plot)
 import re
 import hashlib
@@ -745,6 +754,38 @@ def make_single_visialization_plot(plot_df, values_dict,type, option_list,sample
     #     color_bar = ColorBar(color_mapper=color_mapper, label_standoff=12)
     #     plot.add_layout(color_bar, 'right')
     #     plot.scatter('x', 'y', size=node_size,  source=source, color={'field': 'values', 'transform': color_mapper})
+=======
+    return json_item(plot, 'dge-plot')
+
+
+
+
+def log2_normalize(x, offset=1.):
+    return np.log2(x + offset)
+
+
+@lru_cache()
+def bulk_vis(expr_df, meta_df):
+
+    meta_df = pd.read_csv(s3.open(meta_df), header=0, index_col=0, sep='\t')
+    expr_df = pd.read_csv(s3.open(expr_df), header=0, index_col=0, sep='\t')
+    print(expr_df)
+    expr_df.replace([np.inf, -np.inf],np.nan, inplace=True)
+    expr_df = expr_df.dropna()
+
+   
+    expr_df = expr_df.transpose()
+    expr_df = expr_df.dropna(axis=1)
+
+
+    df_data_norm = log2_normalize(expr_df, offset=1)
+
+    df_data_norm = quantile_normalize(df_data_norm, axis=0)
+
+    #df_data_norm.replace([np.inf], np.nan, inplace=True)
+    #df_data_norm = df_data_norm.dropna()
+    #var = df_data_norm.var(axis = 0, numeric_only = True)
+>>>>>>> Stashed changes
     
     if additional_info is not None:
             tooltips = [

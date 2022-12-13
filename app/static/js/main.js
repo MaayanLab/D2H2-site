@@ -116,7 +116,8 @@ function submit_geneset(genelist, sigs) {
 
 
     const currURL = window.location.href.split('/')
-    var url = currURL.filter(x => !x.includes('GSE')).join('/') + '/geneset/' + genes
+    localStorage.setItem('geneset', genes)
+    var url = currURL.filter(x => !x.includes('GSE')).join('/') + '/geneset'
     window.open(url, '_blank')
 }
 
@@ -145,6 +146,10 @@ function submit_geneset_home(genelist, sigs, descset) {
     localStorage.setItem('descset', `${descset}-${dir}-${numgenes}`)
     var home = window.location.href.split('/').filter(x => !x.includes('GSE')).join('/')
     window.open(home, '_blank')
+}
+
+function setGenes(genes) {
+    localStorage.setItem('geneset', genes)
 }
 
 function clear_dge() {
@@ -336,7 +341,7 @@ function fillSetExample(geneset) {
 
 function fillSet(id, descid, count_id) {
     $.ajax({
-        url: "/getexample",
+        url: "getexample",
         type: "POST",
         data: {},
         dataType: 'json',
@@ -497,7 +502,7 @@ $(document).ready(function() {
             jsonData["gene"] = gene;
             jsonData["species"] = species;
             $.ajax({
-                url: "/api/volcano",
+                url: "api/volcano",
                 type: "POST",
                 dataType: 'json',          
                 data: jsonData,
@@ -672,7 +677,7 @@ $(document).ready(function() {
         document.getElementById("enrich-res").innerHTML = "<div class='loader' style='left: 48%; position: relative;'></div>"
 
         $.ajax({
-            url: "/getdiabetesenrich",
+            url: "getdiabetesenrich",
             type: "POST",
             data: {genelist:inputvalue, description: desc}
         }).done(function(response) {
@@ -695,7 +700,7 @@ $(document).ready(function() {
             for (var k = 0; k < data.length; k++) {
                 tabletext += "<tr><td>" + data[k][0] + "</td><td>"+ data[k][1] +"</td><td>" + Number(data[k][2]).toPrecision(4) + "</td><td>"+Number(data[k][3]).toPrecision(4) +"</td><td>" + Number(data[k][4]).toPrecision(4) + "</td><td>"
                 var url = currURL.join('/') + 'singlegene'
-                var api2 = currURL.join('/') + 'geneset/'
+                var api2 = currURL.join('/') + 'geneset'
                 var gene_arr = data[k][5].map(g => `<a href='${url}' onclick="setGene('${g}')" target='_blank'>${g}<a/>`);
     
                 tabletext += `<button class="btn-custom btn-group-sm btn-collapse collapsed d-flex align-items-start text-left"
@@ -705,7 +710,7 @@ $(document).ready(function() {
                 </button>
                     <div class="collapse" id="genesoverlap-${data[k][0]}">
                         ${gene_arr.join(", ")}
-                        <a href="${api2}${data[k][5].join('&')}" target='_blank'>
+                        <a href="${api2}" onclick="setGenes('${data[k][5].join('&')}')" target='_blank'>
                             <button class="btn btn-primary btn-group-sm d-flex align-items-start text-center" style="font-size: small;">
                                 Submit to Gene Set Queries
                             </button>
@@ -743,7 +748,7 @@ $(document).ready(function() {
         document.getElementById("gwas-res").innerHTML = "<div class='loader' style='left: 48%; position: relative;'></div>"
 
         $.ajax({
-            url: "/getgwas",
+            url: "getgwas",
             type: "POST",
             data: {gene:inputvalue}
         }).done(function(response) {
@@ -852,7 +857,7 @@ $(document).ready(function() {
         document.getElementById("komp-res").innerHTML = "<div class='loader' style='left: 48%; position: relative;'></div>"
 
         $.ajax({
-            url: "/getkomp",
+            url: "getkomp",
             type: "POST",
             data: {gene:inputvalue}
         }).done(function(response) {
@@ -900,7 +905,7 @@ $(document).ready(function() {
         document.getElementById("tf-res").innerHTML = "<div class='loader' style='left: 48%; position: relative;'></div>"
 
         $.ajax({
-            url: "/gettfs",
+            url: "gettfs",
             type: "POST",
             data: {gene:inputvalue}
         }).done(function(response) {
@@ -1283,7 +1288,7 @@ $(document).ready(function() {
             var genes = JSON.stringify({'genes': [inputvalue]});
 
             $.ajax({
-                url: "/getsigcom",
+                url: "getsigcom",
                 contentType: 'application/json',
                 type: "POST",
                 dataType: 'json',
@@ -1326,7 +1331,7 @@ $(document).ready(function() {
             var genes = JSON.stringify({'genes': [inputvalueUp, inputvalueDown]});
 
             $.ajax({
-                url: "/getsigcom",
+                url: "getsigcom",
                 contentType: 'application/json',
                 type: "POST",
                 dataType: 'json',
@@ -1393,7 +1398,7 @@ $(document).ready(function() {
 
         
         $.ajax({
-            url: "/api/data",
+            url: "api/data",
             contentType: 'application/json',
             type: "POST",
             dataType: 'json',
@@ -1472,7 +1477,7 @@ $(document).ready(function() {
         var gsedata = JSON.stringify({'gse': gse, 'control': control_condition, 'perturb': perturb_condition, 'method': method, 'species': species, 'norms': norms});
         console.log(gsedata)
         $.ajax({
-            url: "/dgeapi",
+            url: "dgeapi",
             contentType: 'application/json',
             type: "POST",
             dataType: 'json',

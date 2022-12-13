@@ -20,51 +20,50 @@ import scanpy as sc
 from sklearn.preprocessing import StandardScaler
 
 
-base_url = 'd2h2/data'
+base_url = os.environ.get('BASE_URL')
+ROOT_PATH = os.environ.get('ROOT_PATH', '/lncHUB2/')
+BASE_PATH = os.environ.get('BASE_PATH', 'maayanlab.cloud')
 
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': 'https://minio.dev.maayanlab.cloud/'})
 
-app = Flask(__name__)
+
+app = Flask(__name__, static_url_path=ROOT_PATH + 'static')
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route(ROOT_PATH, methods=['GET', 'POST'])
 def home():
 	update_tweets_table(datetime.datetime.date)
-	return render_template('home.html', gse_metadata=gse_metadata, numstudies=[len(gse_metadata['human'].keys()), len(gse_metadata['mouse'].keys())])
+	return render_template('home.html', base_path=BASE_PATH, gse_metadata=gse_metadata, numstudies=[len(gse_metadata['human'].keys()), len(gse_metadata['mouse'].keys())])
 
-@app.route("/about", methods=['GET', 'POST'])
+@app.route(f"{ROOT_PATH}/about", methods=['GET', 'POST'])
 def about():
-    return render_template("about.html", gse_metadata=gse_metadata)
+    return render_template("about.html", base_path=BASE_PATH, gse_metadata=gse_metadata)
 
-@app.route("/help", methods=['GET', 'POST'])
+@app.route(f"{ROOT_PATH}/help", methods=['GET', 'POST'])
 def help():
-    return render_template("help.html", gse_metadata=gse_metadata)
+    return render_template("help.html", base_path=BASE_PATH, gse_metadata=gse_metadata)
 
-@app.route("/singlegene", methods=['GET', 'POST'])
+@app.route(f"{ROOT_PATH}/singlegene", methods=['GET', 'POST'])
 def singlegene_home():
-    return render_template("singlegene.html", gse_metadata=gse_metadata)
+    return render_template("singlegene.html", base_path=BASE_PATH, gse_metadata=gse_metadata)
 
-@app.route("/geneset", methods=['GET', 'POST'])
+@app.route(f"{ROOT_PATH}/geneset", methods=['GET', 'POST'])
 def geneset_home():
-    return render_template("geneset.html", gse_metadata=gse_metadata)
+    return render_template("geneset.html", base_path=BASE_PATH, gse_metadata=gse_metadata)
 
-@app.route("/geneset/<geneset>", methods=['GET', 'POST'])
-def geneset(geneset):
-    return render_template("geneset.html", genes=geneset, gse_metadata=gse_metadata)
-
-@app.route('/scg', methods=['GET', 'POST'])
+@app.route(f'{ROOT_PATH}/scg', methods=['GET', 'POST'])
 def scg():
-	return render_template('scg.html', gse_metadata=gse_metadata)
+	return render_template('scg.html', base_path=BASE_PATH, gse_metadata=gse_metadata)
 
-@app.route('/resources', methods=['GET', 'POST'])
+@app.route(f'{ROOT_PATH}/resources', methods=['GET', 'POST'])
 def resources():
-	return render_template('resources.html', gse_metadata=gse_metadata)
+	return render_template('resources.html', base_path=BASE_PATH, gse_metadata=gse_metadata)
 
-@app.route('/downloads', methods=['GET', 'POST'])
+@app.route(f'{ROOT_PATH}/downloads', methods=['GET', 'POST'])
 def downloads():
-	return render_template('downloads.html', gse_metadata=gse_metadata)
+	return render_template('downloads.html', base_path=BASE_PATH, gse_metadata=gse_metadata)
 
-@app.route('/getgwas', methods=['GET','POST'])
+@app.route(f'{ROOT_PATH}/getgwas', methods=['GET','POST'])
 def get_gwas():
 
     gene = request.form['gene']
@@ -76,7 +75,7 @@ def get_gwas():
 
     return result
 
-@app.route('/getkomp', methods=['GET','POST'])
+@app.route(f'{ROOT_PATH}/getkomp', methods=['GET','POST'])
 def get_mgi():
 
     gene = request.form['gene']
@@ -85,7 +84,7 @@ def get_mgi():
     return result
 
 
-@app.route('/getsigcom',  methods=['GET','POST'])
+@app.route(f'{ROOT_PATH}/getsigcom',  methods=['GET','POST'])
 def get_sigcom():
 
 	gene_lists = request.get_json()["genes"]
@@ -98,31 +97,31 @@ def get_sigcom():
 	
 	return res
 
-@app.route('/getresources',  methods=['GET','POST'])
+@app.route(f'{ROOT_PATH}/getresources',  methods=['GET','POST'])
 def resources_api():
 	table = get_resources()
 
 	return {'resources': table}
 
-@app.route('/getdownloads',  methods=['GET','POST'])
+@app.route(f'{ROOT_PATH}/getdownloads',  methods=['GET','POST'])
 def downloads_api():
 	table = get_downloads()
 
 	return {'downloads': table}
 
 
-@app.route('/gettweets',  methods=['GET','POST'])
+@app.route(f'{ROOT_PATH}/gettweets',  methods=['GET','POST'])
 def tweets_api():
 	table = get_tweets()
 	return {'tweets': table}
 
-@app.route('/getworkflows',  methods=['GET','POST'])
+@app.route(f'{ROOT_PATH}/getworkflows',  methods=['GET','POST'])
 def workflows_api():
 	table = get_workflows()
 
 	return {'workflows': table}
 
-@app.route('/gettfs',  methods=['GET','POST'])
+@app.route(f'{ROOT_PATH}/gettfs',  methods=['GET','POST'])
 def gettfs():
 	gene = request.form['gene']
 
@@ -132,7 +131,7 @@ def gettfs():
 
 	return {'data': result}
 
-@app.route('/getexample',  methods=['GET','POST'])
+@app.route(f'{ROOT_PATH}/getexample',  methods=['GET','POST'])
 def getexample():
 
 	with open('static/searchdata/example_list.txt') as f:
@@ -140,7 +139,7 @@ def getexample():
 
 	return {'genes': text, 'description': "GSE136134 Ctrl-vs-Insulin 24hrs Human BulkRNAseq hiPSCs_down"}
 
-@app.route('/getdiabetesenrich',  methods=['GET','POST'])
+@app.route(f'{ROOT_PATH}/getdiabetesenrich',  methods=['GET','POST'])
 def getdiabetesenrich():
 
 	genes = request.form['genelist']
@@ -151,7 +150,7 @@ def getdiabetesenrich():
 	return {'data': data}
 
 
-@app.route('/dgeapi',  methods=['GET','POST'])
+@app.route(f'{ROOT_PATH}/dgeapi',  methods=['GET','POST'])
 def dge():
 	response_json = request.get_json()
 	print(response_json)
@@ -366,7 +365,7 @@ def sort_studies(species_mapping):
 
 #### CHECK IF METADATA IS COMPLETE/ IF NEW STUDIES WERE ADDED, ADD THEM TO METADATA
 
-with open('static/searchdata/metadata-v1.pickle', 'rb') as f:	
+with open(f'static/searchdata/metadata-v1.pickle', 'rb') as f:	
 		gse_metadata = pickle.load(f)
 
 numstudies= [len(gse_metadata['human'].keys()), len(gse_metadata['mouse'].keys())]
@@ -431,15 +430,19 @@ else:
 study_to_species_single = {study:species_name for species_name, studies_metadata in gse_metadata_single.items() for study in studies_metadata.keys()}
 
 
-@app.route("/<species_or_gse>", methods=['GET', 'POST'])
+@app.route(f'{ROOT_PATH}/<species_or_gse>', methods=['GET', 'POST'])
 def species_or_viewerpg(species_or_gse):
 	# test if species
 	if species_or_gse in gse_metadata:
 		num_samples = sum(map(lambda x: x.get('numsamples'), gse_metadata[species_or_gse].values()))
+<<<<<<< Updated upstream
 		return render_template('species.html', species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, num_studies= len(gse_metadata[species_or_gse]))
 	#Checking for the single cell studies and loading that summary page
 	elif species_or_gse in gse_metadata_single:
 		return render_template('single_species.html', species=species_or_gse, gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, gse_metadata=gse_metadata)
+=======
+		return render_template('species.html', base_path=BASE_PATH, species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, num_studies= len(gse_metadata[species_or_gse]))
+>>>>>>> Stashed changes
 	# test if gsea
 	elif species_or_gse in study_to_species:
 		geo_accession = species_or_gse
@@ -453,6 +456,7 @@ def species_or_viewerpg(species_or_gse):
 		for key in metadata_dict_samples.keys():
 			sample_dict[key] = {'samples':metadata_dict_samples[key], 'count': len(metadata_dict_samples[key])}
 
+<<<<<<< Updated upstream
 		return render_template('viewer.html', metadata_dict=metadata_dict, metadata_dict_samples=sample_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping)
 	#Check for the single study individual viewer page
 	elif species_or_gse in study_to_species_single:
@@ -493,8 +497,11 @@ def species_or_viewerpg(species_or_gse):
 		metadata_dict_counts = pd.Series(leiden_data_vals).value_counts().to_dict()
 		meta_file.close()
 		return render_template('single_viewer.html', study_conditions = list_of_conditions, metadata_dict=classes, metadata_dict_samples=metadata_dict_counts, geo_accession=geo_accession, gse_metadata_single=gse_metadata_single, species=species, species_mapping=species_mapping, gse_metadata=gse_metadata)
+=======
+		return render_template('viewer.html', base_path=BASE_PATH, metadata_dict=metadata_dict, metadata_dict_samples=sample_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping)
+>>>>>>> Stashed changes
 	else:
-		return render_template('error.html', gse_metadata=gse_metadata, species_mapping=species_mapping)
+		return render_template('error.html', base_path=BASE_PATH, gse_metadata=gse_metadata, species_mapping=species_mapping)
 
 
 
@@ -505,7 +512,7 @@ def species_or_viewerpg(species_or_gse):
 
 # this will likely stay the same.
 
-@app.route('/api/genes/<geo_accession>')
+@app.route(f'{ROOT_PATH}/api/genes/<geo_accession>')
 
 # this will likely stay the same.
 @lru_cache(maxsize=None)
@@ -648,7 +655,7 @@ def plot_api_single(geo_accession, condition):
 	)
 	return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-@app.route('/api/plot/<geo_accession>', methods=['GET', 'POST'])
+@app.route(f'{ROOT_PATH}/api/plot/<geo_accession>', methods=['GET', 'POST'])
 
 def plot_api(geo_accession):
 	"""
@@ -717,7 +724,7 @@ def plot_api(geo_accession):
 	)
 	return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-@app.route('/api/volcano', methods=['GET', 'POST'])
+@app.route(f'{ROOT_PATH}/api/volcano', methods=['GET', 'POST'])
 def plot_volcano_api():
 	request.form
 	gene = request.form["gene"]
@@ -729,7 +736,7 @@ def plot_volcano_api():
 
 ########## 3. Conditions ##########
 
-@app.route('/api/conditions/<geo_accession>')
+@app.route(f'{ROOT_PATH}/api/conditions/<geo_accession>')
 
 def conditions_api(geo_accession):
 	species = study_to_species[geo_accession]
@@ -742,7 +749,7 @@ def conditions_api(geo_accession):
 #############################################
 ########## Conditions to Samples
 #############################################
-@app.route('/api/samples/<geo_accession>')
+@app.route(f'{ROOT_PATH}/api/samples/<geo_accession>')
 
 def samples_api(geo_accession):
 	species = study_to_species[geo_accession]
@@ -756,7 +763,7 @@ def samples_api(geo_accession):
 	return json.dumps(conditions_mapping)
 
 
-@app.route('/api/data',  methods=['GET', 'POST'])
+@app.route(f'{ROOT_PATH}/api/data',  methods=['GET', 'POST'])
 def get_study_data():
 
 	response_json = request.get_json()
@@ -795,6 +802,16 @@ def get_study_data():
 	return data_dict
 	
 
+<<<<<<< Updated upstream
+=======
+@app.route(f'{ROOT_PATH}/api/bulksampvis',  methods=['GET', 'POST'])
+def visualize_samps():
+	response_json = request.get_json()
+	geo_accession = response_json['gse']
+	species = response_json['species']
+	meta_df = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	expr_df = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
+>>>>>>> Stashed changes
 
 
 
@@ -809,8 +826,14 @@ def get_study_data():
 #######################################################
 #######################################################
 if __name__ == "__main__":
+<<<<<<< Updated upstream
 
 	#serve(app, host="0.0.0.0", port=5000)
 	app.run(debug=True, host="0.0.0.0")
 
+=======
+	
+	#serve(app, host="0.0.0.0", port=8080)
+	app.run(debug=True, host="0.0.0.0", port=8080)
+>>>>>>> Stashed changes
 

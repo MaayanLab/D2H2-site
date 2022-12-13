@@ -79,8 +79,9 @@
 
               <div class="justify-content-center row text-center mt-3">
                 <a id="enrichr">
-                  <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Submit to Enricher
-                    <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enricher">
+                  <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Submit to
+                    <img src="{{ url_for('static', filename='img/enrichrtext.png') }}" class="img-fluid" style="width: 80px" alt="Enrichr">
+                    <img src="{{ url_for('static', filename='img/enrichrlogo.png') }}" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
                   </button>
                 </a>
               </div>
@@ -149,7 +150,7 @@
                       href="https://appyters.maayanlab.cloud/ChEA3_Appyter/"><button type="button"
                         class="btn btn-primary btn-group-sm mt-3 mb-3">
                         <span id="appyter-action" class="ml-3">Start a new appyter in</span>
-                        <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px"
+                        <img src="{{url_for('static',filename= 'img/appyters_logo.svg')}}" class="img-fluid mr-3" style="width: 120px"
                           alt="Appyters">
                       </button>
                     </a>
@@ -175,7 +176,7 @@
                       href="https://appyters.maayanlab.cloud/KEA3_Appyter/"><button type="button"
                         class="btn btn-primary btn-group-sm mt-3 mb-3">
                         <span id="appyter-action" class="ml-3">Start a new appyter in</span>
-                        <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px"
+                        <img src="{{url_for('static',filename= 'img/appyters_logo.svg')}}" class="img-fluid mr-3" style="width: 120px"
                           alt="Appyters">
                       </button>
                     </a>
@@ -240,7 +241,7 @@
               <div class="justify-content-center row text-center mt-3">
                 <a id="sigcoms">
                   <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Submit to
-                    <img src="/static/img/sigcom_lincs_logo.png" class="img-fluid mr-3" style="width: 60px"
+                    <img src="{{url_for('static',filename= 'img/sigcom_lincs_logo.png')}}" class="img-fluid mr-3" style="width: 60px"
                       alt="SigCom LINCS">
                   </button>
                 </a>
@@ -264,11 +265,12 @@
 
 <script>
   $(document).ready(function() {
-    if (window.location.href.split("/").length > 4) {
-      var genes = window.location.href.split("/")[4].split('&').join('\r\n')
-      console.log(genes)
-      fillSetExample(genes)
-      document.getElementById('genesetnav').className = document.getElementById('genesetnav').className + ' active';
+    if (localStorage.hasOwnProperty("geneset")) {
+          var genes = localStorage['geneset']
+          localStorage.removeItem('genes');
+          genes = genes.split('&').join('\r\n')
+          fillSetExample(genes)
+      //document.getElementById('genesetnav').className = document.getElementById('genesetnav').className + ' active';
     }
   })
 </script>
