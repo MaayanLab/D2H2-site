@@ -8,7 +8,8 @@ from maayanlab_bioinformatics.normalization.quantile import quantile_normalize
 from bokeh.plotting import figure
 from bokeh.embed import json_item
 from bokeh.models import ColumnDataSource
-from bokeh.models import HoverTool, CustomJS, Span, Select, Legend, PreText, Paragraph, LinearColorMapper, ColorBar, CategoricalColorMapper
+from bokeh.models import HoverTool, Legend, CategoricalColorMapper, NumeralTickFormatter
+from bokeh.transform import factor_cmap
 from bokeh.palettes import Category20
 import matplotlib.cm as cm
 import matplotlib.colors as colors
@@ -16,9 +17,13 @@ import numpy as np
 import anndata
 import s3fs
 import h5py
+
 import os
 import re
 import hashlib
+
+import scanpy as sc
+import seaborn as sns
 
 
 base_url = os.environ.get('BASE_URL')
@@ -823,8 +828,94 @@ def bulk_vis(expr_df, meta_df):
     #df_data_norm.replace([np.inf], np.nan, inplace=True)
     #df_data_norm = df_data_norm.dropna()
     #var = df_data_norm.var(axis = 0, numeric_only = True)
+    expr_df = pd.DataFrame(zscore(df_data_norm, axis=1), index=df_data_norm.index, columns=df_data_norm.columns)
+    #expr_df = pd.DataFrame(df_data_norm, index=df_data_norm.index, columns=df_data_norm.columns)
+    expr_df = expr_df.dropna(axis=1)
+
+
+    # Compute label and pca based on Leiden Algorithm 
+    leiden_df = sc.AnnData(expr_df,dtype=np.float32)
+    sc.pp.pca(leiden_df)
+    sc.pp.neighbors(leiden_df) 
+    sc.tl.leiden(leiden_df, key_added="leiden")
+    df_y = meta_df
+    #df_y['leiden'] = list(leiden_df.obs['leiden'].values)
+
+    # Data transformation for 2D visualization
+    # Normalize transformed data to have a better visualization on 3D plot
+    #leiden_df.obsm['X_pca'] = zscore(leiden_df.obsm['X_pca'],axis=0)
+
+    pca_data = pd.DataFrame({'x':leiden_df.obsm['X_pca'][:,0],
+                        'y':leiden_df.obsm['X_pca'][:,1],
+                        'z':leiden_df.obsm['X_pca'][:,2]})
+    pca_df = df_y.reset_index().join(pca_data).set_index('Sample_geo_accession')
+
+    n_samps = leiden_df.obsm['X_pca'].shape[0]
+    perp = 5
+    if n_samps <= 5:
+        perp = n_samps - 1
+
+    tsne = TSNE(perplexity=perp, learning_rate='auto', init='pca')
+    leiden_df.obsm['X_tsne'] = tsne.fit_transform(leiden_df.obsm['X_pca'])
+    leiden_df.obsm['X_tsne'] = zscore(leiden_df.obsm['X_tsne'],axis=0)
+    tsne_data = pd.DataFrame({'x':leiden_df.obsm['X_tsne'][:,0],
+                        'y':leiden_df.obsm['X_tsne'][:,1]})
+                        #'z':leiden_df.obsm['X_tsne'][:,2]
+    tsne_df = df_y.reset_index().join(tsne_data).set_index('Sample_geo_accession')
+    sc.tl.umap(leiden_df, n_components=2)
+    leiden_df.obsm['X_umap'] = zscore(leiden_df.obsm['X_umap'],axis=0)
+    umap_data = pd.DataFrame({'x':leiden_df.obsm['X_umap'][:,0],
+                        'y':leiden_df.obsm['X_umap'][:,1]})
+                        #'z':leiden_df.obsm['X_umap'][:,2]
+    umap_df = df_y.reset_index().join(umap_data).set_index('Sample_geo_accession')
+
+    return pca_df, tsne_df, umap_df
+
+def generate_colors(input_df, feature):
+    pal = sns.color_palette(n_colors = len(input_df['legend'].unique()))
+    color = factor_cmap(feature, palette=pal.as_hex(), factors=np.array(input_df['legend'].unique()))
+    return color 
+
+def interactive_circle_plot(input_df, x_lab, y_lab, feature, name):
+    if len(input_df['Group'].unique()) > 1:
+        input_df['legend'] = input_df['Condition'] + ' ' + input_df['Group']
+        feature = 'legend'
+    else:
+        input_df['legend'] = input_df[feature]
+    input_df = input_df.reset_index()
+    source = ColumnDataSource(input_df)
+    TOOLTIPS = [
+        ("Sample", '@Sample_geo_accession'),
+        ("(x,y)", "($x, $y)"),
+        ("Condition", '@Condition'),
+        ("Group", '@Group')
+    ]
+    n = len(input_df['legend'].unique())
+    height_add = 0
+    if n > 10:
+        height_add = (n - 10) * 75
+    point_size = 10 if input_df.shape[0] < 100 else 5
+    lab_max = max(map(lambda x: len(x), list(input_df['legend'].unique())))
     
-    return json_item(plot, plot_name)
+
+    p = figure(height=1600+height_add, width=1800+(15*lab_max), tooltips=TOOLTIPS,x_axis_label=x_lab, y_axis_label=y_lab,sizing_mode="scale_width")
+
+
+    color = generate_colors(input_df, 'legend')
+    p1 = p.circle('x', 'y', size=point_size, source=source, legend_field=feature,fill_color= color, line_color=color)
+    p.add_layout(p.legend[0], 'right')
+
+    p.xgrid.visible = False
+    p.ygrid.visible = False
+    p.xaxis.minor_tick_line_color = None 
+    p.yaxis.minor_tick_line_color = None 
+    p.xaxis.axis_label_text_font_size = '12pt'
+    p.yaxis.axis_label_text_font_size = '12pt'
+    p.xaxis[0].formatter = NumeralTickFormatter(format="0.0")
+    p.yaxis[0].formatter = NumeralTickFormatter(format="0.0")
+    p.legend.label_text_font_size = "12px"
+    return json_item(p, name)
+    
 
  
 @lru_cache()

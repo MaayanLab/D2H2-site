@@ -1920,8 +1920,6 @@ $(document).ready(function() {
     
         });
 
-
-    
     document.getElementById("change-loading").innerHTML = ''
     
     })
