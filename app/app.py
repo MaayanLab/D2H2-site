@@ -360,20 +360,24 @@ def plot_api(geo_accession):
 	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 	
 	# Get data
+
 	data = request.json
 	gene_symbol = data['gene_symbol']
 
 	conditions = data['conditions']
-	# print(conditions)
+
+
 
 	# Create a new dataframe that maps each sample to its condition
+
 	melted_dataframe = expression_dataframe.loc[gene_symbol].rename('expr_vals').rename_axis('Sample_geo_accession').reset_index().merge(metadata_dataframe, on="Sample_geo_accession")
 
-
 	# Get plot dataframe
-	plot_dataframe = melted_dataframe.groupby('Condition')['expr_vals'].agg([np.mean, np.std, lambda x: list(x)])#.rename(columns={'<lambda>': 'points'})#.reindex(conditions)
+	melted_dataframe['Combined'] = melted_dataframe['Condition'] + ' ' + melted_dataframe['Group']
+
+	plot_dataframe = melted_dataframe.groupby('Combined')['expr_vals'].agg([np.mean, np.std, lambda x: list(x)])#.rename(columns={'<lambda>': 'points'})#.reindex(conditions)
 	plot_dataframe = plot_dataframe.rename(columns={plot_dataframe.columns[-1]: 'points'})
-	# print(plot_dataframe)
+	
 
 	# Initialize figure
 	fig = go.Figure()
@@ -381,11 +385,19 @@ def plot_api(geo_accession):
 	# print(plot_dataframe)
 	
 	# Loop
+	condition_name = False
+	if len(melted_dataframe['Group'].unique()) == 1:
+		condition_name = True
+		group = melted_dataframe['Group'].values[0]
 	for condition in conditions:
-		if len(plot_dataframe.loc[condition, 'points']) > 1:
-			fig.add_trace(go.Box(name=condition, y=plot_dataframe.loc[condition, 'points'], boxpoints='all', pointpos=0))
+		if condition_name:
+			displayname = condition.replace(group, '').strip()
 		else:
-			fig.add_trace(go.Scatter(name=condition, x=[condition], y=plot_dataframe.loc[condition, 'points']))
+			displayname = condition
+		if len(plot_dataframe.loc[condition, 'points']) > 1:
+			fig.add_trace(go.Box(name=displayname, y=plot_dataframe.loc[condition, 'points'], boxpoints='all', pointpos=0))
+		else:
+			fig.add_trace(go.Scatter(name=displayname, x=[condition], y=plot_dataframe.loc[condition, 'points']))
 	
 	# Determine y-axis expression string
 
@@ -400,7 +412,11 @@ def plot_api(geo_accession):
 		title = {'text': gene_symbol+' gene expression', 'x': 0.5, 'y': 0.85, 'xanchor': 'center', 'yanchor': 'top'},
 		xaxis_title = 'Condition',
 		yaxis_title = y_units,
-		showlegend = False
+		showlegend = False,
+		xaxis = dict(
+		tickangle = 30,
+		tickfont = dict(size=10)
+    	)
 	)
 	return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 

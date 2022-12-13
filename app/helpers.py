@@ -9,6 +9,7 @@ from bokeh.embed import json_item
 from bokeh.models import ColumnDataSource, NumeralTickFormatter
 from bokeh.transform import factor_cmap
 
+from maayanlab_bioinformatics.normalization.quantile import quantile_normalize
 import seaborn as sns
 
 import matplotlib.cm as cm
@@ -17,7 +18,6 @@ import numpy as np
 # Sklearn
 from sklearn.manifold import TSNE
 
-import qnorm
 from scipy.stats import zscore
 import scanpy as sc
 import s3fs
@@ -671,18 +671,33 @@ def bulk_vis(expr_df, meta_df):
 
     meta_df = pd.read_csv(s3.open(meta_df), header=0, index_col=0, sep='\t')
     expr_df = pd.read_csv(s3.open(expr_df), header=0, index_col=0, sep='\t')
+    expr_df.replace([np.inf, -np.inf],np.nan, inplace=True)
+    expr_df = expr_df.dropna()
 
-    var = expr_df.var(axis = 1, numeric_only = True)
 
-    var.sort_values(inplace=True, ascending=False)
-    idx = var.index.values[:2500]
-    expr_df = expr_df.loc[idx]
+    expr_df = expr_df.transpose()
+    expr_df = expr_df.dropna(axis=1)
+
 
     df_data_norm = log2_normalize(expr_df, offset=1)
 
-    df_data_norm = qnorm.quantile_normalize(df_data_norm, axis=0)
+    df_data_norm = quantile_normalize(df_data_norm, axis=0)
 
-    expr_df = pd.DataFrame(zscore(df_data_norm, axis=0), index=df_data_norm.index, columns=df_data_norm.columns)
+    #df_data_norm.replace([np.inf], np.nan, inplace=True)
+    #df_data_norm = df_data_norm.dropna()
+    #var = df_data_norm.var(axis = 0, numeric_only = True)
+    
+    #var.sort_values(inplace=True, ascending=False)
+
+    #idx = var.index.values[:2500]
+
+
+    #df_data_norm = df_data_norm[idx]
+
+    expr_df = pd.DataFrame(zscore(df_data_norm, axis=1), index=df_data_norm.index, columns=df_data_norm.columns)
+    #expr_df = pd.DataFrame(df_data_norm, index=df_data_norm.index, columns=df_data_norm.columns)
+    expr_df = expr_df.dropna(axis=1)
+
 
     # Compute label and pca based on Leiden Algorithm 
     leiden_df = sc.AnnData(expr_df,dtype=np.float32)
@@ -694,37 +709,45 @@ def bulk_vis(expr_df, meta_df):
 
     # Data transformation for 2D visualization
     # Normalize transformed data to have a better visualization on 3D plot
-    leiden_df.obsm['X_pca'] = zscore(leiden_df.obsm['X_pca'],axis=0)
+    #leiden_df.obsm['X_pca'] = zscore(leiden_df.obsm['X_pca'],axis=0)
 
     pca_data = pd.DataFrame({'x':leiden_df.obsm['X_pca'][:,0],
                         'y':leiden_df.obsm['X_pca'][:,1],
                         'z':leiden_df.obsm['X_pca'][:,2]})
     pca_df = df_y.reset_index().join(pca_data).set_index('Sample_geo_accession')
 
-    tsne = TSNE(n_components=3)
+    n_samps = leiden_df.obsm['X_pca'].shape[0]
+    perp = 5
+    if n_samps <= 5:
+        perp = n_samps - 1
+
+    tsne = TSNE(perplexity=perp, learning_rate='auto', init='pca')
     leiden_df.obsm['X_tsne'] = tsne.fit_transform(leiden_df.obsm['X_pca'])
     leiden_df.obsm['X_tsne'] = zscore(leiden_df.obsm['X_tsne'],axis=0)
     tsne_data = pd.DataFrame({'x':leiden_df.obsm['X_tsne'][:,0],
-                        'y':leiden_df.obsm['X_tsne'][:,1],
-                        'z':leiden_df.obsm['X_tsne'][:,2]})
+                        'y':leiden_df.obsm['X_tsne'][:,1]})
+                        #'z':leiden_df.obsm['X_tsne'][:,2]
     tsne_df = df_y.reset_index().join(tsne_data).set_index('Sample_geo_accession')
-    sc.tl.umap(leiden_df, n_components=3)
+    sc.tl.umap(leiden_df, n_components=2)
     leiden_df.obsm['X_umap'] = zscore(leiden_df.obsm['X_umap'],axis=0)
     umap_data = pd.DataFrame({'x':leiden_df.obsm['X_umap'][:,0],
-                        'y':leiden_df.obsm['X_umap'][:,1],
-                        'z':leiden_df.obsm['X_umap'][:,2]})
+                        'y':leiden_df.obsm['X_umap'][:,1]})
+                        #'z':leiden_df.obsm['X_umap'][:,2]
     umap_df = df_y.reset_index().join(umap_data).set_index('Sample_geo_accession')
 
-    print('returned dfs')
     return pca_df, tsne_df, umap_df
 
 def generate_colors(input_df, feature):
-    pal = sns.color_palette()
-    color = factor_cmap(feature, palette=pal.as_hex(), factors=np.array(input_df[feature].unique()))
+    pal = sns.color_palette(n_colors = len(input_df['legend'].unique()))
+    color = factor_cmap(feature, palette=pal.as_hex(), factors=np.array(input_df['legend'].unique()))
     return color 
 
 def interactive_circle_plot(input_df, x_lab, y_lab, feature, name):
-    input_df['legend'] = input_df[feature]
+    if len(input_df['Group'].unique()) > 1:
+        input_df['legend'] = input_df['Condition'] + ' ' + input_df['Group']
+        feature = 'legend'
+    else:
+        input_df['legend'] = input_df[feature]
     input_df = input_df.reset_index()
     source = ColumnDataSource(input_df)
     TOOLTIPS = [
@@ -733,12 +756,19 @@ def interactive_circle_plot(input_df, x_lab, y_lab, feature, name):
         ("Condition", '@Condition'),
         ("Group", '@Group')
     ]
-    n = input_df[feature].nunique()
+    n = len(input_df['legend'].unique())
+    height_add = 0
+    if n > 10:
+        height_add = (n - 10) * 75
     point_size = 10 if input_df.shape[0] < 100 else 5
-    p = figure(height=500, width=800, tooltips=TOOLTIPS,x_axis_label=x_lab, y_axis_label=y_lab,sizing_mode="scale_width")
+    lab_max = max(map(lambda x: len(x), list(input_df['legend'].unique())))
+    
 
-    color = generate_colors(input_df, feature)
-    p1 = p.circle('x', 'y', size=point_size, source=source, legend_field='legend',fill_color= color, line_color=color)
+    p = figure(height=1600+height_add, width=1800+(15*lab_max), tooltips=TOOLTIPS,x_axis_label=x_lab, y_axis_label=y_lab,sizing_mode="scale_width")
+
+
+    color = generate_colors(input_df, 'legend')
+    p1 = p.circle('x', 'y', size=point_size, source=source, legend_field=feature,fill_color= color, line_color=color)
     p.add_layout(p.legend[0], 'right')
 
     p.xgrid.visible = False
@@ -749,6 +779,7 @@ def interactive_circle_plot(input_df, x_lab, y_lab, feature, name):
     p.yaxis.axis_label_text_font_size = '12pt'
     p.xaxis[0].formatter = NumeralTickFormatter(format="0.0")
     p.yaxis[0].formatter = NumeralTickFormatter(format="0.0")
+    p.legend.label_text_font_size = "12px"
     return json_item(p, name)
 
 

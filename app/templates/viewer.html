@@ -108,19 +108,20 @@
                 </thead>
                 <tbody>
                     {% for group, conditions in metadata_dict.items() %}
-                    {% set grouploop = loop %}
-                    {% for condition in conditions %}
-                    <tr>
-                        <!-- {% if loop.first %} -->
-                        <td rowspan="{{ conditions|length }}" class="align-middle" style="width: auto">
-                            {{ group|safe }}
-                        </td>
-                        <!-- {% endif %} -->
+                        {% set grouploop = loop %}
+                        {% for condition in conditions %}
+                        <tr>
+                            {% if loop.first %}
+                            <td rowspan="{{ conditions|length }}" class="align-middle" style="width: auto">
+                                {{ group|safe }}
+                            </td>
+                            {% endif %}
+                            <!-- <td class="border p-0"><button style="background-color: #ECEFF1; color: black; width: max-content;" class="btn w-100 m-0 rounded-0 py-0 condition-btn{{' active plotted' if grouploop.first}}" data-toggle="button" aria-pressed="{{ grouploop.first|lower }}" autocomplete="off" data-group_label="{{ condition }}">{{ condition|safe }}</button></td> -->
                         <td class="p-0 ml-3 border"><button
                                 style="background-color: #ECEFF1; color: black; width: max-content;"
-                                class="btn m-0 rounded-0 py-0 condition-btn{{' active plotted '}}" data-toggle="button"
+                                class="btn m-0 rounded-0 py-0 condition-btn{{' active plotted ' if grouploop.first}}" data-toggle="button"
                                 aria-pressed="{{ grouploop.first|lower }}" autocomplete="off"
-                                data-group_label="{{ condition }}">{{ condition|safe }} </button>
+                                data-group_label="{{ condition  + ' ' + group }}">{{ condition|safe }} </button>
                         </td>
 
                         <td class="border" style="padding: 0px 18px">
@@ -202,7 +203,7 @@
     <div class="col-7">
         <div class="custom-col justify-content-center" style="overflow: visible">
             <div class="h4 pl-2 mt-4 mb-4 text-center">Visualize Samples</div>
-            <div id="singleplots-loading" class="m-3"></div>
+            
             <div class="row justify-content-center mt-4 singleplotclass centered">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
@@ -230,6 +231,7 @@
                         </div>
                     </div>
                 </div>
+                <div id="singleplots-loading" class="m-3"></div>
             </div>
         </div>
     </div>
