@@ -76,6 +76,7 @@
                     {% endfor %}
                 </select>
             </div>
+            <div id="change-loading" class="m-3"></div>
             <div class="h4 pl-2 mt-4 mb-4 text-center">PCA, tSNE, and UMAP Visualizations Labeled by Clusters:</div>
             <!-- <div class="row justify-content-center text-center">
                 <button id="singleplots-button" class="btn btn-primary mx-auto mt-2 mb-3" style="width: 125px"
@@ -216,10 +217,18 @@
         
             <div class="h4 pl-2 mt-4 mb-4 text-center">Differential Gene Expression Analysis</div>
 
-            
+            <div class="h6 text-center mt-3"> Select Cluster for differential gene expression analysis:</div>
+            <div class="row justify-items-center justify-content-center mb-3 mt-3 text-center">
+                <select name="Select Method" id="differentialcluster" class="libpicker" >
+                    {% for cond in metadata_dict %}
+                    <option value="{{cond}}">{{cond}}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <div class="h6 text-center mt-3"> Select differential expression analysis method:</div>
             <div class="row justify-items-center justify-content-center mb-3 mt-3 text-center">
                 <select name="Select Method" id="method" class="libpicker" style="width: 100px;">
+                    <option value="wilcoxon">wilcoxon</option>
                     <option value="limma">limma</option>
                     <option value="edgeR">edgeR</option>
                     <option value="DESeq2">DESeq2</option>
@@ -252,7 +261,7 @@
             </div>
 
             <div class="row justify-content-center">
-                <button id="dge-button" class="btn btn-primary mx-auto mt-2 mb-3" style="width: 125px"
+                <button id="dge-button-single" class="btn btn-primary mx-auto mt-2 mb-3" style="width: 125px"
                     data-url-samp="{{ url_for('samples_api', geo_accession=geo_accession) }}"
                     data-gse-id="{{ gse_metadata_single[species][geo_accession].get('geo_accession', ['No GSE ID'])[0] }}"
                     data-gpl-id="{{ gse_metadata_single[species][geo_accession].get('cur_gpl', ['No GPL ID'])[0] }}">
@@ -264,9 +273,12 @@
             <div id="dge-plot" class="centered"></div>
             <div id="geneset-buttons" class="justify-content-center"></div>
             <div class="col-10 justify-content-center mx-auto" id="dge-table-area"></div>
+            <div id="enrichment-area" class="justify-content-center"></div>
+
+            
     
 
-            {% if 'Expression profiling by high throughput sequencing' == gse_metadata_single[species][geo_accession].get('type')[0] %}
+            <!-- {% if 'Expression profiling by high throughput sequencing' == gse_metadata_single[species][geo_accession].get('type')[0] %}
             <div class="row justify-content-center mt-4">
                 
                 <div class="h4 pl-2 mt-4 mb-4 text-center">Single Cell RNA-seq Appyter</div>
@@ -294,7 +306,7 @@
                 </button>
                 
             </div>
-            {% endif %}
+            {% endif %} -->
 
             <div id="dgea-loading" class="m-3"></div>
 
@@ -319,20 +331,19 @@ const el = document.getElementById('method');
 
 const box = document.getElementById('normalization');
 
-el.addEventListener('change', function handleChange(event) {
-  if (event.target.value === 'DESeq2') {
-    box.style.display = 'block';
-  } else {
-    box.style.display = 'none';
-  }
-});
+// el.addEventListener('change', function handleChange(event) {
+//   if (event.target.value === 'DESeq2') {
+//     box.style.display = 'block';
+//   } else {
+//     box.style.display = 'none';
+//   }
+// });
 
 $("#singleviewer").addClass('active'); 
 $("#singleviewer").parents('li').addClass('active');
 
 
 generate_single_plots()
-const single_substudy = document.getElementById('methodsingle');
 
 // single_substudy.addEventListener('change', function handleChange(event) {
 

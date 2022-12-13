@@ -5,8 +5,8 @@ function generate_single_plots(){
     document.getElementById("tsne-plot").innerHTML = "";
     document.getElementById("pca-plot").innerHTML = "";
     console.log('IN GENERATE PLOTS')
-    document.getElementById("singleplots-loading").innerHTML = "<div class='loader justify-content-center'></div>";
-    // $('#singleplots-loading').addClass('loader justify-content-center');
+    // document.getElementById("singleplots-loading").innerHTML = "<div class='loader justify-content-center'></div>";
+    $('#singleplots-loading').addClass('loader justify-content-center');
     var gse = document.getElementById("singlegse").innerText
     var species = document.getElementById("species").innerText
     var condition_group = document.getElementById("methodsingle").value
@@ -22,7 +22,7 @@ function generate_single_plots(){
     }).done(function(response) {
         document.getElementById("singleplots-loading").innerHTML = "";
         console.log('IN THE DONE OF AJAX for GENERATE PLOTS')
-        // $('#singleplots-loading').removeClass('loader justify-content-center');
+        $('#singleplots-loading').removeClass('loader justify-content-center');
         var umap_plot = response['umapplot']
         var pca_plot = response['pcaplot']
         var tsne_plot = response['tsneplot']
@@ -154,6 +154,14 @@ function clear_dge() {
     document.getElementById("geneset-buttons").innerHTML = ""
     
 }
+function clear_dge_single() {
+    document.getElementById("dge-table-area").innerHTML = ""
+    document.getElementById("dge-plot").innerHTML = ""
+    document.getElementById("dge-loading").innerHTML = ""
+    document.getElementById("geneset-buttons").innerHTML = ""
+    document.getElementById("enrichment-area").innerHTML = ""
+    
+}
 
 function on_change(el) {
 
@@ -247,7 +255,34 @@ function enrich(options) {
     form.submit();
     document.body.removeChild(form);
 }
+function filter_and_submit_to_enrichr(genelist, sigs, description) {
+    genelist = genelist.split(',')
+    sigs = sigs.split(',').map(function(item) {
+        return parseFloat(item);
+    });
+    var numgenes = document.getElementById('numgenes').value
+    var signifigance = document.getElementById('signifigance').value
+    var dir = 'top'
+    var genes_valid = []
 
+    for (i=0; i < genelist.length; i++ ){
+        if (sigs[i] <= signifigance) {
+            genes_valid.push(genelist[i])
+        }
+    }
+    if (dir === 'top') {
+        var genes = genes_valid.splice(0, numgenes).join('\n')
+        
+    } else {
+        var genes = genes_valid.slice(-numgenes).join('\n')
+    }
+    options = {}
+    options.list = genes
+    options.description = description
+    options.popup = true
+    enrich(options)
+
+}
 function loadFileAsText(section, delim){
     
     return new Promise((resolve, reject) => {
@@ -1538,6 +1573,167 @@ $(document).ready(function() {
         })
     });
 
+    // PERFORM DIFFERENTIAL GENE ANALYSIS AND CREATE RELEVANT TABLE
+    $('#dge-button-single').on('click', async function() {
+        clear_dge_single()
+
+        document.getElementById("dge-loading").innerHTML = "<div class='loader justify-content-center'></div>";
+
+        var gse = document.getElementById("singlegse").innerText
+        var species = document.getElementById("species").innerText
+        var method = document.getElementById("method").value
+        var condition_group = document.getElementById("methodsingle").value
+        var diffcluster = document.getElementById("differentialcluster").value
+        console.log(diffcluster)
+        console.log(method)
+         
+        var logCPM = document.getElementById("logCPM").checked
+        var log = document.getElementById("log").checked
+        var q = document.getElementById("q").checked
+        var z = document.getElementById("z").checked
+        var norms = {'logCPM': logCPM, 'log': log, 'q': q, 'z': z}
+        console.log(norms)
+        var gsedata = JSON.stringify({'gse': gse, 'species': species, 'conditiongroup':condition_group, 'method': method, 'norms': norms, 'diffcluster':diffcluster});
+
+        console.log(gsedata)
+        $.ajax({
+            url: "/dgeapisingle",
+            contentType: 'application/json',
+            type: "POST",
+            dataType: 'json',
+            data: gsedata
+        }).done(async function(response) {
+            document.getElementById("dge-loading").innerHTML = "";
+            var plot = response['plot']
+            var table = response['table']
+            var desc = response['description']
+            console.log(desc)
+            var rows = table.split('\n').slice(1, -1);
+            clear_dge_single()
+            window.Bokeh.embed.embed_item(plot)
+
+            var table_id = 'dge-table'
+            var tabletext = `<table id='${table_id}' class='styled-table'><thead><tr>`
+            const clear_button = "<div class='mx-auto justify-content-center text-center'><button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_dge_single();'> Clear Results </button></div>"
+            var url = currURL.filter(x => !x.includes('GSE')).join('/') + '/singlegene'
+            var pvals;
+            if (method === 'limma') {
+                tabletext += "<th></th><th>Adj. P Value</th><th>P Value</th><th>t</th><th>AvgExpr</th><th>logFC</th><th>B</th></tr><tbody>"
+                rows.forEach(function(row) {
+                    var vals = row.replace(/\s\s+/g, ' ').split(' ');
+                    tabletext += `<tr><td><a onclick="setGene('${vals[0]}')" href='${url}' target='_blank'>`  + vals[0] + "</a></td><td>" + Number(vals[5]).toPrecision(4)+"</td><td>" + Number(vals[4]).toPrecision(4) +"</td><td>"+ Number(vals[3]).toPrecision(4) + "</td><td>"+ Number(vals[2]).toPrecision(4) + "</td><td>"+ Number(vals[1]).toPrecision(4) + "</td><td>"+ Number(vals[6]).toPrecision(4) + "</td></tr>"
+                });
+                tabletext += "</tbody></table>";
+
+                document.getElementById("dge-table-area").innerHTML += tabletext
+                var table = $(`#${table_id}`).DataTable({
+                    order: [[1, 'asc']],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', {extend: 'csv', title: name}
+                    ]
+                });
+                pvals = table.column(1).data()
+
+            } else if (method === 'edgeR') {
+                tabletext += "<th></th><th>PValue</th><th>logCPM</th><th>logFC</th><th>FDR</th></tr><tbody>"
+                rows.forEach(function(row) {
+                    var vals = row.replace(/\s\s+/g, ' ').split(' ');
+                    tabletext += `<tr><td><a onclick="setGene('${vals[0]}')" href='${url}' target='_blank'>`  +vals[0] + "</a></td><td>" + Number(vals[3]).toPrecision(4)+"</td><td>" + Number(vals[2]).toPrecision(4) +"</td><td>"+ Number(vals[1]).toPrecision(4) + "</td><td>"+ Number(vals[4]).toPrecision(4) + "</td></tr>"
+                });
+                tabletext += "</tbody></table>";
+
+                document.getElementById("dge-table-area").innerHTML += tabletext 
+                var table = $(`#${table_id}`).DataTable({
+                    order: [[1, 'asc']],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', {extend: 'csv', title: name}
+                    ]
+                });
+                pvals = table.column(1).data()
+
+            } else if (method === 'DESeq2') {
+                tabletext += "<th></th><th>Adj. P-value</th><th>P-value</th><th>lfcSE</th><th>stat</th><th>baseMean</th><th>log2FC</th></tr><tbody>"
+                rows.forEach(function(row) {
+                    var vals = row.replace(/\s\s+/g, ' ').split(' ');
+                    tabletext += `<tr><td><a onclick="setGene('${vals[0]}')" href='${url}' target='_blank'>` +vals[0] +"</a></td><td>" + Number(vals[6]).toPrecision(4)+"</td><td>" + Number(vals[5]).toPrecision(4) +"</td><td>"+  Number(vals[3]).toPrecision(4)  + "</td><td>"+  Number(vals[4]).toPrecision(4)  + "</td><td>" +  Number(vals[1]).toPrecision(4)  + "</td><td>" +  Number(vals[2]).toPrecision(4)  + "</td></tr>"
+                });
+                tabletext += "</tbody></table>";
+
+                document.getElementById("dge-table-area").innerHTML += tabletext
+                var table = $(`#${table_id}`).DataTable({
+                    order: [[1, 'asc']],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', {extend: 'csv', title: name}
+                    ]
+                });    
+                pvals = table.column(1).data()
+            }else if (method === 'wilcoxon') {
+                tabletext += "<th></th><th>Adj. P-value</th><th>P-value</th><th>logfoldchanges</th><th>scores</th></tr><tbody>"
+                rows.forEach(function(row) {
+                    var vals = row.replace(/\s\s+/g, ' ').split(' ');
+                    tabletext += `<tr><td><a onclick="setGene('${vals[0]}')" href='${url}' target='_blank'>`  +vals[0] + "</a></td><td>" + Number(vals[4]).toPrecision(4)+"</td><td>" + Number(vals[3]).toPrecision(4) +"</td><td>"+ Number(vals[2]).toPrecision(4) + "</td><td>"+ Number(vals[1]).toPrecision(4) + "</td></tr>"
+                });
+                tabletext += "</tbody></table>";
+
+                document.getElementById("dge-table-area").innerHTML += tabletext
+                var table = $(`#${table_id}`).DataTable({
+                    order: [[1, 'asc']],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', {extend: 'csv', title: name}
+                    ]
+                });    
+                pvals = table.column(1).data()
+            }
+            var genes = table.column(0).data()
+
+            
+            genes = genes.map(x => x.replace(/<\/?[^>]+(>|$)/g, ""))
+
+            var genelist_buttons = 
+            `<div class="row justify-content-center mx-auto text-center">
+            <div class="mt-3 h7">Submit the top</div>
+            <input id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2' style='width: 60px;'/>
+            <div class="mt-3 h7">differentially expressed genes with an adjusted p-value less than</div>
+            <input id='signifigance' type='number' step='.01' value='.05' max='1' class='m-2' style='width: 60px;'/>
+            <div class="mt-3 h7">to</div>
+            </div>
+            <div class="row justify-content-center mx-auto text-center">
+            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset('${genes.join(',')}', '${pvals.join(',')}')">Gene Set Queries</button>
+            </div>
+            `
+            // <div class="mt-3 h7">or to</div>
+            // <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset_home('${genes.join(',')}', '${pvals.join(',')}', '${name}')">Diabetes Gene Set Library</button>
+                
+            document.getElementById("geneset-buttons").innerHTML = (clear_button)
+            document.getElementById("enrichment-area").innerHTML  = `
+            <div class="h4 pl-2 mt-4 mb-4 text-center">Enrichment Analysis for ${desc}</div>
+            <div class="row justify-content-center mx-auto text-center">
+            <div class="mt-3 h7">Submit the top</div>
+            <input id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2' style='width: 60px;'/>
+            <div class="mt-3 h7">differentially expressed genes with an adjusted p-value less than</div>
+            <input id='signifigance' type='number' step='.01' value='.05' max='1' class='m-2' style='width: 60px;'/>
+            <div class="mt-3 h7">to</div>
+            </div>
+            <div class="row justify-content-center mx-auto text-center">
+            <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3" onclick="filter_and_submit_to_enrichr('${genes.join(',')}', '${pvals.join(',')}', '${desc}')"> Submit to Enricher
+            <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enricher">
+            </button>
+            </div>
+            `
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+            alert('An internal server error occured, please try again')
+            document.getElementById("dge-loading").innerHTML = "";
+        })
+    });
+
+
+
+
 
     //////////////////////////////////
     /// Control Condition Selection
@@ -1634,28 +1830,33 @@ $(document).ready(function() {
 
 
     //This listener is for when we click on a different group of sample individuals to look at for a study within the single cell viewer on the dropdown select menu. 
-    $('#methodsingle').on('change', function() {
+    $('#methodsingle').on('change', async function() {
+        clear_dge_single()
+        document.getElementById("change-loading").innerHTML = "<div class='loader justify-content-center'></div>";
         var gse = document.getElementById("singlegse").innerText
         var species = document.getElementById("species").innerText
         var condition_group = document.getElementById("methodsingle").value
         var gsedata = JSON.stringify({'gse': gse, 'species': species, 'conditiongroup':condition_group});
         generate_single_plots()
+
         console.log('In the change in viewer')
         $.ajax({
             url: "/getclusterdata",
             contentType: 'application/json',
             type: "POST",
             data: gsedata,
-            dataType: 'json',
-            async: false
-        }).done(function(response) {
+            dataType: 'json'
+            // async: false
+        }).done(async function(response) {
     
             const classes = response['classes']
             const metadict = response['metadict']
             console.log(classes)
             console.log(metadict)
             document.getElementById("singlecell").innerHTML = ''
+            document.getElementById("differentialcluster").innerHTML = ''
             tabletext = ''
+            diffselectiontext = ''
             for (var k = 0; k < classes.length; k++) {
                     tabletext += `<tr>
                             <td class="p-0 ml-3 border"><button
@@ -1678,8 +1879,12 @@ $(document).ready(function() {
     
                             </td>
                             </tr>`
+                    diffselectiontext += `<option value="${classes[k]}">${classes[k]}</option>`
                 }
             document.getElementById("singlecell").innerHTML = tabletext
+            document.getElementById("differentialcluster").innerHTML = diffselectiontext
+            
+
             //Add the listener for the condition buttons back in this function 
             $('.condition-btn').on('click', function(evt) {
                 console.log($(this))
@@ -1687,31 +1892,33 @@ $(document).ready(function() {
                 console.log($(this))
                 boxplot();
             })
+            //Fill up the gene selectize with the proper gene list based off each study. 
+            $gene_select[0].selectize.clearOptions();
+            $gene_select[0].selectize.load(function(callback) {
+            $.ajax({
+                url: `/api/genes/${gse}/${condition_group}`,
+                dataType: 'json',
+                error: function () {
+                    callback();
+                },
+                success: function (res) {
+
+                    callback(res);
+                    console.log('before boxplot call')
+                    $gene_select[0].selectize.setValue(res[0]['gene_symbol']);
+                    $("#boxplot").attr("data-url-plot", `/api/plot_single/${gse}/${condition_group}`)
+                    boxplot() 
+                }
+            });
+        });
     
     
         });
 
-        //Fill up the gene selectize with the proper gene list based off each study. 
-        $gene_select[0].selectize.clearOptions();
-        $gene_select[0].selectize.load(function(callback) {
-        $.ajax({
-            url: `/api/genes/${gse}/${condition_group}`,
-            dataType: 'json',
-            error: function () {
-                callback();
-            },
-            success: function (res) {
 
-                callback(res);
-                console.log('before boxplot call')
-                $gene_select[0].selectize.setValue(res[0]['gene_symbol']);
-                $("#boxplot").attr("data-url-plot", `/api/plot_single/${gse}/${condition_group}`)
-                boxplot() 
-            }
-        });
-    });
-        
-
+    
+    document.getElementById("change-loading").innerHTML = ''
+    
     })
 })
 

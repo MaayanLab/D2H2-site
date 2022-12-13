@@ -12,7 +12,10 @@ from bokeh.palettes import Category20
 import matplotlib.cm as cm
 import matplotlib.colors as colors
 import numpy as np
-
+import anndata
+import s3fs
+import h5py
+s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': 'https://minio.dev.maayanlab.cloud/'})
 
 ########################## QUERY ENRICHER ###############################
 
@@ -528,7 +531,7 @@ def send_plot(species, gene):
         dn_micro_df_input = ''
     return {'plot': json_item(plot, 'volcano-plot'), 'micro': micro_exists, 'tables': [up_comb_df_input, dn_comb_df_input, up_micro_df_input, dn_micro_df_input]}
 
-def make_dge_plot(data, title, method):
+def make_dge_plot(data, title, method, id_plot='dge-plot'):
 
     # set color and size for each point on plot
 
@@ -546,6 +549,11 @@ def make_dge_plot(data, title, method):
         colors = [map_color(r[1]['log2FoldChange'], r[1]['pvalue']) for r in data.iterrows()]
         sizes = [12 if r[1]['pvalue'] < 0.05 else 6 for r in data.iterrows()]
         data['logp'] = data['pvalue'].apply(lambda x: -np.log10(x))
+        data['gene'] = data.index.values
+    elif method == 'wilcoxon':
+        colors = [map_color(r[1]['logfoldchanges'], r[1]['pvals']) for r in data.iterrows()]
+        sizes = [12 if r[1]['pvals'] < 0.05 else 6 for r in data.iterrows()]
+        data['logp'] = data['pvals'].apply(lambda x: -np.log10(x))
         data['gene'] = data.index.values
 
 
@@ -619,6 +627,28 @@ def make_dge_plot(data, title, method):
         ("base Mean", "@baseMean"),
         ("lfcSE", "@lfcSE")
         ]
+    if method == 'wilcoxon':
+        data_source = ColumnDataSource(
+            data=dict(
+                x = data['logfoldchanges'],
+                y = data['logp'],
+                gene =  data['gene'],
+                pval = data['pvals'], 
+                adjpval = data['pvals_adj'], 
+                scores = data['scores'],
+                colors = colors, 
+                sizes = sizes,
+            )
+        )
+        tools = [
+        ("Gene", "@gene"),
+        ("P-value", "@pval"),
+        ("log2 Fold Change", "@x"),
+        ("-log10(p)", "@y"),
+        ("adj. P-value", "@adjpval"),
+        ("scores", "@scores")
+        ]
+    
 
     # create hover tooltip
     
@@ -644,7 +674,7 @@ def make_dge_plot(data, title, method):
     plot.title.align = 'center'
     plot.title.text_font_size = '14px'
     print("made_plot")
-    return json_item(plot, 'dge-plot')
+    return json_item(plot, id_plot)
 import re
 import hashlib
 def str_to_int(string, mod):
@@ -755,3 +785,11 @@ def make_single_visialization_plot(plot_df, values_dict,type, option_list,sample
     plot.yaxis.major_label_text_font_size = '0pt'  # preferred method for removing tick labels
     
     return json_item(plot, plot_name)
+
+ 
+@lru_cache()
+def read_anndata_raw(path_to_data):
+    return anndata.read_h5ad(s3.open(path_to_data))
+@lru_cache()
+def read_anndata_h5(path_to_data):
+    return h5py.File(s3.open(path_to_data))
