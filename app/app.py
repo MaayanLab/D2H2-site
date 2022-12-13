@@ -435,14 +435,10 @@ def species_or_viewerpg(species_or_gse):
 	# test if species
 	if species_or_gse in gse_metadata:
 		num_samples = sum(map(lambda x: x.get('numsamples'), gse_metadata[species_or_gse].values()))
-<<<<<<< Updated upstream
 		return render_template('species.html', species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, num_studies= len(gse_metadata[species_or_gse]))
 	#Checking for the single cell studies and loading that summary page
 	elif species_or_gse in gse_metadata_single:
 		return render_template('single_species.html', species=species_or_gse, gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, gse_metadata=gse_metadata)
-=======
-		return render_template('species.html', base_path=BASE_PATH, species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, num_studies= len(gse_metadata[species_or_gse]))
->>>>>>> Stashed changes
 	# test if gsea
 	elif species_or_gse in study_to_species:
 		geo_accession = species_or_gse
@@ -455,8 +451,6 @@ def species_or_viewerpg(species_or_gse):
 		sample_dict = {}
 		for key in metadata_dict_samples.keys():
 			sample_dict[key] = {'samples':metadata_dict_samples[key], 'count': len(metadata_dict_samples[key])}
-
-<<<<<<< Updated upstream
 		return render_template('viewer.html', metadata_dict=metadata_dict, metadata_dict_samples=sample_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping)
 	#Check for the single study individual viewer page
 	elif species_or_gse in study_to_species_single:
@@ -497,9 +491,6 @@ def species_or_viewerpg(species_or_gse):
 		metadata_dict_counts = pd.Series(leiden_data_vals).value_counts().to_dict()
 		meta_file.close()
 		return render_template('single_viewer.html', study_conditions = list_of_conditions, metadata_dict=classes, metadata_dict_samples=metadata_dict_counts, geo_accession=geo_accession, gse_metadata_single=gse_metadata_single, species=species, species_mapping=species_mapping, gse_metadata=gse_metadata)
-=======
-		return render_template('viewer.html', base_path=BASE_PATH, metadata_dict=metadata_dict, metadata_dict_samples=sample_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping)
->>>>>>> Stashed changes
 	else:
 		return render_template('error.html', base_path=BASE_PATH, gse_metadata=gse_metadata, species_mapping=species_mapping)
 
@@ -802,8 +793,6 @@ def get_study_data():
 	return data_dict
 	
 
-<<<<<<< Updated upstream
-=======
 @app.route(f'{ROOT_PATH}/api/bulksampvis',  methods=['GET', 'POST'])
 def visualize_samps():
 	response_json = request.get_json()
@@ -811,7 +800,6 @@ def visualize_samps():
 	species = response_json['species']
 	meta_df = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 	expr_df = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
->>>>>>> Stashed changes
 
 
 
@@ -826,14 +814,8 @@ def visualize_samps():
 #######################################################
 #######################################################
 if __name__ == "__main__":
-<<<<<<< Updated upstream
 
 	#serve(app, host="0.0.0.0", port=5000)
 	app.run(debug=True, host="0.0.0.0")
 
-=======
-	
-	#serve(app, host="0.0.0.0", port=8080)
-	app.run(debug=True, host="0.0.0.0", port=8080)
->>>>>>> Stashed changes
 
