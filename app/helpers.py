@@ -822,7 +822,6 @@ def bulk_vis(expr_df, meta_df):
     expr_df = pd.read_csv(s3.open(expr_df), header=0, index_col=0, sep='\t')
 
     expr_df.replace([np.inf, -np.inf],np.nan, inplace=True)
-    expr_df = expr_df.dropna()
 
    
     expr_df = expr_df.transpose()
@@ -833,11 +832,13 @@ def bulk_vis(expr_df, meta_df):
 
     df_data_norm = quantile_normalize(df_data_norm, axis=0)
 
-    #df_data_norm.replace([np.inf], np.nan, inplace=True)
-    #df_data_norm = df_data_norm.dropna()
-    #var = df_data_norm.var(axis = 0, numeric_only = True)
-    expr_df = pd.DataFrame(zscore(df_data_norm, axis=1), index=df_data_norm.index, columns=df_data_norm.columns)
-    #expr_df = pd.DataFrame(df_data_norm, index=df_data_norm.index, columns=df_data_norm.columns)
+    var = df_data_norm.var(axis = 0, numeric_only = True)
+    var.sort_values(ascending=False, inplace=True)
+    idx = var.index.values[:250]
+
+    df_data_norm = df_data_norm[idx]
+    #expr_df = pd.DataFrame(zscore(df_data_norm, axis=1), index=df_data_norm.index, columns=df_data_norm.columns)
+    expr_df = pd.DataFrame(df_data_norm, index=df_data_norm.index, columns=df_data_norm.columns)
     expr_df = expr_df.dropna(axis=1)
 
 
