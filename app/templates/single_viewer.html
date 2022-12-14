@@ -91,27 +91,27 @@
             <div class="row justify-content-center mt-4 singleplotclass centered">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
-                      <a class="nav-link active" data-toggle="tab" data-bs-target="#umap" href="#umap">UMAP</a>
+                      <a class="nav-link active" data-toggle="tab" data-bs-target="#pca" href="#pca">PCA</a>
                     </li>
                     <li class="nav-item">
                       <a class="nav-link" data-toggle="tab" data-bs-target="#tsne" href="#tsne">tSNE</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" data-toggle="tab" data-bs-target="#pca" href="#pca">PCA</a>
+                      <a class="nav-link" data-toggle="tab" data-bs-target="#umap" href="#umap">UMAP</a>
                     </li>
                   </ul>
                   
                   <!-- Tab panes -->
                 <div class="h4 pl-2 mt-4 mb-4 text-center">
                   <div class="tab-content">
-                    <div class="tab-pane container active" id="umap">
-                        <div id="umap-plot" class="centered"></div>
+                    <div class="tab-pane container active" id="pca">
+                        <div id="pca-plot" class="centered"></div>
                     </div>
                     <div class="tab-pane container fade" id="tsne">
                         <div id="tsne-plot" class="centered"></div>
                     </div>
-                    <div class="tab-pane container fade" id="pca">
-                        <div id="pca-plot" class="centered"></div>
+                    <div class="tab-pane container fade" id="umap">
+                        <div id="umap-plot" class="centered"></div>
                     </div>
                   </div>
                 </div>
@@ -228,8 +228,8 @@
             <div class="h6 text-center mt-3"> Select differential expression analysis method:</div>
             <div class="row justify-items-center justify-content-center mb-3 mt-3 text-center">
                 <select name="Select Method" id="method" class="libpicker" style="width: 100px;">
-                    <option value="wilcoxon">wilcoxon</option>
                     <option value="limma">limma</option>
+                    <option value="wilcoxon">wilcoxon</option>
                     <option value="edgeR">edgeR</option>
                     <option value="DESeq2">DESeq2</option>
                 </select>

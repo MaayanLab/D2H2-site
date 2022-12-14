@@ -1716,7 +1716,7 @@ $(document).ready(function() {
                 
             document.getElementById("geneset-buttons").innerHTML = (clear_button)
             document.getElementById("enrichment-area").innerHTML  = `
-            <div class="h4 pl-2 mt-4 mb-4 text-center">Enrichment Analysis for ${desc}</div>
+            <div class="h4 pl-2 mt-4 mb-4 text-center">Enrichment Analysis for Highly Expressed Genes in ${desc}</div>
             <div class="row justify-content-center mx-auto text-center">
             <div class="mt-3 h7">Submit the top</div>
             <input id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2' style='width: 60px;'/>
@@ -1725,7 +1725,7 @@ $(document).ready(function() {
             <div class="mt-3 h7">to</div>
             </div>
             <div class="row justify-content-center mx-auto text-center">
-            <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3" onclick="filter_and_submit_to_enrichr('${genes.join(',')}', '${pvals.join(',')}', '${desc}')"> Submit to Enricher
+            <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3" onclick="filter_and_submit_to_enrichr('${genes.join(',')}', '${pvals.join(',')}', 'Highly Expressed Genes in ${desc}')"> Submit to Enricher
             <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
             </button>
             </div>
