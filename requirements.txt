@@ -22,5 +22,10 @@ leidenalg==0.9.0
 numba==0.55.0
 umap-learn==0.5.2
 s3fs
+datashader
+holoviews
+scikit-image
+umap
+seaborn
 
 
