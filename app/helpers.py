@@ -7,32 +7,36 @@ from maayanlab_bioinformatics.normalization.quantile import quantile_normalize
 # bokeh
 from bokeh.plotting import figure
 from bokeh.embed import json_item
-from bokeh.models import ColumnDataSource
-from bokeh.models import HoverTool, Legend, CategoricalColorMapper, NumeralTickFormatter
+from bokeh.models import ColumnDataSource, NumeralTickFormatter
 from bokeh.transform import factor_cmap
 from bokeh.palettes import Category20
+
+import seaborn as sns
+
 import matplotlib.cm as cm
 import matplotlib.colors as colors
 import numpy as np
-import anndata
+# Sklearn
+from sklearn.manifold import TSNE
+
+from scipy.stats import zscore
+import scanpy as sc
 import s3fs
-import h5py
 
 import os
 import re
 import hashlib
-
-import scanpy as sc
-import seaborn as sns
-from sklearn.manifold import TSNE
-from scipy.stats import zscore
 
 
 base_url = os.environ.get('BASE_URL')
 
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': 'https://minio.dev.maayanlab.cloud/'})
 
+base_url = 'd2h2/data'
+
+s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': 'https://minio.dev.maayanlab.cloud/'})
 ########################## QUERY ENRICHER ###############################
+
 
 @lru_cache()
 def query_enricher(gene):

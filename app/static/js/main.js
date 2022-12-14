@@ -128,22 +128,22 @@ function submit_geneset_home(genelist, sigs, descset) {
     });
     var numgenes = document.getElementById('numgenes').value
     var signifigance = document.getElementById('signifigance').value
-    var dir = document.getElementById('dir').value
-
+    var genes_valid = []
     console.log(signifigance)
+    console.log(genelist)
+    console.log(numgenes)
 
     for (i=0; i < genelist.length; i++ ){
         if (sigs[i] <= signifigance) {
-            genes_valid.append(genes[i])
+            genes_valid.push(genelist[i])
         }
     }
-    if (dir === 'top') {
-        var genes = genes_valid.splice(0, numgenes).join('&')
-    } else {
-        var genes = genes_valid.slice(-numgenes).join('&')
-    }
+
+    var genes = genes_valid.splice(0, numgenes).join('&')
+    console.log(genes)
+
     localStorage.setItem('genes', genes)
-    localStorage.setItem('descset', `${descset}-${dir}-${numgenes}`)
+    localStorage.setItem('descset', `${descset}-${numgenes}`)
     var home = window.location.href.split('/').filter(x => !x.includes('GSE')).join('/')
     window.open(home, '_blank')
 }

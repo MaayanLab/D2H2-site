@@ -4,12 +4,12 @@
 <div class="justify-content-center container-fluid">
   <div class="col-12 justify-content-center mx-auto banner">
 
-    <div class="mt-4 justify-content-center row" style="flex-wrap: wrap;">
+    <div class="mt-2 justify-content-center row" style="flex-wrap: wrap;">
 
       <!-- Main Panel -->
       <div class="col-md-10 col-lg-5 col-sm-10 m-2 custom-col">
         <div class="row justify-content-center mt-4 mb-4">
-          <div class="text-center col-lg-12 mt-5">
+          <div class="text-center col-lg-12 mt-2">
 
             <img class="p-0 m-0" style="width: 150px" src="{{ url_for('static', filename='img/d2h2logo.png') }}"
               alt="D2H2 logo" />
@@ -28,14 +28,14 @@
               href="#visualize">visualized </a>, and <a href="#enrichranalysis">used for enrichment analysis</a>.</p>
         </div>
 
-        <div class="text-center mt-4"><h5>Processed Bulk RNA-seq and Microarray Studies</h5></div>
+        <div class="text-center mt-5"><h5>Processed Bulk RNA-seq and Microarray Studies</h5></div>
         <div class="row">
           
-          <div class="col text-right mr-5">
+          <div class="col text-right mr-5 mb-4">
             <h6>Human</h6>
             <div class="countup num-style">{{ numstudies[0] }}</div>
           </div>
-          <div class="col text-left ml-5">
+          <div class="col text-left ml-5 mb-4">
             <h6>Mouse</h6>
             <div class="countup num-style">{{ numstudies[1] }}</div>
           </div>
