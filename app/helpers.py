@@ -7,7 +7,7 @@ from maayanlab_bioinformatics.normalization.quantile import quantile_normalize
 # bokeh
 from bokeh.plotting import figure
 from bokeh.embed import json_item
-from bokeh.models import ColumnDataSource, NumeralTickFormatter
+from bokeh.models import ColumnDataSource, NumeralTickFormatter, CategoricalColorMapper, Legend, HoverTool
 from bokeh.transform import factor_cmap
 from bokeh.palettes import Category20
 
@@ -26,6 +26,8 @@ import s3fs
 import os
 import re
 import hashlib
+import h5py
+import anndata
 
 
 base_url = os.environ.get('BASE_URL')
