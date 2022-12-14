@@ -20,8 +20,8 @@ import scanpy as sc
 from sklearn.preprocessing import StandardScaler
 
 
-base_url = os.environ.get('BASE_URL')
-ROOT_PATH = os.environ.get('ROOT_PATH', '/lncHUB2/')
+base_url = os.environ.get('BASE_URL', 'd2h2/data')
+ROOT_PATH = os.environ.get('ROOT_PATH', '/d2h2/')
 BASE_PATH = os.environ.get('BASE_PATH', 'maayanlab.cloud')
 
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': 'https://minio.dev.maayanlab.cloud/'})
@@ -32,7 +32,7 @@ app = Flask(__name__, static_url_path=ROOT_PATH + 'static')
 
 @app.route(ROOT_PATH, methods=['GET', 'POST'])
 def home():
-	update_tweets_table(datetime.datetime.date)
+	#update_tweets_table(datetime.datetime.date)
 	return render_template('home.html', base_path=BASE_PATH, gse_metadata=gse_metadata, numstudies=[len(gse_metadata['human'].keys()), len(gse_metadata['mouse'].keys())])
 
 @app.route(f"{ROOT_PATH}/about", methods=['GET', 'POST'])
@@ -767,11 +767,10 @@ def get_study_data():
 	expression_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
 
 	
-
-	with open(metadata_file, 'r') as f:
+	with s3.open(metadata_file, 'r') as f:
 		meta_data = f.read()
 
-	with open(expression_file, 'r') as f:
+	with s3.open(expression_file, 'r') as f:
 		expression_data = f.read()
 
 	selected_conditions = []
@@ -801,9 +800,16 @@ def visualize_samps():
 	meta_df = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 	expr_df = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
 
+	pca_df, tsne_df, umap_df = bulk_vis(expr_df, meta_df)
+
+	pca_plot = interactive_circle_plot(pca_df, "PC-1", "PC-2", pca_df.columns[0], 'pca')
+
+	tsne_plot = interactive_circle_plot(tsne_df, "t-SNE-1", "t-SNE-2", tsne_df.columns[0], 'tsne')
+
+	umap_plot = interactive_circle_plot(umap_df, "UMAP-1", "UMAP-2", umap_df.columns[0], 'umap')
 
 
-
+	return json.dumps({'pcaplot': pca_plot, 'tsneplot': tsne_plot, 'umapplot': umap_plot})
 
 
 
