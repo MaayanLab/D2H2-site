@@ -1726,7 +1726,7 @@ $(document).ready(function() {
             </div>
             <div class="row justify-content-center mx-auto text-center">
             <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3" onclick="filter_and_submit_to_enrichr('${genes.join(',')}', '${pvals.join(',')}', '${desc}')"> Submit to Enricher
-            <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enricher">
+            <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
             </button>
             </div>
             `

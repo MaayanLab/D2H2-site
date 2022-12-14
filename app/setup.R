@@ -11,6 +11,8 @@ BiocManager::install("edgeR")
 BiocManager::install("DESeq2")
 
 install.packages("statmod")
+install.packages("R.utils")
+install.packages("RCurl")
 
 # verify
 require(limma)
