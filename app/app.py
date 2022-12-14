@@ -187,23 +187,21 @@ def dgesingle():
 	base_expression_filename = metadict[condition_group]['filename']
 	expr_file = '{base_url}/{species}/{gse}/{file}'.format(species=species, gse=gse, base_url=base_url, file=base_expression_filename)
 	#compute_dge_single(adata, diff_gex_method, 'Cluster', 'leiden', True)
-	adata = read_anndata_raw(expr_file)
-	adata_raw = adata.raw.to_adata()
+	#adata = read_anndata_raw(expr_file)
+	#adata_raw = adata.raw.to_adata()
 	#Passing the gene information as cells x genes for the differential expression method. 
-	adata = adata.T
-	adata.raw = adata_raw.T
-	if 'log1p' in adata.uns.keys():
-		del adata.uns['log1p']
-	if method == 'limma' or method == 'edgeR':
-		data_dict = compute_dge_single(adata, method, 'Cluster', 'leiden',cluster_group, True)
-	else:
-		data_dict = compute_dge_single(adata, method, 'Cluster', 'leiden',cluster_group, True)
+	#adata = adata.T
+	#adata.raw = adata_raw.T
+	
+	#if method == 'limma' or method == 'edgeR':
+	data_dict = compute_dge_single(expr_file, method, 'Cluster', 'leiden',cluster_group, True)
+	#data_dict = compute_dge_single(expr_file, method, 'Cluster', 'leiden',cluster_group, True)
+
 	jsonplot = None
 	string_data = None
 	description = None
 	for key in data_dict:
-		print(key)
-		print(data_dict[key].head())
+
 		jsonplot = make_dge_plot(data_dict[key],key, method)
 		string_data = data_dict[key].to_string()
 		description = key
@@ -225,7 +223,20 @@ def makesingleplots():
 	base_expression_filename = metadict[condition_group]['filename']
 	expr_file = '{base_url}/{species}/{gse}/{file}'.format(species=species, gse=gse, base_url=base_url, file=base_expression_filename)
 	#The data is originally in genesxcells so transpose to make it cells x genes
-	time_start = datetime.datetime.now()
+
+	f = read_anndata_h5(expr_file)
+	pca_df = pd.DataFrame(data=f['varm/X_pca'][:,:2], columns = ['x', 'y'])
+	umap_df = pd.DataFrame(data=f['varm/X_umap'][:], columns = ['x', 'y'])
+	tsne_df = pd.DataFrame(data=f['varm/X_tsne'][:,:2], columns = ['x', 'y'])
+	clus_numbers = f["var/leiden/codes"][:]
+	leiden_values = list(map(lambda x: "Cluster " + str(x), clus_numbers))
+	values_dict = {"Cluster": leiden_values}
+	category_list_dict = {"Cluster": list(sorted(set(leiden_values)))}
+	cells = f['var/column_names'][:].astype(str)
+
+
+
+	""" time_start = datetime.datetime.now()
 	adata = read_anndata_raw(expr_file).T
 	time_end = datetime.datetime.now()
 	print('TIME TO READ ANNDATA ' + str(time_end-time_start))
@@ -240,12 +251,14 @@ def makesingleplots():
 	# X_scaled = scaler.transform(adata.obsm['X_pca'][:,:2])
 	pca_df = pd.DataFrame(adata.obsm['X_pca'][:,:2])
 	pca_df.columns = ['x', 'y']
+
+	print(pca_df)
 	tsne_df = pd.DataFrame(adata.obsm['X_tsne'][:,:2])
-	tsne_df.columns = ['x', 'y']
+	tsne_df.columns = ['x', 'y'] """
 	
-	jsonplotumap = make_single_visialization_plot(umap_df, values_dict,'umap', ["Cluster"], adata.obs.index.tolist(), "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict, category=True, dropdown=False)
-	jsonplottsne = make_single_visialization_plot(tsne_df, values_dict,'tsne', ["Cluster"], adata.obs.index.tolist(), "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict, category=True, dropdown=False)
-	jsonplotpca = make_single_visialization_plot(pca_df, values_dict,'pca', ["Cluster"], adata.obs.index.tolist(), "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict, category=True, dropdown=False)
+	jsonplotumap = make_single_visialization_plot(umap_df, values_dict,'umap', ["Cluster"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict, category=True, dropdown=False)
+	jsonplottsne = make_single_visialization_plot(tsne_df, values_dict,'tsne', ["Cluster"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict, category=True, dropdown=False)
+	jsonplotpca = make_single_visialization_plot(pca_df, values_dict,'pca', ["Cluster"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict, category=True, dropdown=False)
 
 
 	return json.dumps({'umapplot': jsonplotumap, 'tsneplot':jsonplottsne, 'pcaplot':jsonplotpca })
@@ -265,10 +278,24 @@ def getclusterinfo():
 	base_expression_filename = metadict[condition_group]['filename']
 	expression_file = base_url + '/' + species + '/' + gse + '/' + base_expression_filename
 	#Transposing to get the data with cells as rows and genes as columns. 
-	adata = read_anndata_raw(expression_file).T
+
+	adata = read_anndata_h5(expression_file)
+	print('after reading adata')
+	#Stores the list of cluster names. 
+	leiden_data = adata["var/leiden/categories"][:].astype(str)
+	clus_numbers = adata["var/leiden/codes"][:]
+	leiden_data_vals = list(map(lambda x: "Cluster " + str(x), clus_numbers))
+	classes = sorted(leiden_data)
+	classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
+	#Stores the number of of cells correlated to each cluster. 
+	metadata_dict_counts = pd.Series(leiden_data_vals).value_counts().to_dict()
+
+	""" adata = read_anndata_raw(expression_file).T
 	classes = sorted(adata.obs["leiden"].unique().tolist())
 	classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
-	metadata_dict_counts = adata.obs["leiden"].value_counts().to_dict()
+	metadata_dict_counts = adata.obs["leiden"].value_counts().to_dict() """
+
+
 	return {"classes":classes, "metadict":metadata_dict_counts}
 	
 #############################################
@@ -560,9 +587,9 @@ def genes_api_single(geo_accession, condition):
 	metadata_json = json.load(meta_file)
 	expression_base_name = metadata_json[condition]['filename']
 	expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + expression_base_name
-	adata = read_anndata_raw(expression_file)
-	adata_df = adata.to_df()
-	genes_json = json.dumps([{'gene_symbol': x} for x in adata_df.index])
+	f = read_anndata_h5(expression_file)
+	genes = np.array(f['obs/gene_symbols'][:].astype(str))
+	genes_json = json.dumps([{'gene_symbol': x} for x in genes])
 	#go into anndata and get the genes for each human single
 
 	return genes_json
@@ -591,26 +618,51 @@ def plot_api_single(geo_accession, condition):
 	metadata_json = json.load(meta_file)
 	base_expression_name = metadata_json[condition]['filename']
 	expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + base_expression_name
-	expression_adata = read_anndata_raw(expression_file)
-	expression_adata = expression_adata.raw.to_adata()
-	expression_dataframe = expression_adata.to_df()
-	adata = expression_adata.T
-	time_now = datetime.datetime.now()
-	print(time_now-time_start)
-	leiden_vals = adata.obs["leiden"].tolist()
-	cell_names = adata.obs['column_names'].tolist()
-	df_dict = {'Sample_geo_accession':cell_names, 'Condition':leiden_vals}
-	metadata_dataframe = pd.DataFrame.from_dict(df_dict)
-	# Get data
+	#expression_adata = read_anndata_raw(expression_file)
 	data = request.json
 	gene_symbol = data['gene_symbol']
 
 	conditions = data['conditions']
+
+	f = read_anndata_h5(expression_file)
+
+	genes = np.array(f['obs/gene_symbols'][:].astype(str))
+
+	clus_numbers = f["var/leiden/codes"][:]
+
+	leiden_values = list(map(lambda x: "Cluster " + str(x), clus_numbers))
+
+	idx = np.where(genes == gene_symbol)[0][0]
+
+	vals = f['raw/X'][idx,:]
+
+
+	melted_dataframe = pd.DataFrame(data=[vals, leiden_values]).T
+	melted_dataframe.columns = ['expr_vals', 'Condition']
+	time_now = datetime.datetime.now()
+
+	""" expression_adata = read_anndata_raw(expression_file)
+	
+	expression_adata = expression_adata.raw.to_adata()
+	expression_dataframe = expression_adata.to_df()
+	adata = expression_adata.T
+	
+	print(time_now-time_start)
+	leiden_vals = adata.obs["leiden"].tolist()
+	cell_names = adata.obs['column_names'].tolist()
+	print(leiden_vals)
+	print(cell_names)
+
+	df_dict = {'Sample_geo_accession':cell_names, 'Condition':leiden_vals}
+	metadata_dataframe = pd.DataFrame.from_dict(df_dict) """
+	# Get data
+	
 	# print(conditions)
 
 	# Create a new dataframe that maps each sample to its condition
-	melted_dataframe = expression_dataframe.loc[gene_symbol].rename('expr_vals').rename_axis('Sample_geo_accession').reset_index().merge(metadata_dataframe, on="Sample_geo_accession")
-
+	#melted_dataframe = expression_dataframe.loc[gene_symbol].rename('expr_vals').rename_axis('Sample_geo_accession').reset_index().merge(metadata_dataframe, on="Sample_geo_accession")
+	
+	print(melted_dataframe)
 	# Get plot dataframe
 	plot_dataframe = melted_dataframe.groupby('Condition')['expr_vals'].agg([np.mean, np.std, lambda x: list(x)])#.rename(columns={'<lambda>': 'points'})#.reindex(conditions)
 	print(plot_dataframe.shape)
