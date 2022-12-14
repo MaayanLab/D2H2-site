@@ -188,7 +188,7 @@ body {
     border-width: 1.5px;
     border-style: solid;
     border-radius: 1%;
-    
+    overflow: auto;
 }
 
 .navbar.center .navbar-inner {

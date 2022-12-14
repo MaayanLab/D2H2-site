@@ -13,6 +13,10 @@ import scipy.stats as ss
 import s3fs
 import scanpy as sc
 import anndata
+import random
+from helpers import read_anndata_h5, read_anndata_raw
+
+
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': 'https://minio.dev.maayanlab.cloud/'})
 
 def qnormalization(data):
@@ -278,7 +282,7 @@ def compute_dge(rnaseq_data_filename, meta_data_filename, diff_gex_method, contr
 
 
 ########## SINGLE CELL DGE METHODS ###########
-def get_signatures_single(classes, dataset, method, meta_class_column_name, cluster=True, filter_genes=True, aggregate = False):
+def get_signatures_single(classes, expr_file, method, meta_class_column_name, cluster=True, filter_genes=True, aggregate = False):
            
     robjects.r('''edgeR <- function(rawcount_dataframe, g1, g2) {
         # Load packages
@@ -324,25 +328,42 @@ def get_signatures_single(classes, dataset, method, meta_class_column_name, clus
     # raw_expr_df = dataset.raw.to_adata().to_df().T
     # meta_df = dataset.obs
     #Getting the same number of samples from each cluster to use for diffrential gene expression. 
+    f = read_anndata_h5(expr_file)
+    
+    leiden_data = f["var/leiden/categories"][:].astype(str)
+    clus_numbers = f["var/leiden/codes"][:]
+    leiden_data_vals = list(map(lambda x: "Cluster " + str(x), clus_numbers))
+    #classes = sorted(leiden_data)
+    #classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
+	#Stores the number of of cells correlated to each cluster. 
+    metadata_dict_counts = pd.Series(leiden_data_vals).value_counts()
+    genes = np.array(f['obs/gene_symbols'][:].astype(str))
+    cells = f['var/column_names'][:].astype(str)
+
     if cluster == True and aggregate == True:
-        adata_raw = dataset.raw.to_adata()
-        num_to_sample = min(min(adata_raw.obs.leiden.value_counts()),15)
+        #adata_raw = dataset.raw.to_adata()
+        num_to_sample = min(min(metadata_dict_counts),15)
         list_of_adata = []
-        for cls in adata_raw.obs.leiden.value_counts().keys():
-            adata_sub = adata_raw[adata_raw.obs['leiden'] == cls]
-            adata_sample = sc.pp.subsample(adata_sub, n_obs=num_to_sample, copy=True)
+        for cls in metadata_dict_counts.keys():
+            leiden_data_vals = pd.Series(leiden_data_vals)
+            cls_leiden_vals = leiden_data_vals[leiden_data_vals == cls]
+            idx = list(sorted(random.sample(list(cls_leiden_vals.index.values), k=num_to_sample)))
+            adata_sample = pd.DataFrame(f['raw/X'][:, idx], index=genes, columns=cells[idx])
+            #adata_sub = adata_raw[adata_raw.obs['leiden'] == cls]
+            #adata_sample = sc.pp.subsample(adata_sub, n_obs=num_to_sample, copy=True)
             list_of_adata.append(adata_sample)
-        full_adata = anndata.concat(list_of_adata)
+        full_adata = pd.concat(list_of_adata, axis=1)
         #Need to repeat for the normalized data. 
-        expr_df = full_adata.to_df().T
-        raw_expr_df = full_adata.to_df().T
-        meta_df = full_adata.obs
+        print(full_adata)
+        expr_df = full_adata
+        raw_expr_df = full_adata
+        #meta_df = leiden_data_vals
         # print(meta_df.head())
-        print(meta_df.shape)
+        #print(meta_df.shape)
     
     signatures = dict()
     #GETTING THE TOP GENES RATHER THAN DOING DGE WITH CERTAIN METHODS
-    if method == 'none':
+    """if method == 'none':
         for cls1 in classes:
             signature_label = f"{cls1} vs. rest"
             print("Analyzing.. {} using {}".format(signature_label, method))
@@ -355,18 +376,21 @@ def get_signatures_single(classes, dataset, method, meta_class_column_name, clus
             print(yaxis_gene_names)
             print(cluster_data.shape)
             signatures[signature_label] = yaxis_gene_names
-        return signatures
+        return signatures """
+    
     if cluster == True and aggregate == True:
-        sc.tl.rank_genes_groups(dataset, meta_class_column_name, method='wilcoxon', use_raw=True)
+        
             
         for cls1 in classes:
             signature_label = f"{cls1} vs. rest"
             print("Analyzing.. {} using {}".format(signature_label, method))
-            cls1_sample_ids = meta_df.loc[meta_df[meta_class_column_name]==cls1, :].index.tolist() #case
-            non_cls1_sample_ids = meta_df.loc[meta_df[meta_class_column_name]!=cls1, :].index.tolist() #control
+            cols = pd.Series(full_adata.columns)
+            cls1_sample_ids = cols[cols == cls1].tolist() #case
+            non_cls1_sample_ids = cols[cols != cls1].tolist()#control
             sample_ids = non_cls1_sample_ids.copy()
             sample_ids.extend(cls1_sample_ids)
-            tmp_raw_expr_df = raw_expr_df[sample_ids]
+            tmp_raw_expr_df = raw_expr_df
+            print(tmp_raw_expr_df)
             if method == "limma":
                 signature = limma_voom_differential_expression(tmp_raw_expr_df.loc[:, non_cls1_sample_ids], tmp_raw_expr_df.loc[:, cls1_sample_ids])
                 signature.rename(columns={"AveExpr": "AvgExpr"}, inplace=True)
@@ -391,7 +415,15 @@ def get_signatures_single(classes, dataset, method, meta_class_column_name, clus
                 signature.index = DESeq2_results[1]
                 signature.columns = DESeq2_results[2]
                 signature = signature.sort_values("log2FoldChange", ascending=False)
-            elif method == "wilcoxon":   
+            elif method == "wilcoxon":  
+                dataset = read_anndata_raw(expr_file)
+                dataset_raw = dataset.raw.to_adata()
+                #Passing the gene information as cells x genes for the differential expression method. 
+                dataset = dataset.T
+                dataset.raw = dataset_raw.T
+                if 'log1p' in dataset.uns.keys():
+                    del dataset.uns['log1p']
+                sc.tl.rank_genes_groups(dataset, meta_class_column_name, method='wilcoxon', use_raw=True)
                 dedf = sc.get.rank_genes_groups_df(dataset, group=cls1).set_index('names').sort_values('pvals', ascending=True)
                 dedf = dedf.replace([np.inf, -np.inf], np.nan).dropna()              
                 dedf = dedf.sort_values("logfoldchanges", ascending=False)
@@ -399,8 +431,10 @@ def get_signatures_single(classes, dataset, method, meta_class_column_name, clus
                 
             signatures[signature_label] = signature
     return signatures
+
+
 #compute_dge_single(adata, diff_gex_method, 'Cluster', 'leiden', True)
-def compute_dge_single(adata, diff_gex_method, enrichment_groupby, meta_class_column_name,clustergroup, agg):
+def compute_dge_single(expr_file, diff_gex_method, enrichment_groupby, meta_class_column_name,clustergroup, agg):
     if diff_gex_method == "characteristic_direction":
         fc_colname = "CD-coefficient"
         sort_genes_by = "CD-coefficient"
@@ -422,25 +456,13 @@ def compute_dge_single(adata, diff_gex_method, enrichment_groupby, meta_class_co
         sort_genes_by = "scores"
         ascending = False
         
+    #f = read_anndata_h5(expr_file)
         
-    if enrichment_groupby == "user_defined_class":
-        classes = adata.obs[meta_class_column_name].unique().tolist()
-        bool_cluster=False
-        if len(classes) < 2:
-            print("Warning: Please provide at least 2 classes in the metadata")
+
+    meta_class_column_name = "leiden"
+    classes = [clustergroup]
+    bool_cluster=True
         
-    elif enrichment_groupby == "Cluster":
-        meta_class_column_name = "leiden"
-        classes = sorted(adata.obs["leiden"].unique().tolist())
-        classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
-        classes = [clustergroup]
-        bool_cluster=True
-    else:
-        meta_class_column_name = enrichment_groupby
-        classes = sorted(adata.obs[meta_class_column_name].unique().tolist())
-        classes.sort()
-        bool_cluster=True
-        
-    signatures = get_signatures_single(classes, adata, method=diff_gex_method, meta_class_column_name=meta_class_column_name, cluster=bool_cluster, aggregate = agg)
+    signatures = get_signatures_single(classes, expr_file, method=diff_gex_method, meta_class_column_name=meta_class_column_name, cluster=bool_cluster, aggregate = agg)
     
     return signatures
