@@ -17,11 +17,10 @@ from twitterauth import update_tweets_table
 from dge import *
 import anndata
 import scanpy as sc
-from sklearn.preprocessing import StandardScaler
 
 
 base_url = os.environ.get('BASE_URL', 'd2h2/data')
-ROOT_PATH = os.environ.get('ROOT_PATH', '/d2h2/')
+ROOT_PATH = os.environ.get('ROOT_PATH', '/')
 BASE_PATH = os.environ.get('BASE_PATH', 'maayanlab.cloud')
 
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': 'https://minio.dev.maayanlab.cloud/'})
@@ -833,7 +832,7 @@ def visualize_samps():
 #######################################################
 if __name__ == "__main__":
 
-	#serve(app, host="0.0.0.0", port=5000)
-	app.run(debug=True, host="0.0.0.0")
+	serve(app, host="0.0.0.0", port=5000)
+	#app.run(debug=True, host="0.0.0.0")
 
 
