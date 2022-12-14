@@ -333,8 +333,8 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
     leiden_data = f["var/leiden/categories"][:].astype(str)
     clus_numbers = f["var/leiden/codes"][:]
     leiden_data_vals = list(map(lambda x: "Cluster " + str(x), clus_numbers))
-    classes = sorted(leiden_data)
-    classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
+    #classes = sorted(leiden_data)
+    #classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
 	#Stores the number of of cells correlated to each cluster. 
     metadata_dict_counts = pd.Series(leiden_data_vals).value_counts()
     genes = np.array(f['obs/gene_symbols'][:].astype(str))
@@ -390,6 +390,7 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
             sample_ids = non_cls1_sample_ids.copy()
             sample_ids.extend(cls1_sample_ids)
             tmp_raw_expr_df = raw_expr_df
+            print(tmp_raw_expr_df)
             if method == "limma":
                 signature = limma_voom_differential_expression(tmp_raw_expr_df.loc[:, non_cls1_sample_ids], tmp_raw_expr_df.loc[:, cls1_sample_ids])
                 signature.rename(columns={"AveExpr": "AvgExpr"}, inplace=True)
