@@ -338,6 +338,7 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
 	#Stores the number of of cells correlated to each cluster. 
     metadata_dict_counts = pd.Series(leiden_data_vals).value_counts()
     genes = np.array(f['obs/gene_symbols'][:].astype(str))
+    cells = f['var/column_names'][:].astype(str)
 
     if cluster == True and aggregate == True:
         #adata_raw = dataset.raw.to_adata()
@@ -347,18 +348,18 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
             leiden_data_vals = pd.Series(leiden_data_vals)
             cls_leiden_vals = leiden_data_vals[leiden_data_vals == cls]
             idx = list(sorted(random.sample(list(cls_leiden_vals.index.values), k=num_to_sample)))
-            adata_sample = pd.DataFrame(f['raw/X'][:, idx], index=genes, columns=[cls]*num_to_sample)
+            adata_sample = pd.DataFrame(f['raw/X'][:, idx], index=genes, columns=cells[idx])
             #adata_sub = adata_raw[adata_raw.obs['leiden'] == cls]
             #adata_sample = sc.pp.subsample(adata_sub, n_obs=num_to_sample, copy=True)
             list_of_adata.append(adata_sample)
         full_adata = pd.concat(list_of_adata, axis=1)
         #Need to repeat for the normalized data. 
         print(full_adata)
-        expr_df = full_adata.T
-        raw_expr_df = full_adata.T
-        meta_df = leiden_data_vals
+        expr_df = full_adata
+        raw_expr_df = full_adata
+        #meta_df = leiden_data_vals
         # print(meta_df.head())
-        print(meta_df.shape)
+        #print(meta_df.shape)
     
     signatures = dict()
     #GETTING THE TOP GENES RATHER THAN DOING DGE WITH CERTAIN METHODS
@@ -384,16 +385,16 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
             signature_label = f"{cls1} vs. rest"
             print("Analyzing.. {} using {}".format(signature_label, method))
             cols = pd.Series(full_adata.columns)
-            cls1_sample_ids = cols[cols == cls1].index.tolist() #case
-            non_cls1_sample_ids = cols[cols != cls1].index.tolist()#control
+            cls1_sample_ids = cols[cols == cls1].tolist() #case
+            non_cls1_sample_ids = cols[cols != cls1].tolist()#control
             sample_ids = non_cls1_sample_ids.copy()
             sample_ids.extend(cls1_sample_ids)
             tmp_raw_expr_df = raw_expr_df
             if method == "limma":
-                signature = limma_voom_differential_expression(tmp_raw_expr_df.iloc[:, non_cls1_sample_ids], tmp_raw_expr_df.iloc[:, cls1_sample_ids])
+                signature = limma_voom_differential_expression(tmp_raw_expr_df.loc[:, non_cls1_sample_ids], tmp_raw_expr_df.loc[:, cls1_sample_ids])
                 signature.rename(columns={"AveExpr": "AvgExpr"}, inplace=True)
             elif method == "characteristic_direction":
-                signature = characteristic_direction(expr_df.iloc[:, non_cls1_sample_ids], expr_df.iloc[:, cls1_sample_ids], calculate_sig=False)
+                signature = characteristic_direction(expr_df.loc[:, non_cls1_sample_ids], expr_df.loc[:, cls1_sample_ids], calculate_sig=False)
             elif method == "edgeR":
                 edgeR = robjects.r['edgeR']
                 edgeR_results = pandas2ri.conversion.rpy2py(edgeR(pandas2ri.conversion.py2rpy(tmp_raw_expr_df), pandas2ri.conversion.py2rpy(non_cls1_sample_ids), pandas2ri.conversion.py2rpy(cls1_sample_ids)))
@@ -414,9 +415,13 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
                 signature.columns = DESeq2_results[2]
                 signature = signature.sort_values("log2FoldChange", ascending=False)
             elif method == "wilcoxon":  
-                dataset = read_anndata_raw(expr_file) 
+                dataset = read_anndata_raw(expr_file)
+                dataset_raw = dataset.raw.to_adata()
+                #Passing the gene information as cells x genes for the differential expression method. 
+                dataset = dataset.T
+                dataset.raw = dataset_raw.T
                 if 'log1p' in dataset.uns.keys():
-		            del dataset.uns['log1p']
+                    del dataset.uns['log1p']
                 sc.tl.rank_genes_groups(dataset, meta_class_column_name, method='wilcoxon', use_raw=True)
                 dedf = sc.get.rank_genes_groups_df(dataset, group=cls1).set_index('names').sort_values('pvals', ascending=True)
                 dedf = dedf.replace([np.inf, -np.inf], np.nan).dropna()              
