@@ -442,15 +442,15 @@ else:
 	with open('static/searchdata/metadatasingle-v1.pickle', 'rb') as f:	
 		gse_metadata_single = pickle.load(f)
 
-# numstudies_single= [len(gse_metadata_single['human_single'].keys()), len(gse_metadata_single['mouse_single'].keys())]
+numstudies_single= [len(gse_metadata_single['human_single'].keys()), len(gse_metadata_single['mouse_single'].keys())]
 
-# if numstudies_single[0] != len(human_singlegses) and numstudies_single[1] != len(mouse_singlegses):
-# 	for species, geo_accession_ids in species_mapping_single.items():
-# 		for geo_accession in geo_accession_ids:
-# 			if geo_accession not in gse_metadata_single[species]:
-# 				gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
-# 	with open('static/searchdata/metadatasingle-v1.pickle', 'wb') as f:
-# 		pickle.dump(gse_metadata_single, f, protocol=pickle.HIGHEST_PROTOCOL)
+if numstudies_single[0] != len(human_singlegses) and numstudies_single[1] != len(mouse_singlegses):
+	for species, geo_accession_ids in species_mapping_single.items():
+		for geo_accession in geo_accession_ids:
+			if geo_accession not in gse_metadata_single[species]:
+				gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
+	with open('static/searchdata/metadatasingle-v1.pickle', 'wb') as f:
+		pickle.dump(gse_metadata_single, f, protocol=pickle.HIGHEST_PROTOCOL)
 	
 #Single cell studies from study to the species name
 study_to_species_single = {study:species_name for species_name, studies_metadata in gse_metadata_single.items() for study in studies_metadata.keys()}
