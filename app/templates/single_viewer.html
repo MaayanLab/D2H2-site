@@ -229,9 +229,9 @@
             <div class="row justify-items-center justify-content-center mb-3 mt-3 text-center">
                 <select name="Select Method" id="method" class="libpicker" style="width: 100px;">
                     <option value="limma">limma</option>
-                    <option value="wilcoxon">wilcoxon</option>
+                    <!-- <option value="wilcoxon">wilcoxon</option> -->
                     <option value="edgeR">edgeR</option>
-                    <option value="DESeq2">DESeq2</option>
+                    <!-- <option value="DESeq2">DESeq2</option> -->
                 </select>
             </div>
             <div id="normalization" style="display: none;">
@@ -345,58 +345,6 @@ $("#singleviewer").parents('li').addClass('active');
 
 generate_single_plots()
 
-// single_substudy.addEventListener('change', function handleChange(event) {
-
-//     var gse = document.getElementById("singlegse").innerText
-//     var species = document.getElementById("species").innerText
-//     var condition_group = document.getElementById("methodsingle").value
-//     generate_single_plots()
-//     var gsedata = JSON.stringify({'gse': gse, 'species': species, 'conditiongroup':condition_group});
-//     console.log(gsedata)
-//     console.log('In the change in viewer')
-//     $.ajax({
-//         url: "/getclusterdata",
-//         contentType: 'application/json',
-//         type: "POST",
-//         data: gsedata,
-//         dataType: 'json',
-//     }).done(function(response) {
-
-//         const classes = response['classes']
-//         const metadict = response['metadict']
-//         console.log(classes)
-//         console.log(metadict)
-//         document.getElementById("singlecell").innerHTML = ''
-//         tabletext = ''
-//         for (var k = 0; k < classes.length; k++) {
-//                 tabletext += `<tr>
-//                         <td class="p-0 ml-3 border"><button
-//                                 style="background-color: #ECEFF1; color: black; width: max-content;"
-//                                 class="btn m-0 rounded-0 py-0 condition-btn active plotted " data-toggle="button"
-//                                 autocomplete="off"
-//                                 data-group_label="${classes[k]}">${classes[k]}</button>
-//                         </td>
-
-//                         <td class="border" style="padding: 0px 18px; width: max-content;">
-//                             <button
-//                                 style="width: max-content;"
-//                                 class="btn-custom btn-group-sm btn-collapse collapsed d-flex align-items-center text-center"
-//                                 data-toggle="collapse" data-target="#samples-${gse}" aria-expanded="false"
-//                                 aria-controls="samples-${gse}">
-//                                 <div class="text">${metadict[classes[k]]} Cells
-//                                 </div>
-//                             </button>
-
-
-//                         </td>
-//                         </tr>`
-//             }
-//             document.getElementById("singlecell").innerHTML = tabletext
-
-
-//     });
-
-// });
 
 </script>
 

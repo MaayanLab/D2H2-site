@@ -176,7 +176,6 @@ def dge():
 @app.route('/dgeapisingle',  methods=['GET','POST'])
 def dgesingle():
 	response_json = request.get_json()
-	print(response_json)
 	method = response_json['method']
 	gse = response_json['gse']
 	species = response_json['species']
@@ -194,9 +193,7 @@ def dgesingle():
 	#adata = adata.T
 	#adata.raw = adata_raw.T
 	
-	#if method == 'limma' or method == 'edgeR':
 	data_dict = compute_dge_single(expr_file, method, 'Cluster', 'leiden',cluster_group, True)
-	#data_dict = compute_dge_single(expr_file, method, 'Cluster', 'leiden',cluster_group, True)
 
 	jsonplot = None
 	string_data = None
@@ -234,28 +231,6 @@ def makesingleplots():
 	values_dict = {"Cluster": leiden_values}
 	category_list_dict = {"Cluster": list(sorted(set(leiden_values)))}
 	cells = f['var/column_names'][:].astype(str)
-
-
-
-	""" time_start = datetime.datetime.now()
-	adata = read_anndata_raw(expr_file).T
-	time_end = datetime.datetime.now()
-	print('TIME TO READ ANNDATA ' + str(time_end-time_start))
-	values_dict = dict()
-	values_dict["Cluster"] = adata.obs["leiden"].values
-	category_list_dict = dict()
-	category_list_dict["Cluster"] = list(sorted(adata.obs["leiden"].unique()))
-	#Each of the values for the umap, tsne, and pca were precomputed so obtain them from the anndata object. 
-	umap_df = pd.DataFrame(adata.obsm['X_umap'])
-	umap_df.columns = ['x', 'y']
-	# scaler = StandardScaler().fit(adata.obsm['X_pca'][:,:2])
-	# X_scaled = scaler.transform(adata.obsm['X_pca'][:,:2])
-	pca_df = pd.DataFrame(adata.obsm['X_pca'][:,:2])
-	pca_df.columns = ['x', 'y']
-
-	print(pca_df)
-	tsne_df = pd.DataFrame(adata.obsm['X_tsne'][:,:2])
-	tsne_df.columns = ['x', 'y'] """
 	
 	jsonplotumap = make_single_visialization_plot(umap_df, values_dict,'umap', ["Cluster"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict, category=True, dropdown=False)
 	jsonplottsne = make_single_visialization_plot(tsne_df, values_dict,'tsne', ["Cluster"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict, category=True, dropdown=False)
@@ -267,10 +242,8 @@ def makesingleplots():
 #This function gets the different computed leiden clusters from the expression matrix and returns it as json dict for the cluster table on the single viewer page that is called when a new condition-profile is clicked.
 @app.route('/getclusterdata', methods=['GET', 'POST'])
 def getclusterinfo():
-	print("IN GET CLUSTER DATA")
 	#The json below holds information about the conditiongroup that we are looking at for this data as well the specific species. 
 	response_json = request.get_json()
-	print(response_json)
 	gse = response_json['gse']
 	species = response_json['species']
 	condition_group = response_json['conditiongroup']
@@ -281,7 +254,6 @@ def getclusterinfo():
 	#Transposing to get the data with cells as rows and genes as columns. 
 
 	adata = read_anndata_h5(expression_file)
-	print('after reading adata')
 	#Stores the list of cluster names. 
 	leiden_data = adata["var/leiden/categories"][:].astype(str)
 	clus_numbers = adata["var/leiden/codes"][:]
@@ -462,28 +434,15 @@ def species_or_viewerpg(species_or_gse):
 		species = study_to_species_single[geo_accession]
 		species_folder = url_to_folder_single[species]
 		#The metadata json is in form with key being the condition/profile and the value is a dictionary storing the file name and list of gsms that are part of that condition. 
-		print('before reading json file')
 		meta_file = s3.open(base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_metasep.json', 'r')
 		metadata_json = json.load(meta_file)
-		print(metadata_json)
 		list_of_conditions = []
 		for key in metadata_json.keys():
 			list_of_conditions.append(key)
 		default_condition = list_of_conditions[0]
 		expression_base_name = metadata_json[default_condition]['filename']
 		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + expression_base_name
-		print(expression_file)
-		# expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.h5'
-		print('before_reading anndata')
-		# adata = anndata.read_h5ad(s3.open(expression_file)).T
-		# print('after_reading_anndata')
-		# classes = sorted(adata.obs["leiden"].unique().tolist())
-		# #Stores the list of cluster names. 
-		# classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
-		# #Stores the number of of cells correlated to each cluster. 
-		# metadata_dict_counts = adata.obs["leiden"].value_counts().to_dict()
 		adata = read_anndata_h5(expression_file)
-		print('after reading adata')
 		#Stores the list of cluster names. 
 		leiden_data = adata["var/leiden/categories"][:].astype(str)
 		clus_numbers = adata["var/leiden/codes"][:]
@@ -511,7 +470,6 @@ def species_or_viewerpg(species_or_gse):
 # this will likely stay the same.
 @lru_cache(maxsize=None)
 def genes_api(geo_accession):
-	print(geo_accession)
 	if geo_accession == 'human':
 		with open('static/searchdata/t2d-human.json', 'r') as f:
 			human_genes = json.load(f)
@@ -525,7 +483,6 @@ def genes_api(geo_accession):
 		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.h5'
 		adata = anndata.read_h5ad(expression_file)
 		adata_df = adata.to_df()
-		print([{'gene_symbol': x} for x in adata_df.index][:10])
 		genes_json = json.dumps([{'gene_symbol': x} for x in adata_df.index])
 		#go into anndata and get the genes for each human single
 	elif geo_accession == 'combined':
@@ -555,9 +512,6 @@ def genes_api(geo_accession):
 # this will likely stay the same.
 @lru_cache(maxsize=None)
 def genes_api_single(geo_accession, condition):
-	print("IN SINGLE API GENES")
-	print(geo_accession)
-	print(condition)
 	species_folder = study_to_species_single[geo_accession]
 	meta_file = s3.open(base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_metasep.json', 'r')
 	metadata_json = json.load(meta_file)
@@ -576,19 +530,8 @@ def genes_api_single(geo_accession, condition):
 @app.route('/api/plot_single/<geo_accession>/<condition>', methods=['GET', 'POST'])
 
 def plot_api_single(geo_accession, condition):
-	"""
-	Inputs:
-	- expression_dataframe, a tsv file representing a matrix with rows having indices representing gene symbols and columns with indices representing Sample ID's. 
-		Each entry represents the expression value for a gene in a sample.
-	- metadata_dict, a JSON file with the following format: {group_name:{condition_names:[sample_name, ...]}}
-	Outputs: 
-	- plotly_json, a serialized JSON formatted string that represents the data for the boxplot to be plotted, used by boxplot() function in scripts.js.
-	"""
 	species = study_to_species_single[geo_accession]
 	species_folder = url_to_folder_single[species]
-	time_start = datetime.datetime.now()
-	print("IN PLOT AP SINGLE")
-	# print(condition)
 	assay = gse_metadata_single[species][geo_accession].get('type')[0]
 	meta_file = s3.open(base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_metasep.json', 'r')
 	metadata_json = json.load(meta_file)
@@ -641,10 +584,8 @@ def plot_api_single(geo_accession, condition):
 	print(melted_dataframe)
 	# Get plot dataframe
 	plot_dataframe = melted_dataframe.groupby('Condition')['expr_vals'].agg([np.mean, np.std, lambda x: list(x)])#.rename(columns={'<lambda>': 'points'})#.reindex(conditions)
-	print(plot_dataframe.shape)
 	plot_dataframe = plot_dataframe.rename(columns={plot_dataframe.columns[-1]: 'points'})
 	time_after = datetime.datetime.now()
-	print(time_after - time_now)
 	# Initialize figure
 	fig = go.Figure()
 
