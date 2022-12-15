@@ -19,12 +19,12 @@ import anndata
 import scanpy as sc
 from sklearn.preprocessing import StandardScaler
 
-
+endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
 base_url = os.environ.get('BASE_URL', 'd2h2/data')
 ROOT_PATH = os.environ.get('ROOT_PATH', '/d2h2/')
 BASE_PATH = os.environ.get('BASE_PATH', 'maayanlab.cloud')
 
-s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': 'https://minio.dev.maayanlab.cloud/'})
+s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
 
 app = Flask(__name__, static_url_path=ROOT_PATH + 'static')
