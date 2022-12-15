@@ -15,9 +15,13 @@ import scanpy as sc
 import anndata
 import random
 from helpers import read_anndata_h5, read_anndata_raw
+import os
 
 
-s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': 'https://minio.dev.maayanlab.cloud/'})
+base_url = os.environ.get('BASE_URL', 'd2h2/data')
+endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
+
+s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
 def qnormalization(data):
   

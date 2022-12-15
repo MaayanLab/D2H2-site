@@ -23,7 +23,22 @@
             </div>
         </div>
     </div>
+
+    <div class="col4 justify-content-center">
+        <div class="row justify-content-center">
+            <div class="text-center mr-5">
+                    Total Studies
+            <div class="countup num-style">{{ gse_metadata_single[species]|length }}</div>
+            </div>
+            <div class="text-center mr-5">
+                Total Samples
+                <div class="countup num-style">{{ num_samples }}</div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
 
 <div class="container custom-col table-responsive-lg mb-4 p-3">
     <table class="table table-bordered table-hover styled-table" id="studies-table">
@@ -110,4 +125,16 @@
             rel="noopener noreferrer">RC2DK131995</a>.
     </p>
 </div>
+{% endblock %}
+
+
+{% block footer %}
+<script>
+
+const countupEls = document.querySelectorAll( '.countup' );
+countupEls.forEach( animateCountUp );
+
+</script>
+
+
 {% endblock %}
