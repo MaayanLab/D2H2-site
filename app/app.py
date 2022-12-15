@@ -33,35 +33,35 @@ app = Flask(__name__, static_url_path=ROOT_PATH + 'static')
 @app.route(ROOT_PATH, methods=['GET', 'POST'])
 def home():
 	#update_tweets_table(datetime.datetime.date)
-	return render_template('home.html', base_path=BASE_PATH, gse_metadata=gse_metadata, numstudies=[len(gse_metadata['human'].keys()), len(gse_metadata['mouse'].keys())])
+	return render_template('home.html', base_path=BASE_PATH, gse_metadata=gse_metadata, numstudies=numstudies)
 
 @app.route(f"{ROOT_PATH}/about", methods=['GET', 'POST'])
 def about():
-    return render_template("about.html", base_path=BASE_PATH, gse_metadata=gse_metadata)
+    return render_template("about.html", base_path=BASE_PATH, numstudies=numstudies)
 
 @app.route(f"{ROOT_PATH}/help", methods=['GET', 'POST'])
 def help():
-    return render_template("help.html", base_path=BASE_PATH, gse_metadata=gse_metadata)
+    return render_template("help.html", base_path=BASE_PATH, numstudies=numstudies)
 
 @app.route(f"{ROOT_PATH}/singlegene", methods=['GET', 'POST'])
 def singlegene_home():
-    return render_template("singlegene.html", base_path=BASE_PATH, gse_metadata=gse_metadata)
+    return render_template("singlegene.html", base_path=BASE_PATH, numstudies=numstudies)
 
 @app.route(f"{ROOT_PATH}/geneset", methods=['GET', 'POST'])
 def geneset_home():
-    return render_template("geneset.html", base_path=BASE_PATH, gse_metadata=gse_metadata)
+    return render_template("geneset.html", base_path=BASE_PATH, numstudies=numstudies)
 
 @app.route(f'{ROOT_PATH}/scg', methods=['GET', 'POST'])
 def scg():
-	return render_template('scg.html', base_path=BASE_PATH, gse_metadata=gse_metadata)
+	return render_template('scg.html', base_path=BASE_PATH, numstudies=numstudies)
 
 @app.route(f'{ROOT_PATH}/resources', methods=['GET', 'POST'])
 def resources():
-	return render_template('resources.html', base_path=BASE_PATH, gse_metadata=gse_metadata)
+	return render_template('resources.html', base_path=BASE_PATH, numstudies=numstudies)
 
 @app.route(f'{ROOT_PATH}/downloads', methods=['GET', 'POST'])
 def downloads():
-	return render_template('downloads.html', base_path=BASE_PATH, gse_metadata=gse_metadata)
+	return render_template('downloads.html', base_path=BASE_PATH, numstudies=numstudies)
 
 @app.route(f'{ROOT_PATH}/getgwas', methods=['GET','POST'])
 def get_gwas():
@@ -364,31 +364,6 @@ def get_metadata(geo_accession, species_folder):
 	return gse.metadata
 
 
-ignore_list = ['mouse_matrix_v11.h5', 'human_matrix_v11.h5', '.DS_Store', 'allgenes.json']
-# Making a dictionary that maps the the species_folder name to all the studies it matches to. 
-def species_to_studies(path):
-	species_mapping = {}
-	for species_name in os.listdir(path):
-		if species_name not in ignore_list:
-			species_mapping[species_name] = []
-			for study_name in os.listdir(os.path.join(path, species_name)):
-				if study_name not in ignore_list:
-					species_mapping[species_name].append(study_name)
-	return species_mapping
-
-def sort_studies(species_mapping):
-	species_url_mapping = {}
-	for species_folder, studies_list in species_mapping.items():
-		if species_folder not in ignore_list:
-			# species = folder_to_url[species_folder]
-			# species_url_mapping[species] = sorted(studies_list, key=lambda x: (int(x.split('-', 1)[0][3:])))
-			species_url_mapping[species_folder] = sorted(studies_list, key=lambda x: (int(x.split('-', 1)[0][3:])))
-	return species_url_mapping
-
-
-
-
-
 
 #### CHECK IF METADATA IS COMPLETE/ IF NEW STUDIES WERE ADDED, ADD THEM TO METADATA
 
@@ -457,15 +432,19 @@ if numstudies_single[0] != len(human_singlegses) and numstudies_single[1] != len
 study_to_species_single = {study:species_name for species_name, studies_metadata in gse_metadata_single.items() for study in studies_metadata.keys()}
 
 
+numstudies = [len(human_gses), len(mouse_gses), len(human_singlegses), len(mouse_singlegses)]
+
+
 @app.route(f'{ROOT_PATH}/<species_or_gse>', methods=['GET', 'POST'])
 def species_or_viewerpg(species_or_gse):
 	# test if species
 	if species_or_gse in gse_metadata:
 		num_samples = sum(map(lambda x: x.get('numsamples'), gse_metadata[species_or_gse].values()))
-		return render_template('species.html', species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, num_studies= len(gse_metadata[species_or_gse]))
+		return render_template('species.html', species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, numstudies=numstudies)
 	#Checking for the single cell studies and loading that summary page
 	elif species_or_gse in gse_metadata_single:
-		return render_template('single_species.html', species=species_or_gse, gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, gse_metadata=gse_metadata)
+		num_samples = sum(map(lambda x: x.get('numsamples'), gse_metadata_single[species_or_gse].values()))
+		return render_template('single_species.html', species=species_or_gse, gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, gse_metadata=gse_metadata, num_samples=num_samples, numstudies=numstudies)
 	# test if gsea
 	elif species_or_gse in study_to_species:
 		geo_accession = species_or_gse
@@ -478,7 +457,7 @@ def species_or_viewerpg(species_or_gse):
 		sample_dict = {}
 		for key in metadata_dict_samples.keys():
 			sample_dict[key] = {'samples':metadata_dict_samples[key], 'count': len(metadata_dict_samples[key])}
-		return render_template('viewer.html', metadata_dict=metadata_dict, metadata_dict_samples=sample_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping)
+		return render_template('viewer.html', metadata_dict=metadata_dict, metadata_dict_samples=sample_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping, numstudies=numstudies)
 	#Check for the single study individual viewer page
 	elif species_or_gse in study_to_species_single:
 		geo_accession = species_or_gse
@@ -517,9 +496,9 @@ def species_or_viewerpg(species_or_gse):
 		#Stores the number of of cells correlated to each cluster. 
 		metadata_dict_counts = pd.Series(leiden_data_vals).value_counts().to_dict()
 		meta_file.close()
-		return render_template('single_viewer.html', study_conditions = list_of_conditions, metadata_dict=classes, metadata_dict_samples=metadata_dict_counts, geo_accession=geo_accession, gse_metadata_single=gse_metadata_single, species=species, species_mapping=species_mapping, gse_metadata=gse_metadata)
+		return render_template('single_viewer.html', study_conditions = list_of_conditions, metadata_dict=classes, metadata_dict_samples=metadata_dict_counts, geo_accession=geo_accession, gse_metadata_single=gse_metadata_single, species=species, species_mapping=species_mapping, gse_metadata=gse_metadata, numstudies=numstudies)
 	else:
-		return render_template('error.html', base_path=BASE_PATH, gse_metadata=gse_metadata, species_mapping=species_mapping)
+		return render_template('error.html', base_path=BASE_PATH, gse_metadata=gse_metadata, species_mapping=species_mapping, numstudies=numstudies)
 
 
 
@@ -574,7 +553,7 @@ def genes_api(geo_accession):
 
 #This is the route for the single cell studies with condition as well. It will be called upon initial loading and changing the samples
 #to focus on
-@app.route('/api/genes/<geo_accession>/<condition>')
+@app.route('/api/singlegenes/<geo_accession>/<condition>')
 
 # this will likely stay the same.
 @lru_cache(maxsize=None)

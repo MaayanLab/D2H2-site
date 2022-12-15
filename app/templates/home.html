@@ -8,39 +8,45 @@
 
       <!-- Main Panel -->
       <div class="col-md-10 col-lg-5 col-sm-10 m-2 custom-col">
-        <div class="row justify-content-center mt-4 mb-4">
-          <div class="text-center col-lg-12 mt-2">
+        <div class="row justify-content-center mt-2 mb-1">
+          <div class="text-center col-lg-12 mt-4">
 
             <img class="p-0 m-0" style="width: 150px" src="{{ url_for('static', filename='img/d2h2logo.png') }}"
               alt="D2H2 logo" />
           </div>
         </div>
 
-        <div class="row justify-content-center m-2 mt-3 text-center">
+        <div class="row justify-content-center mb-4 mt-4 text-center">
           <h5 style="font-weight: 450 !important;">Diabetes Data and Hypothesis Hub (D2H2)</h5>
           <h5> A platform that facilitates data-driven hypothesis generation for the diabetes and related metabolic
             disorder research community. </h5>
         </div>
 
-        <div class="justify-content-center row ml-1 mr-1 text-center mt-5 text-center">
+        <div class="justify-content-center row ml-1 mr-1 text-center mt-3 text-center">
           <p style="font-size: 17px;"> Curated datasets containing gene expression in various Type 2 Diabetes
             transcriptomics signatures can be <a href="{{ url_for('downloads') }}">downloaded</a>, <a
-              href="#visualize">visualized </a>, and <a href="#enrichranalysis">used for enrichment analysis</a>.</p>
+              href="#visualize">visualized</a>, and <a href="#enrichranalysis">used for enrichment analysis</a>.</p>
         </div>
 
-        <div class="text-center mt-5"><h5>Processed Bulk RNA-seq and Microarray Studies</h5></div>
-        <div class="row">
+        <div hidden>
+          <div id="human-bulk-num">{{ numstudies[0] }}</div>
+          <div id="mouse-bulk-num">{{ numstudies[1] }}</div>
+          <div id="human-sc-num">{{ numstudies[2] }}</div>
+          <div id="mouse-sc-num">{{ numstudies[3] }}</div>
+        </div>
+
+        <div class="text-center mt-4"><h5>Processed GEO Studies</h5></div>
+        <div class="row mt-4 mb-4">
           
-          <div class="col text-right mr-5 mb-4">
+          <div class="col text-right mr-5">
             <h6>Human</h6>
-            <div class="countup num-style">{{ numstudies[0] }}</div>
+            <div class="countup num-style" style="font-size: 40px;">{{ numstudies[0] + numstudies[2] }}</div>
           </div>
-          <div class="col text-left ml-5 mb-4">
+          <div class="col text-left ml-5" >
             <h6>Mouse</h6>
-            <div class="countup num-style">{{ numstudies[1] }}</div>
+            <div class="countup num-style" style="font-size: 40px;">{{ numstudies[1] + numstudies[3] }}</div>
           </div>
         </div>
-        
 
       </div>
 
@@ -85,8 +91,8 @@
           <img src="static/img/t2d-thumbnail.png" alt="" class="img-fluid img-thumbnail">
         </div>
 
-        <div class="justify-content-center row text-center mb-2" style="bottom: 0;"">
-          <a id="appyter-home"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3">
+        <div class="justify-content-center row text-center mb-2 mt-2" style="bottom: 0;"">
+          <a id="appyter-home"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-2">
             <span id="appyter-action">Generate plot</span>
           </button>
           </a>
@@ -323,6 +329,7 @@
   }
 const countupEls = document.querySelectorAll( '.countup' );
 countupEls.forEach( animateCountUp );
+
 </script>
 
 {% endblock %}
