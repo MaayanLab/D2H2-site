@@ -143,7 +143,7 @@ function submit_geneset_home(genelist, sigs, descset) {
     console.log(genes)
 
     localStorage.setItem('genes', genes)
-    localStorage.setItem('descset', `${descset}-${numgenes}`)
+    localStorage.setItem('descset', '')
     var home = window.location.href.split('/').filter(x => !x.includes('GSE')).join('/')
     window.open(home, '_blank')
 }
