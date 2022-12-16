@@ -526,7 +526,6 @@ def make_tables(comb_df, species, gene, is_upreg, isRNA=False):
     dir_df['Link to GEO Study'] = dir_df['Signature'].apply(geo_link, clickable=True)
     return dir_df
 
-@lru_cache()
 def send_plot(species, gene):
     pval_rna_df, fc_rna_df, inst_df_input, pval_micro_df, fc_micro_df, micro_exists = load_files(species, gene)
     comb_df_input = combine_data(pval_rna_df, fc_rna_df, gene, isRNA=True, inst_df=inst_df_input)
@@ -926,11 +925,11 @@ def interactive_circle_plot(input_df, x_lab, y_lab, feature, name):
     
 
  
-@lru_cache()
+
 def read_anndata_raw(path_to_data):
     return anndata.read_h5ad(s3.open(path_to_data))
 
 
-@lru_cache()
+
 def read_anndata_h5(path_to_data):
     return h5py.File(s3.open(path_to_data))

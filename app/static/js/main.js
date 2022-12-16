@@ -1845,14 +1845,12 @@ $(document).ready(function() {
         var gsedata = JSON.stringify({'gse': gse, 'species': species, 'conditiongroup':condition_group});
         generate_single_plots()
 
-        console.log('In the change in viewer')
         $.ajax({
             url: "/getclusterdata",
             contentType: 'application/json',
             type: "POST",
             data: gsedata,
             dataType: 'json'
-            // async: false
         }).done(async function(response) {
     
             const classes = response['classes']
@@ -1893,16 +1891,14 @@ $(document).ready(function() {
 
             //Add the listener for the condition buttons back in this function 
             $('.condition-btn').on('click', function(evt) {
-                console.log($(this))
                 $(this).toggleClass('plotted'); // making a specific button plotted or not
-                console.log($(this))
                 boxplot();
             })
             //Fill up the gene selectize with the proper gene list based off each study. 
             $gene_select[0].selectize.clearOptions();
             $gene_select[0].selectize.load(function(callback) {
             $.ajax({
-                url: `/api/genes/${gse}/${condition_group}`,
+                url: `/api/singlegenes/${gse}/${condition_group}`,
                 dataType: 'json',
                 error: function () {
                     callback();
@@ -1910,7 +1906,6 @@ $(document).ready(function() {
                 success: function (res) {
 
                     callback(res);
-                    console.log('before boxplot call')
                     $gene_select[0].selectize.setValue(res[0]['gene_symbol']);
                     $("#boxplot").attr("data-url-plot", `/api/plot_single/${gse}/${condition_group}`)
                     boxplot() 
@@ -1922,7 +1917,6 @@ $(document).ready(function() {
         });
 
     document.getElementById("change-loading").innerHTML = ''
-    
     })
 })
 

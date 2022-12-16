@@ -185,7 +185,7 @@ body {
 .custom-col {
     border: rgb(182, 182, 182);
     background-color: #CFD8DC;
-    border-width: 1.5px;
+    border-width: 2px;
     border-style: solid;
     border-radius: 1%;
     overflow: auto;
