@@ -11,13 +11,10 @@ import GEOparse
 import ftfy
 from functools import lru_cache
 import pickle
-import datetime
 from helpers import *
 from twitterauth import update_tweets_table
 from dge import *
 import anndata
-import scanpy as sc
-from sklearn.preprocessing import StandardScaler
 
 endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
 base_url = os.environ.get('BASE_URL', 'd2h2/data')
@@ -27,7 +24,7 @@ BASE_PATH = os.environ.get('BASE_PATH', 'maayanlab.cloud')
 print(endpoint)
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
-print(s3.ls(''))
+
 app = Flask(__name__, static_url_path=ROOT_PATH + 'static')
 
 
@@ -262,12 +259,6 @@ def getclusterinfo():
 	classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
 	#Stores the number of of cells correlated to each cluster. 
 	metadata_dict_counts = pd.Series(leiden_data_vals).value_counts().to_dict()
-
-	""" adata = read_anndata_raw(expression_file).T
-	classes = sorted(adata.obs["leiden"].unique().tolist())
-	classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
-	metadata_dict_counts = adata.obs["leiden"].value_counts().to_dict() """
-
 
 	return {"classes":classes, "metadict":metadata_dict_counts}
 	
@@ -555,41 +546,16 @@ def plot_api_single(geo_accession, condition):
 
 	vals = f['raw/X'][idx,:]
 
-
+	# Create a new dataframe that maps each sample to its condition
 	melted_dataframe = pd.DataFrame(data=[vals, leiden_values]).T
 	melted_dataframe.columns = ['expr_vals', 'Condition']
-	time_now = datetime.datetime.now()
-
-	""" expression_adata = read_anndata_raw(expression_file)
 	
-	expression_adata = expression_adata.raw.to_adata()
-	expression_dataframe = expression_adata.to_df()
-	adata = expression_adata.T
-	
-	print(time_now-time_start)
-	leiden_vals = adata.obs["leiden"].tolist()
-	cell_names = adata.obs['column_names'].tolist()
-	print(leiden_vals)
-	print(cell_names)
-
-	df_dict = {'Sample_geo_accession':cell_names, 'Condition':leiden_vals}
-	metadata_dataframe = pd.DataFrame.from_dict(df_dict) """
-	# Get data
-	
-	# print(conditions)
-
-	# Create a new dataframe that maps each sample to its condition
-	#melted_dataframe = expression_dataframe.loc[gene_symbol].rename('expr_vals').rename_axis('Sample_geo_accession').reset_index().merge(metadata_dataframe, on="Sample_geo_accession")
-	
-	print(melted_dataframe)
 	# Get plot dataframe
 	plot_dataframe = melted_dataframe.groupby('Condition')['expr_vals'].agg([np.mean, np.std, lambda x: list(x)])#.rename(columns={'<lambda>': 'points'})#.reindex(conditions)
 	plot_dataframe = plot_dataframe.rename(columns={plot_dataframe.columns[-1]: 'points'})
-	time_after = datetime.datetime.now()
+
 	# Initialize figure
 	fig = go.Figure()
-
-	# print(plot_dataframe)
 	
 	# Loop
 	for condition in conditions:
@@ -597,15 +563,8 @@ def plot_api_single(geo_accession, condition):
 			fig.add_trace(go.Box(name=condition, y=plot_dataframe.loc[condition, 'points'], boxpoints='all', pointpos=0))
 		else:
 			fig.add_trace(go.Scatter(name=condition, x=[condition], y=plot_dataframe.loc[condition, 'points']))
-	
-	# Determine y-axis expression string
 
-	# Layout
-
-	if assay == 'Expression profiling by array':
-		y_units = 'Expression<br>RMA Normalized'
-	else:
-		y_units = 'Expression'
+	y_units = 'Expression'
 
 	fig.update_layout(
 		title = {'text': gene_symbol+' gene expression', 'x': 0.5, 'y': 0.85, 'xanchor': 'center', 'yanchor': 'top'},
@@ -659,9 +618,6 @@ def plot_api(geo_accession):
 	# Initialize figure
 	fig = go.Figure()
 
-	# print(plot_dataframe)
-	
-	# Loop
 	condition_name = False
 	if len(melted_dataframe['Group'].unique()) == 1:
 		condition_name = True
@@ -716,7 +672,11 @@ def conditions_api(geo_accession):
 	species_folder = url_to_folder[species]
 	metadata_file = base_url+ '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
-	conditions = set(metadata_dataframe['Condition'])
+	if len(set(metadata_dataframe['Group'])) == 1:
+		conditions = set(metadata_dataframe['Condition'])
+	else:
+		metadata_dataframe['combined'] = metadata_dataframe['Condition'] + ' ' + metadata_dataframe['Group']
+		conditions = set(metadata_dataframe['combined'])
 	return json.dumps([{'Condition': x} for x in conditions])
 
 #############################################
@@ -794,6 +754,12 @@ def visualize_samps():
 
 	return json.dumps({'pcaplot': pca_plot, 'tsneplot': tsne_plot, 'umapplot': umap_plot})
 
+def run_app():
+	if endpoint == 'https://minio.dev.maayanlab.cloud/':
+		app.run(debug=True, host="0.0.0.0")
+	else:
+		serve(app, host="0.0.0.0", port=5000)
+
 
 #######################################################
 #######################################################
@@ -801,8 +767,5 @@ def visualize_samps():
 #######################################################
 #######################################################
 if __name__ == "__main__":
-
-	#serve(app, host="0.0.0.0", port=5000)
-	app.run(debug=True, host="0.0.0.0")
-
+	run_app()
 

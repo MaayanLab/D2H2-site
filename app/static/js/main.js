@@ -1898,7 +1898,7 @@ $(document).ready(function() {
             $gene_select[0].selectize.clearOptions();
             $gene_select[0].selectize.load(function(callback) {
             $.ajax({
-                url: `/api/genes/${gse}/${condition_group}`,
+                url: `/api/singlegenes/${gse}/${condition_group}`,
                 dataType: 'json',
                 error: function () {
                     callback();
@@ -1917,7 +1917,6 @@ $(document).ready(function() {
         });
 
     document.getElementById("change-loading").innerHTML = ''
-    
     })
 })
 
