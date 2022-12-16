@@ -15,11 +15,13 @@ from helpers import *
 from twitterauth import update_tweets_table
 from dge import *
 import anndata
+from memory_profiler import profile
 
 endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
 base_url = os.environ.get('BASE_URL', 'd2h2/data')
 ROOT_PATH = os.environ.get('ROOT_PATH', '/')
 BASE_PATH = os.environ.get('BASE_PATH', 'maayanlab.cloud')
+DEBUG = os.environ.get('DEBUG', False)
 
 print(endpoint)
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
@@ -754,11 +756,12 @@ def visualize_samps():
 
 	return json.dumps({'pcaplot': pca_plot, 'tsneplot': tsne_plot, 'umapplot': umap_plot})
 
+@profile
 def run_app():
-	if endpoint == 'https://minio.dev.maayanlab.cloud/':
+	if DEBUG:
 		app.run(debug=True, host="0.0.0.0")
 	else:
-		serve(app, host="0.0.0.0", port=5000)
+		serve(app, host="0.0.0.0", port=5000, channel_timeout=300)
 
 
 #######################################################
