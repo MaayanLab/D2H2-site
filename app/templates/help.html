@@ -34,9 +34,9 @@
       </div>
     </div>
 
-    <div class="row justify-content-center mb-4">
+    <!-- <div class="row justify-content-center mb-4">
       <iframe width="400" height="240" src="https://www.youtube.com/embed/VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    </div>
+    </div> -->
 
   </div>
   <div id="homehelp" class="custom-col col-lg-7 justify-content-center mx-auto mt-2 text-center">
@@ -74,11 +74,11 @@
   </div>
 
   <div id="geoviewerhelp" class="custom-col col-lg-7 justify-content-center mx-auto mt-4 text-center">
-    <h4 class="m-3" style="font-weight:bolder;">Processed GEO Study Viewer</h4>
+    <h4 class="m-3" style="font-weight:bolder;">Processed GEO Studies</h4>
     <p>
-      Users can explore landing pages about each processed GEO study in D2H2. These landing pages can be accessed by looking at the returned top ranked signatures from a  single gene query available from the D2H2 home page. The second option to access these pages is through the navigation bar at the top of the site. Users can click on the navigation bar, and then be presented with the option to browse through the collection of mouse or human studies. The number of processed studies is shown per species as seen below.
+      Users can explore landing pages about each processed GEO study in D2H2. These landing pages can be accessed by looking at the returned top ranked signatures from a single gene query available from the D2H2 home page. The second option to access these pages is through the navigation bar at the top of the site. Users can click on either the Bulk RNA-seq and Microarray Studies or the scRNA-seq Studies navigation tab, and then be presented with the option to browse through the collection of mouse or human studies. The number of processed studies is shown per species as seen below.
     </p>
-    <img class="mb-3" src="{{url_for('static',filename= 'img/geonavthumb.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
+    <img class="mb-3" src="{{url_for('static',filename= 'img/geonavthumb2.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
       After selecting the species, a table with the available studies to browse and view will be displayed.
     </p>
@@ -86,21 +86,36 @@
     <p>
       Here users can see the study's GEO ID (GSE), which is linked to the applicable page on GEO, as well as additional information about each study. Clicking the show study design will expand the entry for the study to show additional information about the study design. Clicking the purple Gene Viewer button to the far right of the table will open the study landing page which contains several features to explore the processed data in more detail.  
     </p>
+    <h6 class="mt-4">Sample Visualization</h6>
+
+    <p>
+      All studies are clustered using the <a href="https://pubmed.ncbi.nlm.nih.gov/30914743/" target="_blank">leiden</a> clustering algorithm and visualized with <a href="https://umap-learn.readthedocs.io/en/latest/" target="_blank">UMAP</a>, <a href="https://lvdmaaten.github.io/tsne/" target="_blank">t-SNE</a>, or PCA. For the single cell studies the selected condition with its precomputed clusters are visualized. 
+    </p>
+    <img class="mb-3" src="{{url_for('static',filename= 'img/single-cell-visualization.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
+
+    <p>
+     For the Bulk RNA-seq and Microarray Studies, all distinct conditions are visualized.
+    </p>
+
+    <img class="mb-3" src="{{url_for('static',filename= 'img/bulk-visualization.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
+    
     <h6 class="mt-4">Customized Boxplot Viewer</h6>
 
+    <p>
+      For each study's dedicated landing page there is a customized boxplot viewer. Users can view the expression of a single gene across the various conditions or clusters of the study. The autocomplete dropbox above the boxplot facilitates users to change the gene to view and the table to the right enables selecting and deselecting the conditions to visualize. 
+    </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/boxplottumb.png')}}" alt="" style="width: 700px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
-      At the top of each study's dedicated landing page there is a customized boxplot viewer. Users can view the expression of a single gene across the various conditions of the study. The autocomplete dropbox above the boxplot facilitates users to change the gene to view and the table to the right enables selecting and deselecting the conditions to visualize. 
-    </p>
-    <p>
-      Scrolling down, users can see a summary of the study, and mechanisms to perform differential gene expression analysis on the fly.
+      Users can also see a summary of the study, and mechanisms to perform differential gene expression analysis on the fly. 
     </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/geodgethumb.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
+    <img class="mb-3" src="{{url_for('static',filename= 'img/singlecelldge.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
-      After selecting a control and a perturbation condition, differential gene expression analysis can be performed with 
-      <a href="https://bioconductor.org/packages/release/bioc/html/limma.html" target="_blank">limma,</a> <a href="https://bioconductor.org/packages/release/bioc/html/DESeq2.html" target="_blank">DESeq2</a>, or <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html" target="_blank">edgeR</a> natively on the site. When DESeq2 is selected, normalization options will appear. 
-      The differential expression analysis can take somewhere between 30 seconds to a few minutes, depending on how many samples are contained in the selected conditions. 
-      Users can also compare two conditions in the Bulk-RNA-seq Appyter which includes additional analyses and visualizations. 
+      For the Bulk RNA-seq and Microarray Studies after selecting a control and a perturbation condition, differential gene expression analysis can be performed with 
+      <a href="https://bioconductor.org/packages/release/bioc/html/limma.html" target="_blank">limma,</a> <a href="https://bioconductor.org/packages/release/bioc/html/DESeq2.html" target="_blank">DESeq2</a>, or <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html" target="_blank">edgeR</a> natively on the site.
+      For the single cell RNA-seq studies, differential gene expression is performed with either <a href="https://bioconductor.org/packages/release/bioc/html/limma.html" target="_blank">limma</a> or <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html" target="_blank">edgeR</a> through subsampling from each cluster and comparing the selected cluster to the rest.
+      The differential expression analysis can take somewhere between 30 seconds to a few minutes depending on how many samples are contained in the selected conditions or clusters. 
+      Also for the Bulk RNA-seq studies, users can compare two conditions in the Bulk-RNA-seq Appyter which includes additional analyses and visualizations. 
     </p>
     <p>
       After the analysis completes, the user is presented with an interactive volcano plot, as shown below:
