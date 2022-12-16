@@ -15,7 +15,6 @@ from helpers import *
 from twitterauth import update_tweets_table
 from dge import *
 import anndata
-from memory_profiler import profile
 
 endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
 base_url = os.environ.get('BASE_URL', 'd2h2/data')
@@ -756,7 +755,6 @@ def visualize_samps():
 
 	return json.dumps({'pcaplot': pca_plot, 'tsneplot': tsne_plot, 'umapplot': umap_plot})
 
-@profile
 def run_app():
 	if DEBUG:
 		app.run(debug=True, host="0.0.0.0")
