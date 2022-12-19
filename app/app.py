@@ -759,7 +759,7 @@ def run_app():
 	if DEBUG:
 		app.run(debug=True, host="0.0.0.0")
 	else:
-		serve(app, host="0.0.0.0", port=5000, channel_timeout=300, cleanup_interval=180)
+		serve(app, host="0.0.0.0", port=5000)
 
 
 #######################################################
