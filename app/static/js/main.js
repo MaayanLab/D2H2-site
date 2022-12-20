@@ -1,3 +1,28 @@
+// Check task completion
+function checkResult(task_id, method) {
+    $.ajax({
+        url: '/checkdgetask',
+        type: 'POST',
+        data: {
+            'task_id': task_id,
+            'method': method
+        },
+        async: false,
+        success: function(response) {
+            console.log(response)
+            if (response.status == 'pending') {
+                setTimeout(function() {
+                    checkResult(task_id, method);
+                }, 5000);
+            } else {
+                return response
+
+            }
+        }
+    });
+}
+
+
 
 // This function will generate the umap, tsne, and pca plots for each indivdual study for a specific condition
 function generate_single_plots(){
@@ -1445,7 +1470,7 @@ $(document).ready(function() {
     });
 
     // PERFORM DIFFERENTIAL GENE ANALYSIS AND CREATE RELEVANT TABLE
-    $('#dge-button').on('click', async function() {
+    $('#dge-button').on('click', function() {
         clear_dge()
         var control_condition = $('#condition-select-control').val();
         var perturb_condition = $('#condition-select-perturb').val();
@@ -1483,7 +1508,13 @@ $(document).ready(function() {
             type: "POST",
             dataType: 'json',
             data: gsedata
-        }).done(async function(response) {
+        }).done(function(response) {
+            var id = response['task_id']
+            
+            result = checkResult(id, method)
+
+            console.log(result)
+
             document.getElementById("dge-loading").innerHTML = "";
             var plot = response['plot']
             var table = response['table']

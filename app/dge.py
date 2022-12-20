@@ -1,6 +1,5 @@
 from functools import lru_cache
 import pandas as pd
-import rpy2
 from rpy2 import robjects
 from rpy2.robjects import r, pandas2ri
 from maayanlab_bioinformatics.normalization.quantile import quantile_normalize
@@ -12,16 +11,18 @@ import numpy as np
 import scipy.stats as ss
 import s3fs
 import scanpy as sc
-import anndata
 import random
 from helpers import read_anndata_h5, read_anndata_raw
 import os
+
+from celery_config import *
 
 
 base_url = os.environ.get('BASE_URL', 'd2h2/data')
 endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
 
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
+
 
 
 def qnormalization(data):
@@ -239,7 +240,7 @@ def check_df(df, col):
     if col not in df.columns:
         raise IOError
 
-
+@celery.task
 def compute_dge(rnaseq_data_filename, meta_data_filename, diff_gex_method, control_name, perturb_name, logCPM_normalization, log_normalization, z_normalization, q_normalization):
     meta_class_column_name = 'Condition'
 
@@ -472,7 +473,7 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
             signatures[signature_label] = signature
     return signatures
 
-
+@celery.task
 def compute_dge_single(expr_file, diff_gex_method, enrichment_groupby, meta_class_column_name, clustergroup, agg):
     if diff_gex_method == "characteristic_direction":
         fc_colname = "CD-coefficient"

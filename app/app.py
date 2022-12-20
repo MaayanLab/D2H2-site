@@ -11,22 +11,10 @@ import GEOparse
 import ftfy
 from functools import lru_cache
 import pickle
-from helpers import *
 from twitterauth import update_tweets_table
-from dge import *
 import anndata
-
-endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
-base_url = os.environ.get('BASE_URL', 'd2h2/data')
-ROOT_PATH = os.environ.get('ROOT_PATH', '/')
-BASE_PATH = os.environ.get('BASE_PATH', 'maayanlab.cloud')
-DEBUG = os.environ.get('DEBUG', False)
-
-print(endpoint)
-s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
-
-
-app = Flask(__name__, static_url_path=ROOT_PATH + 'static')
+from dge import *
+from helpers import *
 
 
 @app.route(ROOT_PATH, methods=['GET', 'POST'])
@@ -161,16 +149,31 @@ def dge():
 	norms = response_json['norms']
 	expr_file = '{base_url}/{species}/{gse}/{gse}_Expression.txt'.format(species=species, gse=gse, base_url=base_url)
 	meta_file = '{base_url}/{species}/{gse}/{gse}_Metadata.txt'.format(species=species, gse=gse, base_url=base_url)
-	if method == 'limma' or method == 'edgeR':
-		data, title = compute_dge(expr_file, meta_file, method, control, perturb, False, False, False, False)
-	else:
-		data, title = compute_dge(expr_file, meta_file, method, control, perturb, norms['logCPM'], norms['log'], norms['z'], norms['q'])
 
-	jsonplot = make_dge_plot(data,title, method)
+	result = compute_dge.delay(expr_file, meta_file, method, control, perturb, False, False, False, False)
+
+	print(result)
+	""" jsonplot = make_dge_plot(data,title, method)
 
 	string_data = data.to_string()
+	return json.dumps({'table': string_data, 'plot': jsonplot}) """
+	return {'task_id': result.id}
 
-	return json.dumps({'table': string_data, 'plot': jsonplot})
+@app.route(f'{ROOT_PATH}/checkdgetask',  methods=['GET','POST'])
+def check_dge_task():
+	print(request.form)
+	task_id = request.form['task_id']
+	method = request.form['method']
+	task = compute_dge.AsyncResult(task_id)
+	if task.ready():
+		data, title = task.get()
+		jsonplot = make_dge_plot(data,title, method)
+		string_data = data.to_string()
+		return json.dumps({'table': string_data, 'plot': jsonplot})
+	else:
+		return {'status': 'pending'}
+
+
 @app.route('/dgeapisingle',  methods=['GET','POST'])
 def dgesingle():
 	response_json = request.get_json()

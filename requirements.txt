@@ -27,5 +27,7 @@ holoviews
 scikit-image
 umap
 seaborn
+celery
+redis
 
 
