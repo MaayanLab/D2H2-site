@@ -1,5 +1,5 @@
 // Check task completion
-function checkResult(task_id, method) {
+async function checkResult(task_id, method) {
     $.ajax({
         url: '/checkdgetask',
         type: 'POST',
@@ -7,7 +7,7 @@ function checkResult(task_id, method) {
             'task_id': task_id,
             'method': method
         },
-        async: false,
+        async: true,
         success: function(response) {
             console.log(response)
             if (response.status == 'pending') {
@@ -1507,11 +1507,19 @@ $(document).ready(function() {
             contentType: 'application/json',
             type: "POST",
             dataType: 'json',
-            data: gsedata
-        }).done(function(response) {
+            data: gsedata,
+            async: false,
+        }).done( async function(response) {
             var id = response['task_id']
             
-            result = checkResult(id, method)
+            
+            result = await checkResult(id, method).then(function(response) {
+
+
+
+
+
+            
 
             console.log(result)
 
@@ -1603,6 +1611,7 @@ $(document).ready(function() {
             `
                 
             document.getElementById("geneset-buttons").innerHTML = (clear_button + genelist_buttons)
+            })
         })
         .fail(function (jqXHR, textStatus, errorThrown) {
             alert('An internal server error occured, please try again')

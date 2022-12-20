@@ -240,7 +240,7 @@ def check_df(df, col):
     if col not in df.columns:
         raise IOError
 
-@celery.task
+@celery.task(name='compute_dge')
 def compute_dge(rnaseq_data_filename, meta_data_filename, diff_gex_method, control_name, perturb_name, logCPM_normalization, log_normalization, z_normalization, q_normalization):
     meta_class_column_name = 'Condition'
 
@@ -473,7 +473,7 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
             signatures[signature_label] = signature
     return signatures
 
-@celery.task
+@celery.task(name='compute_dge_single')
 def compute_dge_single(expr_file, diff_gex_method, enrichment_groupby, meta_class_column_name, clustergroup, agg):
     if diff_gex_method == "characteristic_direction":
         fc_colname = "CD-coefficient"
