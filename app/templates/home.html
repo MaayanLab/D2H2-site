@@ -4,43 +4,49 @@
 <div class="justify-content-center container-fluid">
   <div class="col-12 justify-content-center mx-auto banner">
 
-    <div class="mt-4 justify-content-center row" style="flex-wrap: wrap;">
+    <div class="mt-2 justify-content-center row" style="flex-wrap: wrap;">
 
       <!-- Main Panel -->
       <div class="col-md-10 col-lg-5 col-sm-10 m-2 custom-col">
-        <div class="row justify-content-center mt-4 mb-4">
-          <div class="text-center col-lg-12 mt-5">
+        <div class="row justify-content-center mt-2 mb-1">
+          <div class="text-center col-lg-12 mt-4">
 
             <img class="p-0 m-0" style="width: 150px" src="{{ url_for('static', filename='img/d2h2logo.png') }}"
               alt="D2H2 logo" />
           </div>
         </div>
 
-        <div class="row justify-content-center m-2 mt-3 text-center">
-          <h5 style="font-weight: 450 !important;">Diabetes Data and Hypothesis Hub (D2H2)</h5>
-          <h5> A platform that facilitates data-driven hypothesis generation for the diabetes and related metabolic
+        <div class="row justify-content-center mb-4 mt-4 text-center">
+          <h3 class="mr-3 ml-3" style="font-weight: 450 !important; color: black;">Diabetes Data and Hypothesis Hub (D2H2)</h3>
+          <h5 class="mr-4 ml-4 mt-4" style="color: black;"> A platform that facilitates data-driven hypothesis generation for the diabetes and related metabolic
             disorder research community. </h5>
         </div>
 
-        <div class="justify-content-center row ml-1 mr-1 text-center mt-5 text-center">
-          <p style="font-size: 17px;"> Curated datasets containing gene expression in various Type 2 Diabetes
-            transcriptomics signatures can be <a href="{{ url_for('downloads') }}">downloaded</a>, <a
-              href="#visualize">visualized </a>, and <a href="#enrichranalysis">used for enrichment analysis</a>.</p>
+        <div class="justify-content-center row ml-1 mr-1 text-center mt-3 text-center">
+          <p class="mr-3 ml-3" style="font-size: 17px; color: black;"> 
+            Curated transcriptomics datasets from various Type 2 Diabetes studies are made available for download, visualization, and enrichment analysis. 
+          </p>
         </div>
 
-        <div class="text-center mt-4"><h5>Processed Bulk RNA-seq and Microarray Studies</h5></div>
-        <div class="row">
+        <div hidden>
+          <div id="human-bulk-num">{{ numstudies[0] }}</div>
+          <div id="mouse-bulk-num">{{ numstudies[1] }}</div>
+          <div id="human-sc-num">{{ numstudies[2] }}</div>
+          <div id="mouse-sc-num">{{ numstudies[3] }}</div>
+        </div>
+
+        <div class="text-center mt-4 mb-4"><h5 style="font-size: 20px;">Processed Bulk RNA-seq, Microarray, and scRNA-seq Studies</h5></div>
+        <div class="row mt-4 mb-4">
           
           <div class="col text-right mr-5">
             <h6>Human</h6>
-            <div class="countup num-style">{{ numstudies[0] }}</div>
+            <div class="countup num-style" style="font-size: 40px;">{{ numstudies[0] + numstudies[2] }}</div>
           </div>
-          <div class="col text-left ml-5">
+          <div class="col text-left ml-5" >
             <h6>Mouse</h6>
-            <div class="countup num-style">{{ numstudies[1] }}</div>
+            <div class="countup num-style" style="font-size: 40px;">{{ numstudies[1] + numstudies[3] }}</div>
           </div>
         </div>
-        
 
       </div>
 
@@ -72,8 +78,8 @@
         </div>
 
 
-        <div class="justify-content-center row ml-1 mr-1 text-center">
-          <p class="mt-3">This module provides a volcano plot visualization of the expression levels of a given gene in
+        <div class="row ml-1 mr-1">
+          <p class="mt-3" style="text-align: justify">This module provides a volcano plot visualization of the expression levels of a given gene in
             various Type 2 Diabetes transcriptomics signatures. Users may enter in a single gene symbol as input; the
             output is a volcano plot which plots each T2D signature by gene-specific p-value (y-axis) and fold change
             (x-axis) as well as the corresponding tables available for download.</p>
@@ -85,8 +91,8 @@
           <img src="static/img/t2d-thumbnail.png" alt="" class="img-fluid img-thumbnail">
         </div>
 
-        <div class="justify-content-center row text-center mb-2" style="bottom: 0;"">
-          <a id="appyter-home"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3">
+        <div class="justify-content-center row text-center mb-2 mt-2" style="bottom: 0;"">
+          <a id="appyter-home"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-2">
             <span id="appyter-action">Generate plot</span>
           </button>
           </a>
@@ -224,7 +230,7 @@
           <div class="justify-content-center row text-center mt-1">
             <a id="diabetesEnrichr-query">
               <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Submit to Enrichr
-                <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
+                <img src="{{ url_for('static', filename='img/enrichrlogo.png') }}" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
               </button>
             </a>
           </div>
@@ -264,7 +270,7 @@
   function createTweetsTable() {
     document.getElementById("tweets-res").innerHTML = "<div class='loader justify-content-center'></div>";
     $.ajax({
-        url: "/gettweets",
+        url: "gettweets",
         type: "POST",
         data: {},
         dataType: 'json',
@@ -323,6 +329,7 @@
   }
 const countupEls = document.querySelectorAll( '.countup' );
 countupEls.forEach( animateCountUp );
+
 </script>
 
 {% endblock %}

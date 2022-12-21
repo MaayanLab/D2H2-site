@@ -26,7 +26,7 @@
 function createDownloadsTable() {
     document.getElementById("downloads").innerHTML = "<div class='loader justify-content-center'></div>";
     $.ajax({
-        url: "/getdownloads",
+        url: "getdownloads",
         type: "POST",
         data: {},
         dataType: 'json',

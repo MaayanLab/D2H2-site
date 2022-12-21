@@ -63,7 +63,7 @@
                   <div class="justify-content-center row text-center mb-3 mt-3">
                     <a id="archs-url" target="_blank" rel="noopener noreferrer" href="https://maayanlab.cloud/archs4/">
                       <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Open in
-                        <img src="/static/img/archs4logo.png" class="img-fluid mr-3" style="width: 110px" alt="ARCHS4">
+                        <img src="{{url_for('static',filename= 'img/archs4logo.png')}}" class="img-fluid mr-3" style="width: 110px" alt="ARCHS4">
                       </button>
                     </a>
                   </div>
@@ -78,7 +78,7 @@
                   <div class="justify-content-center row text-center mt-3 mb-3">
                     <a id="gtex-url" target="_blank" rel="noopener noreferrer" href="https://gtexportal.org/home/">
                       <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Open in
-                        <img src="/static/img/gtexlogo.png" class="img-fluid mr-3" style="width: 110px" alt="GTEx">
+                        <img src="{{url_for('static',filename= 'img/gtexlogo.png')}}" class="img-fluid mr-3" style="width: 110px" alt="GTEx">
                       </button>
                     </a>
                   </div>
@@ -100,7 +100,7 @@
                   <button type="button"
                     class="btn btn-primary btn-group-sm mt-3 mb-3">
                     <span id="appyter-action" class="ml-3">Start a new appyter in</span>
-                    <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
+                    <img src="{{url_for('static',filename= 'img/appyters_logo.svg')}}" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
                   </button>
                 </a>
               </div>
@@ -143,7 +143,7 @@
                     <a id="appyter-url2" target="_blank" rel="noopener noreferrer"><button type="button"
                         class="btn btn-primary btn-group-sm mt-3 mb-3">
                         <span id="appyter-action" class="ml-3">Start a new appyter in</span>
-                        <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px"
+                        <img src="{{url_for('static',filename= 'img/appyters_logo.svg')}}" class="img-fluid mr-3" style="width: 120px"
                           alt="Appyters">
                       </button>
                     </a>
@@ -165,7 +165,7 @@
                     <a id="appyter-url3" target="_blank" rel="noopener noreferrer"><button type="button"
                         class="btn btn-primary btn-group-sm mt-3 mb-3">
                         <span id="appyter-action" class="ml-3">Start a new appyter in</span>
-                        <img src="/static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px"
+                        <img src="{{url_for('static',filename= 'img/appyters_logo.svg')}}" class="img-fluid mr-3" style="width: 120px"
                           alt="Appyters">
                       </button>
                     </a>
@@ -209,8 +209,8 @@
                 <a id="enrichr-query"><button type="button"
                     class="btn btn-primary btn-group-sm mt-3 mb-3">
                     <span id="appyter-action" class="ml-3">Query </span>
-                    <img src="/static/img/enrichrtext.png" class="img-fluid" style="width: 80px" alt="Enrichr">
-                    <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 50px" alt="">
+                    <img src="{{ url_for('static', filename='img/enrichrtext.png') }}" class="img-fluid" style="width: 80px" alt="Enrichr">
+                    <img src="{{ url_for('static', filename='img/enrichrlogo.png') }}" class="img-fluid mr-3" style="width: 50px" alt="">
                   </button>
                 </a>
               </div>
@@ -255,7 +255,7 @@
               <div class="justify-content-center row text-center  mt-3">
                 <a id="gwas-query">
                   <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Query
-                    <img src="/static/img/gwaslogo.png" class="img-fluid mr-3" style="width: 120px" alt="GWAS">
+                    <img src="{{ url_for('static', filename='img/gwaslogo.png') }}" class="img-fluid mr-3" style="width: 120px" alt="GWAS">
                   </button>
                 </a>
               </div>
@@ -296,7 +296,7 @@
               <div class="justify-content-center row text-center  mt-3">
                 <a id="archs4-query">
                   <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Query
-                    <img src="/static/img/archs4logo.png" class="img-fluid mr-3" style="width: 120px" alt="ARCHS4">
+                    <img src="{{ url_for('static', filename='img/archs4logo.png') }}" class="img-fluid mr-3" style="width: 120px" alt="ARCHS4">
                   </button>
                 </a>
               </div>
@@ -339,7 +339,7 @@
               <div class="justify-content-center row text-center  mt-3">
                 <a id="komp-query">
                   <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Query
-                    <img src="/static/img/mgilogo.png" class="img-fluid mr-1 ml-2 mb-2" style="width: 80px" alt="MGI">
+                    <img src="{{ url_for('static', filename='img/mgilogo.png') }}" class="img-fluid mr-1 ml-2 mb-2" style="width: 80px" alt="MGI">
                   </button>
                 </a>
               </div>

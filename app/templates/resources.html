@@ -25,7 +25,7 @@
 function createResourcesTable() {
   document.getElementById("resources").innerHTML = "<div class='loader justify-content-center'></div>";
   $.ajax({
-      url: "/getresources",
+      url: "getresources",
       type: "POST",
       data: {},
       dataType: 'json',

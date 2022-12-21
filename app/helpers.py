@@ -3,16 +3,40 @@ import json
 import requests
 from intermine.webservice import Service
 import pandas as pd
+from maayanlab_bioinformatics.normalization.quantile import quantile_normalize
 # bokeh
 from bokeh.plotting import figure
 from bokeh.embed import json_item
-from bokeh.models import ColumnDataSource
+from bokeh.models import ColumnDataSource, NumeralTickFormatter, CategoricalColorMapper, Legend, HoverTool
+from bokeh.transform import factor_cmap
+from bokeh.palettes import Category20
+
+import seaborn as sns
+
 import matplotlib.cm as cm
 import matplotlib.colors as colors
 import numpy as np
+# Sklearn
+from sklearn.manifold import TSNE
 
+from scipy.stats import zscore
+import scanpy as sc
+import s3fs
+
+import os
+import re
+import hashlib
+import h5py
+import anndata
+
+
+base_url = os.environ.get('BASE_URL', 'd2h2/data')
+endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
+
+s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
 ########################## QUERY ENRICHER ###############################
+
 
 @lru_cache()
 def query_enricher(gene):
@@ -502,7 +526,6 @@ def make_tables(comb_df, species, gene, is_upreg, isRNA=False):
     dir_df['Link to GEO Study'] = dir_df['Signature'].apply(geo_link, clickable=True)
     return dir_df
 
-@lru_cache()
 def send_plot(species, gene):
     pval_rna_df, fc_rna_df, inst_df_input, pval_micro_df, fc_micro_df, micro_exists = load_files(species, gene)
     comb_df_input = combine_data(pval_rna_df, fc_rna_df, gene, isRNA=True, inst_df=inst_df_input)
@@ -526,7 +549,7 @@ def send_plot(species, gene):
         dn_micro_df_input = ''
     return {'plot': json_item(plot, 'volcano-plot'), 'micro': micro_exists, 'tables': [up_comb_df_input, dn_comb_df_input, up_micro_df_input, dn_micro_df_input]}
 
-def make_dge_plot(data, title, method):
+def make_dge_plot(data, title, method, id_plot='dge-plot'):
 
     # set color and size for each point on plot
 
@@ -544,6 +567,11 @@ def make_dge_plot(data, title, method):
         colors = [map_color(r[1]['log2FoldChange'], r[1]['pvalue']) for r in data.iterrows()]
         sizes = [12 if r[1]['pvalue'] < 0.05 else 6 for r in data.iterrows()]
         data['logp'] = data['pvalue'].apply(lambda x: -np.log10(x))
+        data['gene'] = data.index.values
+    elif method == 'wilcoxon':
+        colors = [map_color(r[1]['logfoldchanges'], r[1]['pvals']) for r in data.iterrows()]
+        sizes = [12 if r[1]['pvals'] < 0.05 else 6 for r in data.iterrows()]
+        data['logp'] = data['pvals'].apply(lambda x: -np.log10(x))
         data['gene'] = data.index.values
 
 
@@ -617,6 +645,28 @@ def make_dge_plot(data, title, method):
         ("base Mean", "@baseMean"),
         ("lfcSE", "@lfcSE")
         ]
+    if method == 'wilcoxon':
+        data_source = ColumnDataSource(
+            data=dict(
+                x = data['logfoldchanges'],
+                y = data['logp'],
+                gene =  data['gene'],
+                pval = data['pvals'], 
+                adjpval = data['pvals_adj'], 
+                scores = data['scores'],
+                colors = colors, 
+                sizes = sizes,
+            )
+        )
+        tools = [
+        ("Gene", "@gene"),
+        ("P-value", "@pval"),
+        ("log2 Fold Change", "@x"),
+        ("-log10(p)", "@y"),
+        ("adj. P-value", "@adjpval"),
+        ("scores", "@scores")
+        ]
+    
 
     # create hover tooltip
     
@@ -642,8 +692,244 @@ def make_dge_plot(data, title, method):
     plot.title.align = 'center'
     plot.title.text_font_size = '14px'
     print("made_plot")
-    return json_item(plot, 'dge-plot')
+    return json_item(plot, id_plot)
+
+
+
+def str_to_int(string, mod):
+    string = re.sub(r"\([^()]*\)", "", string).strip()
+    byte_string = bytearray(string, "utf8")
+    return int(hashlib.sha256(byte_string).hexdigest(), base=16)%mod
+
+
+def make_single_visialization_plot(plot_df, values_dict,type, option_list,sample_names, caption_text, category_list_dict=None, location='right', category=True, dropdown=False, additional_info=None):
+
+    # init plot 
+    if additional_info is not None:
+        source = ColumnDataSource(data=dict(x=plot_df["x"], y=plot_df["y"], values=values_dict[option_list[0]], 
+                                        names=sample_names, info=additional_info[option_list[0]]))
+    else:
+        source = ColumnDataSource(data=dict(x=plot_df["x"], y=plot_df["y"], values=values_dict[option_list[0]], 
+                                        names=sample_names))
+    # node size
+    if plot_df.shape[0] > 1000:
+        node_size = 2
+    else:
+        node_size = 6
+        
+    if location == 'right':
+        plot = figure(plot_width=700, plot_height=600)   
+    else:
+        plot = figure(plot_width=1000, plot_height=1000+20*len(category_list_dict[option_list[0]]))   
+    if category == True:
+        unique_category_dict = dict()
+        for option in option_list:
+            unique_category_dict[option] = sorted(list(set(values_dict[option])))
+        
+        # map category to color
+        # color is mapped by its category name 
+        # if a color is used by other categories, use another color
+        factors_dict = dict()
+        colors_dict = dict()
+        for key in values_dict.keys():
+            unused_color = list(Category20[20])
+            factors_dict[key] = category_list_dict[key]
+            colors_dict[key] = list()
+            for category_name in factors_dict[key]:
+                color_for_category = Category20[20][str_to_int(category_name, 20)]
+                
+                if color_for_category not in unused_color:
+                    if len(unused_color) > 0:
+                        color_for_category = unused_color[0]                        
+                    else:
+                        color_for_category = Category20[20][19]
+                
+                colors_dict[key].append(color_for_category)
+                if color_for_category in unused_color:
+                    unused_color.remove(color_for_category)
+                    
+        color_mapper = CategoricalColorMapper(factors=factors_dict[option_list[0]], palette=colors_dict[option_list[0]])
+        legend = Legend()
+        
+        plot.add_layout(legend, location)
+        scatter = plot.scatter('x', 'y', size=node_size, source=source, color={'field': 'values', 'transform': color_mapper}, legend_field="values")
+        plot.legend.label_width = 30
+        plot.legend.click_policy='hide'
+        plot.legend.spacing = 1
+        if location == 'below':
+            location = 'bottom_left'
+        plot.legend.location = location
+        plot.legend.label_text_font_size = '10pt'
+    # else:
+    #     color_mapper = LinearColorMapper(palette=cc.CET_D1A, low=min(values_dict[option_list[0]]), high=max(values_dict[option_list[0]]))
+    #     color_bar = ColorBar(color_mapper=color_mapper, label_standoff=12)
+    #     plot.add_layout(color_bar, 'right')
+    #     plot.scatter('x', 'y', size=node_size,  source=source, color={'field': 'values', 'transform': color_mapper})
+    
+    if additional_info is not None:
+            tooltips = [
+            ("Sample", "@names"),
+            ("Value", "@values"),
+            ("p-value", "@info")
+        ]
+    else:
+        tooltips = [
+            ("Sample", "@names"),
+            ("Value", "@values"),
+        ]
+    plot.add_tools(HoverTool(tooltips=tooltips))
+    # plot.output_backend = "webgl"
+    plot_name = ''
+    if type == 'umap':
+        plot.xaxis.axis_label = "UMAP_1"
+        plot.yaxis.axis_label = "UMAP_2"
+        plot_name = 'umap-plot'
+    if type == 'tsne':
+        plot.xaxis.axis_label = "tSNE_1"
+        plot.yaxis.axis_label = "tSNE_2"
+        plot_name = 'tsne-plot'
+
+    if type == 'pca':
+        plot.xaxis.axis_label = "PCA_1"
+        plot.yaxis.axis_label = "PCA_2"
+        plot_name = 'pca-plot'
+    plot.xaxis.axis_label_text_font_size = "12pt"
+    
+    plot.yaxis.axis_label_text_font_size = "12pt"
+    
+    plot.xaxis.major_tick_line_color = None  # turn off x-axis major ticks
+    plot.xaxis.minor_tick_line_color = None  # turn off x-axis minor ticks
+    plot.yaxis.major_tick_line_color = None  # turn off y-axis major ticks
+    plot.yaxis.minor_tick_line_color = None  # turn off y-axis minor ticks
+    plot.xaxis.major_label_text_font_size = '0pt'  # preferred method for removing tick labels
+    plot.yaxis.major_label_text_font_size = '0pt'  # preferred method for removing tick labels
+    
+    return json_item(plot, plot_name)
 
 
 
 
+def log2_normalize(x, offset=1.):
+    return np.log2(x + offset)
+
+
+@lru_cache()
+def bulk_vis(expr_df, meta_df):
+
+    meta_df = pd.read_csv(s3.open(meta_df), header=0, index_col=0, sep='\t')
+    expr_df = pd.read_csv(s3.open(expr_df), header=0, index_col=0, sep='\t')
+
+    expr_df.replace([np.inf, -np.inf],np.nan, inplace=True)
+
+   
+    expr_df = expr_df.transpose()
+    expr_df = expr_df.dropna(axis=1)
+
+
+    df_data_norm = log2_normalize(expr_df, offset=1)
+
+    df_data_norm = quantile_normalize(df_data_norm, axis=0)
+
+    var = df_data_norm.var(axis = 0, numeric_only = True)
+    var.sort_values(ascending=False, inplace=True)
+    idx = var.index.values[:250]
+
+    df_data_norm = df_data_norm[idx]
+    #expr_df = pd.DataFrame(zscore(df_data_norm, axis=1), index=df_data_norm.index, columns=df_data_norm.columns)
+    expr_df = pd.DataFrame(df_data_norm, index=df_data_norm.index, columns=df_data_norm.columns)
+    expr_df = expr_df.dropna(axis=1)
+
+
+    # Compute label and pca based on Leiden Algorithm 
+    leiden_df = sc.AnnData(expr_df,dtype=np.float32)
+    sc.pp.pca(leiden_df)
+    sc.pp.neighbors(leiden_df) 
+    sc.tl.leiden(leiden_df, key_added="leiden")
+    df_y = meta_df
+    #df_y['leiden'] = list(leiden_df.obs['leiden'].values)
+
+    # Data transformation for 2D visualization
+    # Normalize transformed data to have a better visualization on 3D plot
+    #leiden_df.obsm['X_pca'] = zscore(leiden_df.obsm['X_pca'],axis=0)
+
+    pca_data = pd.DataFrame({'x':leiden_df.obsm['X_pca'][:,0],
+                        'y':leiden_df.obsm['X_pca'][:,1],
+                        'z':leiden_df.obsm['X_pca'][:,2]})
+    pca_df = df_y.reset_index().join(pca_data).set_index('Sample_geo_accession')
+
+    n_samps = leiden_df.obsm['X_pca'].shape[0]
+    perp = 5
+    if n_samps <= 5:
+        perp = n_samps - 1
+
+    tsne = TSNE(perplexity=perp, learning_rate='auto', init='pca')
+    leiden_df.obsm['X_tsne'] = tsne.fit_transform(leiden_df.obsm['X_pca'])
+    leiden_df.obsm['X_tsne'] = zscore(leiden_df.obsm['X_tsne'],axis=0)
+    tsne_data = pd.DataFrame({'x':leiden_df.obsm['X_tsne'][:,0],
+                        'y':leiden_df.obsm['X_tsne'][:,1]})
+                        #'z':leiden_df.obsm['X_tsne'][:,2]
+    tsne_df = df_y.reset_index().join(tsne_data).set_index('Sample_geo_accession')
+    sc.tl.umap(leiden_df, n_components=2)
+    leiden_df.obsm['X_umap'] = zscore(leiden_df.obsm['X_umap'],axis=0)
+    umap_data = pd.DataFrame({'x':leiden_df.obsm['X_umap'][:,0],
+                        'y':leiden_df.obsm['X_umap'][:,1]})
+                        #'z':leiden_df.obsm['X_umap'][:,2]
+    umap_df = df_y.reset_index().join(umap_data).set_index('Sample_geo_accession')
+
+    return pca_df, tsne_df, umap_df
+
+def generate_colors(input_df, feature):
+    pal = sns.color_palette(n_colors = len(input_df['legend'].unique()))
+    color = factor_cmap(feature, palette=pal.as_hex(), factors=np.array(input_df['legend'].unique()))
+    return color 
+
+def interactive_circle_plot(input_df, x_lab, y_lab, feature, name):
+    if len(input_df['Group'].unique()) > 1:
+        input_df['legend'] = input_df['Condition'] + ' ' + input_df['Group']
+        feature = 'legend'
+    else:
+        input_df['legend'] = input_df[feature]
+    input_df = input_df.reset_index()
+    source = ColumnDataSource(input_df)
+    TOOLTIPS = [
+        ("Sample", '@Sample_geo_accession'),
+        ("(x,y)", "($x, $y)"),
+        ("Condition", '@Condition'),
+        ("Group", '@Group')
+    ]
+    n = len(input_df['legend'].unique())
+    height_add = 0
+    if n > 10:
+        height_add = (n - 10) * 75
+    point_size = 10 if input_df.shape[0] < 100 else 5
+    lab_max = max(map(lambda x: len(x), list(input_df['legend'].unique())))
+    
+
+    p = figure(height=1600+height_add, width=1800+(15*lab_max), tooltips=TOOLTIPS,x_axis_label=x_lab, y_axis_label=y_lab,sizing_mode="scale_width")
+
+
+    color = generate_colors(input_df, 'legend')
+    p1 = p.circle('x', 'y', size=point_size, source=source, legend_field=feature,fill_color= color, line_color=color)
+    p.add_layout(p.legend[0], 'right')
+
+    p.xgrid.visible = False
+    p.ygrid.visible = False
+    p.xaxis.minor_tick_line_color = None 
+    p.yaxis.minor_tick_line_color = None 
+    p.xaxis.axis_label_text_font_size = '12pt'
+    p.yaxis.axis_label_text_font_size = '12pt'
+    p.xaxis[0].formatter = NumeralTickFormatter(format="0.0")
+    p.yaxis[0].formatter = NumeralTickFormatter(format="0.0")
+    p.legend.label_text_font_size = "12px"
+    return json_item(p, name)
+    
+
+ 
+
+def read_anndata_raw(path_to_data):
+    return anndata.read_h5ad(s3.open(path_to_data))
+
+
+
+def read_anndata_h5(path_to_data):
+    return h5py.File(s3.open(path_to_data))

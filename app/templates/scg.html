@@ -14,7 +14,7 @@
 
         <div class="col-10 custom-col mx-auto mb-5 text-center" style="overflow: visible;">
             <div class="row justify-content-center m-5">
-                <img src="static/img/scg.png" alt="" class="img-fluid" id="sigcomslogo" style="border-style: none;">
+                <img src="{{ url_for('static', filename='img/scg.png') }}" alt="" class="img-fluid" id="sigcomslogo" style="border-style: none;">
             </div>
             <div class="row justify-content-center m-4">
                 <p style="font-size: 20px;">Signature Commons Graph is an interactive knowledge enrichment tool for
@@ -22,7 +22,7 @@
             </div>
 
             <div class="row justify-content-center m-2">
-                <img src="static/img/SCG-thumbnail.png" alt="" class="img-fluid p-0" style="width: 300px;">
+                <img src="{{ url_for('static', filename='img/SCG-thumbnail.png') }}" alt="" class="img-fluid p-0" style="width: 300px;">
             </div>
 
             <div class="row justify-content-center m-4">
@@ -66,7 +66,7 @@
 function createWorkflowsTable() {
     document.getElementById("workflows").innerHTML = "<div class='loader justify-content-center'></div>";
     $.ajax({
-        url: "/getworkflows",
+        url: "getworkflows",
         type: "POST",
         data: {},
         dataType: 'json',
@@ -87,7 +87,7 @@ function createWorkflowsTable() {
             tabletext += "<tr><td>"+ data[k][0]+"</td><td>"+ data[k][1]+ "</td>"
             tabletext += `<td><a id="scg-link" href="${data[k][2]}" target="_blank">
                                 <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3">
-                                    Open in<img src="/static/img/scglogo.png" class="img-fluid" style="width: 50px" alt="SCG">
+                                    Open in<img src="{{ url_for('static', filename='img/scglogo.png') }}" class="img-fluid" style="width: 50px" alt="SCG">
                                 </button>
                           </a></td></tr>`
         }

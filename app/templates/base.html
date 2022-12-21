@@ -78,13 +78,24 @@
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownSpecies" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false" style="color: black !important;">Processed GEO Study Viewer
+                aria-haspopup="true" aria-expanded="false" style="color: black !important;">Bulk RNA-seq and Microarray Studies
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdownSpecies" style="width: 235px; background-color:#ECEFF1;">
                 <a class="dropdown-item nav-link" id ="viewer"
-                  href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}" style="color: black;"> Human ({{ gse_metadata['human']|length }})</a>
+                  href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}" style="color: black;"> Human ({{ numstudies[0] }})</a>
                 <a class="dropdown-item nav-link" id ="viewer"
-                  href="{{ url_for('species_or_viewerpg', species_or_gse='mouse') }}" style="color: black;""> Mouse ({{ gse_metadata['mouse']|length }})</a>
+                  href="{{ url_for('species_or_viewerpg', species_or_gse='mouse') }}" style="color: black;""> Mouse ({{ numstudies[1] }})</a>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownSpecies" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false" style="color: black !important;">scRNA-seq Studies
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownSpecies" style="width: 235px; background-color:#ECEFF1;">
+                <a class="dropdown-item nav-link" id ="singleviewer"
+                  href="{{ url_for('species_or_viewerpg', species_or_gse='human_single') }}" style="color: black;"> Human ({{ numstudies[2] }})</a>
+                <a class="dropdown-item nav-link" id ="viewer"
+                  href="{{ url_for('species_or_viewerpg', species_or_gse='mouse_single') }}" style="color: black;"> Mouse ({{ numstudies[3] }})</a>
               </div>
             </li>
             <li class="nav-item menu">
@@ -161,6 +172,7 @@
           crossorigin="anonymous"></script>
 
   <script src=" {{ url_for('static', filename='js/selectize.min.js') }}"></script>
+
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 

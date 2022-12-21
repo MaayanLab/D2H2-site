@@ -1,0 +1,3 @@
+Sample_geo_accession	Condition	Group
+GSM4120500	Pancreatic alpha progenitor cells	ES-derived pancreatic endocrine cells
+GSM4120501	Pancreatic alpha cells	ES-derived pancreatic endocrine cells
