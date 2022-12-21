@@ -33,6 +33,12 @@ cd app
 celery -A celery_config.celery worker --loglevel=info -P eventlet
 ```
 
+if eventlet throws an error, you can also run with a solo thread:
+
+```
+celery -A celery_config.celery worker --loglevel=info -P solo
+```
+
 Then to run the application, in a separate terminal, navigate to the the app directory and run the file app.py:
 
 ```
