@@ -30,7 +30,7 @@ To start the celery worker that will excecute the differential gene expression a
 
 ```
 cd app
-celery -A celery_config.celery worker --loglevel=info eventlet
+celery -A celery_config.celery worker --loglevel=info -P eventlet
 ```
 
 Then to run the application, in a separate terminal, navigate to the the app directory and run the file app.py:
