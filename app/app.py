@@ -20,7 +20,7 @@ endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
 base_url = os.environ.get('BASE_URL', 'd2h2/data')
 ROOT_PATH = os.environ.get('ROOT_PATH', '/')
 BASE_PATH = os.environ.get('BASE_PATH', 'maayanlab.cloud')
-DEBUG = os.environ.get('DEBUG', False)
+DEBUG = os.environ.get('DEBUG', True)
 
 print(endpoint)
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
