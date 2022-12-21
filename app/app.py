@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request
 from waitress import serve
-import os
 import json
-import s3fs
 import plotly
 import plotly.graph_objects as go
 import pandas as pd
@@ -152,24 +150,22 @@ def dge():
 
 	result = compute_dge.delay(expr_file, meta_file, method, control, perturb, False, False, False, False)
 
-	print(result)
-	""" jsonplot = make_dge_plot(data,title, method)
-
-	string_data = data.to_string()
-	return json.dumps({'table': string_data, 'plot': jsonplot}) """
 	return {'task_id': result.id}
 
 @app.route(f'{ROOT_PATH}/checkdgetask',  methods=['GET','POST'])
 def check_dge_task():
-	print(request.form)
+
 	task_id = request.form['task_id']
 	method = request.form['method']
 	task = compute_dge.AsyncResult(task_id)
-	if task.ready():
+	if task.state == 'SUCCESS':
 		data, title = task.get()
+		data = pd.read_json(data)
 		jsonplot = make_dge_plot(data,title, method)
 		string_data = data.to_string()
 		return json.dumps({'table': string_data, 'plot': jsonplot})
+	elif task.state == 'FAILURE':
+		return {'status': 'error'}
 	else:
 		return {'status': 'pending'}
 
@@ -193,20 +189,32 @@ def dgesingle():
 	#Passing the gene information as cells x genes for the differential expression method. 
 	#adata = adata.T
 	#adata.raw = adata_raw.T
+
 	
-	data_dict = compute_dge_single(expr_file, method, 'Cluster', 'leiden',cluster_group, True)
+	result = compute_dge_single.delay(expr_file, method, 'Cluster', 'leiden',cluster_group, True)
 
-	jsonplot = None
-	string_data = None
-	description = None
-	for key in data_dict:
+	return {'task_id': result.id}
 
-		jsonplot = make_dge_plot(data_dict[key],key, method)
-		string_data = data_dict[key].to_string()
-		description = key
-		break
 
-	return json.dumps({'table': string_data, 'plot': jsonplot, 'description':description})
+@app.route('/checkdgesingle',  methods=['GET','POST'])
+def check_dge_single_plot():
+	task_id = request.form['task_id']
+	method = request.form['method']
+	description = request.form['desc']
+	task = compute_dge_single.AsyncResult(task_id)
+	if task.state == 'SUCCESS':
+		data_dict = task.get()
+		for key in data_dict:
+			data = pd.DataFrame(data_dict[key])
+			jsonplot = make_dge_plot(data, key, method)
+			string_data = data.to_string()
+			description = key
+			break
+		return json.dumps({'table': string_data, 'plot': jsonplot, 'description':description})
+	elif task.state == 'FAILURE':
+		return {'status': 'error'}
+	else:
+		return {'status': 'pending'}
 
 
 #This function makes the umap tsne and pca plots for the single cell data based off the precomputed coordinates for these plots. 

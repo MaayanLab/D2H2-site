@@ -1,3 +1,4 @@
+from flask import jsonify
 from functools import lru_cache
 import pandas as pd
 from rpy2 import robjects
@@ -14,6 +15,7 @@ import scanpy as sc
 import random
 from helpers import read_anndata_h5, read_anndata_raw
 import os
+
 
 from celery_config import *
 
@@ -242,71 +244,72 @@ def check_df(df, col):
 
 @celery.task(name='compute_dge')
 def compute_dge(rnaseq_data_filename, meta_data_filename, diff_gex_method, control_name, perturb_name, logCPM_normalization, log_normalization, z_normalization, q_normalization):
-    meta_class_column_name = 'Condition'
+    with app.app_context():
+        meta_class_column_name = 'Condition'
+        s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
+        meta_df = pd.read_csv(s3.open(meta_data_filename),
+                            sep="\t", index_col=0, dtype=str)
 
-    meta_df = pd.read_csv(s3.open(meta_data_filename),
-                          sep="\t", index_col=0, dtype=str)
+        if len(set(meta_df['Group'])) > 1:
+            meta_df['Combined'] = meta_df['Condition'] + ' ' + meta_df['Group']
+            meta_class_column_name = 'Combined'
+        meta_df = meta_df[meta_df[meta_class_column_name].isin(
+            [control_name, perturb_name])]
 
-    if len(set(meta_df['Group'])) > 1:
-        meta_df['Combined'] = meta_df['Condition'] + ' ' + meta_df['Group']
-        meta_class_column_name = 'Combined'
-    meta_df = meta_df[meta_df[meta_class_column_name].isin(
-        [control_name, perturb_name])]
+        meta_df.index = meta_df.index.map(str)
+        expr_df = pd.read_csv(s3.open(rnaseq_data_filename),
+                            index_col=0, sep="\t").sort_index()
+        expr_df = expr_df.loc[expr_df.sum(axis=1) > 0, :]
 
-    meta_df.index = meta_df.index.map(str)
-    expr_df = pd.read_csv(s3.open(rnaseq_data_filename),
-                          index_col=0, sep="\t").sort_index()
-    expr_df = expr_df.loc[expr_df.sum(axis=1) > 0, :]
+        # Match samples between the metadata and the datasets
+        try:
+            check_df(meta_df, meta_class_column_name)
+        except:
+            print(f"Error! Column '{meta_class_column_name}' is not in metadata")
 
-    # Match samples between the metadata and the datasets
-    try:
-        check_df(meta_df, meta_class_column_name)
-    except:
-        print(f"Error! Column '{meta_class_column_name}' is not in metadata")
+        meta_df = meta_df[meta_df.index.isin(expr_df.columns)]
+        low_expression_threshold = .3
+        logCPM_normalization = False
+        log_normalization = False
+        z_normalization = False
+        q_normalization = False
 
-    meta_df = meta_df[meta_df.index.isin(expr_df.columns)]
-    low_expression_threshold = .3
-    logCPM_normalization = True
-    log_normalization = False
-    z_normalization = True
-    q_normalization = False
+        
 
-    
+        classes = list(meta_df[meta_class_column_name].unique())
 
-    classes = list(meta_df[meta_class_column_name].unique())
+        classes.remove(control_name)
+        classes.insert(0, control_name)
+        meta_df['tmp_class'] = pd.Categorical(
+            meta_df[meta_class_column_name], classes)
+        meta_df = meta_df.sort_values('tmp_class')
+        meta_df = meta_df.drop('tmp_class', axis=1)
 
-    classes.remove(control_name)
-    classes.insert(0, control_name)
-    meta_df['tmp_class'] = pd.Categorical(
-        meta_df[meta_class_column_name], classes)
-    meta_df = meta_df.sort_values('tmp_class')
-    meta_df = meta_df.drop('tmp_class', axis=1)
+        expr_df = expr_df.loc[:, meta_df.index]
+        expr_df = expr_df.groupby(expr_df.index).sum()
 
-    expr_df = expr_df.loc[:, meta_df.index]
-    expr_df = expr_df.groupby(expr_df.index).sum()
+        assert (meta_df.shape[0] == expr_df.shape[1])
 
-    assert (meta_df.shape[0] == expr_df.shape[1])
+        dataset = dict()
+        current_dataset = 'rawdata'
+        dataset[current_dataset] = expr_df
+        filter_genes = True
 
-    dataset = dict()
-    current_dataset = 'rawdata'
-    dataset[current_dataset] = expr_df
-    filter_genes = True
+        # Filter out lowly expressed genes
+        mask_low_vals = (expr_df > low_expression_threshold).sum(axis=1) > 2
+        expr_df = expr_df.loc[mask_low_vals, :]
+        current_dataset += '+filter_genes'
+        dataset[current_dataset] = expr_df
 
-    # Filter out lowly expressed genes
-    mask_low_vals = (expr_df > low_expression_threshold).sum(axis=1) > 2
-    expr_df = expr_df.loc[mask_low_vals, :]
-    current_dataset += '+filter_genes'
-    dataset[current_dataset] = expr_df
+        dataset['dataset_metadata'] = meta_df
 
-    dataset['dataset_metadata'] = meta_df
+        dataset, normalization = normalize(
+            dataset, current_dataset, logCPM_normalization, log_normalization, z_normalization, q_normalization)
 
-    dataset, normalization = normalize(
-        dataset, current_dataset, logCPM_normalization, log_normalization, z_normalization, q_normalization)
+        signatures, signature_label = get_signatures(
+            classes, dataset, normalization, diff_gex_method, meta_class_column_name, filter_genes)
 
-    signatures, signature_label = get_signatures(
-        classes, dataset, normalization, diff_gex_method, meta_class_column_name, filter_genes)
-
-    return signatures[signature_label], signature_label
+        return signatures[signature_label].to_json(), signature_label
 
 
 ########## SINGLE CELL DGE METHODS ###########
@@ -470,37 +473,37 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
                 dedf = dedf.sort_values("logfoldchanges", ascending=False)
                 signature = dedf
 
-            signatures[signature_label] = signature
+            signatures[signature_label] = signature.to_dict()
     return signatures
 
 @celery.task(name='compute_dge_single')
 def compute_dge_single(expr_file, diff_gex_method, enrichment_groupby, meta_class_column_name, clustergroup, agg):
-    if diff_gex_method == "characteristic_direction":
-        fc_colname = "CD-coefficient"
-        sort_genes_by = "CD-coefficient"
-        ascending = False
-    elif diff_gex_method == "limma":
-        fc_colname = "logFC"
-        sort_genes_by = "t"
-        ascending = False
-    elif diff_gex_method == "edgeR":
-        fc_colname = "logFC"
-        sort_genes_by = "PValue"
-        ascending = True
-    elif diff_gex_method == "DESeq2":
-        fc_colname = "log2FoldChange"
-        sort_genes_by = "padj"
-        ascending = True
-    elif diff_gex_method == "wilcoxon":
-        fc_colname = "logfoldchanges"
-        sort_genes_by = "scores"
-        ascending = False
+    with app.app_context():
+        if diff_gex_method == "characteristic_direction":
+            fc_colname = "CD-coefficient"
+            sort_genes_by = "CD-coefficient"
+            ascending = False
+        elif diff_gex_method == "limma":
+            fc_colname = "logFC"
+            sort_genes_by = "t"
+            ascending = False
+        elif diff_gex_method == "edgeR":
+            fc_colname = "logFC"
+            sort_genes_by = "PValue"
+            ascending = True
+        elif diff_gex_method == "DESeq2":
+            fc_colname = "log2FoldChange"
+            sort_genes_by = "padj"
+            ascending = True
+        elif diff_gex_method == "wilcoxon":
+            fc_colname = "logfoldchanges"
+            sort_genes_by = "scores"
+            ascending = False
 
-    meta_class_column_name = "leiden"
-    classes = [clustergroup]
-    bool_cluster = True
+        meta_class_column_name = "leiden"
+        classes = [clustergroup]
+        bool_cluster = True
 
-    signatures = get_signatures_single(classes, expr_file, method=diff_gex_method,
-                                       meta_class_column_name=meta_class_column_name, cluster=bool_cluster, aggregate=agg)
-
-    return signatures
+        signatures = get_signatures_single(classes, expr_file, method=diff_gex_method,
+                                        meta_class_column_name=meta_class_column_name, cluster=bool_cluster, aggregate=agg)
+        return signatures

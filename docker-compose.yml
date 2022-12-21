@@ -5,9 +5,9 @@ services:
     build: .
     image: giacomomarino/d2h2:0.1.0
     environment:
-      - ROOT_PATH=/D2H2/
+      - ROOT_PATH=/
       - BASE_PATH=https://maayanalab.cloud
-      - DEBUG=true
+      - DEBUG=false
       - BASE_URL=d2h2/data
     ports:
       - 8080:80

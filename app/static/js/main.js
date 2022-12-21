@@ -1,27 +1,43 @@
 // Check task completion
 async function checkResult(task_id, method) {
-    $.ajax({
+    while (true) {
+      const response = await $.ajax({
         url: '/checkdgetask',
         type: 'POST',
         data: {
-            'task_id': task_id,
-            'method': method
-        },
-        async: true,
-        success: function(response) {
-            console.log(response)
-            if (response.status == 'pending') {
-                setTimeout(function() {
-                    checkResult(task_id, method);
-                }, 5000);
-            } else {
-                return response
-
-            }
+          'task_id': task_id,
+          'method': method
         }
-    });
-}
+      });
+  
+      if (response.status != 'pending') {
+        return response;
+      } else {
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      }
+    }
+  }
 
+// Check task completion
+async function checkResultSingle(task_id, method, desc) {
+    while (true) {
+      const response = await $.ajax({
+        url: '/checkdgesingle',
+        type: 'POST',
+        data: {
+          'task_id': task_id,
+          'method': method,
+          'desc': desc
+        }
+      });
+  
+      if (response.status != 'pending') {
+        return response;
+      } else {
+        await new Promise(resolve => setTimeout(resolve, 5000));
+      }
+    }
+  }
 
 
 // This function will generate the umap, tsne, and pca plots for each indivdual study for a specific condition
@@ -1509,23 +1525,15 @@ $(document).ready(function() {
             dataType: 'json',
             data: gsedata,
             async: false,
-        }).done( async function(response) {
+        }).done(async function(response) {
             var id = response['task_id']
             
-            
-            result = await checkResult(id, method).then(function(response) {
+            const result = await checkResult(id, method);
 
-
-
-
-
-            
-
-            console.log(result)
-
+            const res = JSON.parse(result)
             document.getElementById("dge-loading").innerHTML = "";
-            var plot = response['plot']
-            var table = response['table']
+            var plot = res["plot"]
+            var table = res["table"]
 
             var rows = table.split('\n').slice(1, -1);
             clear_dge()
@@ -1611,7 +1619,6 @@ $(document).ready(function() {
             `
                 
             document.getElementById("geneset-buttons").innerHTML = (clear_button + genelist_buttons)
-            })
         })
         .fail(function (jqXHR, textStatus, errorThrown) {
             alert('An internal server error occured, please try again')
@@ -1649,10 +1656,17 @@ $(document).ready(function() {
             dataType: 'json',
             data: gsedata
         }).done(async function(response) {
+
+
+            var id = response['task_id']
+            
+            const result = await checkResultSingle(id, method, diffcluster + ' vs. rest');
+            console.log(result)
+            const res = JSON.parse(result);
             document.getElementById("dge-loading").innerHTML = "";
-            var plot = response['plot']
-            var table = response['table']
-            var desc = response['description']
+            var plot = res['plot']
+            var table = res['table']
+            var desc = res['description']
             console.log(desc)
             var rows = table.split('\n').slice(1, -1);
             clear_dge_single()

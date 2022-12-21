@@ -29,5 +29,6 @@ umap
 seaborn
 celery
 redis
+eventlet
 
 
