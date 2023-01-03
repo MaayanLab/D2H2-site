@@ -394,7 +394,6 @@ function generate_plots(){
     }).done(function(response) {
 
         document.getElementById("singleplots-loading").innerHTML = "";
-        console.log('IN THE DONE OF AJAX for GENERATE PLOTS')
         // $('#singleplots-loading').removeClass('loader justify-content-center');
         var umap_plot = response['umapplot']
         var pca_plot = response['pcaplot']

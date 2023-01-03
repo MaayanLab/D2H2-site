@@ -755,6 +755,7 @@ def visualize_samps():
 
 	return json.dumps({'pcaplot': pca_plot, 'tsneplot': tsne_plot, 'umapplot': umap_plot})
 
+
 def run_app():
 	if DEBUG:
 		app.run(debug=True, host="0.0.0.0")

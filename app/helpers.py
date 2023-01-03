@@ -37,6 +37,22 @@ s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
 ########################## QUERY ENRICHER ###############################
 
+@lru_cache()
+def enrichr_id(genes, desc):
+    ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/addList'
+    genes_str = '\n'.join(genes)
+    payload = {
+        'list': (None, genes_str),
+        'description': (None, desc)
+    }
+
+    response = requests.post(ENRICHR_URL, files=payload)
+    if not response.ok:
+        raise Exception('Error analyzing gene list')
+
+    data = json.loads(response.text)
+    return data["userListId"]
+
 
 @lru_cache()
 def query_enricher(gene):

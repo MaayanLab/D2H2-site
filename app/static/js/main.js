@@ -1,17 +1,24 @@
 
 // This function will generate the umap, tsne, and pca plots for each indivdual study for a specific condition
+function check_genes_present(genes) {
+    if (genes.length == 0) {
+        alert('No genes are selected. Please check the input adjusted p-value and input number of genes');
+        return true;
+    } else return false;
+}
+
+
 function generate_single_plots(){
     document.getElementById("umap-plot").innerHTML = "";
     document.getElementById("tsne-plot").innerHTML = "";
     document.getElementById("pca-plot").innerHTML = "";
-    console.log('IN GENERATE PLOTS')
+
     // document.getElementById("singleplots-loading").innerHTML = "<div class='loader justify-content-center'></div>";
     $('#singleplots-loading').addClass('loader justify-content-center');
     var gse = document.getElementById("singlegse").innerText
     var species = document.getElementById("species").innerText
     var condition_group = document.getElementById("methodsingle").value
-    console.log(gse)
-    console.log(condition_group)
+
     var gsedata = JSON.stringify({'gse': gse, 'species': species, 'conditiongroup':condition_group});
     $.ajax({
         url: "/singleplots",
@@ -21,7 +28,7 @@ function generate_single_plots(){
         data: gsedata,
     }).done(function(response) {
         document.getElementById("singleplots-loading").innerHTML = "";
-        console.log('IN THE DONE OF AJAX for GENERATE PLOTS')
+
         $('#singleplots-loading').removeClass('loader justify-content-center');
         var umap_plot = response['umapplot']
         var pca_plot = response['pcaplot']
@@ -32,7 +39,6 @@ function generate_single_plots(){
         window.Bokeh.embed.embed_item(tsne_plot)
     });
     $("#boxplot").attr("data-url-plot", `/api/plot_single/${gse}/${condition_group}`)
-    console.log($("#boxplot").attr("data-url-plot"))
 }
 
 
@@ -99,7 +105,6 @@ function submit_geneset(genelist, sigs) {
     });
     var numgenes = document.getElementById('numgenes').value
     var signifigance = document.getElementById('signifigance').value
-    var dir = 'top'
     var genes_valid = []
 
     for (i=0; i < genelist.length; i++ ){
@@ -107,12 +112,12 @@ function submit_geneset(genelist, sigs) {
             genes_valid.push(genelist[i])
         }
     }
-    if (dir === 'top') {
-        var genes = genes_valid.splice(0, numgenes).join('&')
+    if (check_genes_present(genes_valid)) return;
+
+
+    var genes = genes_valid.splice(0, numgenes).join('&')
         
-    } else {
-        var genes = genes_valid.slice(-numgenes).join('&')
-    }
+
 
 
     const currURL = window.location.href.split('/')
@@ -129,9 +134,7 @@ function submit_geneset_home(genelist, sigs, descset) {
     var numgenes = document.getElementById('numgenes').value
     var signifigance = document.getElementById('signifigance').value
     var genes_valid = []
-    console.log(signifigance)
-    console.log(genelist)
-    console.log(numgenes)
+
 
     for (i=0; i < genelist.length; i++ ){
         if (sigs[i] <= signifigance) {
@@ -139,14 +142,18 @@ function submit_geneset_home(genelist, sigs, descset) {
         }
     }
 
+    if (check_genes_present(genes_valid)) return;
+
     var genes = genes_valid.splice(0, numgenes).join('&')
-    console.log(genes)
+
 
     localStorage.setItem('genes', genes)
     localStorage.setItem('descset', '')
     var home = window.location.href.split('/').filter(x => !x.includes('GSE')).join('/')
     window.open(home, '_blank')
 }
+
+
 
 function setGenes(genes) {
     localStorage.setItem('geneset', genes)
@@ -260,6 +267,7 @@ function enrich(options) {
     form.submit();
     document.body.removeChild(form);
 }
+
 function filter_and_submit_to_enrichr(genelist, sigs, description) {
     genelist = genelist.split(',')
     sigs = sigs.split(',').map(function(item) {
@@ -267,7 +275,6 @@ function filter_and_submit_to_enrichr(genelist, sigs, description) {
     });
     var numgenes = document.getElementById('numgenes').value
     var signifigance = document.getElementById('signifigance').value
-    var dir = 'top'
     var genes_valid = []
 
     for (i=0; i < genelist.length; i++ ){
@@ -275,20 +282,58 @@ function filter_and_submit_to_enrichr(genelist, sigs, description) {
             genes_valid.push(genelist[i])
         }
     }
-    if (dir === 'top') {
-        var genes = genes_valid.splice(0, numgenes).join('\n')
+
+    if (check_genes_present(genes_valid)) return;
+
+    var genes = genes_valid.splice(0, numgenes).join('\n')
         
-    } else {
-        var genes = genes_valid.slice(-numgenes).join('\n')
-    }
     options = {}
     options.list = genes
     options.description = description
     options.popup = true
     enrich(options)
-
 }
-function loadFileAsText(section, delim){
+
+async function filter_and_submit_to_kg(genelist, sigs, description) {
+    genelist = genelist.split(',')
+    sigs = sigs.split(',').map(function(item) {
+        return parseFloat(item);
+    });
+    var numgenes = document.getElementById('numgenes').value
+    var signifigance = document.getElementById('signifigance').value
+    var genes_valid = []
+
+    for (i=0; i < genelist.length; i++ ){
+        if (sigs[i] <= signifigance) {
+            genes_valid.push(genelist[i])
+        }
+    }
+
+    if (check_genes_present(genes_valid)) return;
+
+    var genes_str = genes_valid.splice(0, numgenes).join('/n')
+
+    const formData = new FormData()
+    formData.append('list', genes_str)
+    formData.append('description', description)
+
+    var res = await fetch("https://maayanlab.cloud/Enrichr/addList", {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+        },
+        body: formData,
+    })
+
+    const result = await res.json()
+    console.log(result)
+    const userListId = result['userListId']
+    const url = `https://maayanlab.cloud/enrichr-kg?userListId=${userListId}`
+    window.open(url, '_blank')
+}
+
+
+function loadFileAsText(section, delim) {
     
     return new Promise((resolve, reject) => {
     var fileToLoad = document.getElementById(section).files[0];
@@ -332,7 +377,6 @@ function fillSingleExampleHome(gene) {
 
 function fillSetExample(geneset) {
     $('.input-form').each(function() {
-        console.log(geneset)
         document.getElementById(this.id).value = geneset;
         geneCount(geneset, this.id[this.id.length -1])
     })
@@ -463,11 +507,9 @@ $(document).ready(function() {
             var inputvalue = $("#gene-select").val();
             var isChecked= document.getElementById("species-val").checked;
             if (!isChecked) {
-                console.log('human')
                 var species = 'Human';
                 var arg = 'human_gene';
             } else {
-                console.log('mouse')
                 var species = 'Mouse';
                 var arg = 'mouse_gene';
             }
@@ -561,7 +603,7 @@ $(document).ready(function() {
                 },
                 body: formData,
             })
-            console.log(res)
+
             const id = await res.json()
             window.open("https://appyters.maayanlab.cloud/Gene_Expression_by_Tissue/" + id.session_id, target='_blank')
 
@@ -1009,26 +1051,11 @@ $(document).ready(function() {
 
         // Gene
         var gene_symbol = $('#gene-select').val();
-        console.log(gene_symbol)
-        // if (!gene_symbol) {
-
-        //     gene_symbol = 'A1CF';
-
-        //     if(document.getElementById("species")) {
-        //         var species = document.getElementById("species").innerText
-        //     }
-
-        //     if (species === 'mouse') {
-        //         gene_symbol = '0610007P14Rik';
-        //     }
-        // }
         
         // Conditions FOR SINGLE CELL NEED TO CHANGE BUT FOR CLUSTERS NOW WHAT ARE THE SELECTED CLUSTERS
         var conditions = [];
         $('.condition-btn.plotted').each(function() { conditions.push($(this).attr('data-group_label')) }); conditions
-        // console.log($('.condition-btn.plotted').innerHTML)
-        // console.log($(this).attr('data-group_label'))
-        console.log(conditions)
+
         // AJAX Query
         $.ajax({
             url: $('#boxplot').attr('data-url-plot'), //"{{ url_for('plot_api') }} + "/" + $('#boxplot').attr('data-geo-acc'),
@@ -1069,9 +1096,7 @@ $(document).ready(function() {
     
     // Conditions
     $('.condition-btn').on('click', function(evt) {
-        console.log($(this))
         $(this).toggleClass('plotted'); // making a specific button plotted or not
-        console.log($(this))
         boxplot();
     })
 
@@ -1393,7 +1418,7 @@ $(document).ready(function() {
         document.getElementById("dgea-loading").innerHTML = "<div class='loader justify-content-center'></div>";
 
         var gse = document.getElementById("gse").innerText
-        console.log(gse)
+
         var gsedata = JSON.stringify({'gse': gse, 'control': control_condition, 'perturb': perturb_condition, 'species': species});
 
 
@@ -1460,23 +1485,20 @@ $(document).ready(function() {
             return;
         }
 
-        document.getElementById("dge-loading").innerHTML = "<div class='loader justify-content-center'></div>";
+        document.getElementById("dge-loading").innerHTML = "<div class='loader justify-content-center'></div> <div class='text-center'><p> It may take 2-3 minutes to compute DEGs</p><div>";
 
         var gse = document.getElementById("gse").innerText
         var species = document.getElementById("species").innerText
         var method = document.getElementById("method").value
-        console.log(method)
          
         var logCPM = document.getElementById("logCPM").checked
         var log = document.getElementById("log").checked
         var q = document.getElementById("q").checked
         var z = document.getElementById("z").checked
         var norms = {'logCPM': logCPM, 'log': log, 'q': q, 'z': z}
-        console.log(norms)
 
 
         var gsedata = JSON.stringify({'gse': gse, 'control': control_condition, 'perturb': perturb_condition, 'method': method, 'species': species, 'norms': norms});
-        console.log(gsedata)
         $.ajax({
             url: "dgeapi",
             contentType: 'application/json',
@@ -1566,8 +1588,15 @@ $(document).ready(function() {
             </div>
             <div class="row justify-content-center mx-auto text-center">
             <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset('${genes.join(',')}', '${pvals.join(',')}')">Gene Set Queries</button>
-            <div class="mt-3 h7">or to</div>
             <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset_home('${genes.join(',')}', '${pvals.join(',')}', '${name}')">Diabetes Gene Set Library</button>
+            </div>
+            <div class="row justify-content-center mx-auto text-center">
+            <button type="button" class="btn btn-primary btn-group-sm m-2" onclick="filter_and_submit_to_enrichr('${genes.join(',')}', '${pvals.join(',')}', '${gse}:${control_condition}vs.${perturb_condition}')"> Enrichr
+            <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
+            </button>
+            <button type="button" class="btn btn-primary btn-group-sm m-2" onclick="filter_and_submit_to_kg('${genes.join(',')}', '${pvals.join(',')}', '${gse}:${control_condition}vs.${perturb_condition}')"> Enrichr-KG
+            <img src="/static/img/enrichr-kg.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
+            </button>
             </div>
             `
                 
@@ -1578,6 +1607,8 @@ $(document).ready(function() {
             document.getElementById("dge-loading").innerHTML = "";
         })
     });
+
+   
 
     // PERFORM DIFFERENTIAL GENE ANALYSIS AND CREATE RELEVANT TABLE
     $('#dge-button-single').on('click', async function() {
@@ -1590,18 +1621,15 @@ $(document).ready(function() {
         var method = document.getElementById("method").value
         var condition_group = document.getElementById("methodsingle").value
         var diffcluster = document.getElementById("differentialcluster").value
-        console.log(diffcluster)
-        console.log(method)
          
         var logCPM = document.getElementById("logCPM").checked
         var log = document.getElementById("log").checked
         var q = document.getElementById("q").checked
         var z = document.getElementById("z").checked
         var norms = {'logCPM': logCPM, 'log': log, 'q': q, 'z': z}
-        console.log(norms)
+
         var gsedata = JSON.stringify({'gse': gse, 'species': species, 'conditiongroup':condition_group, 'method': method, 'norms': norms, 'diffcluster':diffcluster});
 
-        console.log(gsedata)
         $.ajax({
             url: "/dgeapisingle",
             contentType: 'application/json',
@@ -1613,7 +1641,7 @@ $(document).ready(function() {
             var plot = response['plot']
             var table = response['table']
             var desc = response['description']
-            console.log(desc)
+
             var rows = table.split('\n').slice(1, -1);
             clear_dge_single()
             window.Bokeh.embed.embed_item(plot)
@@ -1855,8 +1883,7 @@ $(document).ready(function() {
     
             const classes = response['classes']
             const metadict = response['metadict']
-            console.log(classes)
-            console.log(metadict)
+
             document.getElementById("singlecell").innerHTML = ''
             document.getElementById("differentialcluster").innerHTML = ''
             tabletext = ''
