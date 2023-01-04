@@ -311,7 +311,7 @@ async function filter_and_submit_to_kg(genelist, sigs, description) {
 
     if (check_genes_present(genes_valid)) return;
 
-    var genes_str = genes_valid.splice(0, numgenes).join('/n')
+    var genes_str = genes_valid.splice(0, numgenes).join('\n')
 
     const formData = new FormData()
     formData.append('list', genes_str)
@@ -1591,10 +1591,10 @@ $(document).ready(function() {
             <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset_home('${genes.join(',')}', '${pvals.join(',')}', '${name}')">Diabetes Gene Set Library</button>
             </div>
             <div class="row justify-content-center mx-auto text-center">
-            <button type="button" class="btn btn-primary btn-group-sm m-2" onclick="filter_and_submit_to_enrichr('${genes.join(',')}', '${pvals.join(',')}', '${gse}:${control_condition}vs.${perturb_condition}')"> Enrichr
+            <button type="button" class="btn btn-primary btn-group-sm m-2" onclick="filter_and_submit_to_enrichr('${genes.join(',')}', '${pvals.join(',')}', '${gse}-${control_condition}-vs-${perturb_condition}')"> Enrichr
             <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
             </button>
-            <button type="button" class="btn btn-primary btn-group-sm m-2" onclick="filter_and_submit_to_kg('${genes.join(',')}', '${pvals.join(',')}', '${gse}:${control_condition}vs.${perturb_condition}')"> Enrichr-KG
+            <button type="button" class="btn btn-primary btn-group-sm m-2" onclick="filter_and_submit_to_kg('${genes.join(',')}', '${pvals.join(',')}', '${gse}-${control_condition}-vs-${perturb_condition}')"> Enrichr-KG
             <img src="/static/img/enrichr-kg.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
             </button>
             </div>
