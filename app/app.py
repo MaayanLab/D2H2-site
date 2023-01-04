@@ -20,7 +20,7 @@ endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
 base_url = os.environ.get('BASE_URL', 'd2h2/data')
 ROOT_PATH = os.environ.get('ROOT_PATH', '/')
 BASE_PATH = os.environ.get('BASE_PATH', 'maayanlab.cloud')
-DEBUG = os.environ.get('DEBUG', False)
+DEBUG = os.environ.get('DEBUG', True)
 
 print(endpoint)
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
@@ -171,6 +171,7 @@ def dge():
 	string_data = data.to_string()
 
 	return json.dumps({'table': string_data, 'plot': jsonplot})
+
 @app.route('/dgeapisingle',  methods=['GET','POST'])
 def dgesingle():
 	response_json = request.get_json()
@@ -413,11 +414,17 @@ def species_or_viewerpg(species_or_gse):
 		species_folder = url_to_folder[species]
 		metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 		metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
+		gses = list(metadata_dataframe['Sample_geo_accession'])
+		print(gses)
 		metadata_dict = metadata_dataframe.groupby('Group')['Condition'].apply(set).to_dict()
-		metadata_dict_samples = metadata_dataframe.groupby('Condition')['Sample_geo_accession'].apply(list).to_dict()
+		metadata_dataframe['combined'] = metadata_dataframe['Group'] + ' ' + metadata_dataframe['Condition']
+		metadata_dict_samples = metadata_dataframe.groupby('combined')['Sample_geo_accession'].apply(list).to_dict()
 		sample_dict = {}
+		print(metadata_dict_samples)
 		for key in metadata_dict_samples.keys():
-			sample_dict[key] = {'samples':metadata_dict_samples[key], 'count': len(metadata_dict_samples[key])}
+			filtered_samps = list(filter(lambda x: x in gses, metadata_dict_samples[key]))
+			sample_dict[key] = {'samples': filtered_samps, 'count': len(filtered_samps)}
+		print(sample_dict)
 		return render_template('viewer.html', metadata_dict=metadata_dict, metadata_dict_samples=sample_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping, numstudies=numstudies)
 	#Check for the single study individual viewer page
 	elif species_or_gse in study_to_species_single:
@@ -675,10 +682,18 @@ def conditions_api(geo_accession):
 	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 	if len(set(metadata_dataframe['Group'])) == 1:
 		conditions = set(metadata_dataframe['Condition'])
+		col = 'Condition'
 	else:
 		metadata_dataframe['combined'] = metadata_dataframe['Condition'] + ' ' + metadata_dataframe['Group']
 		conditions = set(metadata_dataframe['combined'])
-	return json.dumps([{'Condition': x} for x in conditions])
+		col = 'combined'
+	valid_conditions = []
+	for condition in conditions:
+
+		if len(metadata_dataframe[metadata_dataframe[col] == condition]) > 1:
+			valid_conditions.append(condition)
+
+	return json.dumps([{'Condition': x} for x in valid_conditions])
 
 #############################################
 ########## Conditions to Samples

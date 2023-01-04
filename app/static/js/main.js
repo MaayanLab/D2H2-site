@@ -1,17 +1,49 @@
 
-// This function will generate the umap, tsne, and pca plots for each indivdual study for a specific condition
 function check_genes_present(genes) {
     if (genes.length == 0) {
-        alert('No genes are selected. Please check the input adjusted p-value and input number of genes');
+        alert('no significantly differentially expressed genes were identified with these thresholds');
         return true;
     } else return false;
 }
 
+function filter_genes_sigs(genelist, adjpvals, pvals) {
+    var col = 'pval'
+    try {
+        col = document.getElementById('col-to-use').value
+        console.log(col)
+    } catch {
+        col = 'pval'
+    }
+
+    genelist = genelist.split(',')
+    if (col == 'pval'){
+        var sigs = pvals;
+
+    } else var sigs = adjpvals;
+    sigs = sigs.split(',').map(function(item) {
+        return parseFloat(item);
+    });
+    var numgenes = document.getElementById('numgenes').value
+    var signifigance = document.getElementById('signifigance').value
+    var genes_valid = []
+
+    for (i=0; i < genelist.length; i++ ){
+        if (sigs[i] <= signifigance) {
+            genes_valid.push(genelist[i])
+        }
+    }
+    console.log(genes_valid)
+    return genes_valid
+}
+
 
 function generate_single_plots(){
+    // This function will generate the umap, tsne, and pca plots for each indivdual study for a specific condition
     document.getElementById("umap-plot").innerHTML = "";
     document.getElementById("tsne-plot").innerHTML = "";
     document.getElementById("pca-plot").innerHTML = "";
+
+    
 
     // document.getElementById("singleplots-loading").innerHTML = "<div class='loader justify-content-center'></div>";
     $('#singleplots-loading').addClass('loader justify-content-center');
@@ -98,20 +130,15 @@ function clear_home() {
 
 }
 
-function submit_geneset(genelist, sigs) {
-    genelist = genelist.split(',')
-    sigs = sigs.split(',').map(function(item) {
-        return parseFloat(item);
-    });
-    var numgenes = document.getElementById('numgenes').value
-    var signifigance = document.getElementById('signifigance').value
-    var genes_valid = []
+function submit_geneset(genelist, adjpvals, pvals) {
 
-    for (i=0; i < genelist.length; i++ ){
-        if (sigs[i] <= signifigance) {
-            genes_valid.push(genelist[i])
-        }
-    }
+    var genes_valid = filter_genes_sigs(genelist, adjpvals, pvals)
+
+    if (check_genes_present(genes_valid)) return;
+
+    var numgenes = document.getElementById('numgenes').value
+    
+    
     if (check_genes_present(genes_valid)) return;
 
 
@@ -126,21 +153,13 @@ function submit_geneset(genelist, sigs) {
     window.open(url, '_blank')
 }
 
-function submit_geneset_home(genelist, sigs, descset) {
-    genelist = genelist.split(',')
-    sigs = sigs.split(',').map(function(item) {
-        return parseFloat(item);
-    });
+function submit_geneset_home(genelist, adjpvals, pvals, descset) {
+
+    var genes_valid = filter_genes_sigs(genelist, adjpvals, pvals)
+
+    if (check_genes_present(genes_valid)) return;
+
     var numgenes = document.getElementById('numgenes').value
-    var signifigance = document.getElementById('signifigance').value
-    var genes_valid = []
-
-
-    for (i=0; i < genelist.length; i++ ){
-        if (sigs[i] <= signifigance) {
-            genes_valid.push(genelist[i])
-        }
-    }
 
     if (check_genes_present(genes_valid)) return;
 
@@ -268,23 +287,12 @@ function enrich(options) {
     document.body.removeChild(form);
 }
 
-function filter_and_submit_to_enrichr(genelist, sigs, description) {
-    genelist = genelist.split(',')
-    sigs = sigs.split(',').map(function(item) {
-        return parseFloat(item);
-    });
-    var numgenes = document.getElementById('numgenes').value
-    var signifigance = document.getElementById('signifigance').value
-    var genes_valid = []
-
-    for (i=0; i < genelist.length; i++ ){
-        if (sigs[i] <= signifigance) {
-            genes_valid.push(genelist[i])
-        }
-    }
+function filter_and_submit_to_enrichr(genelist, adjpvals, pvals, description) {
+    var genes_valid = filter_genes_sigs(genelist, adjpvals, pvals)
 
     if (check_genes_present(genes_valid)) return;
 
+    var numgenes = document.getElementById('numgenes').value
     var genes = genes_valid.splice(0, numgenes).join('\n')
         
     options = {}
@@ -294,22 +302,13 @@ function filter_and_submit_to_enrichr(genelist, sigs, description) {
     enrich(options)
 }
 
-async function filter_and_submit_to_kg(genelist, sigs, description) {
-    genelist = genelist.split(',')
-    sigs = sigs.split(',').map(function(item) {
-        return parseFloat(item);
-    });
-    var numgenes = document.getElementById('numgenes').value
-    var signifigance = document.getElementById('signifigance').value
-    var genes_valid = []
+async function filter_and_submit_to_kg(genelist, adjpvals, pvals, description) {
 
-    for (i=0; i < genelist.length; i++ ){
-        if (sigs[i] <= signifigance) {
-            genes_valid.push(genelist[i])
-        }
-    }
+    var genes_valid = filter_genes_sigs(genelist, adjpvals, pvals)
 
     if (check_genes_present(genes_valid)) return;
+
+    var numgenes = document.getElementById('numgenes').value
 
     var genes_str = genes_valid.splice(0, numgenes).join('\n')
 
@@ -328,7 +327,7 @@ async function filter_and_submit_to_kg(genelist, sigs, description) {
     const result = await res.json()
     console.log(result)
     const userListId = result['userListId']
-    const url = `https://maayanlab.cloud/enrichr-kg?userListId=${userListId}`
+    const url = `https://enrichr-kg.dev.maayanlab.cloud/?userListId=${userListId}`
     window.open(url, '_blank')
 }
 
@@ -1535,7 +1534,8 @@ $(document).ready(function() {
                         'copy', {extend: 'csv', title: name}
                     ]
                 });
-                pvals = table.column(1).data()
+                adjpvals = table.column(1).data()
+                pvals = table.column(2).data()
 
             } else if (method === 'edgeR') {
                 tabletext += "<th></th><th>PValue</th><th>logCPM</th><th>logFC</th><th>FDR</th></tr><tbody>"
@@ -1553,6 +1553,7 @@ $(document).ready(function() {
                         'copy', {extend: 'csv', title: name}
                     ]
                 });
+                adjpvals = table.column(1).data()
                 pvals = table.column(1).data()
 
             } else if (method === 'DESeq2') {
@@ -1571,7 +1572,8 @@ $(document).ready(function() {
                         'copy', {extend: 'csv', title: name}
                     ]
                 });    
-                pvals = table.column(1).data()
+                adjpvals = table.column(1).data()
+                pvals = table.column(2).data()
             }
             var genes = table.column(0).data()
 
@@ -1580,21 +1582,23 @@ $(document).ready(function() {
 
             var genelist_buttons = 
             `<div class="row justify-content-center mx-auto text-center">
-            <div class="mt-3 h7">Submit the top</div>
-            <input id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2' style='width: 60px;'/>
-            <div class="mt-3 h7">differentially expressed genes with an adjusted p-value less than</div>
-            <input id='signifigance' type='number' step='.01' value='.05' max='1' class='m-2' style='width: 60px;'/>
-            <div class="mt-3 h7">to</div>
+            <div class="h7">Submit the top</div>
+            <input class="" id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2' style='width: 50px; height: 30px; margin-left: 10px; margin-right: 10px;'/>
+            <div class="h7">  differentially expressed genes with a 
+            <select id='col-to-use' style='margin-left: 10px; margin-right: 10px;'><option value='pval'>p-value</option><option value='adjpval'>adjusted p-value</option></select></div>
+            <div class=" h7">  less than  </div>
+            <input class='' id='signifigance' type='number' step='.01' value='.05' max='1' style='width: 50px; height: 30px; margin-left: 10px; margin-right: 10px;"'/>
+            <div class="h7">  to</div>
             </div>
             <div class="row justify-content-center mx-auto text-center">
-            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset('${genes.join(',')}', '${pvals.join(',')}')">Gene Set Queries</button>
-            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset_home('${genes.join(',')}', '${pvals.join(',')}', '${name}')">Diabetes Gene Set Library</button>
+            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset('${genes.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}')">Gene Set Queries</button>
+            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset_home('${genes.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', '${name}')">Diabetes Gene Set Library</button>
             </div>
             <div class="row justify-content-center mx-auto text-center">
-            <button type="button" class="btn btn-primary btn-group-sm m-2" onclick="filter_and_submit_to_enrichr('${genes.join(',')}', '${pvals.join(',')}', '${gse}-${control_condition}-vs-${perturb_condition}')"> Enrichr
+            <button type="button" class="btn btn-primary btn-group-sm m-2" onclick="filter_and_submit_to_enrichr('${genes.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', '${gse}-${control_condition}-vs-${perturb_condition}')"> Enrichr
             <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
             </button>
-            <button type="button" class="btn btn-primary btn-group-sm m-2" onclick="filter_and_submit_to_kg('${genes.join(',')}', '${pvals.join(',')}', '${gse}-${control_condition}-vs-${perturb_condition}')"> Enrichr-KG
+            <button type="button" class="btn btn-primary btn-group-sm m-2" onclick="filter_and_submit_to_kg('${genes.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', '${gse}-${control_condition}-vs-${perturb_condition}')"> Enrichr-KG
             <img src="/static/img/enrichr-kg.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
             </button>
             </div>
@@ -1667,7 +1671,8 @@ $(document).ready(function() {
                         'copy', {extend: 'csv', title: name}
                     ]
                 });
-                pvals = table.column(1).data()
+                adjpvals = table.column(1).data()
+                pvals = table.column(2).data()
 
             } else if (method === 'edgeR') {
                 tabletext += "<th></th><th>PValue</th><th>logCPM</th><th>logFC</th><th>FDR</th></tr><tbody>"
@@ -1685,6 +1690,7 @@ $(document).ready(function() {
                         'copy', {extend: 'csv', title: name}
                     ]
                 });
+                adjpvals = table.column(1).data()
                 pvals = table.column(1).data()
 
             } else if (method === 'DESeq2') {
@@ -1703,7 +1709,8 @@ $(document).ready(function() {
                         'copy', {extend: 'csv', title: name}
                     ]
                 });    
-                pvals = table.column(1).data()
+                adjpvals = table.column(1).data()
+                pvals = table.column(2).data()
             }else if (method === 'wilcoxon') {
                 tabletext += "<th></th><th>Adj. P-value</th><th>P-value</th><th>logfoldchanges</th><th>scores</th></tr><tbody>"
                 rows.forEach(function(row) {
@@ -1720,40 +1727,29 @@ $(document).ready(function() {
                         'copy', {extend: 'csv', title: name}
                     ]
                 });    
-                pvals = table.column(1).data()
+                adjpvals = table.column(1).data()
+                pvals = table.column(2).data()
             }
             var genes = table.column(0).data()
 
             
             genes = genes.map(x => x.replace(/<\/?[^>]+(>|$)/g, ""))
 
-            var genelist_buttons = 
-            `<div class="row justify-content-center mx-auto text-center">
-            <div class="mt-3 h7">Submit the top</div>
-            <input id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2' style='width: 60px;'/>
-            <div class="mt-3 h7">differentially expressed genes with an adjusted p-value less than</div>
-            <input id='signifigance' type='number' step='.01' value='.05' max='1' class='m-2' style='width: 60px;'/>
-            <div class="mt-3 h7">to</div>
-            </div>
-            <div class="row justify-content-center mx-auto text-center">
-            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset('${genes.join(',')}', '${pvals.join(',')}')">Gene Set Queries</button>
-            </div>
-            `
-            // <div class="mt-3 h7">or to</div>
-            // <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset_home('${genes.join(',')}', '${pvals.join(',')}', '${name}')">Diabetes Gene Set Library</button>
                 
             document.getElementById("geneset-buttons").innerHTML = (clear_button)
             document.getElementById("enrichment-area").innerHTML  = `
             <div class="h4 pl-2 mt-4 mb-4 text-center">Enrichment Analysis for Highly Expressed Genes in ${desc}</div>
             <div class="row justify-content-center mx-auto text-center">
-            <div class="mt-3 h7">Submit the top</div>
-            <input id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2' style='width: 60px;'/>
-            <div class="mt-3 h7">differentially expressed genes with an adjusted p-value less than</div>
-            <input id='signifigance' type='number' step='.01' value='.05' max='1' class='m-2' style='width: 60px;'/>
-            <div class="mt-3 h7">to</div>
+            <div class="h7">Submit the top</div>
+            <input class="" id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2' style='width: 50px; height: 30px; margin-left: 10px; margin-right: 10px;'/>
+            <div class="h7">  differentially expressed genes with a
+            <select id='col-to-use' style='margin-left: 10px; margin-right: 10px;'><option value='pval'>p-value</option><option value='adjpval'>adjusted p-value</option></select></div>
+            <div class=" h7">  less than  </div>
+            <input class='' id='signifigance' type='number' step='.01' value='.05' max='1' style='width: 50px; height: 30px; margin-left: 10px; margin-right: 10px;"'/>
+            <div class="h7">  to</div>
             </div>
             <div class="row justify-content-center mx-auto text-center">
-            <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3" onclick="filter_and_submit_to_enrichr('${genes.join(',')}', '${pvals.join(',')}', 'Highly Expressed Genes in ${desc}')"> Submit to Enricher
+            <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3" onclick="filter_and_submit_to_enrichr('${genes.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', 'Highly Expressed Genes in ${desc}')"> Submit to Enricher
             <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
             </button>
             </div>

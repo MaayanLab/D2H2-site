@@ -396,7 +396,10 @@ def combine_data(pval_df, fc_df, gene, isRNA=False, inst_df=None):
 
 
 def map_color(fc, pv):
+    if pv >= .05: 
+        return '#808080'
     if fc < 0:
+
         return colors.to_hex(red_map(red_norm(pv)))
     elif fc == 0:
         return '#808080'
@@ -568,7 +571,6 @@ def send_plot(species, gene):
 def make_dge_plot(data, title, method, id_plot='dge-plot'):
 
     # set color and size for each point on plot
-
     if method == 'limma':
         colors = [map_color(r[1]['logFC'], r[1]['P.Value']) for r in data.iterrows()]
         sizes = [12 if r[1]['P.Value'] < 0.05 else 6 for r in data.iterrows()]
@@ -704,7 +706,7 @@ def make_dge_plot(data, title, method, id_plot='dge-plot'):
 
     plot.xaxis.axis_label = 'log2(Fold Change)'
     plot.yaxis.axis_label = '-log10(P-value)'
-    plot.title.text = f"Differential Gene Expression of {title}"
+    plot.title.text = f"DGE of {title}"
     plot.title.align = 'center'
     plot.title.text_font_size = '14px'
     print("made_plot")
