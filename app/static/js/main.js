@@ -327,7 +327,7 @@ async function filter_and_submit_to_kg(genelist, adjpvals, pvals, description) {
     const result = await res.json()
     console.log(result)
     const userListId = result['userListId']
-    const url = `https://enrichr-kg.dev.maayanlab.cloud/?userListId=${userListId}`
+    const url = `https://maayanlab.cloud/enrichr-kg?userListId=${userListId}`
     window.open(url, '_blank')
 }
 
