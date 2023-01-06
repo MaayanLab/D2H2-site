@@ -267,10 +267,9 @@
   $(document).ready(function() {
     if (localStorage.hasOwnProperty("geneset")) {
           var genes = localStorage['geneset']
-          localStorage.removeItem('genes');
+          localStorage.removeItem('geneset');
           genes = genes.split('&').join('\r\n')
           fillSetExample(genes)
-      //document.getElementById('genesetnav').className = document.getElementById('genesetnav').className + ' active';
     }
   })
 </script>
