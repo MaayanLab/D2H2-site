@@ -138,6 +138,14 @@ def getexample():
 
 	return {'genes': text, 'description': "GSE136134 Ctrl-vs-Insulin 24hrs Human BulkRNAseq hiPSCs_down"}
 
+@app.route(f'{ROOT_PATH}/getexample2',  methods=['GET','POST'])
+def getexample2():
+
+	with open('static/searchdata/example_list2.txt') as f:
+		text = f.read()
+
+	return {'genes': text, 'description': "GSE136134 Ctrl-vs-Insulin 24hrs Human BulkRNAseq hiPSCs_down"}
+
 @app.route(f'{ROOT_PATH}/getdiabetesenrich',  methods=['GET','POST'])
 def getdiabetesenrich():
 

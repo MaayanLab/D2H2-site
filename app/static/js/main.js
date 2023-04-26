@@ -358,6 +358,25 @@ function fillSet(id, descid, count_id) {
     });
 }
 
+function fillSet2(id, descid, count_id) {
+    $.ajax({
+        url: "getexample2",
+        type: "POST",
+        data: {},
+        dataType: 'json',
+    }).done(function(response) {
+
+        const desc = response['description']
+        const genes = response['genes']
+        document.getElementById(id).value = genes;
+        if (descid != '') {
+            document.getElementById(descid).value = desc;
+        }
+        geneCount(genes, count_id)
+
+    });
+}
+
 function setGene(gene) {
     localStorage.setItem('gene', gene)
 }
@@ -1226,7 +1245,7 @@ $(document).ready(function() {
                 <span id="gene-count${genecount + 1}"> 0 </span> DOWN gene(s) entered
             </div>
             <div class="text-center">
-                <a id="examplefill3-down" onclick="fillSet('text-area3-down', '', 4)" style="color: rgb(10, 13, 149)">Try an example gene set</a>
+                <a id="examplefill3-down" onclick="fillSet2('text-area3-down', '', 4)" style="color: rgb(10, 13, 149)">Try an example gene set</a>
             </div>
             </div>
             <div class="flex-column justify-content-center text-center m-2" style="overflow-y: visible !important;">
