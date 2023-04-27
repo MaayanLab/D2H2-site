@@ -27,5 +27,6 @@ holoviews
 scikit-image
 umap
 seaborn
+openai
 
 

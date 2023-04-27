@@ -1,32 +1,32 @@
 
   
 
-h1 { color: #0f0724; font-family:  "IBM Plex Sans", sans-serif; font-size: 36px; font-weight: 350; line-height: 40px; margin: 0 0 16px; /* border: #d0d0d0; border-left-style: solid; border-right-style: solid; border-width: 2px; */}
+h1 { color: #0f0724; font-family:  'Open Sans', sans-serif; font-size: 36px; font-weight: 350; line-height: 40px; margin: 0 0 16px; /* border: #d0d0d0; border-left-style: solid; border-right-style: solid; border-width: 2px; */}
 
 
-h2 { color: #050a2f; font-family:  "IBM Plex Sans", sans-serif; font-size: 24px; font-weight: 300; line-height: 32px; margin: 0 0 14px; }
+/* h2 { color: #111; font-family: 'Open Sans', sans-serif; font-size: 36px; font-weight: 400; line-height: 32px; text-align: center; } */
+h2 { color: #111; font-family: 'Open Sans', sans-serif; font-size: 36px; font-weight: normal ; letter-spacing: -1px; line-height: 1; text-align: center; }
 
+h4 { color: #050a2f; font-family:  'Open Sans', sans-serif; font-size: 22px; font-weight: 340; line-height: 32px; margin: 0 0 14px; }
 
-h4 { color: #050a2f; font-family:  "IBM Plex Sans", sans-serif; font-size: 22px; font-weight: 340; line-height: 32px; margin: 0 0 14px; }
+h5 { color: #050a2f; font-family:  'Open Sans', sans-serif; font-size: 22px; font-weight: 340; line-height: 32px; margin: 0 0 14px; }
 
-h5 { color: #050a2f; font-family:  "IBM Plex Sans", sans-serif; font-size: 22px; font-weight: 340; line-height: 32px; margin: 0 0 14px; }
+.h7 { color: #050a2f; font-family:  'Open Sans', sans-serif; font-size: 16px; font-weight: 300; line-height: 32px; margin: 0 0 14px; }
 
-.h7 { color: #050a2f; font-family:  "IBM Plex Sans", sans-serif; font-size: 16px; font-weight: 300; line-height: 32px; margin: 0 0 14px; }
-
-p { color: #222; font-family: "IBM Plex Sans", sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; margin: 0 0 14px; }
+/* p { color: #222; font-family: 'Open Sans', sans-serif; font-size: 15px; font-weight: 400; line-height: 24px; margin: 0 0 14px; } */
 
 label {
-    font-family: "IBM Plex Sans", sans-serif;
+    font-family: 'Open Sans', sans-serif;
 }
 
 .page-header {
 
-    color: #050a2f; font-family: "IBM Plex Sans", sans-serif; font-size: 25px; font-weight: 350; line-height: 32px; margin: 0 0 14px; 
+    color: #050a2f; font-family: 'Open Sans', sans-serif; font-size: 25px; font-weight: 350; line-height: 32px; margin: 0 0 14px; 
 
 }
 
 .nav-link {
-    font-family: "IBM Plex Sans", sans-serif;
+    font-family: 'Open Sans', sans-serif;
 }
 
 
@@ -37,7 +37,7 @@ label {
     background: #ffffff !important;
     margin: -1px 0 0 0 !important;
     border-top: 0 none !important;
-    font: "IBM Plex Sans", sans-serif !important;
+    font: 'Open Sans', sans-serif !important;
 }
 
 .selectize-nav {
@@ -138,12 +138,12 @@ header {
 body {
     margin: 0px;
     color: #222; 
-    font-family: "IBM Plex Sans", sans-serif; 
+    font-family: 'Open Sans', sans-serif; 
     font-size: 15px; 
     font-weight: 400; 
     line-height: 24px; 
    /*  background-image: linear-gradient(to right, whitesmoke, rgb(166, 217, 241)); */
-    background-color: #B0BEC5;
+    background-color: #ffffff;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -179,16 +179,35 @@ body {
     width: 140px;
 }
 
+.vertical-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    min-height: 500px;
+}
 
 
 
 .custom-col {
     border: rgb(182, 182, 182);
-    background-color: #CFD8DC;
+    background-color: #ffffff;
     border-width: 2px;
     border-style: solid;
     border-radius: 1%;
     overflow: auto;
+}
+
+.banner {
+    background-color: #ffffff;;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    height: fit-content;
+    border-top-style: solid;
+    border-color:  rgb(182, 116, 189);
 }
 
 .navbar.center .navbar-inner {
@@ -213,17 +232,10 @@ body {
     color: white;
     border-radius: 1%;
     border-style: none;
-    font-family: "IBM Plex Sans", sans-serif;
+    font-family: 'Open Sans', sans-serif;
 }
 
 
-
-.banner {
-/*     border: rgb(182, 182, 182); */
-    padding: 0;
-    margin: 0;
-
-}
 
 .img-thumbnail {
     border-color: darkgray;
@@ -275,7 +287,7 @@ a {
     border-collapse: collapse;
     margin: 25px 0;
     font-size: 0.9em;
-    font-family: "IBM Plex Sans", sans-serif !important;
+    font-family: 'Open Sans', sans-serif !important;
     min-width: 400px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
     overflow: scroll;
@@ -440,7 +452,7 @@ nav select {
     width: 100%;
     height: 100%;
     font-size: 14px;
-    font-family: "IBM Plex Sans", sans-serif;
+    font-family: 'Open Sans', sans-serif;
     transition: all 0.4s ease-in-out;
   }
 
@@ -538,11 +550,11 @@ nav select {
 }
 
 .num-style {
-    font-size: xx-large;
+    font-size: large;
 }
 
   /* small screens */
-  @media screen and (max-width: 900px) {
+  @media screen and (max-width: 1000px) {
     /* override stickyness so that the navigation does not follow scrolling */
     
     nav[data-toggle="toc"] {
@@ -560,5 +572,106 @@ nav select {
     
 }
 
+.input-wrapper input {
+    background-color: #eee;
+    border: none;
+    padding: 1rem;
+    font-size: 1rem;
+    width: 20em;
+    border-radius: 1rem;
+    color: rgb(95, 95, 95);
+    box-shadow: 0 0.4rem #dfd9d9;
+    cursor: pointer;
+  }
+  
+  .input-wrapper input:focus {
+    outline-color: rgb(188, 145, 204);
+  }
 
-
+  button {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    outline: none;
+    border: 0;
+    vertical-align: middle;
+    text-decoration: none;
+    background: transparent;
+    padding: 0;
+    font-size: inherit;
+    font-family: inherit;
+   }
+   
+   button.learn-more {
+    width: 14rem;
+    height: fit-content;
+   }
+   
+   button.learn-more .circle {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: relative;
+    display: block;
+    margin: 0;
+    width: 3rem;
+    height: 3rem;
+    background: #282936;
+    border-radius: 1.625rem;
+   }
+   
+   button.learn-more .circle .icon {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background: #fff;
+   }
+   
+   button.learn-more .circle .icon.arrow {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    left: 0.625rem;
+    width: 1.125rem;
+    height: 0.125rem;
+    background: none;
+   }
+   
+   button.learn-more .circle .icon.arrow::before {
+    position: absolute;
+    content: "";
+    top: -0.29rem;
+    right: 0.0625rem;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-top: 0.125rem solid #fff;
+    border-right: 0.125rem solid #fff;
+    transform: rotate(45deg);
+   }
+   
+   button.learn-more .button-text {
+    transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.75rem 0;
+    margin: 0 0 0 1.75rem;
+    color: #282936;
+    font-weight: 700;
+    line-height: 1.6;
+    text-align: center;
+    text-transform: uppercase;
+   }
+   
+   button:hover .circle {
+    width: 100%;
+   }
+   
+   button:hover .circle .icon.arrow {
+    background: #fff;
+    transform: translate(1rem, 0);
+   }
+   
+   button:hover .button-text {
+    color: #fff;
+   }
