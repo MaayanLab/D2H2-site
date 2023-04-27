@@ -1,3 +1,51 @@
+const human_list = fetch(
+    "static/searchdata/allgenes-comb.json"
+).then(data => data.json());
+
+const mouse_list = fetch(
+    "static/searchdata/mouse_genes.json"
+).then(data => data.json());   
+
+
+
+$("#gpt-query").on('keyup', function (e) {
+    var q = document.getElementById('gpt-query').value.trim();
+    if (e.key === 'Enter' && q != '') {
+       
+        var data = JSON.stringify({'query': q})
+
+        $.ajax({
+            url: "api/query_gpt",
+            contentType: 'application/json',
+            type: "POST",
+            dataType: 'json',
+            data: data
+        }).done(async function(response) {
+            if (response['response'] == 1) {
+                alert('Error analyzing query... Please try again')
+                return;
+            }
+            if (response['input'] == '[Gene]') {
+                var check_list = await human_list
+                var check_list_mouse = await mouse_list
+                q.split(' ').forEach((w) => {
+                    var w_clean = w.replace("?", '').replace('.', '')
+                    console.log(w)
+                    console.log(w_clean)
+                    if (check_list.includes(w_clean) || check_list_mouse.includes(w_clean)) {
+                        setGene(w_clean)
+                    }
+                })
+                window.open(window.location.href + 'singlegene#' + response['output'], "_self")
+            } else if (response['input'] == '[GeneSet]') {
+                window.open(window.location.href + 'geneset#' + response['output'], "_self")
+            }
+        });
+    }
+})
+
+
+
 
 function check_genes_present(genes) {
     if (genes.length == 0) {
@@ -74,9 +122,7 @@ function generate_single_plots(){
 }
 
 
-const human_list = fetch(
-    "static/searchdata/allgenes-comb.json"
-).then(data => data.json());                 
+            
 
 
 ///////// anitmated number counters /////////////

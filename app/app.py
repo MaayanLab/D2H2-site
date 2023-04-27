@@ -14,7 +14,12 @@ import pickle
 from helpers import *
 from twitterauth import update_tweets_table
 from dge import *
+from query import *
 import anndata
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
 base_url = os.environ.get('BASE_URL', 'd2h2/data')
@@ -778,6 +783,14 @@ def visualize_samps():
 
 	return json.dumps({'pcaplot': pca_plot, 'tsneplot': tsne_plot, 'umapplot': umap_plot})
 
+
+@app.route(f'{ROOT_PATH}/api/query_gpt',  methods=['GET', 'POST'])
+def query_gpt():
+	response_json = request.get_json()
+	query = response_json['query']
+	res = find_process(query)
+
+	return res
 
 def run_app():
 	if DEBUG:
