@@ -28,6 +28,8 @@ s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
 app = Flask(__name__, static_url_path=ROOT_PATH + 'static')
 
+month_dict = {"Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May": "05", "Jun": "06", "Jul": "07", "Aug": "08", "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"}
+
 
 @app.route(ROOT_PATH, methods=['GET', 'POST'])
 def home():
@@ -327,9 +329,7 @@ def get_metadata(geo_accession, species_folder):
 	if 'pubmed_id' in gse.metadata and (len(gse.metadata.get('pubmed_id', [])) != 0):
 		gse.metadata['pubmed_link'] = ["https://pubmed.ncbi.nlm.nih.gov/" + gse.metadata['pubmed_id'][0]]
 	
-	
 	metadata_file = f'{base_url}/{species_folder}/{geo_accession}/{geo_accession}_Metadata.txt'
-	#Why was it -1
 	
 	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 	gse.metadata['numsamples'] = metadata_dataframe.shape[0]
@@ -409,11 +409,11 @@ def species_or_viewerpg(species_or_gse):
 	# test if species
 	if species_or_gse in gse_metadata:
 		num_samples = sum(map(lambda x: x.get('numsamples'), gse_metadata[species_or_gse].values()))
-		return render_template('species.html', species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, numstudies=numstudies)
+		return render_template('species.html', species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, numstudies=numstudies,  month_dict=month_dict)
 	#Checking for the single cell studies and loading that summary page
 	elif species_or_gse in gse_metadata_single:
 		num_samples = sum(map(lambda x: x.get('numsamples'), gse_metadata_single[species_or_gse].values()))
-		return render_template('single_species.html', species=species_or_gse, gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, gse_metadata=gse_metadata, num_samples=num_samples, numstudies=numstudies)
+		return render_template('single_species.html', species=species_or_gse, gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, gse_metadata=gse_metadata, num_samples=num_samples, numstudies=numstudies,  month_dict=month_dict)
 	# test if gsea
 	elif species_or_gse in study_to_species:
 		geo_accession = species_or_gse
@@ -425,8 +425,9 @@ def species_or_viewerpg(species_or_gse):
 		metadata_dict_samples = metadata_dataframe.groupby('Condition')['Sample_geo_accession'].apply(list).to_dict()
 		sample_dict = {}
 		for key in metadata_dict_samples.keys():
-			sample_dict[key] = {'samples':metadata_dict_samples[key], 'count': len(metadata_dict_samples[key])}
-		return render_template('viewer.html', metadata_dict=metadata_dict, metadata_dict_samples=sample_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping, numstudies=numstudies)
+			filtered_samps = list(filter(lambda x: x in gses, metadata_dict_samples[key]))
+			sample_dict[key] = {'samples': filtered_samps, 'count': len(filtered_samps)}
+		return render_template('viewer.html', metadata_dict=metadata_dict, metadata_dict_samples=sample_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping, numstudies=numstudies,  month_dict=month_dict)
 	#Check for the single study individual viewer page
 	elif species_or_gse in study_to_species_single:
 		geo_accession = species_or_gse
@@ -452,7 +453,7 @@ def species_or_viewerpg(species_or_gse):
 		#Stores the number of of cells correlated to each cluster. 
 		metadata_dict_counts = pd.Series(leiden_data_vals).value_counts().to_dict()
 		meta_file.close()
-		return render_template('single_viewer.html', study_conditions = list_of_conditions, metadata_dict=classes, metadata_dict_samples=metadata_dict_counts, geo_accession=geo_accession, gse_metadata_single=gse_metadata_single, species=species, species_mapping=species_mapping, gse_metadata=gse_metadata, numstudies=numstudies)
+		return render_template('single_viewer.html', study_conditions = list_of_conditions, metadata_dict=classes, metadata_dict_samples=metadata_dict_counts, geo_accession=geo_accession, gse_metadata_single=gse_metadata_single, species=species, species_mapping=species_mapping, gse_metadata=gse_metadata, numstudies=numstudies,  month_dict=month_dict)
 	else:
 		return render_template('error.html', base_path=BASE_PATH, gse_metadata=gse_metadata, species_mapping=species_mapping, numstudies=numstudies)
 

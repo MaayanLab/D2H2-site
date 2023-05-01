@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<div class="justify-content-center container-fluid">
-  <div class="col-12 justify-content-center mx-auto banner">
+<div class="justify-content-center container-fluid p-0 m-0">
+  <div class="col-9 justify-content-center mx-auto p-0 m-0">
 
     <div class="mt-2 justify-content-center row" style="flex-wrap: wrap;">
 
@@ -35,18 +35,48 @@
           <div id="mouse-sc-num">{{ numstudies[3] }}</div>
         </div>
 
-        <div class="text-center mt-4 mb-4"><h5 style="font-size: 20px;">Processed Bulk RNA-seq, Microarray, and scRNA-seq Studies</h5></div>
-        <div class="row mt-4 mb-4">
-          
-          <div class="col text-right mr-5">
-            <h6>Human</h6>
-            <div class="countup num-style" style="font-size: 40px;">{{ numstudies[0] + numstudies[2] }}</div>
+      <div class="row m-2 justify-content-center">
+        <div class="vertical">
+          <div class="input-wrapper row mt-3">
+            <input id="gpt-query" style="right: 0rem;" type="text" placeholder="Enter a gene related query..." name="text" class="input pr-0 mr-0">
+            <button id="gpt-query-button" class="pl-0 ml-0 query-submit" style="width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
+                <img src="static/img/doublearrow.png" style="width: 60%" alt="Query">
+            </button>
           </div>
-          <div class="col text-left ml-5" >
-            <h6>Mouse</h6>
-            <div class="countup num-style" style="font-size: 40px;">{{ numstudies[1] + numstudies[3] }}</div>
+          <p class="m-0 p-0 pl-3 pt-2" style="font-size: smaller;">Try an example: </p>
+          <a class="pl-3" style="color: rgb(10, 13, 149); font-size: smaller;" onclick="fillQueryExample('In what tissues is STAT3 expressed?')">In what tissues is STAT3 expressed?</a>,<p> 
+          <a class="pl-3" style="color:rgb(10, 13, 149); font-size: smaller;" onclick="fillQueryExample('What transcription factors regulate my geneset?')">What transcription factors regulate my geneset?</a></p>
+        </div>
+
+        <div class="p-2 pt-0 mt-0 text-center col-lg-4 col-sm-6">
+          <p>
+            Curated transcriptomics datasets from various Type 2 Diabetes studies are made available for download,
+            visualization, and enrichment analysis.
+          </p>
+          <h5 style="font-size: 16px;">Processed Bulk RNA-seq, Microarray, and scRNA-seq Studies</h5>
+          <div class="col mb-4">
+            <div class="row">
+              <div class="col text-center mb-3">
+                <h6>Human</h6>
+                <div class="countup num-style" style="font-size: 30px;">{{ numstudies[0] + numstudies[2] }}</div>
+              </div>
+              <div class="col text-center mb-3">
+                <h6>Mouse</h6>
+                <div class="countup num-style" style="font-size: 30px;">{{ numstudies[1] + numstudies[3] }}</div>
+              </div>
+            </div>
           </div>
         </div>
+        <div class="vertical m-5">
+          <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}">
+          <button class="learn-more" >
+            <span class="circle" aria-hidden="true">
+              <span class="icon arrow"></span>
+            </span>
+            <span class="button-text">Explore Datasets</span>
+          </button></a>
+        </div>
+
 
       </div>
 
@@ -239,21 +269,10 @@
         </div>
       </div>
 
-      <div class="container justify-content-center">
-        <div id="enrich-res"></div>
-      </div>
-      <!-- Twitter Table -->
-      <div class="row text-center justify-content-center" style="flex-wrap: wrap;">
-        <div class="col-md-10 col-sm-10 col-lg-7 text-center custom-col mb-4 mr-2 ml-2">
-          <div class="question p-2 justify-content-center row">
-            <h4 class="mt-4">Recent Diabetes and Related Metabolic Disorder Publications Containing a Gene-Centric Title</h4>
-          </div>
-          <div id="tweets-res" class="mb-2 mt-1"></div>
-        </div>
-
-        <div class="col-md-6 col-sm-7 col-lg-3 text-center custom-col mb-4 mr-2 ml-2">
-          <a class="twitter-timeline" data-width="1500" data-height="550" data-chrome="nofooter noborders transparent" href="https://twitter.com/D2H2Bot?ref_src=twsrc%5Etfw">Tweets by D2H2Bot</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-        </div>
+      <div class="col-md-6 col-sm-7 col-lg-3 text-center custom-col mb-4 mr-2 ml-2">
+        <a class="twitter-timeline" data-height="600" data-chrome="nofooter noborders transparent"
+          href="https://twitter.com/D2H2Bot?ref_src=twsrc%5Etfw">Tweets by D2H2Bot</a>
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
       </div>
     </div>
 

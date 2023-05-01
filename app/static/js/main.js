@@ -1,3 +1,104 @@
+const human_list = fetch(
+    "static/searchdata/allgenes-comb.json"
+).then(data => data.json());
+
+const mouse_list = fetch(
+    "static/searchdata/mouse_genes.json"
+).then(data => data.json());   
+
+
+function fillQueryExample(q){
+    document.getElementById("gpt-query").value= q;
+}
+
+function runFindQuery(q) {
+    var data = JSON.stringify({'query': q})
+
+    $.ajax({
+        url: "api/query_gpt",
+        contentType: 'application/json',
+        type: "POST",
+        dataType: 'json',
+        data: data
+    }).done(async function(response) {
+        if (response['response'] == 1) {
+            alert('Error analyzing query... Please try again')
+            return;
+        }
+        if (response['input'] == '[Gene]') {
+            var check_list = await human_list
+            var check_list_mouse = await mouse_list
+            q.split(' ').forEach((w) => {
+                var w_clean = w.replace("?", '').replace('.', '')
+                console.log(w)
+                console.log(w_clean)
+                if (check_list.includes(w_clean) || check_list_mouse.includes(w_clean)) {
+                    setGene(w_clean)
+                }
+            })
+            window.open(window.location.href + 'singlegene#' + response['output'], "_self")
+        } else if (response['input'] == '[GeneSet]') {
+            window.open(window.location.href + 'geneset#' + response['output'], "_self")
+        }
+    });
+}
+
+
+
+$("#gpt-query").on('keyup', function (e) {
+    var q = document.getElementById('gpt-query').value.trim();
+    if (e.key === 'Enter' && q != '') {
+        runFindQuery(q)
+    }
+})
+
+$("#gpt-query-button").on('click', function (e) {
+    var q = document.getElementById('gpt-query').value.trim();
+    if (q != '') {
+        runFindQuery(q)
+    }
+})
+
+
+
+
+function check_genes_present(genes) {
+    if (genes.length == 0) {
+        alert('no significantly differentially expressed genes were identified with these thresholds');
+        return true;
+    } else return false;
+}
+
+function filter_genes_sigs(genelist, adjpvals, pvals) {
+    var col = 'pval'
+    try {
+        col = document.getElementById('col-to-use').value
+        console.log(col)
+    } catch {
+        col = 'pval'
+    }
+
+    genelist = genelist.split(',')
+    if (col == 'pval'){
+        var sigs = pvals;
+
+    } else var sigs = adjpvals;
+    sigs = sigs.split(',').map(function(item) {
+        return parseFloat(item);
+    });
+    var numgenes = document.getElementById('numgenes').value
+    var signifigance = document.getElementById('signifigance').value
+    var genes_valid = []
+
+    for (i=0; i < genelist.length; i++ ){
+        if (sigs[i] <= signifigance) {
+            genes_valid.push(genelist[i])
+        }
+    }
+    console.log(genes_valid)
+    return genes_valid
+}
+
 
 // This function will generate the umap, tsne, and pca plots for each indivdual study for a specific condition
 function generate_single_plots(){
@@ -33,12 +134,7 @@ function generate_single_plots(){
     });
     $("#boxplot").attr("data-url-plot", `/api/plot_single/${gse}/${condition_group}`)
     console.log($("#boxplot").attr("data-url-plot"))
-}
-
-
-const human_list = fetch(
-    "static/searchdata/allgenes-comb.json"
-).then(data => data.json());                 
+}           
 
 
 ///////// anitmated number counters /////////////
