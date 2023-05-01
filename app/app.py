@@ -14,7 +14,12 @@ import pickle
 from helpers import *
 from twitterauth import update_tweets_table
 from dge import *
+from query import *
 import anndata
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
 base_url = os.environ.get('BASE_URL', 'd2h2/data')
@@ -181,6 +186,7 @@ def dge():
 	string_data = data.to_string()
 
 	return json.dumps({'table': string_data, 'plot': jsonplot})
+
 @app.route('/dgeapisingle',  methods=['GET','POST'])
 def dgesingle():
 	response_json = request.get_json()
@@ -421,8 +427,10 @@ def species_or_viewerpg(species_or_gse):
 		species_folder = url_to_folder[species]
 		metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 		metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
+		gses = list(metadata_dataframe['Sample_geo_accession'])
 		metadata_dict = metadata_dataframe.groupby('Group')['Condition'].apply(set).to_dict()
-		metadata_dict_samples = metadata_dataframe.groupby('Condition')['Sample_geo_accession'].apply(list).to_dict()
+		metadata_dataframe['combined'] = metadata_dataframe['Group'] + ' ' + metadata_dataframe['Condition']
+		metadata_dict_samples = metadata_dataframe.groupby('combined')['Sample_geo_accession'].apply(list).to_dict()
 		sample_dict = {}
 		for key in metadata_dict_samples.keys():
 			filtered_samps = list(filter(lambda x: x in gses, metadata_dict_samples[key]))
@@ -684,10 +692,18 @@ def conditions_api(geo_accession):
 	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 	if len(set(metadata_dataframe['Group'])) == 1:
 		conditions = set(metadata_dataframe['Condition'])
+		col = 'Condition'
 	else:
 		metadata_dataframe['combined'] = metadata_dataframe['Condition'] + ' ' + metadata_dataframe['Group']
 		conditions = set(metadata_dataframe['combined'])
-	return json.dumps([{'Condition': x} for x in conditions])
+		col = 'combined'
+	valid_conditions = []
+	for condition in conditions:
+
+		if len(metadata_dataframe[metadata_dataframe[col] == condition]) > 1:
+			valid_conditions.append(condition)
+
+	return json.dumps([{'Condition': x} for x in valid_conditions])
 
 #############################################
 ########## Conditions to Samples
@@ -763,6 +779,15 @@ def visualize_samps():
 
 
 	return json.dumps({'pcaplot': pca_plot, 'tsneplot': tsne_plot, 'umapplot': umap_plot})
+
+
+@app.route(f'{ROOT_PATH}/api/query_gpt',  methods=['GET', 'POST'])
+def query_gpt():
+	response_json = request.get_json()
+	query = response_json['query']
+	res = find_process(query)
+
+	return res
 
 def run_app():
 	if DEBUG:

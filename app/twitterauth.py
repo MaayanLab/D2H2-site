@@ -62,9 +62,12 @@ def parse_tweet(tweet_text, html) -> list:
 def update_tweets_table(day):
     tweets_table = []
     try:
-        root = ET.fromstring(requests.get('https://nitter.net/D2H2Bot/rss').text)
+        xml_text = requests.get('https://nitter.net/D2H2Bot/rss', headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}).text
+        root = ET.fromstring(xml_text)
     except:
+        print('error fetching twitter data')
         return
+
     tweets = []
     for item in root[0].findall('item'):
         t =[]
@@ -80,4 +83,3 @@ def update_tweets_table(day):
 
     df = pd.DataFrame(tweets_table, columns=["Gene","Title","Author(s)", "Journal" ,"Article", "Analyze"])
     df.to_csv('static/searchdata/tweets.csv', index=False)
-
