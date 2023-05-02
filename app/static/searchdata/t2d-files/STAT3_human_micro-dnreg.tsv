@@ -1,5 +1,0 @@
-Signature	P-value	Log2 Fold Change	Gene Rank in Signature	Link to GEO Study
-GSE154198_InitialCulture-vs-Passage58_Human_Microarray_FetalLiverHepatocyte	2.139e-04	-0.9418	1134.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE154198
-GSE154198_InitialCulture-vs-Passage22_Human_Microarray_FetalLiverHepatocyte	2.359e-02	-0.8715	1330.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE154198
-GSE154198_InitialCulture-vs-Passage113_Human_Microarray_FetalLiverHepatocyte	3.172e-02	-1.7181	598.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE154198
-GSE44035_Male-vs-Female_NonDiabetic_Human_Microarray_Islets	7.511e-01	-0.0511	6177.0	https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE44035
