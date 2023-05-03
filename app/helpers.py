@@ -521,8 +521,6 @@ def download_link(df, fname, isRNA=False):
     )
 
     df['Signature'] = df['Signature'].apply(lambda x: x.replace('* ', ''))
-    csv = df.to_csv(fname, sep='\t', index=False)
-    link = f'<div>Download full results: <a href="{fname}" target=_blank>{fname}</a></div>'
     return fname
 
 # get GEO links 

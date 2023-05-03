@@ -30,7 +30,8 @@ def find_process(query):
     [Gene]->[Knockout] - Is there a knockout mouse for my gene and does it show any phenotypes?
     [GeneSet]->[Enrichment] - In which annotated gene sets is my gene set enriched?
     [GeneSet]->[Signatures] - In what diabetes signatures is my gene set enriched?
-    [GeneSet]->[TFs] - What transcription factors and kinases regulate my gene set?
+    [GeneSet]->[TFs] - What transcription factors regulate my gene set?
+    [GeneSet]->[Kinases] - What kinases regulate my gene set?
     [GeneSet]->[L1000] - What are the LINCS L1000 small molecules and genetic perturbations that likely up- or down-regulate the expression of my gene set?
 
     Your response must strictly follow the following format with no other text, description or reasoning:

@@ -68,7 +68,7 @@
                         <img src="static/img/doublearrow.png" style="width: 60%" alt="Query">
                     </button>
                 </div>
-                <p class="m-0 p-0 pt-2 mr-0" style="font-size: smaller;">Try an example:
+                <p class="m-0 p-0 pt-2" style="font-size: smaller; max-width: 88%;">Try an example:
                     <a class="" style="color: rgb(10, 13, 149); font-size: small;"
                         onclick="fillQueryExample('In what tissues is STAT3 expressed?')">In what tissues is STAT3
                         expressed?
@@ -76,6 +76,14 @@
                     <a class="" style="color:rgb(10, 13, 149); font-size: small;"
                         onclick="fillQueryExample('What transcription factors regulate my geneset?')">What
                         transcription factors regulate my geneset?
+                    </a>
+                    <a class="" style="color:rgb(10, 13, 149); font-size: small;"
+                        onclick="fillQueryExample('What diabetes related signatures are realted to AKT1?')">
+                        What diabetes related signatures are realted to AKT1?
+                    </a>
+                    <a class="" style="color:rgb(10, 13, 149); font-size: small;"
+                        onclick="fillQueryExample('What small molecules might act as reversers for my up and down genesets?')">
+                        What small molecules might act as reversers for my up and down genesets?
                     </a>
                 </p>
             </div>
@@ -87,9 +95,75 @@
                 <select class="search" id="search" style="width: 200px;" data-url="api/genes/combined"></select>
               </div>
         </div>
-        <div id="result">
-            <div class='container justify-content-center'><div id='volcano-plot' class='justify-content-center centered'></div><div id='buttons'></div><div id='t2d-tables'></div></div>
+        <div class="row justify-content-center" id="enter-geneset" style="flex-wrap: wrap; display: none;">
+            <div class="col-md-10 col-sm-7 col-lg-10 text-center mr-3">
+                <textarea class="input-form" name="list" rows="8" id="text-area"
+                placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
+                onkeyup="geneCount($(this).val(), 0)" onchange="geneCount($(this).val(), 0)"
+                onfocus="geneCount($(this).val(), 0)"></textarea>
+                <div class="mt-1">
+                <span id="gene-count0"> 0 </span> gene(s) entered
+                </div>
+                <div class="text-center">
+                <a onclick="fillSet('text-area', 'desc', ''); setTimeout(() => geneCount($('#text-area').val(), 0), 50)" style="color: rgb(10, 13, 149)">Try an example gene set</a>
+                </div>
+            </div>
+            <div class="flex-column justify-content-center text-center m-2" style="overflow-y: visible !important;">
+                <p>
+                File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
+                </p>
+                <form action="/action_page.php">
+                <input type="file" id="gene-file3" name="filename">
+                </form>
+                <label class="mt-1 mr-1" for="desc">Enter gene set description (optional): </label>
+                <input class="form-control-md" id="desc" type="text">
+            </div>
         </div>
+        <div class="row justify-content-center" id="enter-geneset-up-down" style="flex-wrap: wrap; display: none;">
+            <div class="col-md-10 col-sm-7 col-lg-10 text-center mr-3">
+                <textarea class="input-form" name="list" rows="8" id="text-area-up"
+                placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
+                onkeyup="geneCount($(this).val(), 1)" onchange="geneCount($(this).val(), 1)"
+                onfocus="geneCount($(this).val(), 1)"></textarea>
+                <div class="mt-1">
+                <span id="gene-count1"> 0 </span> UP gene(s) entered
+                </div>
+                <div class="text-center">
+                <a onclick="fillSet('text-area-up', 'desc', 'up')" style="color: rgb(10, 13, 149)">Try an example gene set</a>
+                </div>
+            </div>
+            <div class="flex-column justify-content-center text-center m-2" style="overflow-y: visible !important;">
+                <p>
+                File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
+                </p>
+                <form action="/action_page.php">
+                <input type="file" id="gene-file3" name="filename">
+                </form>
+            </div>
+            <div class="col-md-10 col-sm-7 col-lg-10 text-center mr-3">
+                <textarea class="input-form" name="list" rows="8" id="text-area-down"
+                placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
+                onkeyup="geneCount($(this).val(), 2)" onchange="geneCount($(this).val(), 2)"
+                onfocus="geneCount($(this).val(), 2)"></textarea>
+                <div class="mt-1">
+                <span id="gene-count2"> 0 </span> DOWN gene(s) entered
+                </div>
+                <div class="text-center">
+                <a id="examplefill3" style="color: rgb(10, 13, 149)">Try an example gene set</a>
+                </div>
+            </div>
+            <div class="flex-column justify-content-center text-center m-2" style="overflow-y: visible !important;">
+                <p>
+                File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
+                </p>
+                <form action="/action_page.php">
+                <input type="file" id="gene-file3" name="filename">
+                </form>
+            </div>
+        </div>
+        <div id="output" style="display: none"></div>
+        <div id="result"></div>
+        <div id="actions" class="text-center"></div>
     </div>
 
 

@@ -217,7 +217,7 @@ body {
 
 #condition-table {
     border: rgb(182, 182, 182);
-    background-color: #CFD8DC;
+    background-color: #ffffff;
     border-width: 1.5px;
     border-style: solid;
     border-radius: 1%;
@@ -933,3 +933,23 @@ nav select {
       opacity: 1.0;
     }
   }
+
+
+.answerbox {
+    margin: 1rem;
+    padding: 1rem;
+    background: hsla(200, 100%, 86%, 0.4);
+    border-radius: 0.5rem;
+    width: 87%;
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 500ms;
+}
+
+.answerbox > div {
+    overflow: hidden;
+}
+
+.answerbox:active {
+    grid-template-rows: 1fr;
+}
