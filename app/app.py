@@ -26,8 +26,8 @@ base_url = os.environ.get('BASE_URL', 'd2h2/data')
 ROOT_PATH = os.environ.get('ROOT_PATH', '/')
 BASE_PATH = os.environ.get('BASE_PATH', 'maayanlab.cloud')
 DEBUG = os.environ.get('DEBUG', True)
+print('Retriving data from: ', endpoint)
 
-print(endpoint)
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
 
@@ -39,7 +39,7 @@ month_dict = {"Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May": "05", "
 @app.route(ROOT_PATH, methods=['GET', 'POST'])
 def home():
 	#update_tweets_table(datetime.datetime.date)
-	return render_template('home.html', base_path=BASE_PATH, gse_metadata=gse_metadata, numstudies=numstudies)
+	return render_template('home2.html', base_path=BASE_PATH, gse_metadata=gse_metadata, numstudies=numstudies)
 
 @app.route(f"{ROOT_PATH}/about", methods=['GET', 'POST'])
 def about():
@@ -68,6 +68,16 @@ def resources():
 @app.route(f'{ROOT_PATH}/downloads', methods=['GET', 'POST'])
 def downloads():
 	return render_template('downloads.html', base_path=BASE_PATH, numstudies=numstudies)
+
+
+@app.route(f'{ROOT_PATH}/queryexpression', methods=['GET','POST'])
+def query_expression():
+
+    gene = request.form['gene']
+
+    result = query_generanger(gene)
+
+    return result
 
 @app.route(f'{ROOT_PATH}/getgwas', methods=['GET','POST'])
 def get_gwas():

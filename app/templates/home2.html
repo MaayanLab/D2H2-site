@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="justify-content-center container-fluid p-0 m-0">
+    <div class="col-7 justify-content-center mx-auto p-0 m-0">
+
+        <div class="justify-content-center p-0 m-0" style="flex-wrap: wrap;">
+
+            <!-- Main Panel -->
+            <div class="banner">
+                <div class="row">
+                    <div class="text-center justify-content-center p-3 pb-0 mb-0 mx-auto mt-4">
+                        <h2 style="color: black;">Diabetes Data and Hypothesis Hub (D2H2)</h2>
+                        <h5 class="m-2 mb-0" style="color: black;"> A platform that facilitates data-driven hypothesis generation
+                            for the diabetes and related metabolic disorder research community. 
+                        </h5>
+                    </div>
+                </div>
+                <div hidden>
+                    <div id="human-bulk-num">{{ numstudies[0] }}</div>
+                    <div id="mouse-bulk-num">{{ numstudies[1] }}</div>
+                    <div id="human-sc-num">{{ numstudies[2] }}</div>
+                    <div id="mouse-sc-num">{{ numstudies[3] }}</div>
+                </div>
+            </div>
+
+
+            <div class="row justify-content-center text-center">
+
+                <div class="p-2 pt-0 mt-0 text-center col-lg-4 col-sm-6">
+                    <p>
+                      Curated transcriptomics datasets from various Type 2 Diabetes studies are made available for download,
+                      visualization, and enrichment analysis.
+                    </p>
+                    <h5 style="font-size: 16px;">Processed Bulk RNA-seq, Microarray, and scRNA-seq Studies</h5>
+                    <div class="col mb-4">
+                      <div class="row">
+                        <div class="col text-center mb-3">
+                          <h6>Human</h6>
+                          <div class="countup num-style" style="font-size: 30px;">{{ numstudies[0] + numstudies[2] }}</div>
+                        </div>
+                        <div class="col text-center mb-3">
+                          <h6>Mouse</h6>
+                          <div class="countup num-style" style="font-size: 30px;">{{ numstudies[1] + numstudies[3] }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="vertical ml-5" style="margin-top: 6%">
+                    <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}">
+                      <button class="learn-more">
+                        <span class="circle" aria-hidden="true">
+                          <span class="icon arrow"></span>
+                        </span>
+                        <span class="button-text">Explore Datasets</span>
+                      </button></a>
+                  </div>
+            </div>
+        </div>
+
+        <div class="col m-2 mx-right">
+            <div class="vertical">
+                <div class="input-wrapper row mt-3" style="flex-wrap: nowrap;">
+                    <input id="gpt-query" style="right: 0rem; width: 60rem;" type="text"
+                        placeholder="Enter a gene related query..." name="text" class="input pr-0 mr-0">
+                    <button id="gpt-query-button" class="pl-0 ml-0 query-submit"
+                        style="width: 40px; min-width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
+                        <img src="static/img/doublearrow.png" style="width: 60%" alt="Query">
+                    </button>
+                </div>
+                <p class="m-0 p-0 pt-2 mr-0" style="font-size: smaller;">Try an example:
+                    <a class="" style="color: rgb(10, 13, 149); font-size: small;"
+                        onclick="fillQueryExample('In what tissues is STAT3 expressed?')">In what tissues is STAT3
+                        expressed?
+                    </a>,
+                    <a class="" style="color:rgb(10, 13, 149); font-size: small;"
+                        onclick="fillQueryExample('What transcription factors regulate my geneset?')">What
+                        transcription factors regulate my geneset?
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div id="loading"></div>
+        <div id="selector" style="display: none">
+            <div class="input-group mt-4 justify-content-center row" id="selector">
+                <label class="mt-1 mr-1" for="search">Enter gene symbol: </label>
+                <select class="search" id="search" style="width: 200px;" data-url="api/genes/combined"></select>
+              </div>
+        </div>
+        <div id="result">
+            <div class='container justify-content-center'><div id='volcano-plot' class='justify-content-center centered'></div><div id='buttons'></div><div id='t2d-tables'></div></div>
+        </div>
+    </div>
+
+
+
+</div>
+{% endblock %}
+
+
+</div>
+
+{% block footer %}
+<script>
+    const countupEls = document.querySelectorAll('.countup');
+    countupEls.forEach(animateCountUp);
+</script>
+
+{% endblock %}

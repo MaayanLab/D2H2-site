@@ -33,9 +33,67 @@
       </div>
 
 
-
       <div class="container mt-2">
         <div class="row justify-content-center justify-items-center" id="[Expression]">
+          <div class="d-flex col-12 custom-col justify-content-center justify-items-center">
+            <div class="mt-3">
+
+        <div class="question justify-content-center row p-2 text-center">
+          <h4>Query a Single Gene across Curated Diabetes-Related Signatures</h4>
+        </div>
+        <div class="mt-3 justify-content-center row mb-3">
+          <label class="mt-3 mr-1 ml-4" for="gene-select"> Enter gene symbol: </label>
+          <select id="gene-select" class="mt-2" data-url-genes="{{ url_for('genes_api', geo_accession='human') }}"
+            style="width: 200px;"></select>
+        </div>
+        <div class="row text-center justify-content-center">
+          <p> Try an example: <a onclick="fillSingleExampleHome('STAT3')" style="color:rgb(10, 13, 149);">STAT3</a>,
+            <a onclick="fillSingleExampleHome('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a>
+          </p>
+        </div>
+        <div class="row justify-content-center">
+          <!-- 
+          <button class="species-tab btn btn-primary m-1" id="human" role="tab">Human </button>
+          <button class="species-tab btn btn-inactive m-1" id="mouse" role="tab">Mouse </button> -->
+          <label class="mt-2 mr-1" for="species-toggle">Select species: </label>
+          <label class="toggle" id="species-toggle">
+            <input type="checkbox" id="species-val">
+            <span class="slider"></span>
+            <span class="labels" data-on="Mouse" data-off="Human"></span>
+          </label>
+        </div>
+
+
+        <div class="row ml-1 mr-1">
+          <p class="mt-3" style="text-align: justify">This module provides a volcano plot visualization of the
+            expression levels of a given gene in
+            various Type 2 Diabetes transcriptomics signatures. Users may enter in a single gene symbol as input; the
+            output is a volcano plot which plots each T2D signature by gene-specific p-value (y-axis) and fold change
+            (x-axis) as well as the corresponding tables available for download.</p>
+        </div>
+
+
+
+        <div class="row justify-content-center mb-2">
+          <img src="static/img/t2d-thumbnail.png" alt="" class="img-fluid img-thumbnail">
+        </div>
+
+        <div class="justify-content-center row text-center mb-2 mt-2" style="bottom: 0;"">
+          <a id=" appyter-home"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-2">
+            <span id="appyter-action">Generate plot</span>
+          </button>
+          </a>
+        </div>
+        <div id="volcano-loading"></div>
+      </div>
+      </div>
+      </div>
+    </div>
+
+
+
+      <div class="container mt-2">
+        <div class="row justify-content-center justify-items-center" id="[Signatures]">
           <div class="d-flex col-12 custom-col justify-content-center justify-items-center">
             <div class="mt-3">
               <div class="question ml-2 justify-content-center row">
@@ -217,7 +275,6 @@
 
               <div id="tf-res" class="justify-content-center p-3"> </div>
 
-
             </div>
           </div>
         </div>
@@ -362,6 +419,7 @@
 {% block footer %}
 <script>
   $(document).ready(function() {
+    
     if (localStorage.hasOwnProperty("gene")) {
       var gene = localStorage['gene']
       localStorage.removeItem('gene');
@@ -401,8 +459,6 @@
     }) 
     })
   document.getElementById('singlegenenav').className = document.getElementById('singlegenenav').className + ' active';
-
-
   })
 </script>
 {% endblock %}

@@ -1,0 +1,15 @@
+{"[Gene]": {
+    "[Expression]": "query_generanger", 
+    "[Perturbations]": "", 
+    "[TFs]": "", 
+    "[Traits]": "query_gwas", 
+    "[Correlation]": "",
+    "[Knockout]": "query_komp",
+    "[Signatures]": "single_gene_signatures"
+    },
+ "[GeneSet]": {
+    "[Signatures]": "query_enrichr_diabetes",
+    "[Enrichment]": "", 
+    "[TFs]": "", 
+    "[L1000]": ""}
+}

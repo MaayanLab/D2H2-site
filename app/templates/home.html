@@ -28,14 +28,21 @@
       <div class="row m-2 justify-content-center">
         <div class="vertical">
           <div class="input-wrapper row mt-3">
-            <input id="gpt-query" style="right: 0rem;" type="text" placeholder="Enter a gene related query..." name="text" class="input pr-0 mr-0">
-            <button id="gpt-query-button" class="pl-0 ml-0 query-submit" style="width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
-                <img src="static/img/doublearrow.png" style="width: 60%" alt="Query">
+            <input id="gpt-query" style="right: 0rem;" type="text" placeholder="Enter a gene related query..."
+              name="text" class="input pr-0 mr-0">
+            <button id="gpt-query-button" class="pl-0 ml-0 query-submit"
+              style="width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
+              <img src="static/img/doublearrow.png" style="width: 60%" alt="Query">
             </button>
           </div>
           <p class="m-0 p-0 pl-3 pt-2" style="font-size: smaller;">Try an example: </p>
-          <a class="pl-3" style="color: rgb(10, 13, 149); font-size: smaller;" onclick="fillQueryExample('In what tissues is STAT3 expressed?')">In what tissues is STAT3 expressed?</a>,<p> 
-          <a class="pl-3" style="color:rgb(10, 13, 149); font-size: smaller;" onclick="fillQueryExample('What transcription factors regulate my geneset?')">What transcription factors regulate my geneset?</a></p>
+          <a class="pl-3" style="color: rgb(10, 13, 149); font-size: smaller;"
+            onclick="fillQueryExample('In what tissues is STAT3 expressed?')">In what tissues is STAT3 expressed?</a>,
+          <p>
+            <a class="pl-3" style="color:rgb(10, 13, 149); font-size: smaller;"
+              onclick="fillQueryExample('What transcription factors regulate my geneset?')">What transcription factors
+              regulate my geneset?</a>
+          </p>
         </div>
 
         <div class="p-2 pt-0 mt-0 text-center col-lg-4 col-sm-6">
@@ -59,12 +66,12 @@
         </div>
         <div class="vertical m-5">
           <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}">
-          <button class="learn-more" >
-            <span class="circle" aria-hidden="true">
-              <span class="icon arrow"></span>
-            </span>
-            <span class="button-text">Explore Datasets</span>
-          </button></a>
+            <button class="learn-more">
+              <span class="circle" aria-hidden="true">
+                <span class="icon arrow"></span>
+              </span>
+              <span class="button-text">Explore Datasets</span>
+            </button></a>
         </div>
       </div>
     </div>
@@ -114,7 +121,7 @@
         </div>
 
         <div class="justify-content-center row text-center mb-2 mt-2" style="bottom: 0;"">
-          <a id="appyter-home"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-2">
+          <a id=" appyter-home"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-2">
             <span id="appyter-action">Generate plot</span>
           </button>
           </a>
@@ -122,7 +129,7 @@
         <div id="volcano-loading"></div>
       </div>
 
-      
+
 
 
       <div class="col-lg-5 col-md-10 col-sm-10 custom-col m-2" id="enrichranalysis">
@@ -217,67 +224,8 @@
 
 {% block footer %}
 <script>
-  setGene('')
-  function createTweetsTable() {
-    document.getElementById("tweets-res").innerHTML = "<div class='loader justify-content-center'></div>";
-    $.ajax({
-      url: "gettweets",
-      type: "POST",
-      data: {},
-      dataType: 'json',
-    }).done(function (response) {
 
-      const data = response['tweets']
-
-      var headers = data[0]
-      const singlegene_link = window.location.href + '/singlegene'
-      var tabletext = "<table id='table-twitter' class='styled-table'><thead><tr>"
-
-      headers.forEach(function (header) {
-        tabletext += "<th>" + header + "</th>"
-      });
-
-      tabletext += "</tr><tbody>"
-
-      for (var k = 1; k < data.length; k++) {
-
-
-        tabletext += "<tr><td>" + data[k][0] + "</td><td>" + data[k][1] + "</td><td>" + data[k][2] + "</td><td>" + data[k][3] + "</td>"
-        tabletext += "<td><a href='" + data[k][4] + "' target='_blank'>" + 'link' + "</a></td>"
-
-        var analyze = data[k][5].replaceAll('[', '').replaceAll(']', '').replaceAll(' ', '').replaceAll("'", "").split(',')
-        tabletext += `<td><a href="${singlegene_link}" target='_blank',  onclick="setGene('${data[k][0]}')"><img class='mr-2' src='static/img/d2h2logo.png' style='width: 25px;'/></a>`
-        tabletext += "<a href='" + analyze[1] + "' target='_blank'>" + "<img class='mr-2' src='static/img/enrichrlogo.png' style='width: 25px;'/>" + "</a>"
-        tabletext += "<a href='" + analyze[2] + "' target='_blank'>" + "<img class='mr-2' src='static/img/harmonizomelogo.png' style='width: 25px;'/>" + "</a>"
-        tabletext += "</td></tr>"
-
-      }
-
-      tabletext += "</tbody></table>";
-
-
-      $(document).ready(function () {
-        document.getElementById("tweets-res").innerHTML = tabletext;
-        table = $('#table-twitter').DataTable({ "pageLength": 5 });
-      });
-
-    });
-  }
-  createTweetsTable()
-  if (localStorage.hasOwnProperty("genes")) {
-    $(document).ready(function () {
-      var genes = localStorage['genes']
-      var desc = localStorage['descset']
-      localStorage.removeItem('genes');
-      localStorage.removeItem('descset');
-      genes = genes.split('&').join('\n')
-      document.getElementById('text-area1').value = genes;
-      document.getElementById('desc1').value = desc;
-      geneCount(genes, 1)
-      document.getElementById('enrichranalysis').scrollIntoView()
-      document.getElementById('diabetesEnrichr-query').click();
-    })
-  }
+  
   const countupEls = document.querySelectorAll('.countup');
   countupEls.forEach(animateCountUp);
 

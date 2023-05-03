@@ -1,24 +1,27 @@
 import openai
 import os
-import requests
 from dotenv import load_dotenv
+from functools import lru_cache
 
 
 load_dotenv()
 
-validation = {"[Gene]": ["[Expression]", "[Perturbations]", "[TFs]", "[Traits]", "[Correlation]","[Knockout]"],
-              "[GeneSet]": ["[Enrichment]", "[TFs]", "[L1000]"]}
+validation = {"[Gene]": ["[Expression]", "[Perturbations]", "[TFs]", "[Traits]", "[Correlation]","[Knockout]", "[Signatures]"],
+              "[GeneSet]": ["[Enrichment]", "[TFs]", "[L1000]", "[Signatures]"]}
 
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
+
+@lru_cache()
 def find_process(query):
     prompt = f"""
     Based on the query from the user: "{query}"
-    Additional context: A GeneSet is a collection of mulitple genes, thus is the user includes 'genes' the input will likely be [GeneSet]. If a gene symbol is included in the input then the input will most likely be [Gene].
+    Additional context: If a gene symbol or name is included in the input then the input will most likely be [Gene]. A GeneSet is a collection of mulitple genes, thus is the user includes 'genes' the input will likely be [GeneSet]. 
 
     Pick an input type from the list: [[Gene], [GeneSet]]
 
     Then, pick a process to be exceuted from below based on the query and the chosen input type:
+    [Gene]->[Signatures] - In what diabetes related signatures is my gene enriched?
     [Gene]->[Expression] - In what cells and tissues is my gene expressed?
     [Gene]->[Perturbations] - Under what conditions or perturbations is my gene regulated?
     [Gene]->[TFs] - What are the transcription factors that regulate my gene?
@@ -26,6 +29,7 @@ def find_process(query):
     [Gene]->[Correlation] - Is my gene correlated with other genes?
     [Gene]->[Knockout] - Is there a knockout mouse for my gene and does it show any phenotypes?
     [GeneSet]->[Enrichment] - In which annotated gene sets is my gene set enriched?
+    [GeneSet]->[Signatures] - In what diabetes signatures is my gene set enriched?
     [GeneSet]->[TFs] - What transcription factors and kinases regulate my gene set?
     [GeneSet]->[L1000] - What are the LINCS L1000 small molecules and genetic perturbations that likely up- or down-regulate the expression of my gene set?
 
@@ -40,7 +44,7 @@ def find_process(query):
     {"role": "user", "content": prompt}
         ],
     max_tokens =20,
-    temperature=.2,
+    temperature=.4,
     )
 
     response = tag_line['choices'][0]['message']['content']

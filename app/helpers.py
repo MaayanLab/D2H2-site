@@ -36,9 +36,27 @@ endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
 ########################## QUERY ENRICHER ###############################
+@lru_cache()
+def query_generanger(gene):
+    payload = {
+        "gene": gene,
+        "databases": [
+            "ARCHS4",
+            "GTEx_transcriptomics",
+            "Tabula_Sapiens",
+            "CCLE_transcriptomics",
+            "HPM",
+            "HPA",
+            "GTEx_proteomics",
+            "CCLE_proteomics"
+        ]
+    }
+    res = requests.post("https://generanger.maayanlab.cloud/api/data", json=payload)
+    stats = res.json()
+    return stats
 
 @lru_cache()
-def enrichr_id(genes, desc):
+def enrichr_id(genes, desc=''):
     ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/addList'
     genes_str = '\n'.join(genes)
     payload = {
@@ -364,7 +382,7 @@ blue_map = cm.get_cmap('Blues_r')
 blue_norm = colors.Normalize(vmin=-0.25, vmax=1)
 
 def load_files(species, gene):
-    root_path = 'static/searchdata/'
+    root_path = f'{endpoint}d2h2/t2d-datasets/'
     pval_rna_df = pd.read_feather(f'{root_path}all_{species}_pval.f', columns=['index', gene]).set_index('index')
     # RNA-seq fold change
     fc_rna_df = pd.read_feather(f'{root_path}all_{species}_fc.f', columns=['index', gene]).set_index('index')
@@ -524,7 +542,7 @@ def appyter_link(sig_name, inst=''):
 
 # create tables of significant results with links to GEO 
 def make_tables(comb_df, species, gene, is_upreg, isRNA=False):
-    root_path = 'static/searchdata/'
+    root_path = f'{endpoint}d2h2/t2d-datasets/'
     if isRNA:
         sigranks = pd.read_feather(f"{root_path}all_{species}_fc_sigrank.f", columns=['index', gene]).set_index('index')
     else:
