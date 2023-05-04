@@ -521,7 +521,7 @@ def download_link(df, fname, isRNA=False):
     )
 
     df['Signature'] = df['Signature'].apply(lambda x: x.replace('* ', ''))
-    return fname
+    return fname, df.values.tolist()
 
 # get GEO links 
 @lru_cache()
@@ -570,19 +570,19 @@ def send_plot(species, gene):
     else:
         plot = make_plot(comb_df_input, species, gene)
     fname='static/searchdata/t2d-files/'
-    up_comb_df_input = download_link(make_tables(comb_df_input, species, gene, is_upreg=True, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-upreg.tsv', isRNA=True)
-    dn_comb_df_input = download_link(make_tables(comb_df_input, species, gene, is_upreg=False, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-dnreg.tsv', isRNA=True)
+    up_comb_df_input, up_comb_df_input_values = download_link(make_tables(comb_df_input, species, gene, is_upreg=True, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-upreg.tsv', isRNA=True)
+    dn_comb_df_input, dn_comb_df_input_values = download_link(make_tables(comb_df_input, species, gene, is_upreg=False, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-dnreg.tsv', isRNA=True)
     if micro_exists and not(micro_df_input.empty):
         micro_df_input.dropna(inplace=True)
         up_micro_df = make_tables(micro_df_input, species, gene, is_upreg=True)
-        up_micro_df_input = download_link(up_micro_df, fname + gene + '_' + species + '_' + 'micro-upreg.tsv')
+        up_micro_df_input, up_micro_df_input_values = download_link(up_micro_df, fname + gene + '_' + species + '_' + 'micro-upreg.tsv')
         dn_micro_df = make_tables(micro_df_input, species, gene, is_upreg=False)
-        dn_micro_df_input = download_link(dn_micro_df, fname + gene + '_' + species + '_' + 'micro-dnreg.tsv')
+        dn_micro_df_input, dn_micro_df_input_values = download_link(dn_micro_df, fname + gene + '_' + species + '_' + 'micro-dnreg.tsv')
     else:
         micro_exists = False
         up_micro_df_input = ''
         dn_micro_df_input = ''
-    return {'plot': json_item(plot, 'volcano-plot'), 'micro': micro_exists, 'tables': [up_comb_df_input, dn_comb_df_input, up_micro_df_input, dn_micro_df_input]}
+    return {'plot': json_item(plot, 'volcano-plot'), 'micro': micro_exists, 'tables': [up_comb_df_input, dn_comb_df_input, up_micro_df_input, dn_micro_df_input], 'table_values': [up_comb_df_input_values, dn_comb_df_input_values, up_micro_df_input_values, dn_micro_df_input_values]}
 
 def make_dge_plot(data, title, method, id_plot='dge-plot'):
 

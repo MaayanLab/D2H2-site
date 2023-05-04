@@ -7,7 +7,7 @@ from functools import lru_cache
 load_dotenv()
 
 validation = {"[Gene]": ["[Expression]", "[Perturbations]", "[TFs]", "[Traits]", "[Correlation]","[Knockout]", "[Signatures]"],
-              "[GeneSet]": ["[Enrichment]", "[TFs]", "[L1000]", "[Signatures]"]}
+              "[GeneSet]": ["[Enrichment]", "[TFs]","[Kinases]", "[L1000]", "[Signatures]"]}
 
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
