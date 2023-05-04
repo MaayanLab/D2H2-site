@@ -45,6 +45,10 @@ def home():
 def about():
     return render_template("about.html", base_path=BASE_PATH, numstudies=numstudies)
 
+@app.route(f"{ROOT_PATH}/mockup", methods=['GET', 'POST'])
+def mockup():
+    return render_template("mockup.html", base_path=BASE_PATH, numstudies=numstudies)
+
 @app.route(f"{ROOT_PATH}/help", methods=['GET', 'POST'])
 def help():
     return render_template("help.html", base_path=BASE_PATH, numstudies=numstudies)

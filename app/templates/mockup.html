@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+<div class="justify-content-center container-fluid">
+    <div class="col-6 justify-content-center mx-auto banner m-5">
+
+        <div class="chat chat-start">
+            <div class="chat-image avatar">
+                <div class="w-10 rounded-full">
+                    <img src="static/img/d2h2_chat_bot.jpeg" />
+                </div>
+            </div>
+            <div class="chat-header">
+                D2H2
+            </div>
+            <div class="chat-bubble chat-bubble-info" style="background-color: lightgray">I am an AI-powered chat
+                interface designed to help answer gene and gene set related queries. Please start by entering a
+                question. </div>
+        </div>
+        <br>
+        <div class="chat chat-end">
+            <div class="chat-image avatar">
+                <div class="w-10 rounded-full">
+                    <img src="static/img/user_icon.png" />
+                </div>
+            </div>
+            <div class="chat-bubble chat-bubble-info" style="background-color: rgb(216, 141, 208)">In what tissues and
+                cell types is STAT3 expressed?</div>
+        </div>
+        <div class="chat chat-start">
+            <div class="chat-image avatar">
+                <div class="w-10 rounded-full">
+                    <img src="static/img/d2h2_chat_bot.jpeg" />
+                </div>
+            </div>
+            <div class="chat-header">
+                D2H2
+            </div>
+            <div class="chat-bubble chat-bubble-info" style="background-color: lightgray"> Sure, I can provide that for you. What resource would you like to view expression data from? Some options include ARCHS4, GTEx, or Tabula Sapiens.</div>
+        </div>
+        <br>
+        <div class="chat chat-end">
+            <div class="chat-image avatar">
+                <div class="w-10 rounded-full">
+                    <img src="static/img/user_icon.png" />
+                </div>
+            </div>
+            <div class="chat-bubble chat-bubble-info" style="background-color: rgb(216, 141, 208)">ARCHS4</div>
+        </div>
+        <div class="chat chat-start">
+            <div class="chat-image avatar">
+                <div class="w-10 rounded-full">
+                    <img src="static/img/d2h2_chat_bot.jpeg" />
+                </div>
+            </div>
+            <div class="chat-header">
+                D2H2
+            </div>
+            <div class="chat-bubble chat-bubble-info" style="background-color: lightgray"> 
+                Here are expression statistics for STAT3 from ARCHS4:
+                <img src="static/img/archs4-expression-stat3.png"/>
+            </div>
+        </div>
+        <br>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block footer %}
+<link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.6/dist/full.css" rel="stylesheet" type="text/css" />
+<script src="https://cdn.tailwindcss.com"></script>
+{% endblock %}

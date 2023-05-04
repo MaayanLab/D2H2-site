@@ -18,8 +18,7 @@
   <div class="row mb-5">
 
     <div class="col-3">
-      <nav id="toc" data-toggle="toc" class="navbar navbar-light sticky-top"
-        style="font-weight: 350 !important;"></nav>
+      <nav id="toc" data-toggle="toc" class="navbar navbar-light sticky-top" style="font-weight: 350 !important;"></nav>
     </div>
 
     <div class="col-9 p-2 text-center">
@@ -38,57 +37,48 @@
           <div class="d-flex col-12 custom-col justify-content-center justify-items-center">
             <div class="mt-3">
 
-        <div class="question justify-content-center row p-2 text-center">
-          <h4>Query a Single Gene across Curated Diabetes-Related Signatures</h4>
-        </div>
-        <div class="mt-3 justify-content-center row mb-3">
-          <label class="mt-3 mr-1 ml-4" for="gene-select"> Enter gene symbol: </label>
-          <select id="gene-select" class="mt-2" data-url-genes="{{ url_for('genes_api', geo_accession='human') }}"
-            style="width: 200px;"></select>
-        </div>
-        <div class="row text-center justify-content-center">
-          <p> Try an example: <a onclick="fillSingleExampleHome('STAT3')" style="color:rgb(10, 13, 149);">STAT3</a>,
-            <a onclick="fillSingleExampleHome('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a>
-          </p>
-        </div>
-        <div class="row justify-content-center">
-          <!-- 
-          <button class="species-tab btn btn-primary m-1" id="human" role="tab">Human </button>
-          <button class="species-tab btn btn-inactive m-1" id="mouse" role="tab">Mouse </button> -->
-          <label class="mt-2 mr-1" for="species-toggle">Select species: </label>
-          <label class="toggle" id="species-toggle">
-            <input type="checkbox" id="species-val">
-            <span class="slider"></span>
-            <span class="labels" data-on="Mouse" data-off="Human"></span>
-          </label>
-        </div>
-
-
-        <div class="row ml-1 mr-1">
-          <p class="mt-3" style="text-align: justify">This module provides a volcano plot visualization of the
-            expression levels of a given gene in
-            various Type 2 Diabetes transcriptomics signatures. Users may enter in a single gene symbol as input; the
-            output is a volcano plot which plots each T2D signature by gene-specific p-value (y-axis) and fold change
-            (x-axis) as well as the corresponding tables available for download.</p>
-        </div>
+              <div class="question justify-content-center row p-2 text-center">
+                <h4>Query a Single Gene across Curated Diabetes-Related Signatures</h4>
+              </div>
+              <div class="mt-4 mb-2 justify-content-center row">
+                <label class="mt-1 mr-1" for="search0">Enter gene symbol: </label>
+                <select class="search" id="search0" style="width: 200px;"
+                  data-url="{{ url_for('genes_api', geo_accession='combined') }}"></select>
+              </div>
+              <div class="row text-center justify-content-center">
+                <p> Try an example: <a onclick="fillSingleExample('STAT3')"
+                    style="color:rgb(10, 13, 149);">STAT3</a>,
+                  <a onclick="fillSingleExample('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a>
+                </p>
+              </div>
+              <div class="row ml-1 mr-1">
+                <p class="mt-3" style="text-align: justify">This module provides a volcano plot visualization of the
+                  expression levels of a given gene in
+                  various Type 2 Diabetes transcriptomics signatures. Users may enter in a single gene symbol as input;
+                  the
+                  output is a volcano plot which plots each T2D signature by gene-specific p-value (y-axis) and fold
+                  change
+                  (x-axis) as well as the corresponding tables available for download.</p>
+              </div>
 
 
 
-        <div class="row justify-content-center mb-2">
-          <img src="static/img/t2d-thumbnail.png" alt="" class="img-fluid img-thumbnail">
-        </div>
+              <div class="row justify-content-center mb-2">
+                <img src="static/img/t2d-thumbnail.png" alt="" class="img-fluid img-thumbnail">
+              </div>
 
-        <div class="justify-content-center row text-center mb-2 mt-2" style="bottom: 0;"">
-          <a id=" appyter-home"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-2">
-            <span id="appyter-action">Generate plot</span>
-          </button>
-          </a>
+              <div class="justify-content-center row text-center mb-2 mt-2" style="bottom: 0;"">
+                <a id="Signatures"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-2">
+                  <span id="appyter-action">Generate plot</span>
+                </button>
+                </a>
+              </div>
+              <div id="[Signatures]loading"></div>
+              <div id="[Signatures]result"></div>
+            </div>
+          </div>
         </div>
-        <div id="volcano-loading"></div>
       </div>
-      </div>
-      </div>
-    </div>
 
 
 
@@ -104,24 +94,28 @@
 
               <div class="mt-4 mb-2 justify-content-center row">
                 <label class="mt-1 mr-1" for="search1">Enter gene symbol: </label>
-                <select class="search" id="search1" style="width: 200px;" data-url="{{ url_for('genes_api', geo_accession='combined') }}"></select>
+                <select class="search" id="search1" style="width: 200px;"
+                  data-url="{{ url_for('genes_api', geo_accession='combined') }}"></select>
               </div>
               <div class="row text-center justify-content-center">
-                <p> Try an example: <a onclick="fillSingleExample('STAT3')" style="color:rgb(10, 13, 149);">STAT3</a>, 
-                  <a onclick="fillSingleExample('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a> </p>
+                <p> Try an example: <a onclick="fillSingleExample('STAT3')" style="color:rgb(10, 13, 149);">STAT3</a>,
+                  <a onclick="fillSingleExample('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a>
+                </p>
               </div>
 
               <div class="row" style="flex-wrap: wrap;">
                 <div class="col-md-6 col-lg-6 col-sm-12">
 
                   <div class="row justify-content-center">
-                    <img src="{{url_for('static',filename= 'img/tissueexpression.png')}}" alt="" class="img-fluid img-thumbnail">
+                    <img src="{{url_for('static',filename= 'img/tissueexpression.png')}}" alt=""
+                      class="img-fluid img-thumbnail">
                   </div>
 
                   <div class="justify-content-center row text-center mb-3 mt-3">
                     <a id="archs-url" target="_blank" rel="noopener noreferrer" href="https://maayanlab.cloud/archs4/">
                       <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Open in
-                        <img src="{{url_for('static',filename= 'img/archs4logo.png')}}" class="img-fluid mr-3" style="width: 110px" alt="ARCHS4">
+                        <img src="{{url_for('static',filename= 'img/archs4logo.png')}}" class="img-fluid mr-3"
+                          style="width: 110px" alt="ARCHS4">
                       </button>
                     </a>
                   </div>
@@ -130,13 +124,15 @@
 
                 <div class="col-md-6 col-lg-6 col-sm-12">
                   <div class="row justify-content-center">
-                    <img src="{{url_for('static',filename= 'img/gtex-thumbnail.png')}}" alt="" class="img-fluid img-thumbnail">
+                    <img src="{{url_for('static',filename= 'img/gtex-thumbnail.png')}}" alt=""
+                      class="img-fluid img-thumbnail">
                   </div>
 
                   <div class="justify-content-center row text-center mt-3 mb-3">
                     <a id="gtex-url" target="_blank" rel="noopener noreferrer" href="https://gtexportal.org/home/">
                       <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Open in
-                        <img src="{{url_for('static',filename= 'img/gtexlogo.png')}}" class="img-fluid mr-3" style="width: 110px" alt="GTEx">
+                        <img src="{{url_for('static',filename= 'img/gtexlogo.png')}}" class="img-fluid mr-3"
+                          style="width: 110px" alt="GTEx">
                       </button>
                     </a>
                   </div>
@@ -145,7 +141,7 @@
               </div>
 
               <div class="justify-content-center row ml-1 mr-1 text-center">
-                <p class="mt-3">This linked Appyter takes a human gene symbol as the input to produce box plots that
+                <p class="mt-3">The GeneRanger web-sever takes a human gene symbol as the input to produce box plots that
                   display its expression across human cell types and tissue at the mRNA and protein levels.</p>
               </div>
 
@@ -155,10 +151,10 @@
 
               <div class="justify-content-center row text-center mb-3">
                 <a id="appyter-url1" target="_blank" rel="noopener noreferrer">
-                  <button type="button"
-                    class="btn btn-primary btn-group-sm mt-3 mb-3">
-                    <span id="appyter-action" class="ml-3">Start a new appyter in</span>
-                    <img src="{{url_for('static',filename= 'img/appyters_logo.svg')}}" class="img-fluid mr-3" style="width: 120px" alt="Appyters">
+                  <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3">
+                    <span id="appyter-action" class="ml-3">Open in GeneRanger</span>
+                    <img src="{{url_for('static',filename= 'img/generangerlogo.png')}}" class="img-fluid mr-3"
+                      style="width: 35px" alt="GeneRanger">
                   </button>
                 </a>
               </div>
@@ -177,11 +173,13 @@
 
               <div class="input-group mt-4 justify-content-center row">
                 <label class="mt-1 mr-1" for="search2">Enter gene symbol: </label>
-                <select class="search" id="search2" style="width: 200px;" data-url="{{ url_for('genes_api', geo_accession='combined') }}"></select>
+                <select class="search" id="search2" style="width: 200px;"
+                  data-url="{{ url_for('genes_api', geo_accession='combined') }}"></select>
               </div>
               <div class="row text-center justify-content-center">
-                <p> Try an example: <a onclick="fillSingleExample('STAT3')" style="color:rgb(10, 13, 149);">STAT3</a>, 
-                  <a onclick="fillSingleExample('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a> </p>
+                <p> Try an example: <a onclick="fillSingleExample('STAT3')" style="color:rgb(10, 13, 149);">STAT3</a>,
+                  <a onclick="fillSingleExample('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a>
+                </p>
               </div>
 
               <div class="row" style="flex-wrap: wrap;">
@@ -193,7 +191,8 @@
                   </div>
 
                   <div class="row justify-content-center mt-3 mb-3">
-                    <img src="{{url_for('static',filename= 'img/genecentric-thumbnail.png')}}" alt="" class="img-fluid img-thumbnail">
+                    <img src="{{url_for('static',filename= 'img/genecentric-thumbnail.png')}}" alt=""
+                      class="img-fluid img-thumbnail">
                   </div>
 
 
@@ -201,8 +200,8 @@
                     <a id="appyter-url2" target="_blank" rel="noopener noreferrer"><button type="button"
                         class="btn btn-primary btn-group-sm mt-3 mb-3">
                         <span id="appyter-action" class="ml-3">Start a new appyter in</span>
-                        <img src="{{url_for('static',filename= 'img/appyters_logo.svg')}}" class="img-fluid mr-3" style="width: 120px"
-                          alt="Appyters">
+                        <img src="{{url_for('static',filename= 'img/appyters_logo.svg')}}" class="img-fluid mr-3"
+                          style="width: 120px" alt="Appyters">
                       </button>
                     </a>
                   </div>
@@ -216,15 +215,16 @@
                   </div>
 
                   <div class="row justify-content-center mb-3">
-                    <img src="{{url_for('static',filename= 'img/L1000-thumbnail.png')}}" alt="" class="img-fluid img-thumbnail">
+                    <img src="{{url_for('static',filename= 'img/L1000-thumbnail.png')}}" alt=""
+                      class="img-fluid img-thumbnail">
                   </div>
 
                   <div class="justify-content-center row text-center mb-3">
                     <a id="appyter-url3" target="_blank" rel="noopener noreferrer"><button type="button"
                         class="btn btn-primary btn-group-sm mt-3 mb-3">
                         <span id="appyter-action" class="ml-3">Start a new appyter in</span>
-                        <img src="{{url_for('static',filename= 'img/appyters_logo.svg')}}" class="img-fluid mr-3" style="width: 120px"
-                          alt="Appyters">
+                        <img src="{{url_for('static',filename= 'img/appyters_logo.svg')}}" class="img-fluid mr-3"
+                          style="width: 120px" alt="Appyters">
                       </button>
                     </a>
                   </div>
@@ -248,33 +248,37 @@
 
               <div class="input-group mt-4 justify-content-center row">
                 <label class="mt-1 mr-1" for="search3">Enter gene symbol: </label>
-                <select class="search" id="search3" style="width: 200px;"  data-url="{{ url_for('genes_api', geo_accession='combined') }}"></select>
+                <select class="search" id="search3" style="width: 200px;"
+                  data-url="{{ url_for('genes_api', geo_accession='combined') }}"></select>
               </div>
               <div class="row text-center justify-content-center">
-                <p> Try an example: <a onclick="fillSingleExample('STAT3')" style="color:rgb(10, 13, 149);">STAT3</a>, 
-                  <a onclick="fillSingleExample('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a> </p>
+                <p> Try an example: <a onclick="fillSingleExample('STAT3')" style="color:rgb(10, 13, 149);">STAT3</a>,
+                  <a onclick="fillSingleExample('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a>
+                </p>
               </div>
 
               <div class="justify-content-center row ml-1 mr-1 text-center">
-                <p class="mt-3"> Query Enrichr to display transcription factor information from annotated datasets about the input gene symbol. </p>
+                <p class="mt-3"> Query Enrichr to display transcription factor information from annotated datasets about
+                  the input gene symbol. </p>
               </div>
 
               <div class="row justify-content-center mb-3">
-                <img src="{{ url_for('static', filename='img/enrichr-thumb.png') }}" alt="" class="img-fluid img-thumbnail">
+                <img src="{{ url_for('static', filename='img/enrichr-thumb.png') }}" alt=""
+                  class="img-fluid img-thumbnail">
               </div>
 
               <div class="justify-content-center row text-center mb-3">
-                <a id="enrichr-query"><button type="button"
-                    class="btn btn-primary btn-group-sm mt-3 mb-3">
+                <a id="TFs"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3">
                     <span id="appyter-action" class="ml-3">Query </span>
-                    <img src="{{ url_for('static', filename='img/enrichrtext.png') }}" class="img-fluid" style="width: 80px" alt="Enrichr">
-                    <img src="{{ url_for('static', filename='img/enrichrlogo.png') }}" class="img-fluid mr-3" style="width: 50px" alt="">
+                    <img src="{{ url_for('static', filename='img/enrichrtext.png') }}" class="img-fluid"
+                      style="width: 80px" alt="Enrichr">
+                    <img src="{{ url_for('static', filename='img/enrichrlogo.png') }}" class="img-fluid mr-3"
+                      style="width: 50px" alt="">
                   </button>
                 </a>
               </div>
-
-              <div id="tf-res" class="justify-content-center p-3"> </div>
-
+              <div id="[TFs]loading"></div>
+              <div id="[TFs]result" class="justify-content-center p-3"></div>
             </div>
           </div>
         </div>
@@ -290,11 +294,13 @@
 
               <div class="input-group mt-4 justify-content-center row">
                 <label class="mt-1 mr-1" for="search4">Enter gene symbol: </label>
-                <select class="search" id="search4" style="width: 200px;" data-url="{{ url_for('genes_api', geo_accession='human') }}"></select>
+                <select class="search" id="search4" style="width: 200px;"
+                  data-url="{{ url_for('genes_api', geo_accession='human') }}"></select>
               </div>
               <div class="row text-center justify-content-center">
-                <p> Try an example: <a onclick="fillSingleExample('STAT3')" style="color:rgb(10, 13, 149);">STAT3</a>, 
-                  <a onclick="fillSingleExample('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a> </p>
+                <p> Try an example: <a onclick="fillSingleExample('STAT3')" style="color:rgb(10, 13, 149);">STAT3</a>,
+                  <a onclick="fillSingleExample('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a>
+                </p>
               </div>
 
               <div class="justify-content-center row ml-1 mr-1 text-center">
@@ -310,14 +316,16 @@
 
 
               <div class="justify-content-center row text-center  mt-3">
-                <a id="gwas-query">
+                <a id="Traits">
                   <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Query
-                    <img src="{{ url_for('static', filename='img/gwaslogo.png') }}" class="img-fluid mr-3" style="width: 120px" alt="GWAS">
+                    <img src="{{ url_for('static', filename='img/gwaslogo.png') }}" class="img-fluid mr-3"
+                      style="width: 120px" alt="GWAS">
                   </button>
                 </a>
               </div>
 
-              <div id="gwas-res" class="p-3"> </div>
+              <div id="[Traits]loading"></div>
+              <div id="[Traits]result" class="justify-content-center p-3"></div>
 
             </div>
           </div>
@@ -334,11 +342,13 @@
 
               <div class="input-group mt-4 justify-content-center row">
                 <label class="mt-1 mr-1" for="search5">Enter gene symbol: </label>
-                <select class="search" id="search5" style="width: 200px;" data-url="{{ url_for('genes_api', geo_accession='combined') }}"></select>
+                <select class="search" id="search5" style="width: 200px;"
+                  data-url="{{ url_for('genes_api', geo_accession='combined') }}"></select>
               </div>
               <div class="row text-center justify-content-center">
-                <p> Try an example: <a onclick="fillSingleExample('STAT3')" style="color:rgb(10, 13, 149);">STAT3</a>, 
-                  <a onclick="fillSingleExample('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a> </p>
+                <p> Try an example: <a onclick="fillSingleExample('STAT3')" style="color:rgb(10, 13, 149);">STAT3</a>,
+                  <a onclick="fillSingleExample('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a>
+                </p>
               </div>
 
               <div class="justify-content-center row ml-1 mr-1 text-center">
@@ -351,14 +361,16 @@
               </div>
 
               <div class="justify-content-center row text-center  mt-3">
-                <a id="archs4-query">
+                <a id="Correlation">
                   <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Query
-                    <img src="{{ url_for('static', filename='img/archs4logo.png') }}" class="img-fluid mr-3" style="width: 120px" alt="ARCHS4">
+                    <img src="{{ url_for('static', filename='img/archs4logo.png') }}" class="img-fluid mr-3"
+                      style="width: 120px" alt="ARCHS4">
                   </button>
                 </a>
               </div>
 
-              <div id="archs4-res" class="p-3"> </div>
+              <div id="[Correlation]loading"></div>
+              <div id="[Correlation]result" class="justify-content-center p-3"></div>
 
             </div>
           </div>
@@ -375,11 +387,13 @@
 
               <div class="input-group mt-4 justify-content-center row">
                 <label class="mt-1 mr-1" for="search6">Enter gene symbol: </label>
-                <select class="search" id="search6" style="width: 200px;" data-url="{{ url_for('genes_api', geo_accession='combined') }}"></select>
+                <select class="search" id="search6" style="width: 200px;"
+                  data-url="{{ url_for('genes_api', geo_accession='combined') }}"></select>
               </div>
               <div class="row text-center justify-content-center">
-                <p> Try an example: <a onclick="fillSingleExample('STAT3')" style="color:rgb(10, 13, 149);">STAT3</a>, 
-                  <a onclick="fillSingleExample('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a> </p>
+                <p> Try an example: <a onclick="fillSingleExample('STAT3')" style="color:rgb(10, 13, 149);">STAT3</a>,
+                  <a onclick="fillSingleExample('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a>
+                </p>
               </div>
 
               <div class="justify-content-center row ml-1 mr-1 text-center">
@@ -394,15 +408,15 @@
               </div>
 
               <div class="justify-content-center row text-center  mt-3">
-                <a id="komp-query">
+                <a id="Knockout">
                   <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Query
-                    <img src="{{ url_for('static', filename='img/mgilogo.png') }}" class="img-fluid mr-1 ml-2 mb-2" style="width: 80px" alt="MGI">
+                    <img src="{{ url_for('static', filename='img/mgilogo.png') }}" class="img-fluid mr-1 ml-2 mb-2"
+                      style="width: 80px" alt="MGI">
                   </button>
                 </a>
               </div>
-
-
-              <div id="komp-res" class="p-3"></div>
+              <div id="[Knockout]loading"></div>
+              <div id="[Knockout]result" class="justify-content-center p-3"></div>
             </div>
           </div>
         </div>
@@ -417,48 +431,213 @@
 {% endblock %}
 
 {% block footer %}
-<script>
-  $(document).ready(function() {
-    
+<script type="module">
+
+
+  $(document).ready(function () {
+
     if (localStorage.hasOwnProperty("gene")) {
       var gene = localStorage['gene']
       localStorage.removeItem('gene');
-    } else {var gene = ''}
+    } else { var gene = '' }
 
     const searchArray = Array.from(document.querySelectorAll('.search'));
-    searchArray.forEach(function(item) {
+    searchArray.forEach(function (item) {
       var url = item.getAttribute('data-url')
       var $select = $(item).selectize({
         preload: true,
-      valueField: 'gene_symbol',
-      labelField: 'gene_symbol',
-      searchField: 'gene_symbol',
-      maxItems: 1,
-      render: {
+        valueField: 'gene_symbol',
+        labelField: 'gene_symbol',
+        searchField: 'gene_symbol',
+        maxItems: 1,
+        render: {
           option: function (item, escape) {
-              return '<div class="pt-2 light">'+item.gene_symbol+'</div>';
+            return '<div class="pt-2 light">' + item.gene_symbol + '</div>';
           }
-      },
-      load: function (query, callback) {         
+        },
+        load: function (query, callback) {
           $.ajax({
-              url: url,
-              dataType: 'json',
-              error: function () {
-                  callback();
-              },
-              success: function (res) {
-                  callback(res);
-                  $select[0].selectize.setValue(gene);
-              }
+            url: url,
+            dataType: 'json',
+            error: function () {
+              callback();
+            },
+            success: function (res) {
+              callback(res);
+              $select[0].selectize.setValue(gene);
+            }
           });
-      },
-      onDropdownClose: function(value) {
+        },
+        onDropdownClose: function (value) {
           var gene = this.getValue()
           fillSingleExampleSkip(gene, this.id)
-      },
-    }) 
+        },
+      })
     })
-  document.getElementById('singlegenenav').className = document.getElementById('singlegenenav').className + ' active';
+    document.getElementById('singlegenenav').className = document.getElementById('singlegenenav').className + ' active';
   })
+
+  import { initialize_search, gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from '../static/js/modules/single-gene-queries.js';
+  import { human_list, mouse_list, processes, loading } from '../static/js/modules/constants.js';
+  $('#Signatures').click(async function () {
+    var selectize = $(`#search0`)[0].selectize;
+    var gene = selectize.getValue();
+    if (!gene) {
+      alert('Please select a gene symbol')
+      return;
+    }
+    var check_list = await human_list;
+    var species;
+    if (check_list.includes(gene)) species = 'Human';
+    else species = 'Mouse';
+    document.getElementById('[Signatures]loading').innerHTML = loading;
+    await gene_signatures(gene, species, '[Signatures]result');
+    document.getElementById('[Signatures]loading').innerHTML = "";
+  });
+
+  $('#appyter-url1').click(async function () {
+        var selectize = $(`#search1`)[0].selectize;
+        var gene = selectize.getValue();
+
+        if (gene) {
+            var check_list = await human_list;
+            if (check_list.includes(gene)) {
+                var species = 'Human';
+            } else {
+                alert('GeneRanger only supports human gene symbols')
+                return;
+            }
+            window.open(`https://generanger.maayanlab.cloud/gene/${gene}?database=ARCHS4`, '_blank')
+        } else {
+            window.open("https://generanger.maayanlab.cloud/gene/A2M?database=ARCHS4", '_blank')
+        }
+    });
+
+
+    $('#archs-url').click(function () {
+        if ($("#search1").val()) {
+            var inputvalue = $("#search1").val();
+            $('#archs-url').prop('href', "https://maayanlab.cloud/archs4/gene/" + inputvalue + "#tissueexpression");
+        } else {
+            $('#archs-url').prop('href', "https://maayanlab.cloud/archs4/")
+        }
+    });
+
+    $('#gtex-url').click(function () {
+        if ($("#search1").val()) {
+            var inputvalue = $("#search1").val();
+            $('#gtex-url').prop('href', "https://gtexportal.org/home/gene/" + inputvalue + "#geneExpression");
+        } else {
+            $('#gtex-url').prop('href', "https://gtexportal.org/home/")
+        }
+    });
+
+    $('#appyter-url2').click(async function () {
+        if ($("#search2").val()) {
+            var inputvalue = $("#search2").val();
+            var check_list = await human_list
+
+            if (check_list.includes(inputvalue)) {
+                var species = 'Human';
+                var arg = 'human_gene';
+            } else {
+                var species = 'Mouse';
+                var arg = 'mouse_gene';
+            }
+            const formData = new FormData()
+            formData.append('species_input', species)
+            formData.append(arg, inputvalue)
+            var res = await fetch("https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                },
+                body: formData,
+            })
+            const id = await res.json()
+            window.open("https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/" + id.session_id, '_blank')
+        } else {
+            window.open("https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/", '_blank');
+        }
+    });
+
+    $('#appyter-url3').click(async function () {
+        if ($("#search2").val()) {
+            var inputvalue = $("#search2").val();
+            var check_list = await human_list
+            if (!check_list.includes(inputvalue)) {
+                alert('This Appyter only accepts Human gene symbols.')
+                return;
+            }
+            window.open("https://appyters.maayanlab.cloud/L1000_RNAseq_Gene_Search/#/?args.gene=" + inputvalue + "&submit", '_blank');
+        } else {
+            window.open("https://appyters.maayanlab.cloud/L1000_RNAseq_Gene_Search/",'_blank');
+        }
+    });
+
+    $('#TFs').click(async function () {
+      var selectize = $(`#search3`)[0].selectize;
+      var gene = selectize.getValue();
+      if (!gene) {
+        alert('Please select a gene symbol')
+        return;
+      }
+      var check_list = await human_list;
+      var species;
+      if (check_list.includes(gene)) species = 'Human';
+      else species = 'Mouse';
+      document.getElementById('[TFs]loading').innerHTML = loading;
+      await query_enrichr_tfs(gene, '[TFs]result');
+      document.getElementById('[TFs]loading').innerHTML = "";
+  });
+
+  $('#Traits').click(async function () {
+      var selectize = $(`#search4`)[0].selectize;
+      var gene = selectize.getValue();
+      if (!gene) {
+        alert('Please select a gene symbol')
+        return;
+      }
+      var check_list = await human_list;
+      var species;
+      if (check_list.includes(gene)) species = 'Human';
+      else species = 'Mouse';
+      document.getElementById('[Traits]loading').innerHTML = loading;
+      await query_gwas(gene, '[Traits]result');
+      document.getElementById('[Traits]loading').innerHTML = "";
+  });
+
+  $('#Correlation').click(async function () {
+      var selectize = $(`#search5`)[0].selectize;
+      var gene = selectize.getValue();
+      if (!gene) {
+        alert('Please select a gene symbol')
+        return;
+      }
+      var check_list = await human_list;
+      var species;
+      if (check_list.includes(gene)) species = 'Human';
+      else species = 'Mouse';
+      document.getElementById('[Correlation]loading').innerHTML = loading;
+      await loadCorrelation(gene, '[Correlation]result');
+      document.getElementById('[Correlation]loading').innerHTML = "";
+  });
+
+  $('#Knockout').click(async function () {
+      var selectize = $(`#search6`)[0].selectize;
+      var gene = selectize.getValue();
+      if (!gene) {
+        alert('Please select a gene symbol')
+        return;
+      }
+      var check_list = await human_list;
+      var species;
+      if (check_list.includes(gene)) species = 'Human';
+      else species = 'Mouse';
+      document.getElementById('[Knockout]loading').innerHTML = loading;
+      await query_komp(gene, '[Knockout]result');
+      document.getElementById('[Knockout]loading').innerHTML = "";
+  });
+  
 </script>
 {% endblock %}
