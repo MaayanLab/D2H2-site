@@ -58,3 +58,30 @@ def find_process(query):
             return {"response": 1, "error": "Process does not exist"}
     except:
         return {"response": 1, "error": "Parsing error"}
+    
+def select_option(response, options):
+    prompt = f"""
+    Based on the reponse from the user: "{response}"
+    pick an option from the list of options: "{options}"
+    Your response must only include the extact string from the list of options with no other text, description, reasoning or punctuation.
+    """
+
+    tag_line = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+    {"role": "system", "content": "You are an assitant meant to process a user response and pick from a predefined list of options"},
+    {"role": "user", "content": prompt}
+        ],
+    max_tokens =20,
+    temperature=.4,
+    )
+
+    response = tag_line['choices'][0]['message']['content']
+    if '"' in response:
+        response = response.split('"')[1]
+
+    print(response)
+    if response in options:
+        return {'option': response}
+    else:
+        return {'option': 'error'}

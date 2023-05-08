@@ -377,7 +377,9 @@ function fillSet(id, descid, count_id) {
 
         const desc = response['description']
         const genes = response['genes']
+        
         document.getElementById(id).value = genes;
+        console.log(document.getElementById(id).value)
         if (descid != '') {
             document.getElementById(descid).value = desc;
         }
@@ -567,7 +569,7 @@ $(document).ready(function () {
             boxplot();
         })
     }
-    
+
     // Conditions
     $('.condition-btn').on('click', function (evt) {
         $(this).toggleClass('plotted'); // making a specific button plotted or not
@@ -1142,3 +1144,4 @@ $(document).ready(function () {
         document.getElementById("change-loading").innerHTML = ''
     })
 })
+

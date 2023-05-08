@@ -953,3 +953,73 @@ nav select {
 .answerbox:active {
     grid-template-rows: 1fr;
 }
+
+
+@keyframes fadeIn {
+    0% {
+        transform: scale(0);
+        opacity: 0.0;       
+    }
+    60% {
+        transform: scale(1.1);  
+    }
+    80% {
+        transform: scale(0.9);
+        opacity: 1; 
+    }   
+    100% {
+        transform: scale(1);
+        opacity: 1; 
+    }       
+}
+
+@-webkit-keyframes fadeIn {
+    0% {
+        -webkit-transform: scale(0);
+        opacity: 0.0;       
+    }
+    60% {
+        -webkit-transform: scale(1.1);
+    }
+    80% {
+        -webkit-transform: scale(0.9);
+        opacity: 1; 
+    }   
+    100% {
+        -webkit-transform: scale(1);
+        opacity: 1; 
+    }       
+}
+
+.chat{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:.75rem;padding-top:.25rem;padding-bottom:.25rem;display:grid}
+.chat-image{grid-row:span 2/span 2;align-self:flex-end}
+.chat-header{grid-row-start:1;font-size:.875rem;line-height:1.25rem}
+.chat-footer{grid-row-start:3;font-size:.875rem;line-height:1.25rem}
+.chat-bubble{width:fit-content;max-width:90%;border-radius:var(--rounded-box,1rem);min-height:2.75rem;min-width:2.75rem;--tw-bg-opacity:1;background-color:hsl(var(--n)/var(--tw-bg-opacity));--tw-text-opacity:1;color:hsl(var(--nc)/var(--tw-text-opacity));padding:.5rem 1rem;display:block;position:relative}
+.chat-bubble:before{height:.75rem;width:.75rem;background-color:inherit;content:"";-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:50%;position:absolute;bottom:0}.chat-start{grid-template-columns:auto 1fr;place-items:start}
+.chat-start .chat-header,.chat-start .chat-footer{grid-column-start:2}
+.chat-start .chat-image{grid-column-start:1}
+.chat-start .chat-bubble{border-bottom-left-radius:0;grid-column-start:2}
+.chat-start .chat-bubble:before{-webkit-mask-image:url("data:image/svg+xml,%3csvg width='3' height='3' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill='black' d='m 0 3 L 3 3 L 3 0 C 3 1 1 3 0 3'/%3e%3c/svg%3e");mask-image:url("data:image/svg+xml,%3csvg width='3' height='3' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill='black' d='m 0 3 L 3 3 L 3 0 C 3 1 1 3 0 3'/%3e%3c/svg%3e");left:-.75rem}[dir=rtl] 
+.chat-start .chat-bubble:before{-webkit-mask-image:url("data:image/svg+xml,%3csvg width='3' height='3' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill='black' d='m 0 3 L 1 3 L 3 3 C 2 3 0 1 0 0'/%3e%3c/svg%3e");mask-image:url("data:image/svg+xml,%3csvg width='3' height='3' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill='black' d='m 0 3 L 1 3 L 3 3 C 2 3 0 1 0 0'/%3e%3c/svg%3e")}
+.chat-end{grid-template-columns:1fr auto;place-items:end}
+.chat-end .chat-header,.chat-end .chat-footer{grid-column-start:1}.chat-end .chat-image{grid-column-start:2}
+.chat-end .chat-bubble{border-bottom-right-radius:0;grid-column-start:1}
+.chat-end .chat-bubble:before{-webkit-mask-image:url("data:image/svg+xml,%3csvg width='3' height='3' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill='black' d='m 0 3 L 1 3 L 3 3 C 2 3 0 1 0 0'/%3e%3c/svg%3e");mask-image:url("data:image/svg+xml,%3csvg width='3' height='3' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill='black' d='m 0 3 L 1 3 L 3 3 C 2 3 0 1 0 0'/%3e%3c/svg%3e");left:100%}[dir=rtl] 
+.chat-end .chat-bubble:before{-webkit-mask-image:url("data:image/svg+xml,%3csvg width='3' height='3' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill='black' d='m 0 3 L 3 3 L 3 0 C 3 1 1 3 0 3'/%3e%3c/svg%3e");mask-image:url("data:image/svg+xml,%3csvg width='3' height='3' xmlns='http://www.w3.org/2000/svg'%3e%3cpath fill='black' d='m 0 3 L 3 3 L 3 0 C 3 1 1 3 0 3'/%3e%3c/svg%3e")}
+
+
+.avatar-group{display:flex;overflow:hidden}.avatar-group :where(.avatar){--tw-border-opacity:1;border-width:4px;border-color:hsl(var(--b1)/var(--tw-border-opacity));border-radius:9999px;overflow:hidden}.badge-primary{--tw-border-opacity:1;border-color:hsl(var(--p)/var(--tw-border-opacity));--tw-bg-opacity:1;background-color:hsl(var(--p)/var(--tw-bg-opacity));--tw-text-opacity:1;color:hsl(var(--pc)/var(--tw-text-opacity))}
+
+.avatar{display:inline-flex;position:relative}
+.avatar>div{aspect-ratio:1/1;display:block;overflow:hidden}
+.avatar img{height:100%;width:100%;object-fit:cover}
+.avatar.placeholder>div{justify-content:center;align-items:center;display:flex}
+
+#query-section {
+    display: block;
+}
+
+#chat-section {
+    display: none;
+}

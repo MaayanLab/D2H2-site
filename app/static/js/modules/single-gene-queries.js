@@ -3,42 +3,10 @@ export const human_list = fetch(
 ).then(data => data.json());
 
 
-export function initialize_search(gene) {
-    var url = $('#search').attr('data-url')
-    var $select = $('#search').selectize({
-        preload: true,
-        valueField: 'gene_symbol',
-        labelField: 'gene_symbol',
-        searchField: 'gene_symbol',
-        maxItems: 1,
-        render: {
-            option: function (item, escape) {
-                return '<div class="pt-2 light">' + item.gene_symbol + '</div>';
-            }
-        },
-        load: function (query, callback) {
-            $.ajax({
-                url: url,
-                dataType: 'json',
-                error: function () {
-                    callback();
-                },
-                success: function (res) {
-                    callback(res);
-                    $select[0].selectize.setValue(gene);
-                }
-            });
-        },
-        onDropdownClose: function (value) {
-            var gene = this.getValue()
-        },
-    })
-}
-
 
 export function gen_table(link, data, table_id, title, gene) {
     var titletext = `<div class ="row text-center mt-3"> <h4>${title}</h4></div>`;
-    var tabletext = `<table id='${table_id}' class='styled-table'><thead><tr>`
+    var tabletext = `<table id='${table_id}' class='styled-table' style='width: 80%;'><thead><tr>`
     tabletext += "<th>Signature</th><th>GEO Entry</th><th>P-value</th><th>Log2 Fold Change</th><th>Gene Rank in Signature</th><th>Boxplot Viewer</th></tr><tbody>"
     data.forEach(function (row) {
         var gse = row[row.length - 1].split("=")[1]
@@ -84,7 +52,6 @@ export async function gene_signatures(gene, species, resultid) {
 
     const id = await res.json()
 
-    const final_url = "https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/" + id.session_id
 
     const clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-4 mb-1' onclick='clear_home();'> Clear Results </button> </a>"
 
@@ -103,7 +70,9 @@ export async function gene_signatures(gene, species, resultid) {
             var tables = jdata['tables']
             var table_values = jdata['table_values']
             var micro = jdata['micro']
+            if (document.getElementById("buttons")) {
             document.getElementById("buttons").innerHTML += `<div class='row text-center justify-content-center'>${clear_button}</div>`
+            }
             window.Bokeh.embed.embed_item(plot)
             var dir = "up";
             var titleRNA = `Top ${species} RNA-seq signatures where ${gene} is ${dir}-regulated`
@@ -123,8 +92,8 @@ export async function gene_signatures(gene, species, resultid) {
 
 // SINGLE GENE EXPRESSION:
 // [Gene]->[Expression]
-export async function generanger_plot(gene) {
-    document.getElementById("result").innerHTML = "<div class='container justify-content-center mb-5 mx-auto text-center' style='overflow: scroll;'><div id='volcano-plot' class='justify-content-center centered'></div><div id='buttons' class='text-center'></div></div>"
+export async function generanger_plot(gene, library, resultid) {
+    document.getElementById(resultid).innerHTML = "<div class='container justify-content-center mb-5 mx-auto text-center' style='overflow: scroll;'><div id='volcano-plot' class='justify-content-center centered'></div><div id='buttons' class='text-center'></div></div>"
     var jsonData = {};
     jsonData["gene"] = gene;
     await $.ajax({
@@ -134,34 +103,41 @@ export async function generanger_plot(gene) {
         data: jsonData,
         success: function (jdata) {
             if (Object.keys(jdata.allData.dbData).length == 0) {
-                document.getElementById("result").innerHTML = "<p class='text-center'>No data for this gene found</p>"
+                document.getElementById(resultid).innerHTML = "<p class='text-center'>No data for this gene found</p>"
                 return;
             }
-            var plotARCHS4 = jdata['allData']['dbData']['ARCHS4']
-            var plotGTEx = jdata['allData']['dbData']['GTEx_transcriptomics']
-            const val_names = ['lowerfence', 'upperfence', 'mean', 'median', 'q1', 'q3', 'sd', 'names']
+            var plotLib = jdata['allData']['dbData'][library]
+            if (plotLib) {
+            const val_names = ['lowerfence', 'upperfence', 'mean', 'median', 'q1', 'q3', 'sd', 'names', 'levels']
             val_names.forEach((attr) => {
-                if (attr in plotARCHS4) plotARCHS4[attr] = plotARCHS4[attr].reverse();
+                if (attr in plotLib) plotLib[attr] = plotLib[attr].reverse();
             });
-            plotGTEx.x = plotGTEx.names
-            plotGTEx.type = 'box'
-            plotARCHS4.x = plotARCHS4.names
-            plotARCHS4.type = 'box'
-            plotARCHS4.orientation = 'v'
-            let customWidth = plotARCHS4.x.length * 20;
+            if ('levels' in plotLib) {
+                plotLib['type'] = 'scatter'
+                plotLib['marker'] = {color: '#1f77b4'}
+                plotLib["mode"]= 'markers'
+                plotLib["y"]= plotLib["levels"]
+                plotLib["x"]= plotLib["names"]
+            } else {
+                plotLib.x = plotLib.names
+                plotLib.type = 'box'
+                plotLib.orientation = 'v'
+            }
+            let customWidth = plotLib.x.length * 20;
             var layout = {
                 autosize: true,
                 width: customWidth,
                 height: 600,
-                title: {text:  gene + ' ARCHS4 transcriptomics Expression', xanchor: 'left', yanchor: 'top', x: 0},
+                title: {text:  gene + ' '+ library + ' Expression', xanchor: 'left', yanchor: 'top', x: 0},
                 xaxis: {
                     automargin: true,
-                    tickangle: 45
+                    tickangle: 45,
+                    range: [-0.5, plotLib['x'].length]
                 }
             };
-            Plotly.newPlot('volcano-plot', [plotARCHS4], layout)
+            Plotly.newPlot('volcano-plot', [plotLib], layout)
 
-            document.getElementById("actions").innerHTML = `
+            document.getElementById(resultid).innerHTML += `
             <div='row'>
             <a id="gtex-url" target="_blank" rel="noopener noreferrer" href=https://generanger.maayanlab.cloud/gene/${gene}?database=ARCHS4>
                 <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Open in
@@ -180,6 +156,9 @@ export async function generanger_plot(gene) {
             </a>
             </div>
             `
+        } else {
+            document.getElementById(resultid).innerHTML = "<p>I'm sorry, no data for this gene was available from the chosen library.</p>"
+        }
         }
     });
 }

@@ -837,6 +837,15 @@ def query_gpt():
 
 	return res
 
+@app.route(f'{ROOT_PATH}/api/query_options',  methods=['GET', 'POST'])
+def query_options():
+	response_json = request.get_json()
+	response = response_json['response']
+	options = response_json['options']
+	res = select_option(response, options)
+	return res
+
+
 def run_app():
 	if DEBUG:
 		app.run(debug=True, host="0.0.0.0")

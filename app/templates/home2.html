@@ -61,8 +61,23 @@
                 </div>
             </div>
         </div>
+        <div class="vertical mt-4" id="chat-section" style="border-style: solid; border-radius: 2rem; border-color: rgb(184, 184, 184); width: 100%; overflow: auto;">
+            <div id="chat-bubbles-section" style="overflow: auto;">
+                <div class="chat chat-start mb-1" id="chat-intro" style="display: none;"> 
+                    <div class="chat-image avatar pl-2" style="width: 50px">
+                        <img src="static/img/d2h2_chat_bot.png"/>
+                    </div>
+                    <div class="chat-header">
+                        D2H2
+                    </div>
+                    <div class="chat-bubble chat-bubble-info" style="background-color: #d3d3d3">I am an AI-powered chat
+                        interface designed to help answer gene and gene set related queries. Please start by entering a question. 
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <div class="col m-2 mx-right">
+        <div id="query-section" class="col m-2 mx-right mb-5">
             <div class="vertical">
                 <div class="input-wrapper row mt-3" style="flex-wrap: nowrap;">
                     <input id="gpt-query" style="right: 0rem; width: 60rem;" type="text"
@@ -73,118 +88,27 @@
                     </button>
                 </div>
                 <p class="m-0 p-0 pt-2" style="font-size: smaller; max-width: 88%;">Try an example:
-                    <a class="" style="color: rgb(10, 13, 149); font-size: small;"
-                        onclick="document.getElementById('gpt-query').value = 'In what tissues is STAT3 expressed?'">
+                    <a class="q-example" id="q-example1" style="color: rgb(10, 13, 149); font-size: small;">
                         In what tissues is STAT3 expressed?
                     </a>,
-                    <a class="" style="color:rgb(10, 13, 149); font-size: small;"
-                        onclick="document.getElementById('gpt-query').value = 'What transcription factors regulate my geneset?'">
+                    <a class="q-example" id="q-example2" style="color:rgb(10, 13, 149); font-size: small;">
                         What transcription factors regulate my geneset?
                     </a>,
-                    <a class="" style="color:rgb(10, 13, 149); font-size: small;"
-                        onclick="document.getElementById('gpt-query').value = 'What diabetes related signatures are realted to AKT1?'">
+                    <a class="q-example" id="q-example3" style="color:rgb(10, 13, 149); font-size: small;">
                         What diabetes related signatures are related to AKT1?
                     </a>,
-                    <a class="" style="color:rgb(10, 13, 149); font-size: small;"
-                        onclick="document.getElementById('gpt-query').value = 'What small molecules might act as reversers for my up and down genesets?'">
+                    <a class="q-example" id="q-example4" style="color:rgb(10, 13, 149); font-size: small;">
                         What small molecules might act as reversers for my up and down genesets?
                     </a>,
-                    <a class="" style="color:rgb(10, 13, 149); font-size: small;"
-                        onclick="document.getElementById('gpt-query').value = 'In what diabetes related signatures is my geneset enriched?'">
+                    <a class="q-example" id="q-example5" style="color:rgb(10, 13, 149); font-size: small;">
                         In what diabetes related signatures is my geneset enriched?
                     </a>
 
                 </p>
             </div>
         </div>
-        <div id="loading"></div>
-        <div id="selector" style="display: none">
-            <div class="input-group mt-4 justify-content-center row" id="selector">
-                <label class="mt-1 mr-1" for="search">Enter gene symbol: </label>
-                <select class="search" id="search" style="width: 200px;" data-url="api/genes/combined"></select>
-            </div>
-        </div>
-        <div class="row justify-content-center" id="enter-geneset" style="display: none;">
-            <div class="col-sm-12 col-md-6 col-lg-3 text-center justify-content-end mr-4">
-                <textarea class="input-form" name="list" rows="8" id="text-area"
-                    placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
-                    onkeyup="geneCount($(this).val(), 0)" onchange="geneCount($(this).val(), 0)"
-                    onfocus="geneCount($(this).val(), 0)"></textarea>
-                <div class="mt-1">
-                    <span id="gene-count0"> 0 </span> gene(s) entered
-                </div>
-                <div class="text-text-center">
-                    <a onclick="fillSet('text-area', 'desc', ''); setTimeout(() => geneCount($('#text-area').val(), 0), 50)"
-                        style="color: rgb(10, 13, 149)">Try an example gene set</a>
-                </div>
-            </div>
-            <div class="col-sm-12 col-md-6 col-lg-3 justify-content-start text-center ml-4" style="overflow-y: visible !important;">
-                <p>File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line</p>
-                <form action="/action_page.php">
-                    <input type="file" id="gene-file" name="filename">
-                </form>
-                <label class="mt-1 mr-1" for="desc">Enter gene set description (optional): </label>
-                <input class="form-control-md" id="desc" type="text">
-            </div>
-        </div>
-        <div class="flex-row justify-content-center" id="enter-geneset-up-down" style="flex-wrap: wrap; display: none;">
-            <div class="col">
-                <div class="col text-center mr-3">
-                    <textarea class="input-form" name="list" rows="8" id="text-area-up"
-                        placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
-                        onkeyup="geneCount($(this).val(), 1)" onchange="geneCount($(this).val(), 1)"
-                        onfocus="geneCount($(this).val(), 1)"></textarea>
-                    <div class="mt-1">
-                        <span id="gene-count1"> 0 </span> UP gene(s) entered
-                    </div>
-                    <div class="text-center">
-                        <a onclick="fillSet('text-area-up', '', 'up')" style="color: rgb(10, 13, 149)">Try an example gene
-                            set</a>
-                    </div>
-                </div>
-                <div class="col justify-content-center text-center m-2" style="overflow-y: visible !important;">
-                    <p>
-                        File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
-                    </p>
-                    <form action="/action_page.php">
-                        <input type="file" id="gene-file-up" name="filename">
-                    </form>
-                </div>
-            </div>
-            <div class="col">
-                <div class="col text-center mr-3">
-                    <textarea class="input-form" name="list" rows="8" id="text-area-down"
-                        placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
-                        onkeyup="geneCount($(this).val(), 2)" onchange="geneCount($(this).val(), 2)"
-                        onfocus="geneCount($(this).val(), 2)"></textarea>
-                    <div class="mt-1">
-                        <span id="gene-count2"> 0 </span> DOWN gene(s) entered
-                    </div>
-                    <div class="text-center">
-                        <a onclick="fillSet2('text-area-down', '', 'up')" style="color: rgb(10, 13, 149)">Try an example
-                            gene set</a>
-                    </div>
-                </div>
-                <div class="col justify-content-center text-center m-2" style="overflow-y: visible !important;">
-                    <p>
-                        File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
-                    </p>
-                    <form action="/action_page.php">
-                        <input type="file" id="gene-file-down" name="filename">
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div id="questions"></div>
-        <div id="description" class="m-3 "></div>
-        <div id="output" style="display: none"></div>
-        <div id="result" style="width: 88%;"></div>
-        <div id="actions" class="text-center mb-5"></div>
-        <div class="text-center justify-content-center row mb-5">
-            <button class='btn btn-primary btn-group-sm text-center mr-3' id="toggle" onclick="up_down_toggle()" style="display: none;">Up & Down Gene Sets</button>
-            <button class='btn btn-primary btn-group-sm text-center' id="submit_single_gene" style="display: none;">Submit</button>
-            <button class='btn btn-primary btn-group-sm text-center' id="submit_gene_set" style="display: none;">Submit</button>
-        </div>
+
+
     </div>
 </div>
 {% endblock %}
@@ -192,25 +116,178 @@
 
 {% block footer %}
 <script type="module">
-    import { human_list, mouse_list, processes } from '../static/js/modules/constants.js';
-    import { initialize_search, gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from '../static/js/modules/single-gene-queries.js';
+    import { human_list, mouse_list, processes, chatN, geneset_entries, geneset_buttons, geneset_buttons_up_down } from '../static/js/modules/constants.js';
+    import { gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from '../static/js/modules/single-gene-queries.js';
     import { geneset_signatures, geneset_enrichment, geneset_kea3, geneset_chea3, geneset_sigcomlincs } from '../static/js/modules/geneset-queries.js';
-    import { runFindQuery, submit_single_gene, run_process_gene, submit_gene_set, run_process_geneset} from '../static/js/modules/query.js';
+    import { parse_gene, select_option, runFindQuery, run_process_gene } from '../static/js/modules/query.js';
+    const process_dict = await processes;
 
-    
+    var new_process = true;
+    var chat_num = 0;
+    var process_info = {};
+    var curr_arg = '';
+    var options = [];
+
+    async function reset_process() {
+        new_process = true;
+        chat_num = 0;
+        process_info = {};
+        curr_arg = '';
+        options = [];
+    }
+
+    async function submit_gene_set() {
+    var geneset = '';
+    var geneset_up = '';
+    var geneset_down = '';
+
+    if (document.getElementById("enter-geneset").style.display == "flex") {
+        var inputvalue = document.getElementById("text-area").value;
+        var file = document.getElementById("gene-file").value;
+        var section = "gene-file";
+        geneset;
+
+        if (inputvalue) {
+            geneset = inputvalue.split("\n").join(',')
+        }
+
+        if (file) {
+            geneset = await loadFileAsText(section, ",");
+        }
+    } else {
+        var inputvalue_up = document.getElementById("text-area-up").value;
+        var inputvalue_down = document.getElementById("text-area-down").value;
+        var file_up = document.getElementById("gene-file-up").value;
+        var file_down = document.getElementById("gene-file-down").value;
+        var section_up = "gene-file-up";
+        var section_down = "gene-file-down";
+
+        if (inputvalue_up) {
+            geneset_up = inputvalue_up.split("\n").join(',')
+        }
+        if (file_up) {
+            geneset_up = await loadFileAsText(section_up, ",");
+        }
+
+        if (inputvalue_down) {
+            geneset_down = inputvalue_down.split("\n").join(',')
+        }
+
+        if (file_down) {
+            geneset_down = await loadFileAsText(section_down, ",");
+        }
+    }
+    process_info['geneset'] = geneset;
+    process_info['geneset_up'] = geneset_up;
+    process_info['geneset_down'] = geneset_down;
+    run_process_gene(process_info);
+    reset_process();
+}
+
+    async function ask_questions() {
+        console.log('here')
+        var response = document.getElementById('gpt-query').value.trim();
+        console.log(response)
+        if (response != '') {
+                document.getElementById("chat-section").appendChild(chatN('end', chat_num, '#d3d3d3', response))
+                $(`#chat-${chat_num}`).fadeIn(2000)
+                chat_num++;   
+        }
+        if (process_info['geneSymbol'] == '') { 
+            const [gene, species] = parse_gene(response);
+            console.log(gene, species)
+            process_info['geneSymbol'] = gene;
+            process_info['species'] = species;
+        } else if (process_info['type'] == '') { 
+            const res = select_option(response, ['file', 'textbox', 'enrichr']);
+            console.log(res)
+            process_info['type'] = res;
+            insert_geneset_entry(res, chat_num)
+            return;
+        }
+        const qs = process_dict[process_info.input][process_info.output].questions
+        if (curr_arg != '') {
+            const res = await select_option(response, options);
+            process_info[curr_arg] = res;
+        }
+        console.log(process_info)
+        for (let i = 0; i< qs.length; i++) {
+            if (!(qs[i].arg in process_info)) {
+                document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', qs[i].q + ' The options include: ' + qs[i].options.join(', ')))
+                $(`#chat-${chat_num}`).fadeIn(2000)
+                chat_num++;
+                curr_arg = qs[i].arg;
+                options = qs[i].options;
+                console.log(curr_arg, options)
+                return;
+            }
+        }
+        run_process_gene(process_info, chat_num);
+        chat_num += 2;
+        await reset_process();
+        console.log(process_info)
+    }
+
+
+    async function run_chat() {
+        var q = document.getElementById('gpt-query').value.trim();
+        if (q != '') {
+            document.getElementById("chat-section").appendChild(chatN('end', chat_num, '#d3d3d3', q))
+            $(`#chat-${chat_num}`).fadeIn(2000)
+            chat_num++;
+            var response = await runFindQuery(q);
+            console.log(response)
+            if (response['response'] == 1) {
+                document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I'm sorry, I don't understand the your question. Please try again."))
+                $(`#chat-${chat_num}`).fadeIn(2000)
+                chat_num++;
+                return;
+            }
+            new_process = false;
+            process_info = response;
+            if (response['input'] == '[Gene]') {
+                if (response['geneSymbol'] == '') {
+                    document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', 'Please provide a gene symbol'))
+                    $(`#chat-${chat_num}`).fadeIn(2000)
+                    chat_num++;
+                } else {
+                    document.getElementById('gpt-query').value = '';
+                    ask_questions();
+                }
+            } else if (response['input'] == '[GeneSet]') {
+                if (process_dict[response.input][response.output].args.includes('up')) {
+                    document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries + geneset_buttons_up_down))
+                } else document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries + geneset_buttons))
+                document.getElementById("submit_gene_set").addEventListener("click",  function() {
+                    submit_gene_set(process_info);
+                });
+                document.getElementById("fill-text-area").addEventListener("click",  function() {
+                    fillSet('text-area', 'desc', ''); 
+                    setTimeout(() => geneCount($('#text-area').val(), 0), 50);
+                });
+                $(`#chat-${chat_num}`).fadeIn(2000)
+                chat_num++;
+            }
+        }
+    }
+
+    function run() {
+        if (new_process) {
+            run_chat();
+        } else {
+            ask_questions();
+        }
+        document.getElementById('gpt-query').value = '';
+    }
 
     $("#gpt-query").on('keyup', function (e) {
-        var q = document.getElementById('gpt-query').value.trim();
-        if (e.key === 'Enter' && q != '') {
-            runFindQuery(q)
+        if (e.key === 'Enter') {
+            run()
         }
     })
 
     $("#gpt-query-button").on('click', function (e) {
-        var q = document.getElementById('gpt-query').value.trim();
-        if (q != '') {
-            runFindQuery(q)
-        }
+        run_chat()
     })
 
     $("#submit_single_gene").on('click', function (e) {
@@ -227,6 +304,32 @@
         }
     })
 
+    document.getElementById("gpt-query").onfocus = function() {fadeChatIn()};
+
+    function fadeChatIn() {
+        $("#chat-section").fadeIn(1000)
+        setTimeout(() => $("#chat-intro").fadeIn(), 1500)
+        $("#chat-intro").fadeIn(2000)
+        $('html, body').animate({
+            scrollTop: $("#query-section").offset().top
+        }, 1000);
+    }
+
+    function fillQuery(q) {
+        document.getElementById('gpt-query').value = q;
+        fadeChatIn();
+        run();
+        document.getElementById('gpt-query').value = '';
+    }
+
+    const exampleArray = Array.from(document.querySelectorAll('.q-example'));
+    exampleArray.forEach((elt) => {
+        document.getElementById(elt.id).addEventListener("click",  function() {
+            fillQuery(elt.innerText);
+        });
+        }
+    );
+    
 
     const countupEls = document.querySelectorAll('.countup');
     countupEls.forEach(animateCountUp);
