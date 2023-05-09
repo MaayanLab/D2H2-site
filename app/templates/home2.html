@@ -176,11 +176,11 @@
             geneset_down = await loadFileAsText(section_down, ",");
         }
     }
-    console.log(geneset_up, geneset_down)
+
     process_info['geneset'] = geneset;
     process_info['up'] = geneset_up;
     process_info['down'] = geneset_down;
-    run_process_gene(process_info, chat_num);
+    await run_process_gene(process_info, chat_num);
     chat_num++;
     chat_num++;
     await reset_process();
@@ -270,7 +270,7 @@
                     chat_num++;
                 }
             },
-        2001);
+        1000);
         }
        
     }

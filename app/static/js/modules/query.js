@@ -72,7 +72,10 @@ export async function run_process_gene(process_info_copy, chat_num) {
     document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', process.description))
     $(`#chat-${chat_num}`).fadeIn(2000, async () => {
         chat_num++;
-        document.getElementById("chat-section").innerHTML += `<div id='loading${chat_num}'>${loading}</div>`
+        const placeholder = document.createElement("div");
+        placeholder.innerHTML = `<div id='loading${chat_num}'>${loading}</div>`;
+        const loadingNode = placeholder.firstElementChild;
+        document.getElementById("chat-section").appendChild(loadingNode)
         document.getElementById("chat-section").appendChild(chatNresult('start', chat_num, '#d3d3d3', "result" + chat_num))
         
         process_info_copy['result'] = "result" + chat_num

@@ -382,7 +382,7 @@ function fillSet(id, descid, count_id) {
         if (descid != '') {
             document.getElementById(descid).value = desc;
         }
-        setTimeout(() => {geneCount(genes, count_id)}, 500);
+        geneCount(genes, count_id)
     });
 }
 

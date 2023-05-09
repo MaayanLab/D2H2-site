@@ -77,80 +77,81 @@ export function chatNresult(side, chatNum, color, resultid) {
 
 
 export function geneset_entries(chatnum) { 
-    return `<div class="row justify-content-center" id="enter-geneset${chatnum}" style="display: flex;">
-                                    <div class="col-sm-12 col-md-6 col-lg-3 text-center justify-content-end mr-4">
-                                        <textarea class="input-form" name="list" rows="8" id="text-area${chatnum}"
-                                            placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
-                                            onkeyup="geneCount($(this).val(), ${chatnum})" onchange="geneCount($(this).val(), ${chatnum})"
-                                            onfocus="geneCount($(this).val(), ${chatnum})"></textarea>
-                                        <div class="mt-1">
-                                            <span id="gene-count${chatnum}"> 0 </span> gene(s) entered
-                                        </div>
-                                        <div class="text-text-center">
-                                            <a onclick="fillSet('text-area${chatnum}', 'desc', ''); "
-                                                style="color: rgb(10, 13, 149)">Try an example gene set</a>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-6 col-lg-3 justify-content-start text-center ml-4"
-                                        style="overflow-y: visible !important;">
-                                        <p>File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line</p>
-                                        <form action="/action_page.php">
-                                            <input type="file" id="gene-file${chatnum}" name="filename">
-                                        </form>
-                                        <label class="mt-1 mr-1" for="desc">Enter gene set description (optional): </label>
-                                        <input class="form-control-md" id="desc" type="text">
-                                    </div>
-                                    </div>
-                                    <div class="flex-row justify-content-center" id="enter-geneset-up-down${chatnum}"
-                                    style="flex-wrap: wrap; display: none;">
-                                    <div class="col">
-                                        <div class="col text-center mr-3">
-                                            <textarea class="input-form" name="list" rows="8" id="text-area-up${chatnum}"
-                                                placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
-                                                onkeyup="geneCount($(this).val(), ${chatnum + 1})" onchange="geneCount($(this).val(), ${chatnum + 1})"
-                                                onfocus="geneCount($(this).val(), ${chatnum + 1})"></textarea>
-                                            <div class="mt-1">
-                                                <span id="gene-count${chatnum + 1}"> 0 </span> UP gene(s) entered
-                                            </div>
-                                            <div class="text-center">
-                                                <a onclick="fillSet('text-area-up${chatnum}', '', 'up')" style="color: rgb(10, 13, 149)">
-                                                    Try an example gene set</a>
-                                            </div>
-                                        </div>
-                                        <div class="col justify-content-center text-center m-2" style="overflow-y: visible !important;">
-                                            <p>
-                                                File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
-                                            </p>
-                                            <form action="/action_page.php">
-                                                <input type="file" id="gene-file-up${chatnum}" name="filename">
-                                            </form>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="col text-center mr-3">
-                                            <textarea class="input-form" name="list" rows="8" id="text-area-down${chatnum}"
-                                                placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
-                                                onkeyup="geneCount($(this).val(), ${chatnum + 2})" onchange="geneCount($(this).val(), ${chatnum + 2})"
-                                                onfocus="geneCount($(this).val(), ${chatnum + 2})"></textarea>
-                                            <div class="mt-1">
-                                                <span id="gene-count${chatnum + 2}"> 0 </span> DOWN gene(s) entered
-                                            </div>
-                                            <div class="text-center">
-                                                <a onclick="fillSet2('text-area-down${chatnum}', '', 'up')" style="color: rgb(10, 13, 149)">Try an
-                                                    example
-                                                    gene set</a>
-                                            </div>
-                                        </div>
-                                        <div class="col justify-content-center text-center m-2" style="overflow-y: visible !important;">
-                                            <p>
-                                                File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
-                                            </p>
-                                            <form action="/action_page.php">
-                                                <input type="file" id="gene-file-down${chatnum}" name="filename">
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>`
+    return `
+    <div class="row justify-content-center" id="enter-geneset${chatnum}" style="display: flex;">
+        <div class="col-sm-12 col-md-6 col-lg-3 text-center justify-content-end mr-4">
+            <textarea class="input-form" name="list" rows="8" id="text-area${chatnum}"
+                placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
+                onkeyup="geneCount($(this).val(), ${chatnum})" onchange="geneCount($(this).val(), ${chatnum})"
+                onfocus="geneCount($(this).val(), ${chatnum})"></textarea>
+            <div class="mt-1">
+                <span id="gene-count${chatnum}"> 0 </span> gene(s) entered
+            </div>
+            <div class="text-text-center">
+                <a onclick="fillSet('text-area${chatnum}', 'desc', ${chatnum}); "
+                    style="color: rgb(10, 13, 149)">Try an example gene set</a>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-3 justify-content-start text-center ml-4"
+            style="overflow-y: visible !important;">
+            <p>File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line</p>
+            <form action="/action_page.php">
+                <input type="file" id="gene-file${chatnum}" name="filename">
+            </form>
+            <label class="mt-1 mr-1" for="desc">Enter gene set description (optional): </label>
+            <input class="form-control-md" id="desc" type="text">
+        </div>
+        </div>
+        <div class="flex-row justify-content-center" id="enter-geneset-up-down${chatnum}"
+        style="flex-wrap: wrap; display: none;">
+        <div class="col">
+            <div class="col text-center mr-3">
+                <textarea class="input-form" name="list" rows="8" id="text-area-up${chatnum}"
+                    placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
+                    onkeyup="geneCount($(this).val(), ${chatnum + 1})" onchange="geneCount($(this).val(), ${chatnum + 1})"
+                    onfocus="geneCount($(this).val(), ${chatnum + 1})"></textarea>
+                <div class="mt-1">
+                    <span id="gene-count${chatnum + 1}"> 0 </span> UP gene(s) entered
+                </div>
+                <div class="text-center">
+                    <a onclick="fillSet('text-area-up${chatnum}', '', ${chatnum + 1})" style="color: rgb(10, 13, 149)">
+                        Try an example gene set</a>
+                </div>
+            </div>
+            <div class="col justify-content-center text-center m-2" style="overflow-y: visible !important;">
+                <p>
+                    File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
+                </p>
+                <form action="/action_page.php">
+                    <input type="file" id="gene-file-up${chatnum}" name="filename">
+                </form>
+            </div>
+        </div>
+        <div class="col">
+            <div class="col text-center mr-3">
+                <textarea class="input-form" name="list" rows="8" id="text-area-down${chatnum}"
+                    placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
+                    onkeyup="geneCount($(this).val(), ${chatnum + 2})" onchange="geneCount($(this).val(), ${chatnum + 2})"
+                    onfocus="geneCount($(this).val(), ${chatnum + 2})"></textarea>
+                <div class="mt-1">
+                    <span id="gene-count${chatnum + 2}"> 0 </span> DOWN gene(s) entered
+                </div>
+                <div class="text-center">
+                    <a onclick="fillSet2('text-area-down${chatnum}', '', ${chatnum + 2})" style="color: rgb(10, 13, 149)">Try an
+                        example
+                        gene set</a>
+                </div>
+            </div>
+            <div class="col justify-content-center text-center m-2" style="overflow-y: visible !important;">
+                <p>
+                    File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
+                </p>
+                <form action="/action_page.php">
+                    <input type="file" id="gene-file-down${chatnum}" name="filename">
+                </form>
+            </div>
+        </div>
+    </div>`
 }
 export function geneset_buttons(chatnum){
     return `
