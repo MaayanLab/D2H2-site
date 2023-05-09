@@ -165,14 +165,14 @@ body {
 
 
 .btn-primary:hover {
-    background-color: #71477a;
+    background-color: #92629d;
     border-color: white;
     color: white;
 }
 .btn-primary {
-    border-color: #a5a5a5;
+    border-color: #969696;
     border-style: solid;
-    background-color: #dfd9f4;
+    background-color: #f5efef;
     color: black;
 
 }

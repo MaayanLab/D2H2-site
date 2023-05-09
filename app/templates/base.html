@@ -10,38 +10,24 @@
 
   <link rel="shortcut icon" href="{{ url_for('static', filename='img/d2h2logo.png') }}" type="image/x-icon" />
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-toc.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/deps/bootstrap.min.css') }}" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/deps/bootstrap-toc.min.css') }}" />
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/selectize.default.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/deps/selectize.default.min.css') }}">
 
-  <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.css') }}"> -->
 
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.12.1/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/datatables.min.css"/>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/deps/datatables.min.css') }}"/>
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-select.min.css') }}">
-
-  <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/deps/bootstrap-select.min.css') }}">
   
   <!-- ✅ Load CSS file for jQuery ui  -->
-  <link href="{{url_for('static', filename='css/jquery-ui.css')}}" rel="stylesheet" />
+  <link href="{{url_for('static', filename='css/deps/jquery-ui.css')}}" rel="stylesheet" />
 
-  <link href="{{url_for('static', filename='css/googlefonts.css')}}" rel="stylesheet">
+  <link href="{{url_for('static', filename='css/deps/googlefonts.css')}}" rel="stylesheet">
 
-  <script src="{{url_for('static', filename='js/plotly-latest.min.js')}}"></script>
+  <link href="{{url_for('static', filename='css/deps/google-fonts-OpenSans.min.css')}}" rel="stylesheet" type="text/css">
 
-  <script src="{{url_for('static', filename='js/googletag.js')}}"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { window.dataLayer.push(arguments); }
-    gtag('js', new Date());
-
-    gtag('config', 'G-CZ20EVL6L9');
-  </script>
-
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,300" rel="stylesheet" type="text/css">
-
-
+  <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
 
   {% block head %}{%endblock%}
 </head>
@@ -135,44 +121,41 @@
 
 
   <!-- load jQuery-->
-  <script src=" {{ url_for('static', filename='js/jquery-3.6.0.min.js') }}"></script>
+  <script src=" {{ url_for('static', filename='js/deps/jquery-3.6.0.min.js') }}"></script>
 
   <!-- load jQuery UI -->
   
-  <script src=" {{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
+  <script src=" {{ url_for('static', filename='js/deps/jquery-ui.min.js') }}"></script>
 
   <!-- load bootstrap, popper -->
 
-  <script src=" {{ url_for('static', filename='js/popper.min.js') }}"></script>
+  <script src=" {{ url_for('static', filename='js/deps/popper.min.js') }}"></script>
 
-  <script src=" {{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+  <script src=" {{ url_for('static', filename='js/deps/bootstrap.min.js') }}"></script>
 
-  <script src=" {{ url_for('static', filename='js/bootstrap-toc.min.js') }}"></script>
+  <script src=" {{ url_for('static', filename='js/deps/bootstrap-toc.min.js') }}"></script>
 
-  <script src=" {{ url_for('static', filename='js/autoComplete.min.js') }}"></script>
+  <script src=" {{ url_for('static', filename='js/deps/autoComplete.min.js') }}"></script>
 
-  <script src=" {{ url_for('static', filename='js/papaparse.min.js') }}"></script>
-
-  <!-- <script type="text/javascript" charset="utf8"
-    src=" {{ url_for('static', filename='js/jquery.dataTables.js') }}"></script> -->
-  
-  
+  <script src=" {{ url_for('static', filename='js/deps/papaparse.min.js') }}"></script>
  
-  <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.12.1/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/datatables.min.js"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='js/deps/datatables.min.js')}}"></script>
   
 
-  <script src="https://cdn.bokeh.org/bokeh/release/bokeh-2.4.0.min.js"
+  <script src="{{url_for('static', filename='js/deps/bokeh-2.4.0.min.js')}}"
         crossorigin="anonymous"></script>
-  <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.4.0.min.js"
+  <script src="{{url_for('static', filename='js/deps/bokeh-widgets-2.4.0.min.js')}}"
           crossorigin="anonymous"></script>
-  <script src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-2.4.0.min.js"
+  <script src="{{url_for('static', filename='js/deps/bokeh-tables-2.4.0.min.js')}}"
           crossorigin="anonymous"></script>
-  <script src="https://cdn.bokeh.org/bokeh/release/bokeh-gl-2.4.0.min.js"
+  <script src="{{url_for('static', filename='js/deps/bokeh-gl-2.4.0.min.js')}}"
           crossorigin="anonymous"></script>
-  <script src="https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-2.4.0.min.js"
+  <script src="{{url_for('static', filename='js/deps/bokeh-mathjax-2.4.0.min.js')}}"
           crossorigin="anonymous"></script>
 
-  <script src=" {{ url_for('static', filename='js/selectize.min.js') }}"></script>
+  <script src="{{url_for('static', filename='js/deps/plotly-latest.min.js')}}"></script>
+
+  <script src=" {{ url_for('static', filename='js/deps/selectize.min.js') }}"></script>
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
@@ -193,7 +176,7 @@
         <div class="col justify-content-center mt-4">
           <a href="https://labs.icahn.mssm.edu/maayanlab/" target="_blank" rel="noreferrer">
             <img class="rounded ml-5" src="{{ url_for('static', filename='img/maayanlab_logo.png') }}"
-              style="height: 5rem" alt="Ma'ayan lab logo" />
+              style="height: 6.5rem" alt="Ma'ayan lab logo" />
           </a>
         </div>
         <div class="col mt-5 justify-content-center mb-4">
@@ -205,19 +188,19 @@
 
         <div class="col d-flex align-items-center justify-content-center mb-2 mt-2">
           <div>
-            <a class="btn btn-primary btn-group-sm mx-auto mb-2 d-block" style="font-size: 15px; width: 180px"
+            <a class="btn btn-primary btn-group-sm mx-auto mb-1 d-block" style="font-size: 15px; width: 190px"
               href="https://github.com/MaayanLab/D2H2-site" target="_blank" rel="noopener noreferrer" role="button">
               <span class="badge badge-light mr-1">
-                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                <img src="{{ url_for('static', filename='img/GitHub-Mark.png')}}"
                   style="width: 1rem; border-radius: 2rem;">
               </span>
               View source code
             </a>
-            <a class="btn btn-primary btn-group-sm mx-auto" style="font-size: 15px; width: 170px"
+            <a class="btn btn-primary btn-group-sm mx-auto" style="font-size: 15px; width: 190px"
               href="https://github.com/MaayanLab/D2H2-site/issues/new" target="_blank" rel="noopener noreferrer"
               role="button">
               <span class="badge badge-light mr-1">
-                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                <img src="{{ url_for('static', filename='img/GitHub-Mark.png')}}"
                   style="width: 1rem; border-radius: 2rem;">
               </span>
               Submit an issue
