@@ -18,6 +18,8 @@
     </div>
 </div>
 
+<div id="endpoint" style="display: none;">{{endpoint}}</div>
+
 {% endblock %}
 
 
@@ -53,7 +55,7 @@ function createDownloadsTable() {
                 if (type === 'f') {
                     type = 'feather';
                 }
-                tabletext += "<a href='" + link + "'><img src='static/img/download.png' alt='' style='width: 12px;'>"+ "<img class='mr-2 ml-1' src='static/img/" + type + ".png' alt='' style='width: 15px;'></a>";
+                tabletext += "<a href='" + document.getElementById('endpoint').innerText + link + "'><img src='static/img/download.png' alt='' style='width: 12px;'>"+ "<img class='mr-2 ml-1' src='static/img/" + type + ".png' alt='' style='width: 15px;'></a>";
             });
             tabletext += "</td></tr>"
         }

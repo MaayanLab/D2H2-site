@@ -34,4 +34,4 @@ RUN Rscript setup.R
 
 EXPOSE 5000
 
-CMD ["python3", "app.py"]
+CMD gunicorn --bind 0.0.0.0:5000 app:app
