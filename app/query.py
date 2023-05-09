@@ -79,8 +79,8 @@ def select_option(response, options):
     response = tag_line['choices'][0]['message']['content']
     if '"' in response:
         response = response.split('"')[1]
-
-    print(response)
+    response = response.replace(".", "")
+    
     if response in options:
         return {'option': response}
     else:

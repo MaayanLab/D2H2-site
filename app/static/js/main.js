@@ -1,12 +1,12 @@
-function up_down_toggle() {
-    if (document.getElementById("enter-geneset").style.display == "flex") {
-        document.getElementById("enter-geneset").style.display = "none";
-        document.getElementById("enter-geneset-up-down").style.display = "flex";
-        document.getElementById("toggle").innerText = "Use Single Gene Set";
+function up_down_toggle(chatnum) {
+    if (document.getElementById(`enter-geneset${chatnum}`).style.display == "flex") {
+        document.getElementById(`enter-geneset${chatnum}`).style.display = "none";
+        document.getElementById(`enter-geneset-up-down${chatnum}`).style.display = "flex";
+        document.getElementById(`toggle${chatnum}`).innerText = "Use Single Gene Set";
     } else {
-        document.getElementById("enter-geneset-up-down").style.display = "none";
-        document.getElementById("enter-geneset").style.display = "flex";
-        document.getElementById("toggle").innerText = "Up & Down Gene Sets";
+        document.getElementById(`enter-geneset-up-down${chatnum}`).style.display = "none";
+        document.getElementById(`enter-geneset${chatnum}`).style.display = "flex";
+        document.getElementById(`toggle${chatnum}`).innerText = "Up & Down Gene Sets";
     }
 }
 
@@ -379,11 +379,10 @@ function fillSet(id, descid, count_id) {
         const genes = response['genes']
         
         document.getElementById(id).value = genes;
-        console.log(document.getElementById(id).value)
         if (descid != '') {
             document.getElementById(descid).value = desc;
         }
-        geneCount(genes, count_id)
+        setTimeout(() => {geneCount(genes, count_id)}, 500);
     });
 }
 
@@ -415,7 +414,7 @@ $(document).ready(function () {
 
     // SMALL NAV MENU
 
-    $("<select class='selectize-nav text-center justify-content-center hamburger'> <img href='static/img/hamburger.jpeg/> </select>").appendTo("#mainnav");
+    $("<select class='selectize-nav text-center justify-content-center' id='hamburger'> <img href='static/img/hamburger.jpeg/> </select>").appendTo("#mainnav");
 
     // Create default option "Go to..."
     $("<option />", {

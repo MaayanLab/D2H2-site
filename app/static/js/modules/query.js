@@ -22,9 +22,7 @@ export async function parse_gene(q) {
     var check_list_mouse = await mouse_list
     q.split(' ').forEach((w) => {
         var w_clean = w.replace("?", '').replace('.', '')
-        console.log(w_clean)
         if (check_list.includes(w_clean)) {
-            console.log('here')
             gene = w_clean;
             species = 'Human';
         }
@@ -63,34 +61,36 @@ export async function runFindQuery(q) {
 }
 
 
-export async function run_process_gene(process_info, chat_num) {
+export async function run_process_gene(process_info_copy, chat_num) {
+    var chat_num = chat_num;
     var process_eval = await processes;
-    var process = process_eval[process_info.input][process_info.output];
-    var args = process.args;
+    var process = process_eval[process_info_copy.input][process_info_copy.output];
+    var args = process.args.map((x) => x);
     if (process.questions.length > 0) {
 
     }
     document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', process.description))
-    $(`#chat-${chat_num}`).fadeIn(2000)
-    chat_num++;
-
-    document.getElementById("chat-section").appendChild(chatNresult('start', chat_num, '#d3d3d3', "result" + chat_num))
-    document.getElementById("chat-section").innerHTML += `<div id='loading${chat_num}'>${loading}</div>`
-
-    process_info['result'] = "result" + chat_num
-    for (let j = 0; j < args.length; j ++) {
-        args[j] = process_info[args[j]];
-    }
-    var args_string = "";
-    for (let i = 0; i < args.length; i++) {
-        if (i == 0) args_string += `'${args[i]}'`;
-        else args_string += `,'${args[i]}'`;
-    }
-    var process_eval = `${process.process}(${args_string})`;
-    console.log(process_eval)
-    await eval(process_eval);
-    document.getElementById('loading' + chat_num).style.display = 'none';
-    $(`#chat-${chat_num}`).fadeIn(2000)
+    $(`#chat-${chat_num}`).fadeIn(2000, async () => {
+        chat_num++;
+        document.getElementById("chat-section").innerHTML += `<div id='loading${chat_num}'>${loading}</div>`
+        document.getElementById("chat-section").appendChild(chatNresult('start', chat_num, '#d3d3d3', "result" + chat_num))
+        
+        process_info_copy['result'] = "result" + chat_num
+        for (let j = 0; j < args.length; j ++) {
+            args[j] = process_info_copy[args[j]];
+        }
+        var args_string = "";
+        for (let i = 0; i < args.length; i++) {
+            if (i == 0) args_string += `'${args[i]}'`;
+            else args_string += `,'${args[i]}'`;
+        }
+        var process_eval = `${process.process}(${args_string})`;
+        console.log(process_eval)
+        await eval(process_eval);
+        document.getElementById('loading' + chat_num).style.display = 'none';
+        await $(`#chat-${chat_num}`).fadeIn(2000);
     
-    return;
+        return;
+    })
+    
 }

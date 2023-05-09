@@ -130,7 +130,6 @@
 
     async function reset_process() {
         new_process = true;
-        chat_num = 0;
         process_info = {};
         curr_arg = '';
         options = [];
@@ -141,10 +140,10 @@
     var geneset_up = '';
     var geneset_down = '';
 
-    if (document.getElementById("enter-geneset").style.display == "flex") {
-        var inputvalue = document.getElementById("text-area").value;
-        var file = document.getElementById("gene-file").value;
-        var section = "gene-file";
+    if (document.getElementById(`enter-geneset${chat_num}`).style.display == "flex") {
+        var inputvalue = document.getElementById(`text-area${chat_num}`).value;
+        var file = document.getElementById(`gene-file${chat_num}`).value;
+        var section = `gene-file${chat_num}`;
         geneset;
 
         if (inputvalue) {
@@ -155,12 +154,12 @@
             geneset = await loadFileAsText(section, ",");
         }
     } else {
-        var inputvalue_up = document.getElementById("text-area-up").value;
-        var inputvalue_down = document.getElementById("text-area-down").value;
-        var file_up = document.getElementById("gene-file-up").value;
-        var file_down = document.getElementById("gene-file-down").value;
-        var section_up = "gene-file-up";
-        var section_down = "gene-file-down";
+        var inputvalue_up = document.getElementById(`text-area-up${chat_num}`).value;
+        var inputvalue_down = document.getElementById(`text-area-down${chat_num}`).value;
+        var file_up = document.getElementById(`gene-file-up${chat_num}`).value;
+        var file_down = document.getElementById(`gene-file-down${chat_num}`).value;
+        var section_up = `gene-file-up${chat_num}`;
+        var section_down = `gene-file-down${chat_num}`;
 
         if (inputvalue_up) {
             geneset_up = inputvalue_up.split("\n").join(',')
@@ -177,98 +176,103 @@
             geneset_down = await loadFileAsText(section_down, ",");
         }
     }
+    console.log(geneset_up, geneset_down)
     process_info['geneset'] = geneset;
-    process_info['geneset_up'] = geneset_up;
-    process_info['geneset_down'] = geneset_down;
-    run_process_gene(process_info);
-    reset_process();
+    process_info['up'] = geneset_up;
+    process_info['down'] = geneset_down;
+    run_process_gene(process_info, chat_num);
+    chat_num++;
+    chat_num++;
+    await reset_process();
 }
 
     async function ask_questions() {
-        console.log('here')
         var response = document.getElementById('gpt-query').value.trim();
-        console.log(response)
         if (response != '') {
-                document.getElementById("chat-section").appendChild(chatN('end', chat_num, '#d3d3d3', response))
-                $(`#chat-${chat_num}`).fadeIn(2000)
+                document.getElementById("chat-section").appendChild(chatN('end', chat_num, '#d3d3d3', response));
+                await $(`#chat-${chat_num}`).fadeIn(1000);
                 chat_num++;   
         }
         if (process_info['geneSymbol'] == '') { 
-            const [gene, species] = parse_gene(response);
-            console.log(gene, species)
-            process_info['geneSymbol'] = gene;
-            process_info['species'] = species;
-        } else if (process_info['type'] == '') { 
-            const res = select_option(response, ['file', 'textbox', 'enrichr']);
-            console.log(res)
-            process_info['type'] = res;
-            insert_geneset_entry(res, chat_num)
-            return;
+            const [gene, species] = await parse_gene(response);
+            if (gene == '') {
+                document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I did not recognize that gene symbol, please try again."));
+                await $(`#chat-${chat_num}`).fadeIn(2000);
+                chat_num++;  
+                return;
+            } else {
+                process_info['geneSymbol'] = gene;
+                process_info['species'] = species;
+            }
         }
         const qs = process_dict[process_info.input][process_info.output].questions
         if (curr_arg != '') {
             const res = await select_option(response, options);
             process_info[curr_arg] = res;
         }
-        console.log(process_info)
         for (let i = 0; i< qs.length; i++) {
             if (!(qs[i].arg in process_info)) {
-                document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', qs[i].q + ' The options include: ' + qs[i].options.join(', ')))
-                $(`#chat-${chat_num}`).fadeIn(2000)
+                document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', qs[i].q + ' The options include: ' + qs[i].options.join(', ')));
+                await $(`#chat-${chat_num}`).fadeIn(2000);
                 chat_num++;
                 curr_arg = qs[i].arg;
                 options = qs[i].options;
-                console.log(curr_arg, options)
                 return;
             }
         }
-        run_process_gene(process_info, chat_num);
-        chat_num += 2;
+        let process_info_copy = {...process_info};
+        let chat_num_copy = chat_num.valueOf()
+        await run_process_gene(process_info_copy, chat_num);
+        chat_num++;
+        chat_num++;
         await reset_process();
-        console.log(process_info)
     }
 
 
     async function run_chat() {
+        console.log(chat_num)
         var q = document.getElementById('gpt-query').value.trim();
         if (q != '') {
             document.getElementById("chat-section").appendChild(chatN('end', chat_num, '#d3d3d3', q))
             $(`#chat-${chat_num}`).fadeIn(2000)
-            chat_num++;
-            var response = await runFindQuery(q);
-            console.log(response)
-            if (response['response'] == 1) {
-                document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I'm sorry, I don't understand the your question. Please try again."))
-                $(`#chat-${chat_num}`).fadeIn(2000)
+            
+            setTimeout(async () => {
                 chat_num++;
-                return;
-            }
-            new_process = false;
-            process_info = response;
-            if (response['input'] == '[Gene]') {
-                if (response['geneSymbol'] == '') {
-                    document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', 'Please provide a gene symbol'))
-                    $(`#chat-${chat_num}`).fadeIn(2000)
+                var response = await runFindQuery(q);
+                if (response['response'] == 1) {
+                    document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I'm sorry, I don't understand the your question. Please try again."));
+                    await $(`#chat-${chat_num}`).fadeIn(2000);
                     chat_num++;
-                } else {
-                    document.getElementById('gpt-query').value = '';
-                    ask_questions();
+                    return;
                 }
-            } else if (response['input'] == '[GeneSet]') {
-                if (process_dict[response.input][response.output].args.includes('up')) {
-                    document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries + geneset_buttons_up_down))
-                } else document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries + geneset_buttons))
-                document.getElementById("submit_gene_set").addEventListener("click",  function() {
-                    submit_gene_set(process_info);
-                });
-                document.getElementById("fill-text-area").addEventListener("click",  function() {
-                    fillSet('text-area', 'desc', ''); 
-                    setTimeout(() => geneCount($('#text-area').val(), 0), 50);
-                });
-                $(`#chat-${chat_num}`).fadeIn(2000)
-                chat_num++;
-            }
+                new_process = false;
+                process_info = response;
+                if (response['input'] == '[Gene]') {
+                    if (response['geneSymbol'] == '') {
+                        document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', 'Please provide a gene symbol'))
+                        await $(`#chat-${chat_num}`).fadeIn(2000);
+                        chat_num++;
+                    } else {
+                        document.getElementById('gpt-query').value = '';
+                        ask_questions();
+                    }
+                } else if (response['input'] == '[GeneSet]') {
+                    document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3',"Please enter your geneset:"))
+                    await $(`#chat-${chat_num}`).fadeIn(2000)
+                    chat_num++;
+                    if (process_dict[response.input][response.output].args.includes('up')) {
+                        document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries(chat_num + 1) + geneset_buttons_up_down(chat_num + 1)))
+                    } else document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries(chat_num + 1) + geneset_buttons(chat_num + 1)))
+                    document.getElementById(`submit_gene_set${chat_num + 1}`).addEventListener("click",  function() {
+                        submit_gene_set(process_info);
+                    });
+                    await $(`#chat-${chat_num}`).fadeIn(2000);
+                    chat_num++;
+                }
+            },
+        2001);
         }
+       
     }
 
     function run() {
@@ -290,24 +294,11 @@
         run_chat()
     })
 
-    $("#submit_single_gene").on('click', function (e) {
-        var q = document.getElementById('gpt-query').value.trim();
-        if (q != '') {
-            submit_single_gene(q)
-        }
-    })
-
-    $("#submit_gene_set").on('click', function (e) {
-        var q = document.getElementById('gpt-query').value.trim();
-        if (q != '') {
-            submit_gene_set(q)
-        }
-    })
 
     document.getElementById("gpt-query").onfocus = function() {fadeChatIn()};
 
-    function fadeChatIn() {
-        $("#chat-section").fadeIn(1000)
+    async function fadeChatIn() {
+        await $("#chat-section").fadeIn(1000);
         setTimeout(() => $("#chat-intro").fadeIn(), 1500)
         $("#chat-intro").fadeIn(2000)
         $('html, body').animate({

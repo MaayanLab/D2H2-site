@@ -477,7 +477,7 @@
     document.getElementById('singlegenenav').className = document.getElementById('singlegenenav').className + ' active';
   })
 
-  import { initialize_search, gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from '../static/js/modules/single-gene-queries.js';
+  import { gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from '../static/js/modules/single-gene-queries.js';
   import { human_list, mouse_list, processes, loading } from '../static/js/modules/constants.js';
   $('#Signatures').click(async function () {
     var selectize = $(`#search0`)[0].selectize;

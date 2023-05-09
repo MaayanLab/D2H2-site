@@ -6,7 +6,7 @@ export const human_list = fetch(
 
 export function gen_table(link, data, table_id, title, gene) {
     var titletext = `<div class ="row text-center mt-3"> <h4>${title}</h4></div>`;
-    var tabletext = `<table id='${table_id}' class='styled-table' style='width: 80%;'><thead><tr>`
+    var tabletext = `<table id='${table_id}' class='styled-table' style='width: 100%;'><thead><tr>`
     tabletext += "<th>Signature</th><th>GEO Entry</th><th>P-value</th><th>Log2 Fold Change</th><th>Gene Rank in Signature</th><th>Boxplot Viewer</th></tr><tbody>"
     data.forEach(function (row) {
         var gse = row[row.length - 1].split("=")[1]
@@ -32,34 +32,15 @@ export function gen_table(link, data, table_id, title, gene) {
 // SINGLE GENE DIABETES SIGNATURES:
 // [Gene]->[Signatures]
 export async function gene_signatures(gene, species, resultid) {
-    if (species == 'Human') {
-        var arg = 'human_gene';
-    } else {
-        var arg = 'mouse_gene';
-    }
-
-    const formData = new FormData()
-    formData.append('species_input', species)
-    formData.append(arg, gene)
-
-    var res = await fetch("https://appyters.maayanlab.cloud/Gene_Expression_T2D_Signatures/", {
-        method: "POST",
-        headers: {
-            'Accept': 'application/json',
-        },
-        body: formData,
-    })
-
-    const id = await res.json()
-
-
-    const clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-4 mb-1' onclick='clear_home();'> Clear Results </button> </a>"
+    var clear_button;
+    if (resultid.includes('[')) clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-4 mb-1' onclick='clear_home();'> Clear Results </button> </a>";
+    else clear_button = "";
 
     var jsonData = {};
     species = species.toLowerCase();
     jsonData["gene"] = gene;
     jsonData["species"] = species;
-    document.getElementById(resultid).innerHTML = "<div class='container justify-content-center'><div id='volcano-plot' class='justify-content-center centered'></div><div id='buttons'></div><div id='t2d-tables'></div></div>"
+    document.getElementById(resultid).innerHTML = `<div class='container justify-content-center'><div id='volcano-plot-${resultid}' class='justify-content-center centered'></div><div id='buttons'></div><div id='t2d-tables'></div></div>`
     await $.ajax({
         url: "api/volcano",
         type: "POST",
@@ -70,8 +51,10 @@ export async function gene_signatures(gene, species, resultid) {
             var tables = jdata['tables']
             var table_values = jdata['table_values']
             var micro = jdata['micro']
+            plot.target_id = `volcano-plot-${resultid}`;
+            console.log(plot)
             if (document.getElementById("buttons")) {
-            document.getElementById("buttons").innerHTML += `<div class='row text-center justify-content-center'>${clear_button}</div>`
+                document.getElementById("buttons").innerHTML += `<div class='row text-center justify-content-center'>${clear_button}</div>`
             }
             window.Bokeh.embed.embed_item(plot)
             var dir = "up";
@@ -93,7 +76,7 @@ export async function gene_signatures(gene, species, resultid) {
 // SINGLE GENE EXPRESSION:
 // [Gene]->[Expression]
 export async function generanger_plot(gene, library, resultid) {
-    document.getElementById(resultid).innerHTML = "<div class='container justify-content-center mb-5 mx-auto text-center' style='overflow: scroll;'><div id='volcano-plot' class='justify-content-center centered'></div><div id='buttons' class='text-center'></div></div>"
+    document.getElementById(resultid).innerHTML = `<div class='container justify-content-center mb-5 mx-auto text-center' style='overflow: scroll;'><div id='volcano-plot-${resultid}' class='justify-content-center centered'></div><div id='buttons' class='text-center'></div></div>`
     var jsonData = {};
     jsonData["gene"] = gene;
     await $.ajax({
@@ -135,11 +118,11 @@ export async function generanger_plot(gene, library, resultid) {
                     range: [-0.5, plotLib['x'].length]
                 }
             };
-            Plotly.newPlot('volcano-plot', [plotLib], layout)
+            Plotly.newPlot(`volcano-plot-${resultid}`, [plotLib], layout)
 
             document.getElementById(resultid).innerHTML += `
             <div='row'>
-            <a id="gtex-url" target="_blank" rel="noopener noreferrer" href=https://generanger.maayanlab.cloud/gene/${gene}?database=ARCHS4>
+            <a id="gtex-url" target="_blank" rel="noopener noreferrer" href=https://generanger.maayanlab.cloud/gene/${gene}?database=${library}>
                 <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Open in
                 <img src="static/img/generangerlogo.png" class="img-fluid ml-1 mr-3" style="width: 30px" alt="GTEx">
                 </button>
@@ -166,21 +149,15 @@ export async function generanger_plot(gene, library, resultid) {
 
 // SINGLE GENE PERTURBATIONS:
 // [Gene]->[Perturbations]
-export async function geo_reverse(searchid) {
-    if ($(searchid).val()) {
-        var inputvalue = $(searchid).val();
-        var check_list = await human_list
-
-        if (check_list.includes(inputvalue)) {
-            var species = 'Human';
+export async function geo_reverse(gene, species) {
+        if (species == 'Human') {
             var arg = 'human_gene';
         } else {
-            var species = 'Mouse';
             var arg = 'mouse_gene';
         }
         const formData = new FormData()
         formData.append('species_input', species)
-        formData.append(arg, inputvalue)
+        formData.append(arg, gene)
         var res = await fetch("https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/", {
             method: "POST",
             headers: {
@@ -189,29 +166,20 @@ export async function geo_reverse(searchid) {
             body: formData,
         })
         const id = await res.json()
-        window.open("https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/" + id.session_id, target = '_blank')
-    } else {
-        window.open("https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/", target = '_blank');
-    }
+        window.open("https://appyters.maayanlab.cloud/Gene_Centric_GEO_Reverse_Search/" + id.session_id, '_blank')
 }
 
-export async function l1000_reverse(searchid) {
-    if ($(searchid).val()) {
-        var inputvalue = $(searchid).val();
-        var check_list = await human_list
-        if (!check_list.includes(inputvalue)) {
-            alert('This Appyter only accepts Human gene symbols.')
-            return;
-        }
-        window.open("https://appyters.maayanlab.cloud/L1000_RNAseq_Gene_Search/#/?args.gene=" + inputvalue + "&submit", target = '_blank');
-    } else {
-        window.open("https://appyters.maayanlab.cloud/L1000_RNAseq_Gene_Search/", target = '_blank');
+export async function l1000_reverse(gene) {
+    var check_list = await human_list
+    if (!check_list.includes(gene)) {
+        alert('This Appyter only accepts Human gene symbols.')
+        return;
     }
+    window.open("https://appyters.maayanlab.cloud/L1000_RNAseq_Gene_Search/#/?args.gene=" + gene + "&submit", '_blank');
 }
 
-export function single_gene_perturbations(gene) {
-    document.getElementById("selector").style.display = "flex";
-    document.getElementById('result').innerHTML = `
+export function single_gene_perturbations(gene, species, resultid) {
+    document.getElementById(resultid).innerHTML = `
               <div class="row" style="flex-wrap: wrap;">
                 <div class="col-md-6 col-lg-6 col-sm-12">
                   <div class="row text-center">
@@ -222,7 +190,7 @@ export function single_gene_perturbations(gene) {
                     <img src="static/img/genecentric-thumbnail.png" alt="" class="img-fluid img-thumbnail">
                   </div>
                   <div class="justify-content-center row text-center mb-3">
-                    <a onclick="geo_reverse('#search')" target="_blank" rel="noopener noreferrer"><button type="button"
+                    <a id="geo_reverse" target="_blank" rel="noopener noreferrer"><button type="button"
                         class="btn btn-primary btn-group-sm mt-3 mb-3">
                         <span id="appyter-action" class="ml-3">Start a new appyter in</span>
                         <img src="static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px"
@@ -240,7 +208,7 @@ export function single_gene_perturbations(gene) {
                     <img src="static/img/L1000-thumbnail.png" alt="" class="img-fluid img-thumbnail">
                   </div>
                   <div class="justify-content-center row text-center mb-3">
-                    <a onclick="l1000_reverse('#search')" target="_blank" rel="noopener noreferrer"><button type="button"
+                    <a id="l1000_reverse" target="_blank" rel="noopener noreferrer"><button type="button"
                         class="btn btn-primary btn-group-sm mt-3 mb-3">
                         <span id="appyter-action" class="ml-3">Start a new appyter in</span>
                         <img src="static/img/appyters_logo.svg" class="img-fluid mr-3" style="width: 120px"
@@ -250,7 +218,12 @@ export function single_gene_perturbations(gene) {
                   </div>
                 </div>
               </div>`
-    initialize_search(gene);
+    document.getElementById("l1000_reverse").addEventListener("click",  function() {
+        l1000_reverse(gene);
+    });
+    document.getElementById("geo_reverse").addEventListener("click",  function() {
+        geo_reverse(gene, species);
+    });
 }
 
 // SINGLE GENE TRAITS:
@@ -264,10 +237,16 @@ export async function query_gwas(gene, id) {
     }).done(function (response) {
         const data = response['GWAS_Catalog'];
         if (data.length === 0) {
-            $("#result").html("<p class='text-center'> No data found </p>");
+            $(`#${id}`).html("<p class='text-center'> No data found </p>");
             return;
         }
-        const clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_home();'> Clear Results </button> </a>"
+        var clear_button;
+        if (id.includes('[')) {
+            clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_home();'> Clear Results </button> </a>";
+        } else {
+            clear_button = "";
+        }
+        
         var tabletext = "<table id='table-gwas' class='styled-table'><thead><tr><th></th><th>Gene</th><th>Trait</th><th>Count</th></tr><tbody>";
         for (var k = 0; k < data.length; k++) {
             tabletext += "<tr><td>" + (k + 1) + "</td><td><a href='https://www.ebi.ac.uk/gwas/genes/" + data[k]['gene'] + "' target='_blank'>" + data[k]['gene'] + "</a></td><td><a href='" + data[k]['mapped_trait_link'] + "' target='_blank'>" + data[k]['trait'] + "</a></td><td>" + data[k]['count'] + "</td></tr>";
@@ -299,7 +278,11 @@ export async function query_enrichr_tfs(gene, id) {
         data: { gene: inputvalue }
     }).done(function (response) {
         const data = response['data'];
-        const clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_home();'> Clear Results </button> </a>"
+        var clear_button;
+        if (id.includes('[')) {
+            clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_home();'> Clear Results </button> </a>";
+        } else clear_button = "";
+        
         if (data.length === 0) {
             document.getElementById(id).innerHTML = "<p class='text-center'> No data found </p>";
             return;
@@ -361,7 +344,11 @@ export async function loadCorrelation(gene, id) {
                 $(`#${id}`).html("<p class='text-center'> No data found </p>");
                 return;
             }
-            const clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_home();'> Clear Results </button> </a>"
+            var clear_button;
+            if (id.includes('[')) {
+                clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_home();'> Clear Results </button> </a>";
+            } else clear_button = "";
+
             //3) separate them back out:
             var genes = "";
             var tabletext = "<table id='tablecor' class='styled-table'><thead><tr><th>Rank</th><th>Gene Symbol</th><th>Pearson Correlation</th></tr><tbody>";
@@ -402,8 +389,11 @@ export async function query_komp(gene, id) {
             $(`#${id}`).html("<p class='text-center'> No data found </p>");
             return;
         }
-        //const toggle = "<a id='toggle-vis' data-column='3'> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='hideEvidence();'> Toggle Evidence Column </button> </a>"
-        const clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_home();'> Clear Results </button> </a>"
+        
+        var clear_button;
+        if (id.includes('[')) {
+            clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_home();'> Clear Results </button> </a>";
+        } else clear_button = '';
         var tabletext = "<table id='table-pheno' class='styled-table'><thead><tr><th>Gene</th><th>Phenotype</th><th>PM ID</th><th>Comments</th></tr><tbody>";
         for (var k = 0; k < data.length; k++) {
             tabletext += "<tr><td><a href='http://www.informatics.jax.org/marker/" + data[k]['OntologyAnnotation.subject.primaryIdentifier'] + "' target='_blank'>" + data[k]['OntologyAnnotation.subject.symbol'] + "</a></td>"

@@ -166,6 +166,23 @@ def getdiabetesenrich():
 	data = query_enricher_diabetes(genes, description)
 
 	return {'data': data}
+
+@app.route(f'{ROOT_PATH}/enrichrURL',  methods=['GET','POST'])
+def enrichrURL():
+	ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/addList'
+
+	genes_str = request.form['genelist']
+	description = ''
+	payload = {
+		'list': (None, genes_str),
+		'description': (None, description)
+	}
+	response = requests.post(ENRICHR_URL, files=payload)
+	if not response.ok:
+		raise Exception('Error analyzing gene list')
+
+	data = json.loads(response.text)
+	return {"url": f"https://maayanlab.cloud/Enrichr/enrich?dataset={data['shortId']}"}
 	
 ###########################
 
@@ -852,5 +869,5 @@ def query_options():
 #######################################################
 #######################################################
 if __name__ == "__main__":
-	app.run(debug=True, host="0.0.0.0")
+	app.run(debug=DEBUG, host="0.0.0.0", port=5000)
 
