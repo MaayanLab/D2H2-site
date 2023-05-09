@@ -166,20 +166,24 @@ body {
 
 .btn-primary:hover {
     background-color: #71477a;
+    border-color: white;
+    color: white;
 }
 .btn-primary {
-
-    background-color: #9a8fc1;
+    border-color: #a5a5a5;
+    border-style: solid;
+    background-color: #dfd9f4;
+    color: black;
 
 }
 
 .btn-custom {
     border: rgb(185, 185, 185);
     border-style: solid;
-    width: 140px;
+    width: 150px;
     border-radius: 2rem;
     text-align: center;
-    padding: auto;
+    padding: .4rem;
 }
 
 .vertical-center {

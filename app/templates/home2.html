@@ -212,7 +212,10 @@
         }
         for (let i = 0; i< qs.length; i++) {
             if (!(qs[i].arg in process_info)) {
-                document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', qs[i].q + ' The options include: ' + qs[i].options.join(', ')));
+                var readable_options = qs[i].options.map(x => (x.replace('_', " ")));
+                readable_options[readable_options.length - 1] = "and " + readable_options[readable_options.length - 1] + ".";
+                readable_options = readable_options.join(", ");
+                document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', qs[i].q + ' The options include: ' + readable_options));
                 await $(`#chat-${chat_num}`).fadeIn(2000);
                 chat_num++;
                 curr_arg = qs[i].arg;
