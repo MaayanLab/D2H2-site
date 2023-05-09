@@ -100,9 +100,6 @@ label {
     border-style: solid;
 }
 
-.ml-3 {
-    color: white;
-}
   
 .link {
     list-style: square;
@@ -174,6 +171,14 @@ body {
     border-style: solid;
     background-color: #f5efef;
     color: black;
+
+}
+
+.btn-primary .span {
+  border-color: #969696;
+  border-style: solid;
+  background-color: #f5efef;
+  color: black;
 
 }
 
