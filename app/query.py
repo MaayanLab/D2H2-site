@@ -21,7 +21,7 @@ def find_process(query):
     Pick an input type from the list: [[Gene], [GeneSet]]
 
     Then, pick a process to be exceuted from below based on the query and the chosen input type:
-    [Gene]->[Signatures] - In what diabetes related signatures is my gene enriched?
+    [Gene]->[Signatures] - In what diabetes related GEO signatures up or down regulate the expression of my gene?
     [Gene]->[Expression] - In what cells and tissues is my gene expressed?
     [Gene]->[Perturbations] - Under what conditions or perturbations is my gene regulated?
     [Gene]->[TFs] - What are the transcription factors that regulate my gene?

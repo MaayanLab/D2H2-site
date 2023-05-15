@@ -12,7 +12,7 @@ export function gen_table(link, data, table_id, title, gene) {
         var gse = row[row.length - 1].split("=")[1]
         var curr = window.location.href
         var studyviewer = curr + gse
-        tabletext += "<tr><td>" + row[0] + "</td><td><a href='" + row[row.length - 1] + "' target='_blank'>" + gse + "</a></td><td>" + row[1] + "</td><td>" + row[2] + "</td><td>" + row[row.length - 2] + "</td><td><a href='" + studyviewer + `' target='_blank'><button class='btn btn-primary btn-group-sm' onclick="setGene('${gene}')">` + gse + " Gene Viewer</button></a></td></tr>"
+        tabletext += "<tr><td>" + row[0].split(/[-_]+/).join(" ") + "</td><td><a href='" + row[row.length - 1] + "' target='_blank'>" + gse + "</a></td><td>" + row[1] + "</td><td>" + row[2] + "</td><td>" + row[row.length - 2] + "</td><td><a href='" + studyviewer + `' target='_blank'><button class='btn btn-primary btn-group-sm' onclick="setGene('${gene}')">` + gse + " Gene Viewer</button></a></td></tr>"
     });
     tabletext += "</tbody></table>";
     var filename = link.split("/")[link.split("/").length - 1]
