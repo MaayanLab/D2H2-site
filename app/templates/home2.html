@@ -2,7 +2,7 @@
 
 {% block body %}
 <div class="justify-content-center container-fluid p-0 m-0">
-    <div class="col-7 justify-content-center mx-auto p-0 m-0">
+    <div class="col-xlg-8 col-lg-8 col-md-10 col-sm-10 justify-content-center mx-auto p-0 m-0">
 
         <div class="justify-content-center p-0 m-0" style="flex-wrap: wrap;">
 
@@ -46,30 +46,46 @@
         <div id="query-section" class="col m-2 mx-right mb-5">
             <div class="vertical">
                 <div class="input-wrapper row mt-3" style="flex-wrap: nowrap;">
-                    <input id="gpt-query" style="right: 0rem; width: 60rem;" type="text"
+                    <input id="gpt-query" style="right: 0rem; width: 100rem;" type="text"
                         placeholder="Enter a gene related query..." name="text" class="input pr-0 mr-0">
                     <button id="gpt-query-button" class="pl-0 ml-0 query-submit"
                         style="width: 40px; min-width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
                         <img src="static/img/doublearrow.png" style="width: 60%" alt="Query">
                     </button>
                 </div>
-                <p class="m-0 p-0 pt-2" style="font-size: smaller; max-width: 88%;">Try an example:
-                    <a class="q-example" id="q-example1" style="color: rgb(10, 13, 149); font-size: small;">
+                <h5 class="pt-2 text-center" style="font-size: 18px;">Example Queries</h5>
+                <div class="m-0 p-0 cards" style="font-size: smaller; max-width: 96%;">
+                    <div class="card">
+                        <div class="q-example" id="q-example1">
                         In what tissues is STAT3 expressed?
-                    </a>,
-                    <a class="q-example" id="q-example2" style="color:rgb(10, 13, 149); font-size: small;">
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="q-example" id="q-example2">
                         Which transcription factors regulate my gene set?
-                    </a>,
-                    <a class="q-example" id="q-example3" style="color:rgb(10, 13, 149); font-size: small;">
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="q-example" id="q-example3">
                         Which diabetes-related GEO signatures up- or down-regulate the expression of AKT1?
-                    </a>,
-                    <a class="q-example" id="q-example4" style="color:rgb(10, 13, 149); font-size: small;">
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="q-example" id="q-example4">
                         Which LINCS L1000 small molecules may reverser or mimic my up and down gene sets?
-                    </a>,
-                    <a class="q-example" id="q-example5" style="color:rgb(10, 13, 149); font-size: small;">
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="q-example" id="q-example5">
                         Which diabetes related gene sets significantly overlap with my gene set?
-                    </a>
-
+                        </div>
+                    </div>
+                    <div class="q-example card" id="q-example6">
+                        <div class="q-example" id="q-example6">
+                        Which diabetes related gene sets significantly overlap with my gene set?
+                        </div>
+                    </div>
+                </div>
                 </p>
             </div>
         </div>
@@ -77,7 +93,7 @@
 
             <div class="row justify-content-center text-center">
 
-                <div class="p-2 pt-0 mt-0 text-center col-lg-4 col-sm-6">
+                <div class="m-2 pt-0 mt-0 text-center col-lg-4 col-sm-6">
                     <p>
                         Curated transcriptomics datasets from various Type 2 Diabetes studies are made available for
                         download,
@@ -120,7 +136,7 @@
 
 {% block footer %}
 <script type="module">
-    import { human_list, mouse_list, processes, chatN, geneset_entries, geneset_buttons, geneset_buttons_up_down } from '../static/js/modules/constants.js';
+    import { human_list, mouse_list, processes, chatN, geneset_entries, geneset_buttons, geneset_buttons_up_down, geneset_up_down_entries } from '../static/js/modules/constants.js';
     import { gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from '../static/js/modules/single-gene-queries.js';
     import { geneset_signatures, geneset_enrichment, geneset_kea3, geneset_chea3, geneset_sigcomlincs } from '../static/js/modules/geneset-queries.js';
     import { parse_gene, select_option, runFindQuery, run_process_gene } from '../static/js/modules/query.js';
@@ -268,7 +284,7 @@
                     await $(`#chat-${chat_num}`).fadeIn(2000)
                     chat_num++;
                     if (process_dict[response.input][response.output].args.includes('up')) {
-                        document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries(chat_num + 1) + geneset_buttons_up_down(chat_num + 1)))
+                        document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_up_down_entries(chat_num + 1) + geneset_buttons_up_down(chat_num + 1)))
                     } else document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries(chat_num + 1) + geneset_buttons(chat_num + 1)))
                     document.getElementById(`submit_gene_set${chat_num + 1}`).addEventListener("click", function () {
                         submit_gene_set(process_info);
