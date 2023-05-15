@@ -25,6 +25,55 @@
                 </div>
             </div>
 
+            <div class="vertical mt-4" id="chat-section"
+            style="border-style: solid; border-radius: 2rem; border-color: rgb(184, 184, 184); width: 100%; overflow: auto;">
+            <div id="chat-bubbles-section" style="overflow: auto;">
+                <div class="chat chat-start mb-1" id="chat-intro" style="display: none;">
+                    <div class="chat-image avatar pl-2" style="width: 50px">
+                        <img src="static/img/d2h2_chat_bot.png" />
+                    </div>
+                    <div class="chat-header">
+                        D2H2
+                    </div>
+                    <div class="chat-bubble chat-bubble-info" style="background-color: #d3d3d3">I am an AI-powered chat
+                        interface designed to help answer gene and gene set related queries. Please start by entering a
+                        question.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="query-section" class="col m-2 mx-right mb-5">
+            <div class="vertical">
+                <div class="input-wrapper row mt-3" style="flex-wrap: nowrap;">
+                    <input id="gpt-query" style="right: 0rem; width: 60rem;" type="text"
+                        placeholder="Enter a gene related query..." name="text" class="input pr-0 mr-0">
+                    <button id="gpt-query-button" class="pl-0 ml-0 query-submit"
+                        style="width: 40px; min-width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
+                        <img src="static/img/doublearrow.png" style="width: 60%" alt="Query">
+                    </button>
+                </div>
+                <p class="m-0 p-0 pt-2" style="font-size: smaller; max-width: 88%;">Try an example:
+                    <a class="q-example" id="q-example1" style="color: rgb(10, 13, 149); font-size: small;">
+                        In what tissues is STAT3 expressed?
+                    </a>,
+                    <a class="q-example" id="q-example2" style="color:rgb(10, 13, 149); font-size: small;">
+                        What transcription factors regulate my gene set?
+                    </a>,
+                    <a class="q-example" id="q-example3" style="color:rgb(10, 13, 149); font-size: small;">
+                        What diabetes related signatures are related to AKT1?
+                    </a>,
+                    <a class="q-example" id="q-example4" style="color:rgb(10, 13, 149); font-size: small;">
+                        What small molecules might act as reversers for my up and down gene sets?
+                    </a>,
+                    <a class="q-example" id="q-example5" style="color:rgb(10, 13, 149); font-size: small;">
+                        In what diabetes related signatures is my gene set enriched?
+                    </a>
+
+                </p>
+            </div>
+        </div>
+
 
             <div class="row justify-content-center text-center">
 
@@ -61,52 +110,7 @@
                 </div>
             </div>
         </div>
-        <div class="vertical mt-4" id="chat-section" style="border-style: solid; border-radius: 2rem; border-color: rgb(184, 184, 184); width: 100%; overflow: auto;">
-            <div id="chat-bubbles-section" style="overflow: auto;">
-                <div class="chat chat-start mb-1" id="chat-intro" style="display: none;"> 
-                    <div class="chat-image avatar pl-2" style="width: 50px">
-                        <img src="static/img/d2h2_chat_bot.png"/>
-                    </div>
-                    <div class="chat-header">
-                        D2H2
-                    </div>
-                    <div class="chat-bubble chat-bubble-info" style="background-color: #d3d3d3">I am an AI-powered chat
-                        interface designed to help answer gene and gene set related queries. Please start by entering a question. 
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="query-section" class="col m-2 mx-right mb-5">
-            <div class="vertical">
-                <div class="input-wrapper row mt-3" style="flex-wrap: nowrap;">
-                    <input id="gpt-query" style="right: 0rem; width: 60rem;" type="text"
-                        placeholder="Enter a gene related query..." name="text" class="input pr-0 mr-0">
-                    <button id="gpt-query-button" class="pl-0 ml-0 query-submit"
-                        style="width: 40px; min-width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
-                        <img src="static/img/doublearrow.png" style="width: 60%" alt="Query">
-                    </button>
-                </div>
-                <p class="m-0 p-0 pt-2" style="font-size: smaller; max-width: 88%;">Try an example:
-                    <a class="q-example" id="q-example1" style="color: rgb(10, 13, 149); font-size: small;">
-                        In what tissues is STAT3 expressed?
-                    </a>,
-                    <a class="q-example" id="q-example2" style="color:rgb(10, 13, 149); font-size: small;">
-                        What transcription factors regulate my geneset?
-                    </a>,
-                    <a class="q-example" id="q-example3" style="color:rgb(10, 13, 149); font-size: small;">
-                        What diabetes related signatures are related to AKT1?
-                    </a>,
-                    <a class="q-example" id="q-example4" style="color:rgb(10, 13, 149); font-size: small;">
-                        What small molecules might act as reversers for my up and down genesets?
-                    </a>,
-                    <a class="q-example" id="q-example5" style="color:rgb(10, 13, 149); font-size: small;">
-                        In what diabetes related signatures is my geneset enriched?
-                    </a>
-
-                </p>
-            </div>
-        </div>
+        
 
 
     </div>
@@ -136,69 +140,69 @@
     }
 
     async function submit_gene_set() {
-    var geneset = '';
-    var geneset_up = '';
-    var geneset_down = '';
+        var geneset = '';
+        var geneset_up = '';
+        var geneset_down = '';
 
-    if (document.getElementById(`enter-geneset${chat_num}`).style.display == "flex") {
-        var inputvalue = document.getElementById(`text-area${chat_num}`).value;
-        var file = document.getElementById(`gene-file${chat_num}`).value;
-        var section = `gene-file${chat_num}`;
-        geneset;
+        if (document.getElementById(`enter-geneset${chat_num}`).style.display == "flex") {
+            var inputvalue = document.getElementById(`text-area${chat_num}`).value;
+            var file = document.getElementById(`gene-file${chat_num}`).value;
+            var section = `gene-file${chat_num}`;
+            geneset;
 
-        if (inputvalue) {
-            geneset = inputvalue.split("\n").join(',')
+            if (inputvalue) {
+                geneset = inputvalue.split("\n").join(',')
+            }
+
+            if (file) {
+                geneset = await loadFileAsText(section, ",");
+            }
+        } else {
+            var inputvalue_up = document.getElementById(`text-area-up${chat_num}`).value;
+            var inputvalue_down = document.getElementById(`text-area-down${chat_num}`).value;
+            var file_up = document.getElementById(`gene-file-up${chat_num}`).value;
+            var file_down = document.getElementById(`gene-file-down${chat_num}`).value;
+            var section_up = `gene-file-up${chat_num}`;
+            var section_down = `gene-file-down${chat_num}`;
+
+            if (inputvalue_up) {
+                geneset_up = inputvalue_up.split("\n").join(',')
+            }
+            if (file_up) {
+                geneset_up = await loadFileAsText(section_up, ",");
+            }
+
+            if (inputvalue_down) {
+                geneset_down = inputvalue_down.split("\n").join(',')
+            }
+
+            if (file_down) {
+                geneset_down = await loadFileAsText(section_down, ",");
+            }
         }
 
-        if (file) {
-            geneset = await loadFileAsText(section, ",");
-        }
-    } else {
-        var inputvalue_up = document.getElementById(`text-area-up${chat_num}`).value;
-        var inputvalue_down = document.getElementById(`text-area-down${chat_num}`).value;
-        var file_up = document.getElementById(`gene-file-up${chat_num}`).value;
-        var file_down = document.getElementById(`gene-file-down${chat_num}`).value;
-        var section_up = `gene-file-up${chat_num}`;
-        var section_down = `gene-file-down${chat_num}`;
-
-        if (inputvalue_up) {
-            geneset_up = inputvalue_up.split("\n").join(',')
-        }
-        if (file_up) {
-            geneset_up = await loadFileAsText(section_up, ",");
-        }
-
-        if (inputvalue_down) {
-            geneset_down = inputvalue_down.split("\n").join(',')
-        }
-
-        if (file_down) {
-            geneset_down = await loadFileAsText(section_down, ",");
-        }
+        process_info['geneset'] = geneset;
+        process_info['up'] = geneset_up;
+        process_info['down'] = geneset_down;
+        await run_process_gene(process_info, chat_num);
+        chat_num++;
+        chat_num++;
+        await reset_process();
     }
-
-    process_info['geneset'] = geneset;
-    process_info['up'] = geneset_up;
-    process_info['down'] = geneset_down;
-    await run_process_gene(process_info, chat_num);
-    chat_num++;
-    chat_num++;
-    await reset_process();
-}
 
     async function ask_questions() {
         var response = document.getElementById('gpt-query').value.trim();
         if (response != '') {
-                document.getElementById("chat-section").appendChild(chatN('end', chat_num, '#d3d3d3', response));
-                await $(`#chat-${chat_num}`).fadeIn(1000);
-                chat_num++;   
+            document.getElementById("chat-section").appendChild(chatN('end', chat_num, '#d3d3d3', response));
+            await $(`#chat-${chat_num}`).fadeIn(1000);
+            chat_num++;
         }
-        if (process_info['geneSymbol'] == '') { 
+        if (process_info['geneSymbol'] == '') {
             const [gene, species] = await parse_gene(response);
             if (gene == '') {
                 document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I did not recognize that gene symbol, please try again."));
                 await $(`#chat-${chat_num}`).fadeIn(2000);
-                chat_num++;  
+                chat_num++;
                 return;
             } else {
                 process_info['geneSymbol'] = gene;
@@ -210,7 +214,7 @@
             const res = await select_option(response, options);
             process_info[curr_arg] = res;
         }
-        for (let i = 0; i< qs.length; i++) {
+        for (let i = 0; i < qs.length; i++) {
             if (!(qs[i].arg in process_info)) {
                 var readable_options = qs[i].options.map(x => (x.replace('_', " ")));
                 readable_options[readable_options.length - 1] = "and " + readable_options[readable_options.length - 1] + ".";
@@ -223,7 +227,7 @@
                 return;
             }
         }
-        let process_info_copy = {...process_info};
+        let process_info_copy = { ...process_info };
         let chat_num_copy = chat_num.valueOf()
         await run_process_gene(process_info_copy, chat_num);
         chat_num++;
@@ -238,7 +242,7 @@
         if (q != '') {
             document.getElementById("chat-section").appendChild(chatN('end', chat_num, '#d3d3d3', q))
             $(`#chat-${chat_num}`).fadeIn(2000)
-            
+
             setTimeout(async () => {
                 chat_num++;
                 var response = await runFindQuery(q);
@@ -260,22 +264,22 @@
                         ask_questions();
                     }
                 } else if (response['input'] == '[GeneSet]') {
-                    document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3',"Please enter your geneset:"))
+                    document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', "Please enter your gene set:"))
                     await $(`#chat-${chat_num}`).fadeIn(2000)
                     chat_num++;
                     if (process_dict[response.input][response.output].args.includes('up')) {
                         document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries(chat_num + 1) + geneset_buttons_up_down(chat_num + 1)))
                     } else document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries(chat_num + 1) + geneset_buttons(chat_num + 1)))
-                    document.getElementById(`submit_gene_set${chat_num + 1}`).addEventListener("click",  function() {
+                    document.getElementById(`submit_gene_set${chat_num + 1}`).addEventListener("click", function () {
                         submit_gene_set(process_info);
                     });
                     await $(`#chat-${chat_num}`).fadeIn(2000);
                     chat_num++;
                 }
             },
-        1000);
+                1000);
         }
-       
+
     }
 
     function run() {
@@ -298,7 +302,7 @@
     })
 
 
-    document.getElementById("gpt-query").onfocus = function() {fadeChatIn()};
+    document.getElementById("gpt-query").onfocus = function () { fadeChatIn() };
 
     async function fadeChatIn() {
         await $("#chat-section").fadeIn(1000);
@@ -318,12 +322,12 @@
 
     const exampleArray = Array.from(document.querySelectorAll('.q-example'));
     exampleArray.forEach((elt) => {
-        document.getElementById(elt.id).addEventListener("click",  function() {
+        document.getElementById(elt.id).addEventListener("click", function () {
             fillQuery(elt.innerText);
         });
-        }
+    }
     );
-    
+
 
     const countupEls = document.querySelectorAll('.countup');
     countupEls.forEach(animateCountUp);

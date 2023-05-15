@@ -162,16 +162,16 @@ body {
 
 
 .btn-primary:hover {
-    background-color: #92629d;
-    border-color: white;
-    color: white;
+    background-color: #ecccf4;
+    border-color: #000000;
+    color: rgb(255, 254, 254);
 }
 .btn-primary {
-    border-color: #969696;
+    border-color: rgb(113, 112, 112);
+    border-width: 1px;
     border-style: solid;
-    background-color: #f5efef;
-    color: black;
-
+    background-color: #d292cf;
+    color: rgb(255, 255, 255);
 }
 
 .btn-primary .span {

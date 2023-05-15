@@ -588,7 +588,7 @@ $(document).ready(function () {
 
     // OPEN CUSTOMIZED WORKFLOW DEPENDING ON SELECTION IN SCG
 
-    $('#scg-link').click(function () {
+    $('#scg-link').on('click', function () {
 
         var workflow = document.getElementById("workflow").value;
 
@@ -602,7 +602,6 @@ $(document).ready(function () {
     });
 
     // OPEN TO DEG IN BULK RNA SEQ ANALYSIS
-
     $('#dgea-button').on('click', async function () {
         var control_condition = $('#condition-select-control').val();
         var perturb_condition = $('#condition-select-perturb').val();
@@ -623,7 +622,6 @@ $(document).ready(function () {
         var gse = document.getElementById("gse").innerText
 
         var gsedata = JSON.stringify({ 'gse': gse, 'control': control_condition, 'perturb': perturb_condition, 'species': species });
-
 
 
         $.ajax({
