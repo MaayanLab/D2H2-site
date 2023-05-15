@@ -162,7 +162,7 @@ body {
 
 
 .btn-primary:hover {
-    background-color: #ecccf4;
+    background-color: #2e3093;
     border-color: #000000;
     color: rgb(255, 254, 254);
 }
@@ -170,7 +170,7 @@ body {
     border-color: rgb(113, 112, 112);
     border-width: 1px;
     border-style: solid;
-    background-color: #d292cf;
+    background-color: #2e30938f;
     color: rgb(255, 255, 255);
 }
 
@@ -379,9 +379,6 @@ nav[data-toggle="toc"] {
     background-color: rgb(192, 186, 186);
 }
 
-.navbar .active {
-    color: white !important;
-}
 
   
 

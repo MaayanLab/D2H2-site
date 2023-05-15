@@ -2,7 +2,7 @@
 
 {% block body %}
 <div class="justify-content-center container-fluid p-0 m-0">
-    <div class="col-xlg-8 col-lg-8 col-md-10 col-sm-10 justify-content-center mx-auto p-0 m-0">
+    <div class="col-xl-8 col-lg-10 col-md-10 col-sm-10 justify-content-center mx-auto p-0 m-0">
 
         <div class="justify-content-center p-0 m-0" style="flex-wrap: wrap;">
 
@@ -80,7 +80,7 @@
                         Which diabetes related gene sets significantly overlap with my gene set?
                         </div>
                     </div>
-                    <div class="q-example card" id="q-example6">
+                    <div class="card">
                         <div class="q-example" id="q-example6">
                         Which diabetes related gene sets significantly overlap with my gene set?
                         </div>
@@ -235,7 +235,7 @@
                 var readable_options = qs[i].options.map(x => (x.replace('_', " ")));
                 readable_options[readable_options.length - 1] = "and " + readable_options[readable_options.length - 1] + ".";
                 readable_options = readable_options.join(", ");
-                document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', qs[i].q + ' The options include: ' + readable_options));
+                document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', qs[i].q + ' The options include ' + readable_options + " Please type in the option you would like to select."));
                 await $(`#chat-${chat_num}`).fadeIn(2000);
                 chat_num++;
                 curr_arg = qs[i].arg;
