@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request
-from waitress import serve
 import os
 import json
 import s3fs
@@ -25,25 +24,28 @@ endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
 base_url = os.environ.get('BASE_URL', 'd2h2/data')
 ROOT_PATH = os.environ.get('ROOT_PATH', '/')
 BASE_PATH = os.environ.get('BASE_PATH', 'maayanlab.cloud')
-DEBUG = os.environ.get('DEBUG', True)
+DEBUG = os.environ.get('DEBUG')
+print('Retriving data from: ', endpoint)
 
-print(endpoint)
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
 
 app = Flask(__name__, static_url_path=ROOT_PATH + 'static')
 
+
+#### PAGES ####
 month_dict = {"Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May": "05", "Jun": "06", "Jul": "07", "Aug": "08", "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"}
-
-
 @app.route(ROOT_PATH, methods=['GET', 'POST'])
 def home():
-	#update_tweets_table(datetime.datetime.date)
-	return render_template('home.html', base_path=BASE_PATH, gse_metadata=gse_metadata, numstudies=numstudies)
+	return render_template('home2.html', base_path=BASE_PATH, gse_metadata=gse_metadata, numstudies=numstudies)
 
 @app.route(f"{ROOT_PATH}/about", methods=['GET', 'POST'])
 def about():
     return render_template("about.html", base_path=BASE_PATH, numstudies=numstudies)
+
+@app.route(f"{ROOT_PATH}/mockup", methods=['GET', 'POST'])
+def mockup():
+    return render_template("mockup.html", base_path=BASE_PATH, numstudies=numstudies)
 
 @app.route(f"{ROOT_PATH}/help", methods=['GET', 'POST'])
 def help():
@@ -67,7 +69,20 @@ def resources():
 
 @app.route(f'{ROOT_PATH}/downloads', methods=['GET', 'POST'])
 def downloads():
-	return render_template('downloads.html', base_path=BASE_PATH, numstudies=numstudies)
+	return render_template('downloads.html', base_path=BASE_PATH, numstudies=numstudies, endpoint=endpoint)
+####################
+
+
+
+########## QUERY APIs ####################
+@app.route(f'{ROOT_PATH}/queryexpression', methods=['GET','POST'])
+def query_expression():
+
+    gene = request.form['gene']
+
+    result = query_generanger(gene)
+
+    return result
 
 @app.route(f'{ROOT_PATH}/getgwas', methods=['GET','POST'])
 def get_gwas():
@@ -83,17 +98,15 @@ def get_gwas():
 
 @app.route(f'{ROOT_PATH}/getkomp', methods=['GET','POST'])
 def get_mgi():
-
     gene = request.form['gene']
     result = query_mgi(gene)
-
     return result
 
 
 @app.route(f'{ROOT_PATH}/getsigcom',  methods=['GET','POST'])
 def get_sigcom():
-
 	gene_lists = request.get_json()["genes"]
+	print(gene_lists)
 	if len(gene_lists) == 2:
 		res= {'url': sigcom_up_down_genes(gene_lists[0], gene_lists[1])}
 	elif len(gene_lists) == 1:
@@ -103,6 +116,75 @@ def get_sigcom():
 	
 	return res
 
+@app.route(f'{ROOT_PATH}/getkea3',  methods=['GET','POST'])
+def getkea3():
+	geneset = request.form["geneset"]
+	geneset = geneset.split(',')
+	ADDLIST_URL = 'https://amp.pharm.mssm.edu/kea3/api/enrich/'
+	payload = {
+        'gene_set': geneset,
+        'query_name': ''
+    }
+	response = requests.post(ADDLIST_URL, data=json.dumps(payload))
+	if not response.ok:
+		raise Exception('Error analyzing gene list')
+	return json.loads(response.text)
+
+@app.route(f'{ROOT_PATH}/getchea3',  methods=['GET','POST'])
+def getchea3():
+	geneset = request.form["geneset"]
+	geneset = geneset.split(',')
+	ADDLIST_URL = 'https://maayanlab.cloud/chea3/api/enrich/'
+	payload = {
+        'gene_set': geneset,
+        'query_name': ''
+    }
+	response = requests.post(ADDLIST_URL, data=json.dumps(payload))
+	if not response.ok:
+		raise Exception('Error analyzing gene list')
+
+	return json.loads(response.text)
+
+@app.route(f'{ROOT_PATH}/gettfs',  methods=['GET','POST'])
+def gettfs():
+	gene = request.form['gene']
+
+	if gene.strip() == '':
+		return {'data': []}
+	result = query_enricher(gene)
+
+	return {'data': result}
+
+@app.route(f'{ROOT_PATH}/getdiabetesenrich',  methods=['GET','POST'])
+def getdiabetesenrich():
+
+	genes = request.form['genelist']
+	description = request.form['description']
+
+	data = query_enricher_diabetes(genes, description)
+
+	return {'data': data}
+
+@app.route(f'{ROOT_PATH}/enrichrURL',  methods=['GET','POST'])
+def enrichrURL():
+	ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/addList'
+
+	genes_str = request.form['genelist']
+	description = ''
+	payload = {
+		'list': (None, genes_str),
+		'description': (None, description)
+	}
+	response = requests.post(ENRICHR_URL, files=payload)
+	if not response.ok:
+		raise Exception('Error analyzing gene list')
+
+	data = json.loads(response.text)
+	return {"url": f"https://maayanlab.cloud/Enrichr/enrich?dataset={data['shortId']}"}
+	
+###########################
+
+##### FILL TABLES ######
 @app.route(f'{ROOT_PATH}/getresources',  methods=['GET','POST'])
 def resources_api():
 	table = get_resources()
@@ -126,16 +208,8 @@ def workflows_api():
 	table = get_workflows()
 
 	return {'workflows': table}
+###############################
 
-@app.route(f'{ROOT_PATH}/gettfs',  methods=['GET','POST'])
-def gettfs():
-	gene = request.form['gene']
-
-	if gene.strip() == '':
-		return {'data': []}
-	result = query_enricher(gene)
-
-	return {'data': result}
 
 @app.route(f'{ROOT_PATH}/getexample',  methods=['GET','POST'])
 def getexample():
@@ -143,7 +217,7 @@ def getexample():
 	with open('static/searchdata/example_list.txt') as f:
 		text = f.read()
 
-	return {'genes': text, 'description': "GSE136134 Ctrl-vs-Insulin 24hrs Human BulkRNAseq hiPSCs_down"}
+	return {'genes': text, 'description': "My gene set"}
 
 @app.route(f'{ROOT_PATH}/getexample2',  methods=['GET','POST'])
 def getexample2():
@@ -151,17 +225,8 @@ def getexample2():
 	with open('static/searchdata/example_list2.txt') as f:
 		text = f.read()
 
-	return {'genes': text, 'description': "GSE136134 Ctrl-vs-Insulin 24hrs Human BulkRNAseq hiPSCs_down"}
+	return {'genes': text, 'description': "My gene set"}
 
-@app.route(f'{ROOT_PATH}/getdiabetesenrich',  methods=['GET','POST'])
-def getdiabetesenrich():
-
-	genes = request.form['genelist']
-	description = request.form['description']
-
-	data = query_enricher_diabetes(genes, description)
-
-	return {'data': data}
 
 
 @app.route(f'{ROOT_PATH}/dgeapi',  methods=['GET','POST'])
@@ -593,7 +658,6 @@ def plot_api_single(geo_accession, condition):
 	return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
 @app.route(f'{ROOT_PATH}/api/plot/<geo_accession>', methods=['GET', 'POST'])
-
 def plot_api(geo_accession):
 	"""
 	Inputs:
@@ -684,7 +748,6 @@ def plot_volcano_api():
 ########## 3. Conditions ##########
 
 @app.route(f'{ROOT_PATH}/api/conditions/<geo_accession>')
-
 def conditions_api(geo_accession):
 	species = study_to_species[geo_accession]
 	species_folder = url_to_folder[species]
@@ -789,11 +852,13 @@ def query_gpt():
 
 	return res
 
-def run_app():
-	if DEBUG:
-		app.run(debug=True, host="0.0.0.0")
-	else:
-		serve(app, host="0.0.0.0", port=5000)
+@app.route(f'{ROOT_PATH}/api/query_options',  methods=['GET', 'POST'])
+def query_options():
+	response_json = request.get_json()
+	response = response_json['response']
+	options = response_json['options']
+	res = select_option(response, options)
+	return res
 
 
 #######################################################
@@ -802,5 +867,5 @@ def run_app():
 #######################################################
 #######################################################
 if __name__ == "__main__":
-	run_app()
+	app.run(debug=DEBUG, host="0.0.0.0", port=5000)
 

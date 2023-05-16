@@ -1,5 +1,5 @@
 ,Filename,Species,Description,Downloads
-0,all_human_pval,Homo sapiens,RNA-seq p-values,"https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/all_human_pval.f,https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/all_human_pval.csv"
-1,all_mouse_pval,Mus musculus,RNA-seq p-values,"https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/all_mouse_pval.f,https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/all_mouse_pval.csv"
-2,human_microarray_pv,Homo sapiens,Microarray p-values,"https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/human_microarray_pval.f,https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/human_microarray_pval.csv"
-3,mouse_microarray_pval,Mus musculus,Microarray p-values,"https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/mouse_microarray_pval.f,https://minio.dev.maayanlab.cloud/d2h2/t2d-datasets/mouse_microarray_pval.csv"
+0,all_human_pval,Homo sapiens,RNA-seq p-values,"d2h2/t2d-datasets/all_human_pval.f,d2h2/t2d-datasets/all_human_pval.csv"
+1,all_mouse_pval,Mus musculus,RNA-seq p-values,"d2h2/t2d-datasets/all_mouse_pval.f,d2h2/t2d-datasets/all_mouse_pval.csv"
+2,human_microarray_pv,Homo sapiens,Microarray p-values,"d2h2/t2d-datasets/human_microarray_pval.f,d2h2/t2d-datasets/human_microarray_pval.csv"
+3,mouse_microarray_pval,Mus musculus,Microarray p-values,"d2h2/t2d-datasets/mouse_microarray_pval.f,d2h2/t2d-datasets/mouse_microarray_pval.csv"

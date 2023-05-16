@@ -36,9 +36,27 @@ endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
 ########################## QUERY ENRICHER ###############################
+@lru_cache()
+def query_generanger(gene):
+    payload = {
+        "gene": gene,
+        "databases": [
+            "ARCHS4",
+            "GTEx_transcriptomics",
+            "Tabula_Sapiens",
+            "CCLE_transcriptomics",
+            "HPM",
+            "HPA",
+            "GTEx_proteomics",
+            "CCLE_proteomics"
+        ]
+    }
+    res = requests.post("https://generanger.maayanlab.cloud/api/data", json=payload)
+    stats = res.json()
+    return stats
 
 @lru_cache()
-def enrichr_id(genes, desc):
+def enrichr_id(genes, desc=''):
     ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/addList'
     genes_str = '\n'.join(genes)
     payload = {
@@ -364,7 +382,7 @@ blue_map = cm.get_cmap('Blues_r')
 blue_norm = colors.Normalize(vmin=-0.25, vmax=1)
 
 def load_files(species, gene):
-    root_path = 'static/searchdata/'
+    root_path = f'{endpoint}d2h2/t2d-datasets/'
     pval_rna_df = pd.read_feather(f'{root_path}all_{species}_pval.f', columns=['index', gene]).set_index('index')
     # RNA-seq fold change
     fc_rna_df = pd.read_feather(f'{root_path}all_{species}_fc.f', columns=['index', gene]).set_index('index')
@@ -503,9 +521,7 @@ def download_link(df, fname, isRNA=False):
     )
 
     df['Signature'] = df['Signature'].apply(lambda x: x.replace('* ', ''))
-    csv = df.to_csv(fname, sep='\t', index=False)
-    link = f'<div>Download full results: <a href="{fname}" target=_blank>{fname}</a></div>'
-    return fname
+    return fname, df.values.tolist()
 
 # get GEO links 
 @lru_cache()
@@ -524,7 +540,7 @@ def appyter_link(sig_name, inst=''):
 
 # create tables of significant results with links to GEO 
 def make_tables(comb_df, species, gene, is_upreg, isRNA=False):
-    root_path = 'static/searchdata/'
+    root_path = f'{endpoint}d2h2/t2d-datasets/'
     if isRNA:
         sigranks = pd.read_feather(f"{root_path}all_{species}_fc_sigrank.f", columns=['index', gene]).set_index('index')
     else:
@@ -554,19 +570,19 @@ def send_plot(species, gene):
     else:
         plot = make_plot(comb_df_input, species, gene)
     fname='static/searchdata/t2d-files/'
-    up_comb_df_input = download_link(make_tables(comb_df_input, species, gene, is_upreg=True, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-upreg.tsv', isRNA=True)
-    dn_comb_df_input = download_link(make_tables(comb_df_input, species, gene, is_upreg=False, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-dnreg.tsv', isRNA=True)
+    up_comb_df_input, up_comb_df_input_values = download_link(make_tables(comb_df_input, species, gene, is_upreg=True, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-upreg.tsv', isRNA=True)
+    dn_comb_df_input, dn_comb_df_input_values = download_link(make_tables(comb_df_input, species, gene, is_upreg=False, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-dnreg.tsv', isRNA=True)
     if micro_exists and not(micro_df_input.empty):
         micro_df_input.dropna(inplace=True)
         up_micro_df = make_tables(micro_df_input, species, gene, is_upreg=True)
-        up_micro_df_input = download_link(up_micro_df, fname + gene + '_' + species + '_' + 'micro-upreg.tsv')
+        up_micro_df_input, up_micro_df_input_values = download_link(up_micro_df, fname + gene + '_' + species + '_' + 'micro-upreg.tsv')
         dn_micro_df = make_tables(micro_df_input, species, gene, is_upreg=False)
-        dn_micro_df_input = download_link(dn_micro_df, fname + gene + '_' + species + '_' + 'micro-dnreg.tsv')
+        dn_micro_df_input, dn_micro_df_input_values = download_link(dn_micro_df, fname + gene + '_' + species + '_' + 'micro-dnreg.tsv')
     else:
         micro_exists = False
         up_micro_df_input = ''
         dn_micro_df_input = ''
-    return {'plot': json_item(plot, 'volcano-plot'), 'micro': micro_exists, 'tables': [up_comb_df_input, dn_comb_df_input, up_micro_df_input, dn_micro_df_input]}
+    return {'plot': json_item(plot, 'volcano-plot'), 'micro': micro_exists, 'tables': [up_comb_df_input, dn_comb_df_input, up_micro_df_input, dn_micro_df_input], 'table_values': [up_comb_df_input_values, dn_comb_df_input_values, up_micro_df_input_values, dn_micro_df_input_values]}
 
 def make_dge_plot(data, title, method, id_plot='dge-plot'):
 

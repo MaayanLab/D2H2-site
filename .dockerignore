@@ -1,2 +1,6 @@
 extras
 env
+.git
+.DS_Store
+app/__pycache__/
+*.env

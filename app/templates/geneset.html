@@ -19,8 +19,7 @@
   <div class="row mb-5">
 
     <div class="col-3">
-      <nav id="toc" data-toggle="toc" class="navbar navbar-light sticky-top"
-        style="font-weight: 350 !important;"></nav>
+      <nav id="toc" data-toggle="toc" class="navbar navbar-light sticky-top" style="font-weight: 350 !important;"></nav>
     </div>
 
     <div class="col-9">
@@ -29,7 +28,67 @@
         <span class="page-header">Discover Knowledge about Gene Sets</span>
       </div>
       <div class="row justify-content-center mt-2 text-center">
-        <p> Enter a set of human gene symbols, or upload a file with human gene symbols, to the input form to receive an output from the various tools and databases. </p>
+        <p> Enter a set of human gene symbols, or upload a file with human gene symbols, to the input form to receive an
+          output from the various tools and databases. </p>
+      </div>
+
+      <div class="container mt-2" id="enrichranalysis">
+        <div class="row justify-content-center justify-items-center" id="[Signatures]">
+          <div class="custom-col">
+            <div class="question mt-3 p-2 justify-content-center row text-center">
+              <h4>Query a Gene Set across Curated Diabetes-Related Signatures</h4>
+            </div>
+
+            <div class="row mt-4 justify-content-center" style="flex-wrap: wrap;">
+              <div class="col-md-5 col-sm-7 col-lg-4 text-center mr-5 mt-4">
+                <textarea name="list" rows="8" id="text-area0"
+                  placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
+                  onkeyup="geneCount($(this).val(), 0)" onchange="geneCount($(this).val(), 0)"
+                  onfocus="geneCount($(this).val(), 0)"></textarea>
+                <div class="mt-1">
+                  <span id="gene-count0"> 0 </span> gene(s) entered
+                </div>
+                <div class="text-center">
+                  <a id="examplefill0" style="color: rgb(10, 13, 149)">Try an example gene set</a>
+                </div>
+
+              </div>
+              <div class="col-md-7 col-sm-7 col-lg-6 text-center mr-3" style="overflow-y: visible !important;">
+                <p>
+                  File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
+                </p>
+                <form action="/action_page.php" style="flex-wrap: wrap;">
+                  <input type="file" id="gene-file0" name="filename">
+                </form>
+                <label class="mt-1 mr-1" for="desc1">Enter gene set description (optional): </label>
+                <input class="form-control-md" id="desc1" type="text">
+                <p class="mt-2">Perform enrichement analysis through Enricher with the entered or uploaded gene set
+                  agasint
+                  our curated
+                  Diabetes gene set library.
+                  Any overlapping gene can be submitted to the <a href="{{ url_for('singlegene_home')}}">Single Gene
+                    Queries</a> page and the sets of overlapping genes can be submitted to the <a
+                    href="{{ url_for('geneset_home') }}">Gene Set Queries page.</p>
+              </div>
+              <div class="flex-column justify-content-center text-center m-2" style="overflow-y: visible !important;">
+
+              </div>
+            </div>
+
+
+
+            <div class="justify-content-center row text-center mt-1">
+              <a id="Signatures">
+                <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Submit to Enrichr
+                  <img src="{{ url_for('static', filename='img/enrichrlogo.png') }}" class="img-fluid mr-3"
+                    style="width: 45px" alt="Enrichr">
+                </button>
+              </a>
+            </div>
+              <div id="[Signatures]loading"></div>
+              <div id="[Signatures]result"></div>
+          </div>
+        </div>
       </div>
 
       <div class="container mt-2">
@@ -73,15 +132,18 @@
               </div>
 
               <div class="row text-center justify-content-center mt-2">
-                
-                <img src="{{url_for('static',filename= 'img/enrichrthumbnail.png')}}" alt="" class="img-fluid img-thumbnail">
+
+                <img src="{{url_for('static',filename= 'img/enrichrthumbnail.png')}}" alt=""
+                  class="img-fluid img-thumbnail">
               </div>
 
               <div class="justify-content-center row text-center mt-3">
                 <a id="enrichr">
                   <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Submit to
-                    <img src="{{ url_for('static', filename='img/enrichrtext.png') }}" class="img-fluid" style="width: 80px" alt="Enrichr">
-                    <img src="{{ url_for('static', filename='img/enrichrlogo.png') }}" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
+                    <img src="{{ url_for('static', filename='img/enrichrtext.png') }}" class="img-fluid"
+                      style="width: 80px" alt="Enrichr">
+                    <img src="{{ url_for('static', filename='img/enrichrlogo.png') }}" class="img-fluid mr-3"
+                      style="width: 45px" alt="Enrichr">
                   </button>
                 </a>
               </div>
@@ -111,7 +173,8 @@
                     <a id="examplefill2" style="color: rgb(10, 13, 149)">Try an example gene set</a>
                   </div>
                 </div>
-                <div class="flex-column col-lg-6 justify-content-center text-center m-2" style="overflow-y: visible !important;">
+                <div class="flex-column col-lg-6 justify-content-center text-center m-2"
+                  style="overflow-y: visible !important;">
                   <p>
                     File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
                   </p>
@@ -140,8 +203,9 @@
                   </div>
 
                   <div class="row justify-content-center mt-4 mb-3">
-                    
-                    <img src="{{url_for('static',filename= 'img/chea3-thumbnail.png')}}" " alt="" class="img-fluid img-thumbnail">
+
+                    <img src="{{url_for('static',filename= 'img/chea3-thumbnail.png')}}" " alt="" class=" img-fluid
+                      img-thumbnail">
                   </div>
 
 
@@ -150,8 +214,8 @@
                       href="https://appyters.maayanlab.cloud/ChEA3_Appyter/"><button type="button"
                         class="btn btn-primary btn-group-sm mt-3 mb-3">
                         <span id="appyter-action" class="ml-3">Start a new appyter in</span>
-                        <img src="{{url_for('static',filename= 'img/appyters_logo.svg')}}" class="img-fluid mr-3" style="width: 120px"
-                          alt="Appyters">
+                        <img src="{{url_for('static',filename= 'img/appyters_logo.svg')}}" class="img-fluid mr-3"
+                          style="width: 120px" alt="Appyters">
                       </button>
                     </a>
                   </div>
@@ -168,7 +232,8 @@
                   </div>
 
                   <div class="row justify-content-center mb-3 mt-4">
-                    <img src="{{url_for('static',filename= 'img/kea3thumbnail.png')}}" alt="" class="img-fluid img-thumbnail">
+                    <img src="{{url_for('static',filename= 'img/kea3thumbnail.png')}}" alt=""
+                      class="img-fluid img-thumbnail">
                   </div>
 
                   <div class="justify-content-center row text-center mb-3">
@@ -176,8 +241,8 @@
                       href="https://appyters.maayanlab.cloud/KEA3_Appyter/"><button type="button"
                         class="btn btn-primary btn-group-sm mt-3 mb-3">
                         <span id="appyter-action" class="ml-3">Start a new appyter in</span>
-                        <img src="{{url_for('static',filename= 'img/appyters_logo.svg')}}" class="img-fluid mr-3" style="width: 120px"
-                          alt="Appyters">
+                        <img src="{{url_for('static',filename= 'img/appyters_logo.svg')}}" class="img-fluid mr-3"
+                          style="width: 120px" alt="Appyters">
                       </button>
                     </a>
                   </div>
@@ -218,12 +283,12 @@
                   <form action="/action_page.php">
                     <input type="file" id="gene-file3" name="filename">
                   </form>
-
                 </div>
               </div>
 
               <div class="row justify-content-center">
-                <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3" id="sigcom_entries_button" value="single">Use Up/Down Gene Sets</button>
+                <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3" id="sigcom_entries_button"
+                  value="single">Use Up/Down Gene Sets</button>
               </div>
 
               <div class="justify-content-center row ml-1 mr-1 text-center">
@@ -235,14 +300,15 @@
               </div>
 
               <div class="row justify-content-center mb-3">
-                <img src="{{url_for('static',filename= 'img/sigcoms.png')}}" alt="" class="img-fluid img-thumbnail" style="height: 192px;">
+                <img src="{{url_for('static',filename= 'img/sigcoms.png')}}" alt="" class="img-fluid img-thumbnail"
+                  style="height: 192px;">
               </div>
 
               <div class="justify-content-center row text-center mt-3">
                 <a id="sigcoms">
                   <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Submit to
-                    <img src="{{url_for('static',filename= 'img/sigcom_lincs_logo.png')}}" class="img-fluid mr-3" style="width: 60px"
-                      alt="SigCom LINCS">
+                    <img src="{{url_for('static',filename= 'img/sigcom_lincs_logo.png')}}" class="img-fluid mr-3"
+                      style="width: 60px" alt="SigCom LINCS">
                   </button>
                 </a>
               </div>
@@ -263,15 +329,302 @@
 {% block footer %}
 
 
-<script>
-  $(document).ready(function() {
+<script type="module">
+
+  import { geneset_signatures, geneset_enrichment, geneset_kea3, geneset_chea3, geneset_sigcomlincs } from '../static/js/modules/geneset-queries.js';
+  import { loading } from '../static/js/modules/constants.js';
+  $(document).ready(function () {
     if (localStorage.hasOwnProperty("geneset")) {
-          var genes = localStorage['geneset']
-          localStorage.removeItem('geneset');
-          genes = genes.split('&').join('\r\n')
-          fillSetExample(genes)
+      var genes = localStorage['geneset']
+      localStorage.removeItem('geneset');
+      genes = genes.split('&').join('\r\n')
+      fillSetExample(genes)
     }
   })
+
+  $('#Signatures').click(async function () {
+    var inputvalue = document.getElementById("text-area0").value;
+    var file = document.getElementById("gene-file0").value;
+    var section = "gene-file0";
+    var geneset;
+
+    if (inputvalue) {
+        geneset = inputvalue.split("\n").join(',')
+    }
+
+    if (file) {
+        geneset = await loadFileAsText(section, ",");
+    }
+
+    document.getElementById('[Signatures]loading').innerHTML = loading;
+    await geneset_signatures(geneset, '[Signatures]result');
+    document.getElementById('[Signatures]loading').innerHTML = "";
+  });
+
+
+
+  // ADD LIST TO ENRICHR and Redirect
+
+  $('#enrichr').click(async function () {
+        var inputvalue = document.getElementById("text-area1").value;
+        var desc = document.getElementById("desc1").value;
+        var file = document.getElementById("gene-file1").value;
+        const section = "gene-file1";
+        if (!inputvalue && !file) {
+            alert("No genes entered")
+            return;
+        }
+        if (file) {
+            inputvalue = await loadFileAsText(section, "\n");
+        }
+        if (!inputvalue) {
+            alert("Check file format!")
+            return;
+        }
+        if (!desc) {
+            enrich({ list: inputvalue, popup: true });
+        } else {
+            enrich({ list: inputvalue, description: desc, popup: true });
+        }
+    });
+
+    // TAKE FILE OR TEXT INPUT AND OPEN IN KEA3
+
+    $('#kea3').click(async function () {
+        var inputvalue = document.getElementById("text-area2").value;
+        var file = document.getElementById("gene-file2").value;
+        var section = "gene-file2";
+
+        if (inputvalue) {
+            inputvalue = inputvalue.split("\n").join("%0A")
+        }
+
+        if (file) {
+            inputvalue = await loadFileAsText(section, "%0A");
+        }
+
+        if (!inputvalue) {
+            $('#kea3').prop('href', "https://appyters.maayanlab.cloud/KEA3_Appyter/")
+            return;
+        }
+
+        $('#kea3').prop('href', "https://appyters.maayanlab.cloud/KEA3_Appyter/#/?args.Input%20gene/protein%20list=" + inputvalue + "&submit");
+
+    });
+
+    // TAKE FILE OR TEXT INPUT AND OPEN IN CHEA3
+
+    $('#chea3').click(async function () {
+        var inputvalue = document.getElementById("text-area2").value;
+        var file = document.getElementById("gene-file2").value;
+        var section = "gene-file2";
+
+        if (inputvalue) {
+            inputvalue = inputvalue.split("\n").join("%0A")
+        }
+
+        if (file) {
+            inputvalue = await loadFileAsText(section, "%0A");
+        }
+
+        if (!inputvalue) {
+            $('#chea3').prop('href', "https://appyters.maayanlab.cloud/ChEA3_Appyter/")
+            return;
+        }
+
+        $('#chea3').prop('href', "https://appyters.maayanlab.cloud/ChEA3_Appyter/#/?args.paste_gene_input=" + inputvalue + "&submit");
+
+    });
+
+    $('#examplefill0').click(function () {
+        fillSet('text-area0', 'desc1', 0)
+    });
+
+    $('#examplefill1').click(function () {
+        fillSet('text-area1', 'desc1', 1)
+    });
+
+    $('#examplefill2').click(function () {
+        fillSet('text-area2', '', 2)
+    });
+
+    $('#examplefill3').click(function () {
+        fillSet('text-area3', '', 3)
+    });
+
+
+    // PRODUCE INPUT HTML FOR SINGLE GENE SET
+
+    function getSingleEntry(num, genecount) {
+        var single_entry = `<div class="col-6 col-md-10 col-sm-7 col-lg-10 text-center mr-3">
+                  <textarea name="list" rows="8" id="text-area${num}"
+                    placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
+                    onkeyup="geneCount($(this).val(), 3)" onchange="geneCount($(this).val(), 3)"
+                    onfocus="geneCount($(this).val(), 3)"></textarea>
+                  <div class="mt-1">
+                    <span id="gene-count${genecount}"> 0 </span> gene(s) entered
+                  </div>
+                  <div class="text-center">
+                    <a id="examplefill3" style="color: rgb(10, 13, 149)">Try an example gene set</a>
+                  </div>
+                </div>
+                <div class="flex-column justify-content-center text-center m-2" style="overflow-y: visible !important;">
+                  <p>
+                    File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
+                  </p>
+                  <form action="/action_page.php">
+                    <input type="file" id="gene-file${num}" name="filename">
+                  </form>
+
+                </div>`;
+        return single_entry;
+    }
+
+    // PRODUCE INPUT HTML FOR MULTIPLE GENE SETS
+
+    function getMultipleEntries(num, genecount) {
+        var multiple_entries = `<div class="col-6 col-md-10 col-sm-7 col-lg-10 text-center mr-3">
+            <textarea name="list" rows="8" id="text-area${num}-up" placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box" onkeyup="geneCount($(this).val(), ${genecount})" onchange="geneCount($(this).val(),  ${genecount})" onfocus="geneCount($(this).val(),  ${genecount})"></textarea>
+            <div class="mt-1">
+                <span id="gene-count${genecount}"> 0 </span> UP gene(s) entered
+            </div>
+            <div class="text-center">
+                <a id="examplefill3-up" onclick="fillSet('text-area3-up', '', 3)" style="color: rgb(10, 13, 149)">Try an example gene set</a>
+            </div>
+            </div>
+            <div class="flex-column justify-content-center text-center m-2" style="overflow-y: visible !important;">
+            <p>
+                File formats excepted: csv, tsv, txt file with Entrez gene symbols on each line
+            </p>
+            <form action="/action_page.php">
+                <input type="file" id="gene-file${num}-up" name="filename">
+            </form>
+            
+            </div>
+            <div class="col-6 col-md-10 col-sm-7 col-lg-10 text-center mr-3">
+            <textarea name="list" rows="8" id="text-area${num}-down" placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box" onkeyup="geneCount($(this).val(), ${genecount + 1})" onchange="geneCount($(this).val(), ${genecount + 1})" onfocus="geneCount($(this).val(), ${genecount + 1})"></textarea>
+            <div class="mt-1">
+                <span id="gene-count${genecount + 1}"> 0 </span> DOWN gene(s) entered
+            </div>
+            <div class="text-center">
+                <a id="examplefill3" onclick="fillSet2('text-area3-down', '', 4)" style="color: rgb(10, 13, 149)">Try an example gene set</a>
+            </div>
+            </div>
+            <div class="flex-column justify-content-center text-center m-2" style="overflow-y: visible !important;">
+            <p>
+                File formats excepted: csv, tsv, txt file with Entrez gene symbols on each line
+            </p>
+            <form action="/action_page.php">
+                <input type="file" id="gene-file${num}-down" name="filename">
+            </form>
+            
+            </div>`;
+        return multiple_entries;
+    }
+
+    // SWITCH INPUT FOR SIGCOM LINCS to UP DOWN OR SINGLE GENE SET
+
+    $('#sigcom_entries_button').click(function () {
+
+        var button = document.getElementById("sigcom_entries_button");
+        var mode = button.value
+
+
+        if (mode === "single") {
+            document.getElementById("sigcom_entries").innerHTML = getMultipleEntries(3, 3);
+            button.innerText = "Use Single Gene Set"
+            button.value = "double"
+        } else {
+            document.getElementById("sigcom_entries").innerHTML = getSingleEntry(3, 3);
+            button.innerText = "Use Up/Down Gene Sets"
+            button.value = "single"
+        }
+
+    });
+
+    // READ IN TEXT/FILE INPUT AND OPEN IN SIGCOM LINCS
+
+    $('#sigcoms').click(async function () {
+        var button = document.getElementById("sigcom_entries_button");
+
+
+        if (button.textContent === "Use Up/Down Gene Sets") {
+
+            var inputvalue = document.getElementById("text-area3").value;
+            var file = document.getElementById("gene-file3").value;
+            var section = "gene-file3";
+
+            if (inputvalue) {
+                inputvalue = inputvalue.split("\n")
+            }
+
+            if (file) {
+                inputvalue = await loadFileAsText(section, "\t").split("\t");
+            }
+
+            if (inputvalue.length == 0) {
+                alert('Please enter a gene set')
+            }
+
+            var genes = JSON.stringify({ 'genes': [inputvalue] });
+
+            $.ajax({
+                url: "getsigcom",
+                contentType: 'application/json',
+                type: "POST",
+                dataType: 'json',
+                data: genes
+            }).done(function (response) {
+
+                const url = response['url'];
+                window.open(url, '_blank');
+
+            });
+
+        } else {
+            var inputvalueUp = document.getElementById("text-area3-up").value;
+            var inputvalueDown = document.getElementById("text-area3-down").value;
+
+            var fileUp = document.getElementById("gene-file3-up").value;
+            var sectionUp = "gene-file3";
+            var fileDown = document.getElementById("gene-file3-down").value;
+            var sectionDown = "gene-file3";
+
+            if (inputvalueUp) {
+                inputvalueUp = inputvalueUp.split("\n")
+            }
+            if (inputvalueDown) {
+                inputvalueDown = inputvalueDown.split("\n")
+            }
+
+            if (fileUp) {
+                inputvalueUp = await loadFileAsText(section, "\t").split("\t");
+            }
+
+            if (fileDown) {
+                inputvalueDown = await loadFileAsText(section, "\t").split("\t");
+            }
+
+            if (inputvalueUp.length == 0 || inputvalueDown.length == 0) {
+                alert('Please enter an up and down gene set')
+            }
+
+            var genes = JSON.stringify({ 'genes': [inputvalueUp, inputvalueDown] });
+
+            $.ajax({
+                url: "getsigcom",
+                contentType: 'application/json',
+                type: "POST",
+                dataType: 'json',
+                data: genes
+            }).done(function (response) {
+
+                const url = response['url'];
+                window.open(url, '_blank');
+            });
+
+        }
+    });
 </script>
 
 {% endblock %}

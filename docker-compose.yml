@@ -3,11 +3,12 @@ services:
   app:
     platform: linux/x86_64
     build: .
-    image: giacomomarino/d2h2:1.1.3
+    image: maayanlab/d2h2:1.2.5
     environment:
       - ROOT_PATH=/D2H2/
       - BASE_PATH=https://maayanalab.cloud
-      - DEBUG=true
+      - ENDPOINT=https://minio.dev.maayanlab.cloud/
+      - DEBUG=False
       - BASE_URL=d2h2/data
     ports:
-      - 8080:80
+      - 5000:80
