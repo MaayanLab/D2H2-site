@@ -24,7 +24,7 @@ export function chatN(side, chatNum, color, content) {
     else {
         icon = "static/img/user_icon.png";
         padding = "pr-2";
-        name = ''
+        name = 'User'
     }
     const chathtml = `
     <div class="chat chat-${side} mb-1" id="chat-${chatNum}" style="display: none; opacity: 1.0 !important;"> 

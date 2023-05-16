@@ -28,20 +28,24 @@
             <div class="vertical mt-4" id="chat-section"
             style="border-style: solid; border-radius: 2rem; border-color: rgb(184, 184, 184); width: 100%; overflow: auto;">
             <div id="chat-bubbles-section" style="overflow: auto;">
-                <div class="chat chat-start mb-1" id="chat-intro" style="display: none;">
+                <div class="chat chat-start mb-2" id="chat-intro" style="display: none;">
                     <div class="chat-image avatar pl-2" style="width: 50px">
                         <img src="static/img/d2h2_chat_bot.png" />
                     </div>
                     <div class="chat-header">
                         D2H2
                     </div>
-                    <div class="chat-bubble chat-bubble-info" style="background-color: #d3d3d3">I am an AI-powered chat
+                    <div class="chat-bubble chat-bubble-info mb-1" style="background-color: #d3d3d3">I am an AI-powered chat
                         interface designed to help answer gene and gene set related queries. Please start by entering a
                         question.
                     </div>
                 </div>
             </div>
+            <div class="text-right pr-3 pb-1">
+                <div id="reset"><img id="reset-arrow" src="static/img/reset-arrow.png" alt="reset" style="width: 20px;"/></div>
+            </div>
         </div>
+        
 
         <div id="query-section" class="col m-2 mx-right mb-5">
             <div class="vertical">
@@ -155,6 +159,14 @@
         options = [];
     }
 
+    async function reset_chat() {
+        await reset_process();
+        document.getElementById('chat-bubbles-section').innerHTML = "";
+        const message = `I am an AI-powered chat interface designed to help answer gene and gene set related queries. Please start by entering a question.`;
+        document.getElementById("chat-bubbles-section").appendChild(chatN('start', 'intro', '#d3d3d3', message));
+        $(`#chat-intro`).fadeIn(1000)
+    }
+
     async function submit_gene_set() {
         var geneset = '';
         var geneset_up = '';
@@ -209,14 +221,14 @@
     async function ask_questions() {
         var response = document.getElementById('gpt-query').value.trim();
         if (response != '') {
-            document.getElementById("chat-section").appendChild(chatN('end', chat_num, '#d3d3d3', response));
+            document.getElementById("chat-bubbles-section").appendChild(chatN('end', chat_num, '#d3d3d3', response));
             await $(`#chat-${chat_num}`).fadeIn(1000);
             chat_num++;
         }
         if (process_info['geneSymbol'] == '') {
             const [gene, species] = await parse_gene(response);
             if (gene == '') {
-                document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I did not recognize that gene symbol, please try again."));
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I did not recognize that gene symbol, please try again."));
                 await $(`#chat-${chat_num}`).fadeIn(2000);
                 chat_num++;
                 return;
@@ -235,7 +247,7 @@
                 var readable_options = qs[i].options.map(x => (x.replace('_', " ")));
                 readable_options[readable_options.length - 1] = "and " + readable_options[readable_options.length - 1] + ".";
                 readable_options = readable_options.join(", ");
-                document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', qs[i].q + ' The options include ' + readable_options + " Please type in the option you would like to select."));
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', qs[i].q + ' The options include ' + readable_options + " Please type in the option you would like to select."));
                 await $(`#chat-${chat_num}`).fadeIn(2000);
                 chat_num++;
                 curr_arg = qs[i].arg;
@@ -256,14 +268,14 @@
         console.log(chat_num)
         var q = document.getElementById('gpt-query').value.trim();
         if (q != '') {
-            document.getElementById("chat-section").appendChild(chatN('end', chat_num, '#d3d3d3', q))
+            document.getElementById("chat-bubbles-section").appendChild(chatN('end', chat_num, '#d3d3d3', q))
             $(`#chat-${chat_num}`).fadeIn(2000)
 
             setTimeout(async () => {
                 chat_num++;
                 var response = await runFindQuery(q);
                 if (response['response'] == 1) {
-                    document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I'm sorry, I don't understand the your question. Please try again."));
+                    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I'm sorry, I don't understand the your question. Please try again."));
                     await $(`#chat-${chat_num}`).fadeIn(2000);
                     chat_num++;
                     return;
@@ -272,7 +284,7 @@
                 process_info = response;
                 if (response['input'] == '[Gene]') {
                     if (response['geneSymbol'] == '') {
-                        document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', 'Please provide a gene symbol'))
+                        document.getElementById("chat-bubbles-sectionn").appendChild(chatN('start', chat_num, '#d3d3d3', 'Please provide a gene symbol'))
                         await $(`#chat-${chat_num}`).fadeIn(2000);
                         chat_num++;
                     } else {
@@ -280,12 +292,12 @@
                         ask_questions();
                     }
                 } else if (response['input'] == '[GeneSet]') {
-                    document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', "Please enter your gene set:"))
+                    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "Please enter your gene set:"))
                     await $(`#chat-${chat_num}`).fadeIn(2000)
                     chat_num++;
                     if (process_dict[response.input][response.output].args.includes('up')) {
-                        document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_up_down_entries(chat_num + 1) + geneset_buttons_up_down(chat_num + 1)))
-                    } else document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries(chat_num + 1) + geneset_buttons(chat_num + 1)))
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_up_down_entries(chat_num + 1) + geneset_buttons_up_down(chat_num + 1)))
+                    } else document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries(chat_num + 1) + geneset_buttons(chat_num + 1)))
                     document.getElementById(`submit_gene_set${chat_num + 1}`).addEventListener("click", function () {
                         submit_gene_set(process_info);
                     });
@@ -343,6 +355,10 @@
         });
     }
     );
+
+    document.getElementById('reset').addEventListener("click", function () {
+        reset_chat();
+    });
 
 
     const countupEls = document.querySelectorAll('.countup');

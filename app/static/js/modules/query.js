@@ -69,14 +69,14 @@ export async function run_process_gene(process_info_copy, chat_num) {
     if (process.questions.length > 0) {
 
     }
-    document.getElementById("chat-section").appendChild(chatN('start', chat_num, '#d3d3d3', process.description))
+    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', process.description))
     $(`#chat-${chat_num}`).fadeIn(2000, async () => {
         chat_num++;
         const placeholder = document.createElement("div");
         placeholder.innerHTML = `<div id='loading${chat_num}'>${loading}</div>`;
         const loadingNode = placeholder.firstElementChild;
-        document.getElementById("chat-section").appendChild(loadingNode)
-        document.getElementById("chat-section").appendChild(chatNresult('start', chat_num, '#d3d3d3', "result" + chat_num))
+        document.getElementById("chat-bubbles-section").appendChild(loadingNode)
+        document.getElementById("chat-bubbles-section").appendChild(chatNresult('start', chat_num, '#d3d3d3', "result" + chat_num))
         
         process_info_copy['result'] = "result" + chat_num
         for (let j = 0; j < args.length; j ++) {

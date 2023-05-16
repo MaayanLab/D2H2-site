@@ -35,7 +35,7 @@ export async function geneset_signatures(geneset, resultid) {
             </button>
                 <div class="collapse" id="genesoverlap-${data[k][0]}">
                     ${gene_arr.join(", ")}
-                    <a href="${api2}" onclick="setGenes('${data[k][5].join('&')}')" target='_blank'>
+                    <a href="${api2}" onclick="setGenes('${data[k][5].join('&')}')" target='_blank' style="text-decoration: none">
                         <button class="btn btn-primary btn-group-sm d-flex align-items-start text-center" style="font-size: small;">
                             Submit to Gene Set Queries
                         </button>
@@ -118,7 +118,7 @@ export async function geneset_kea3(geneset, resultid) {
             </button>
                 <div class="collapse" id="genesoverlap-${data[k]['Rank']}">
                     ${gene_arr.join(", ")}
-                    <a href="${api2}" onclick="setGenes('${data[k]['Overlapping_Genes'].split(',').join('&')}')" target='_blank'>
+                    <a href="${api2}" onclick="setGenes('${data[k]['Overlapping_Genes'].split(',').join('&')}')" target='_blank' style="text-decoration: none">
                         <button class="btn btn-primary btn-group-sm d-flex align-items-start text-center" style="font-size: small;">
                             Submit to Gene Set Queries
                         </button>

@@ -1084,3 +1084,11 @@ nav select {
       display: none;
   }
 }
+#reset-arrow {
+  transition: transform .7s ease-in-out;
+}
+
+#reset-arrow:hover {
+  transform: rotate(270deg);
+  cursor: pointer;
+}
