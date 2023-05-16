@@ -37,7 +37,6 @@ app = Flask(__name__, static_url_path=ROOT_PATH + 'static')
 month_dict = {"Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May": "05", "Jun": "06", "Jul": "07", "Aug": "08", "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"}
 @app.route(ROOT_PATH, methods=['GET', 'POST'])
 def home():
-	#update_tweets_table(datetime.datetime.date)
 	return render_template('home2.html', base_path=BASE_PATH, gse_metadata=gse_metadata, numstudies=numstudies)
 
 @app.route(f"{ROOT_PATH}/about", methods=['GET', 'POST'])
