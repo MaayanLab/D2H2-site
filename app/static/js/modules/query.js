@@ -66,9 +66,8 @@ export async function run_process_gene(process_info_copy, chat_num) {
     var process_eval = await processes;
     var process = process_eval[process_info_copy.input][process_info_copy.output];
     var args = process.args.map((x) => x);
-    if (process.questions.length > 0) {
-
-    }
+    args.push("result");
+    
     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', process.text))
     $(`#chat-${chat_num}`).fadeIn(2000, async () => {
         chat_num++;
