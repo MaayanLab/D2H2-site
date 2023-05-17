@@ -240,7 +240,17 @@
         const qs = process_dict[process_info.input][process_info.output].questions
         if (curr_arg != '') {
             const res = await select_option(response, options);
-            process_info[curr_arg] = res;
+            if (res == 'error') {
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I did not recognize that option. Please try again."));
+                await $(`#chat-${chat_num}`).fadeIn(2000);
+                chat_num++;
+                return;
+            } else if (res == 'busy') {
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I'm sorry, the OpenAPI endpoint is currently overloaded. Please try again in a few seconds."));
+                await $(`#chat-${chat_num}`).fadeIn(2000);
+                chat_num++;
+                return;
+            } else process_info[curr_arg] = res;
         }
         for (let i = 0; i < qs.length; i++) {
             if (!(qs[i].arg in process_info)) {
@@ -275,16 +285,23 @@
                 chat_num++;
                 var response = await runFindQuery(q);
                 if (response['response'] == 1) {
-                    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I'm sorry, I don't understand the your question. Please try again."));
-                    await $(`#chat-${chat_num}`).fadeIn(2000);
-                    chat_num++;
-                    return;
+                    if (response['error'] == 'busy') {
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I'm sorry, the OpenAPI endpoint is currently overloaded. Please try again in a few seconds."));
+                        await $(`#chat-${chat_num}`).fadeIn(2000);
+                        chat_num++;
+                        return;
+                    } else {
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I'm sorry, I don't understand the your question. Please try again."));
+                        await $(`#chat-${chat_num}`).fadeIn(2000);
+                        chat_num++;
+                        return;
+                    }
                 }
                 new_process = false;
                 process_info = response;
                 if (response['input'] == '[Gene]') {
                     if (response['geneSymbol'] == '') {
-                        document.getElementById("chat-bubbles-sectionn").appendChild(chatN('start', chat_num, '#d3d3d3', 'Please provide a gene symbol'))
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', 'Please provide a gene symbol'))
                         await $(`#chat-${chat_num}`).fadeIn(2000);
                         chat_num++;
                     } else {

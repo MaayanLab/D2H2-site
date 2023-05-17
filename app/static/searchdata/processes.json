@@ -1,23 +1,25 @@
 {
     "[Gene]": {
         "[Signatures]": {
+            "gpt_desc": "In what diabetes related GEO signatures up or down regulate the expression of my gene?",
             "process": "gene_signatures",
             "args": [
                 "geneSymbol",
                 "species",
                 "result"
             ],
-            "description": "This module provides a volcano plot visualization of the expression levels for your selected gene in various Type 2 Diabetes transcriptomics signatures. Users may enter in a single gene symbol as input; the output is a volcano plot which plots each T2D signature by gene-specific p-value (y-axis) and fold change (x-axis) as well as the corresponding tables available for download.",
+            "text": "This module provides a volcano plot visualization of the expression levels for your selected gene in various Type 2 Diabetes transcriptomics signatures. Users may enter in a single gene symbol as input; the output is a volcano plot which plots each T2D signature by gene-specific p-value (y-axis) and fold change (x-axis) as well as the corresponding tables available for download.",
             "questions": []
         },
         "[Expression]": {
+            "gpt_desc": "In what cells and tissues is my gene expressed?",
             "process": "generanger_plot",
             "args": [
                 "geneSymbol",
                 "library",
                 "result"
             ],
-            "description": "I used the GeneRanger API, a web-server application that provides access to processed data about the expression of human genes and proteins across human cell types, tissues, and cell lines from several atlases to provide expression for the chosen gene:",
+            "text": "I used the GeneRanger API, a web-server application that provides access to processed data about the expression of human genes and proteins across human cell types, tissues, and cell lines from several atlases to provide expression for the chosen gene:",
             "questions": [
                 {
                     "q": "Please pick a resource to view expression from.",
@@ -36,90 +38,100 @@
             ]
         },
         "[Perturbations]": {
+            "gpt_desc": "Under what conditions or perturbations is my gene regulated?",
             "process": "single_gene_perturbations",
             "args": [
                 "geneSymbol",
                 "species",
                 "result"
             ],
-            "description": "Here are two Appyters and their correposnding descriptions which query a gene symbol agasint L1000 chemical perturbations and gene KOs and signatures from GEO.",
+            "text": "Here are two Appyters and their correposnding texts which query a gene symbol agasint L1000 chemical perturbations and gene KOs and signatures from GEO.",
             "questions": []
         },
         "[TFs]": {
+            "gpt_desc": "What are the transcription factors that regulate my gene?",
             "process": "query_enrichr_tfs",
             "args": [
                 "geneSymbol",
                 "result"
             ],
-            "description": "I used the Enrichr API to query transcription factor information from annotated datasets about the chosen gene symbol.",
+            "text": "I used the Enrichr API to query transcription factor information from annotated datasets about the chosen gene symbol.",
             "questions": []
         },
         "[Traits]": {
+            "gpt_desc": "Is my gene associated with traits in human GWAS?",
             "process": "query_gwas",
             "args": [
                 "geneSymbol",
                 "result"
             ],
-            "description": "I queried the GWAS API to find if the provided gene symbol is associated with traits from the human GWAS catalog.",
+            "text": "I queried the GWAS API to find if the provided gene symbol is associated with traits from the human GWAS catalog.",
             "questions": []
         },
         "[Correlation]": {
+            "gpt_desc": "Is my gene correlated with other genes?",
             "process": "loadCorrelation",
             "args": [
                 "geneSymbol",
                 "result"
             ],
-            "description": "I queried the ARCHS4 API to return the top 100 correlated genes with the input gene symbol and their Pearson correlation coefficents.",
+            "text": "I queried the ARCHS4 API to return the top 100 correlated genes with the input gene symbol and their Pearson correlation coefficents.",
             "questions": []
         },
         "[Knockout]": {
+            "gpt_desc": "Is there a knockout mouse for my gene and does it show any phenotypes?",
             "process": "query_komp",
             "args": [
                 "geneSymbol",
                 "result"
             ],
-            "description": "I queried the MGI database through MouseMine to find phenotypes associated with the knockout of the provided gene symbol. The produced table also links to the gene page on MGI, the PubMed articles from which they are sourced, and defintions for the returned phenotypes.",
+            "text": "I queried the MGI database through MouseMine to find phenotypes associated with the knockout of the provided gene symbol. The produced table also links to the gene page on MGI, the PubMed articles from which they are sourced, and defintions for the returned phenotypes.",
             "questions": []
         }
     },
     "[GeneSet]": {
         "[Signatures]": {
+            "gpt_desc": "In what diabetes signatures is my gene set enriched/overlaps with?",
             "process": "geneset_signatures",
             "args": [
                 "geneset",
                 "result"
             ],
-            "description": "I performed enrichement analysis through Enricher with your gene set agasint our curated Diabetes gene set library. Any overlapping gene can be submitted to the Single Gene Queries page and the sets of overlapping genes can be submitted to the Gene Set Queries page.",
+            "text": "I performed enrichement analysis through Enricher with your gene set agasint our curated Diabetes gene set library. Any overlapping gene can be submitted to the Single Gene Queries page and the sets of overlapping genes can be submitted to the Gene Set Queries page.",
             "questions": []
         },
         "[Enrichment]": {
+            "gpt_desc": "In which annotated gene sets is my gene set enriched?",
             "process": "geneset_enrichment",
             "args": [
                 "geneset",
                 "result"
             ],
-            "description": "I performed enrichement analysis through Enricher with your gene set. Here is a link to the result:",
+            "text": "I performed enrichement analysis through Enricher with your gene set. Here is a link to the result:",
             "questions": []
         },
         "[TFs]": {
+            "gpt_desc": "What transcription factors regulate my gene set?",
             "process": "geneset_chea3",
             "args": [
                 "geneset",
                 "result"
             ],
-            "description": "I queried the ChEA3 (ChIP-X Enrichment Analysis 3) API which predicts transcription factors (TFs) associated with user-input sets of genes. Discrete query gene sets are compared to ChEA3 libraries of TF target gene sets assembled from multiple orthogonal 'omics' datasets.",
+            "text": "I queried the ChEA3 (ChIP-X Enrichment Analysis 3) API which predicts transcription factors (TFs) associated with user-input sets of genes. Discrete query gene sets are compared to ChEA3 libraries of TF target gene sets assembled from multiple orthogonal 'omics' datasets.",
             "questions": []
         },
         "[Kinases]": {
+            "gpt_desc": "What kinases regulate my gene set?",
             "process": "geneset_kea3",
             "args": [
                 "geneset",
                 "result"
             ],
-            "description": "I queried the kinase Enrichment Analysis 3 (KEA3) which infers upstream kinases whose putative substrates are overrepresented in a user-inputted list of genes or differentially phosphorylated proteins. The KEA3 database contains putative kinase-substrate interactions collected from publicly available datasets.",
+            "text": "I queried the kinase Enrichment Analysis 3 (KEA3) which infers upstream kinases whose putative substrates are overrepresented in a user-inputted list of genes or differentially phosphorylated proteins. The KEA3 database contains putative kinase-substrate interactions collected from publicly available datasets.",
             "questions": []
         },
         "[L1000]": {
+            "gpt_desc": "What are the LINCS L1000 small molecules and genetic perturbations that likely up- or down-regulate the expression of my gene set?",
             "process": "geneset_sigcomlincs",
             "args": [
                 "geneset",
@@ -127,7 +139,7 @@
                 "down",
                 "result"
             ],
-            "description": "I sent your gene set(s) to SigCom LINCS which is a web-based search engine that serves over 1.5 million gene expression signatures processed, analyzed, and visualized from LINCS, GTEx, and GEO. SigCom LINCS provides rapid signature similarity search for mimickers and reversers given sets of up and down genes. Here is a link to the result:",
+            "text": "I sent your gene set(s) to SigCom LINCS which is a web-based search engine that serves over 1.5 million gene expression signatures processed, analyzed, and visualized from LINCS, GTEx, and GEO. SigCom LINCS provides rapid signature similarity search for mimickers and reversers given sets of up and down genes. Here is a link to the result:",
             "questions": []
         }
     }

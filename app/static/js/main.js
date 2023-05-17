@@ -120,11 +120,11 @@ const animateCountUp = el => {
 
 
 // COUNT GENES IN TEXT BOXS ON geneset page
-
 function geneCount(gene_list, num) {
     const genes = gene_list.toUpperCase().split(/\r?\n/g).filter(Boolean);
     $('span#gene-count' + String(num)).text(genes.length);
 }
+
 
 function clear_home() {
     try {
