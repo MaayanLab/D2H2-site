@@ -1,23 +1,134 @@
-{"[Gene]": {
-    "[Signatures]": {"process": "gene_signatures", "args": ["geneSymbol", "species", "result"], 
-        "description": "This module provides a volcano plot visualization of the expression levels for your selected gene in various Type 2 Diabetes transcriptomics signatures. Users may enter in a single gene symbol as input; the output is a volcano plot which plots each T2D signature by gene-specific p-value (y-axis) and fold change (x-axis) as well as the corresponding tables available for download.", 
-        "questions":[]
+{
+    "[Gene]": {
+        "[Signatures]": {
+            "process": "gene_signatures",
+            "args": [
+                "geneSymbol",
+                "species",
+                "result"
+            ],
+            "description": "This module provides a volcano plot visualization of the expression levels for your selected gene in various Type 2 Diabetes transcriptomics signatures. Users may enter in a single gene symbol as input; the output is a volcano plot which plots each T2D signature by gene-specific p-value (y-axis) and fold change (x-axis) as well as the corresponding tables available for download.",
+            "questions": []
+        },
+        "[Expression]": {
+            "process": "generanger_plot",
+            "args": [
+                "geneSymbol",
+                "library",
+                "result"
+            ],
+            "description": "I used the GeneRanger API, a web-server application that provides access to processed data about the expression of human genes and proteins across human cell types, tissues, and cell lines from several atlases to provide expression for the chosen gene:",
+            "questions": [
+                {
+                    "q": "Please pick a resource to view expression from.",
+                    "arg": "library",
+                    "options": [
+                        "ARCHS4",
+                        "GTEx_transcriptomics",
+                        "Tabula_Sapiens",
+                        "CCLE_transcriptomics",
+                        "HPM",
+                        "HPA",
+                        "GTEx_proteomics",
+                        "CCLE_proteomics"
+                    ]
+                }
+            ]
+        },
+        "[Perturbations]": {
+            "process": "single_gene_perturbations",
+            "args": [
+                "geneSymbol",
+                "species",
+                "result"
+            ],
+            "description": "Here are two Appyters and their correposnding descriptions which query a gene symbol agasint L1000 chemical perturbations and gene KOs and signatures from GEO.",
+            "questions": []
+        },
+        "[TFs]": {
+            "process": "query_enrichr_tfs",
+            "args": [
+                "geneSymbol",
+                "result"
+            ],
+            "description": "I used the Enrichr API to query transcription factor information from annotated datasets about the chosen gene symbol.",
+            "questions": []
+        },
+        "[Traits]": {
+            "process": "query_gwas",
+            "args": [
+                "geneSymbol",
+                "result"
+            ],
+            "description": "I queried the GWAS API to find if the provided gene symbol is associated with traits from the human GWAS catalog.",
+            "questions": []
+        },
+        "[Correlation]": {
+            "process": "loadCorrelation",
+            "args": [
+                "geneSymbol",
+                "result"
+            ],
+            "description": "I queried the ARCHS4 API to return the top 100 correlated genes with the input gene symbol and their Pearson correlation coefficents.",
+            "questions": []
+        },
+        "[Knockout]": {
+            "process": "query_komp",
+            "args": [
+                "geneSymbol",
+                "result"
+            ],
+            "description": "I queried the MGI database through MouseMine to find phenotypes associated with the knockout of the provided gene symbol. The produced table also links to the gene page on MGI, the PubMed articles from which they are sourced, and defintions for the returned phenotypes.",
+            "questions": []
+        }
     },
-    "[Expression]": {"process": "generanger_plot", "args": ["geneSymbol", "library", "result"], "description": "I used the GeneRanger API, a web-server application that provides access to processed data about the expression of human genes and proteins across human cell types, tissues, and cell lines from several atlases to provide expression for the chosen gene:", 
-        "questions":[{"q": "Please pick a resource to view expression from.", "arg": "library",
-        "options": ["ARCHS4", "GTEx_transcriptomics", "Tabula_Sapiens", "CCLE_transcriptomics", "HPM", "HPA", "GTEx_proteomics", "CCLE_proteomics"]}]
-    },
-    "[Perturbations]": {"process": "single_gene_perturbations", "args": ["geneSymbol", "species", "result"], "description": "Here are two Appyters and their correposnding descriptions which query a gene symbol agasint L1000 chemical perturbations and gene KOs and signatures from GEO.", "questions":[]}, 
-    "[TFs]": {"process": "query_enrichr_tfs", "args": ["geneSymbol", "result"], "description": "I used the Enrichr API to query transcription factor information from annotated datasets about the chosen gene symbol.", "questions":[]}, 
-    "[Traits]": {"process": "query_gwas", "args": ["geneSymbol", "result"], "description": "I queried the GWAS API to find if the provided gene symbol is associated with traits from the human GWAS catalog.", "questions":[]}, 
-    "[Correlation]": {"process": "loadCorrelation", "args": ["geneSymbol", "result"], "description": "I queried the ARCHS4 API to return the top 100 correlated genes with the input gene symbol and their Pearson correlation coefficents.", "questions":[]},
-    "[Knockout]": {"process": "query_komp", "args": ["geneSymbol", "result"], "description": "I queried the MGI database through MouseMine to find phenotypes associated with the knockout of the provided gene symbol. The produced table also links to the gene page on MGI, the PubMed articles from which they are sourced, and defintions for the returned phenotypes.", "questions":[]}
-    },
- "[GeneSet]": {
-    "[Signatures]": {"process": "geneset_signatures", "args": ["geneset", "result"], "description": "I performed enrichement analysis through Enricher with your gene set agasint our curated Diabetes gene set library. Any overlapping gene can be submitted to the Single Gene Queries page and the sets of overlapping genes can be submitted to the Gene Set Queries page.", "questions":[]},
-    "[Enrichment]": {"process": "geneset_enrichment", "args": ["geneset", "result"], "description": "I performed enrichement analysis through Enricher with your gene set. Here is a link to the result:", "questions":[]},
-    "[TFs]": {"process": "geneset_chea3", "args": ["geneset", "result"], "description": "I queried the ChEA3 (ChIP-X Enrichment Analysis 3) API which predicts transcription factors (TFs) associated with user-input sets of genes. Discrete query gene sets are compared to ChEA3 libraries of TF target gene sets assembled from multiple orthogonal 'omics' datasets.", "questions":[]}, 
-    "[Kinases]": {"process": "geneset_kea3", "args": ["geneset", "result"], "description": "I queried the kinase Enrichment Analysis 3 (KEA3) which infers upstream kinases whose putative substrates are overrepresented in a user-inputted list of genes or differentially phosphorylated proteins. The KEA3 database contains putative kinase-substrate interactions collected from publicly available datasets.", "questions":[]},
-    "[L1000]": {"process": "geneset_sigcomlincs", "args": ["geneset", "up", "down", "result"], "description": "I sent your gene set(s) to SigCom LINCS which is a web-based search engine that serves over 1.5 million gene expression signatures processed, analyzed, and visualized from LINCS, GTEx, and GEO. SigCom LINCS provides rapid signature similarity search for mimickers and reversers given sets of up and down genes. Here is a link to the result:", "questions":[]}
+    "[GeneSet]": {
+        "[Signatures]": {
+            "process": "geneset_signatures",
+            "args": [
+                "geneset",
+                "result"
+            ],
+            "description": "I performed enrichement analysis through Enricher with your gene set agasint our curated Diabetes gene set library. Any overlapping gene can be submitted to the Single Gene Queries page and the sets of overlapping genes can be submitted to the Gene Set Queries page.",
+            "questions": []
+        },
+        "[Enrichment]": {
+            "process": "geneset_enrichment",
+            "args": [
+                "geneset",
+                "result"
+            ],
+            "description": "I performed enrichement analysis through Enricher with your gene set. Here is a link to the result:",
+            "questions": []
+        },
+        "[TFs]": {
+            "process": "geneset_chea3",
+            "args": [
+                "geneset",
+                "result"
+            ],
+            "description": "I queried the ChEA3 (ChIP-X Enrichment Analysis 3) API which predicts transcription factors (TFs) associated with user-input sets of genes. Discrete query gene sets are compared to ChEA3 libraries of TF target gene sets assembled from multiple orthogonal 'omics' datasets.",
+            "questions": []
+        },
+        "[Kinases]": {
+            "process": "geneset_kea3",
+            "args": [
+                "geneset",
+                "result"
+            ],
+            "description": "I queried the kinase Enrichment Analysis 3 (KEA3) which infers upstream kinases whose putative substrates are overrepresented in a user-inputted list of genes or differentially phosphorylated proteins. The KEA3 database contains putative kinase-substrate interactions collected from publicly available datasets.",
+            "questions": []
+        },
+        "[L1000]": {
+            "process": "geneset_sigcomlincs",
+            "args": [
+                "geneset",
+                "up",
+                "down",
+                "result"
+            ],
+            "description": "I sent your gene set(s) to SigCom LINCS which is a web-based search engine that serves over 1.5 million gene expression signatures processed, analyzed, and visualized from LINCS, GTEx, and GEO. SigCom LINCS provides rapid signature similarity search for mimickers and reversers given sets of up and down genes. Here is a link to the result:",
+            "questions": []
+        }
     }
 }

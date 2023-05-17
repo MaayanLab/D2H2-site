@@ -2,12 +2,16 @@ import openai
 import os
 from dotenv import load_dotenv
 from functools import lru_cache
+import json
 
 
 load_dotenv()
 
-validation = {"[Gene]": ["[Expression]", "[Perturbations]", "[TFs]", "[Traits]", "[Correlation]","[Knockout]", "[Signatures]"],
-              "[GeneSet]": ["[Enrichment]", "[TFs]","[Kinases]", "[L1000]", "[Signatures]"]}
+with open('processes.json') as f:
+    processes = json.load(f)
+
+validation = {"[Gene]": list(processes["[Gene]"].keys()),
+              "[GeneSet]": list(processes["[GeneSet]"].keys())}
 
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
