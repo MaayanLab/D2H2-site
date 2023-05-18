@@ -247,13 +247,13 @@ export async function query_gwas(gene, id) {
             clear_button = "";
         }
         
-        var tabletext = "<table id='table-gwas' class='styled-table'><thead><tr><th></th><th>Gene</th><th>Trait</th><th>Count</th></tr><tbody>";
+        var tabletext = `<table id='table-gwas${id}' class='styled-table'><thead><tr><th></th><th>Gene</th><th>Trait</th><th>Count</th></tr><tbody>`;
         for (var k = 0; k < data.length; k++) {
             tabletext += "<tr><td>" + (k + 1) + "</td><td><a href='https://www.ebi.ac.uk/gwas/genes/" + data[k]['gene'] + "' target='_blank'>" + data[k]['gene'] + "</a></td><td><a href='" + data[k]['mapped_trait_link'] + "' target='_blank'>" + data[k]['trait'] + "</a></td><td>" + data[k]['count'] + "</td></tr>";
         }
         tabletext += "</tbody></table>";
         $(document).ready(function () {
-            $('#table-gwas').DataTable({
+            $(`#table-gwas${id}`).DataTable({
                 dom: 'Bfrtip',
                 buttons: [
                     'copy', { extend: 'csv', title: `${inputvalue}-gwas-res` }
