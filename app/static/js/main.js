@@ -794,7 +794,6 @@ $(document).ready(function () {
             </div>
             <div class="row justify-content-center mx-auto text-center">
             <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset('${genes.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}')">Gene Set Queries</button>
-            <button class="btn btn-primary btn-group-sm m-2" onclick="submit_geneset_home('${genes.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', '${name}')">Diabetes Gene Set Library</button>
             </div>
             <div class="row justify-content-center mx-auto text-center">
             <button type="button" class="btn btn-primary btn-group-sm m-2" onclick="filter_and_submit_to_enrichr('${genes.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', '${gse}-${control_condition}-vs-${perturb_condition}')"> Enrichr
