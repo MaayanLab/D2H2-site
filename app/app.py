@@ -105,7 +105,6 @@ def get_mgi():
 @app.route(f'{ROOT_PATH}/getsigcom',  methods=['GET','POST'])
 def get_sigcom():
 	gene_lists = request.get_json()["genes"]
-	print(gene_lists)
 	if len(gene_lists) == 2:
 		res= {'url': sigcom_up_down_genes(gene_lists[0], gene_lists[1])}
 	elif len(gene_lists) == 1:

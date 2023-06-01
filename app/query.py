@@ -41,11 +41,10 @@ def find_process(query):
         {"role": "user", "content": prompt}
             ],
         max_tokens =20,
-        temperature=.4,
+        temperature=0,
         )
 
         response = tag_line['choices'][0]['message']['content']
-        print(response)
         try:
             input, output = response.split('->')
             if output in validation[input]:
@@ -72,14 +71,13 @@ def select_option(response, options):
         {"role": "user", "content": prompt}
             ],
         max_tokens =20,
-        temperature=.4,
+        temperature=0,
         )
 
         response = tag_line['choices'][0]['message']['content']
         if '"' in response:
             response = response.split('"')[1]
         response = response.replace(".", "")
-        print(response)
         if response in options:
             return {'option': response}
         else:
