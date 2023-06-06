@@ -10,6 +10,13 @@
       </div>
     </div>
 
+    <div hidden>
+      <div id="human-bulk-num">{{ numstudies[0] }}</div>
+      <div id="mouse-bulk-num">{{ numstudies[1] }}</div>
+      <div id="human-sc-num">{{ numstudies[2] }}</div>
+      <div id="mouse-sc-num">{{ numstudies[3] }}</div>
+    </div>
+
     <div class="row justify-content-center text-center">
       <p style="font-weight: 300; font-size: 1.1rem; line-height: 1.3" class="m-2">
         This site is supported by the <a href="https://www.niddk.nih.gov/" target="_blank"> NIDDK </a> through <a
@@ -19,55 +26,123 @@
     </div>
   </div>
 
-  <div class="custom-col col-lg-7 justify-content-center mx-auto mt-4">
+  <div class="custom-col col-lg-7 justify-content-center mx-auto mt-4 mb-5">
     <div class="row justify-content-center mt-3 mb-3 text-center">
       <p class="p-2">
         D2H2 utilzes a variety of resources to harmonize knowledge for hypotheses generation.
       </p>
     </div>
+    <div class="container" style="border-style: solid; border-width: 1px; width: 60%; border-radius: 2rem; background-color: #f0eef0;">
+      <div class="row justify-content-center mb-3">
+        <div class="column m-2">
+          <a href="https://appyters.maayanlab.cloud/#/" target="_blank">
+            <img src="{{ url_for('static', filename='img/appyters_logo.svg') }}" alt="Appyters" style="width: 150px;" />
+          </a>
+        </div>
+        <div class="column m-2">
+          <a href="https://maayanlab.cloud/archs4/" target="_blank">
+            <img src="{{ url_for('static', filename='img/archs4logo.png') }}" alt="ARCHS4" style="width: 150px;" />
+          </a>
+        </div>
+        <div class="column m-2">
+          <a href="https://gtexportal.org/home/" target="_blank">
+            <img src="{{ url_for('static', filename='img/gtexlogo.png') }}" alt="GTEx" style="width: 150px;" />
+          </a>
+        </div>
+      </div>
 
-    <div class="row justify-content-center mb-3">
-      <div class="column m-2">
-        <a href="https://appyters.maayanlab.cloud/#/" target="_blank">
-          <img src="{{ url_for('static', filename='img/appyters_logo.svg') }}" alt="Appyters" style="width: 150px;" />
-        </a>
-      </div>
-      <div class="column m-2">
-        <a href="https://maayanlab.cloud/archs4/" target="_blank">
-          <img src="{{ url_for('static', filename='img/archs4logo.png') }}" alt="ARCHS4" style="width: 150px;" />
-        </a>
-      </div>
-      <div class="column m-2">
-        <a href="https://gtexportal.org/home/" target="_blank">
-          <img src="{{ url_for('static', filename='img/gtexlogo.png') }}" alt="GTEx" style="width: 150px;" />
-        </a>
+      <div class="row justify-content-center mb-3">
+        <div class="column m-2">
+          <a href="https://www.ebi.ac.uk/gwas/" target="_blank">
+            <img src="{{ url_for('static', filename='img/gwas.png') }}" alt="GWAS" style="width: 80px;" />
+          </a>
+        </div>
+        <div class="column m-2 ml-4">
+          <a href="https://maayanlab.cloud/sigcom-lincs/#/SignatureSearch/UpDown" target="_blank">
+            <img src="{{ url_for('static', filename='img/sigcom_lincs_logo2.png') }}" alt="SigComLincs"
+              style="width: 80px;" />
+          </a>
+        </div>
+        <div class="column m-2 ml-4">
+          <a href="https://maayanlab.cloud/Enrichr/" target="_blank">
+            <img src="{{ url_for('static', filename='img/enrichrlogo.png') }}" alt="Enrichr" style="width: 80px;" />
+          </a>
+        </div>
+        <div class="column m-2 ml-4">
+          <a href="https://generanger.maayanlab.cloud/gene/A2M?database=ARCHS4" target="_blank">
+            <img src="{{ url_for('static', filename='img/generangerlogo.png') }}" alt="GeneRanger"
+              style="width: 80px;" />
+          </a>
+        </div>
       </div>
     </div>
-    <div class="row justify-content-center mb-3">
-      <div class="column m-2 mr-5 mt-4">
-        <a href="http://www.informatics.jax.org/" target="_blank">
-          <img src="{{ url_for('static', filename='img/mgilogo.png') }}" alt="MGI" style="width: 100px;" />
-        </a>
+    <div class="row justify-content-center mt-3 mb-3 text-center">
+      Curated transcriptomics datasets from various Type 2 Diabetes studies are made available for download,
+      visualization, and enrichment analysis.
+    </div>
+    <div class="row justify-content-center mt-3 mb-3 text-center">
+      <div class="flex-column">
+        <canvas id="human-pie-chart" style="width:100%;min-width:400px"></canvas>
       </div>
-      <div class="column m-2">
-        <a href="https://www.ebi.ac.uk/gwas/" target="_blank">
-          <img src="{{ url_for('static', filename='img/gwas.png') }}" alt="GWAS" style="width: 80px;" />
-        </a>
-      </div>
-      <div class="column m-2 ml-4">
-        <a href="https://maayanlab.cloud/sigcom-lincs/#/SignatureSearch/UpDown" target="_blank">
-          <img src="{{ url_for('static', filename='img/sigcom_lincs_logo.png') }}" alt="GWAS" style="width: 80px;" />
-        </a>
-      </div>
-      <div class="column m-2 ml-4">
-        <a href="https://maayanlab.cloud/Enrichr/" target="_blank">
-          <img src="{{ url_for('static', filename='img/enrichrlogo.png') }}" alt="GWAS" style="width: 80px;" />
-        </a>
+      <div class="flex-column">
+        <canvas id="mouse-pie-chart" style="width:100%;min-width:400px"></canvas>
       </div>
     </div>
   </div>
 </div>
 
+{% endblock %}
 
+{% block footer %}
+<script>
+  console.log(document.getElementById("human-bulk-num"))
+  var xValues = ["RNA-seq & Microarray", "scRNA-seq"];
+  var valsHuman = [parseInt(document.getElementById("human-bulk-num").innerText), parseInt(document.getElementById("human-sc-num").innerText)];
+
+  var barColors = [
+    "#2e3093",
+    "#2e30938f",
+  ];
+
+  new Chart("human-pie-chart", {
+    type: "doughnut",
+    data: {
+      labels: xValues,
+      datasets: [{
+        backgroundColor: barColors,
+        data: valsHuman
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: "Human"
+      }
+    }
+  });
+
+  var valsMouse = [parseInt(document.getElementById("mouse-bulk-num").innerText), parseInt(document.getElementById("mouse-sc-num").innerText)];
+
+  console.log(valsMouse)
+
+  new Chart("mouse-pie-chart", {
+    type: "doughnut",
+    data: {
+      labels: xValues,
+      datasets: [{
+        backgroundColor: barColors,
+        data: valsMouse
+      }]
+    },
+    options: {
+      title: {
+        display: true,
+        text: "Mouse"
+      }
+    }
+  });
+
+
+</script>
 
 {% endblock %}
