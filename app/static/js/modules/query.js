@@ -15,6 +15,17 @@ export async function select_option(q, options) {
     return response['option']
 }
 
+export async function log_chat(user_query, response) {
+    var data = JSON.stringify({'user_chat': user_query , 'response': response})
+    $.ajax({
+        url: "api/record_chat",
+        contentType: 'application/json',
+        type: "POST",
+        dataType: 'json',
+        data: data
+    })
+}
+
 export async function parse_gene(q) {
     var gene = '';
     var species = '';
@@ -61,7 +72,7 @@ export async function runFindQuery(q) {
 }
 
 
-export async function run_process_gene(process_info_copy, chat_num) {
+export async function run_process_gene(user_query, process_info_copy, chat_num) {
     var chat_num = chat_num;
     var process_eval = await processes;
     var process = process_eval[process_info_copy.input][process_info_copy.output];
@@ -69,6 +80,7 @@ export async function run_process_gene(process_info_copy, chat_num) {
     args.push("result");
     
     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', process.text))
+    log_chat(user_query, process.text);
     $(`#chat-${chat_num}`).fadeIn(2000, async () => {
         chat_num++;
         const placeholder = document.createElement("div");

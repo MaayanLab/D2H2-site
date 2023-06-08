@@ -30,3 +30,5 @@ tqdm==4.64.1
 tweepy==4.12.1
 umap-learn==0.5.3
 waitress==2.1.2
+gspread==5.9.0
+oauth2client==4.1.3

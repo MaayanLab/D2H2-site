@@ -11,11 +11,12 @@ import ftfy
 from functools import lru_cache
 import pickle
 from helpers import *
-from twitterauth import update_tweets_table
 from dge import *
 from query import *
+from log_chats import *
 import anndata
 from dotenv import load_dotenv
+
 
 
 load_dotenv()
@@ -25,6 +26,7 @@ base_url = os.environ.get('BASE_URL', 'd2h2/data')
 ROOT_PATH = os.environ.get('ROOT_PATH', '/')
 BASE_PATH = os.environ.get('BASE_PATH', 'maayanlab.cloud')
 DEBUG = os.environ.get('DEBUG')
+UPDATE_STUDIES = os.environ.get('UPDATE_STUDIES', False)
 
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
@@ -258,17 +260,11 @@ def dgesingle():
 	species = response_json['species']
 	condition_group = response_json['conditiongroup']
 	cluster_group = response_json['diffcluster']
-	norms = response_json['norms']
+
 	metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=gse, base_url=base_url),'r')
 	metadict = json.load(metajson)
 	base_expression_filename = metadict[condition_group]['filename']
 	expr_file = '{base_url}/{species}/{gse}/{file}'.format(species=species, gse=gse, base_url=base_url, file=base_expression_filename)
-	#compute_dge_single(adata, diff_gex_method, 'Cluster', 'leiden', True)
-	#adata = read_anndata_raw(expr_file)
-	#adata_raw = adata.raw.to_adata()
-	#Passing the gene information as cells x genes for the differential expression method. 
-	#adata = adata.T
-	#adata.raw = adata_raw.T
 	
 	data_dict = compute_dge_single(expr_file, method, 'Cluster', 'leiden',cluster_group, True)
 
@@ -416,33 +412,9 @@ with open(f'static/searchdata/metadata-v1.pickle', 'rb') as f:
 url_to_folder = {"human": "human", "mouse": "mouse"}
 folder_to_url = {folder:url for url, folder in url_to_folder.items()}
 
-""" numstudies= [len(gse_metadata['human'].keys()), len(gse_metadata['mouse'].keys())]
-mouse_gses = list(s3.walk(f'{base_url}/mouse', maxdepth=1))[0][1]
-human_gses = list(s3.walk(f'{base_url}/human', maxdepth=1))[0][1]
-
-
-
-
-
-
-#Bulk and microarray study to species name dictionary
-
-if numstudies[0] == len(human_gses) and numstudies[1] == len(mouse_gses):
-	for species, geo_accession_ids in species_mapping.items():
-		if species not in gse_metadata:
-			gse_metadata[species] = {}
-		for geo_accession in geo_accession_ids:
-			if geo_accession not in gse_metadata[species]:
-				gse_metadata[species][geo_accession] = get_metadata(geo_accession, url_to_folder[species])
-	with open('static/searchdata/metadata-v1.pickle', 'wb') as f:
-		pickle.dump(gse_metadata, f, protocol=pickle.HIGHEST_PROTOCOL) """
-species_mapping = {'human': gse_metadata['human'], 'mouse': gse_metadata['mouse']}
-
+numstudies= [len(gse_metadata['human'].keys()), len(gse_metadata['mouse'].keys())]
 study_to_species = {study:species_name for species_name, studies_metadata in gse_metadata.items() for study in studies_metadata.keys()}
-
-######### SINGLE CELL METADATA CREATION BASED OFF ABOVE FOR BULK AND MICROARRAY#####
-#mouse_singlegses = list(s3.walk(f'{base_url}/mouse_single', maxdepth=1))[0][1]
-#human_singlegses = list(s3.walk(f'{base_url}/human_single', maxdepth=1))[0][1]
+species_mapping = {'human': gse_metadata['human'], 'mouse': gse_metadata['mouse']}
 
 with open('static/searchdata/metadatasingle-v1.pickle', 'rb') as f:	
 	gse_metadata_single = pickle.load(f)
@@ -453,24 +425,35 @@ folder_to_url_single = {folder:url for url, folder in url_to_folder_single.items
 species_mapping_single = {'human_single': gse_metadata_single['human_single'], 'mouse_single': gse_metadata_single['mouse_single']}
 #Creating the metadata for the single files only here. Making it separate from the above in case of additions/changes as the project continues. """
 
-
-
-
-""" numstudies_single= [len(gse_metadata_single['human_single'].keys()), len(gse_metadata_single['mouse_single'].keys())]
-
-if numstudies_single[0] != len(human_singlegses) and numstudies_single[1] != len(mouse_singlegses):
-	for species, geo_accession_ids in species_mapping_single.items():
-		for geo_accession in geo_accession_ids:
-			if geo_accession not in gse_metadata_single[species]:
-				gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
-	with open('static/searchdata/metadatasingle-v1.pickle', 'wb') as f:
-		pickle.dump(gse_metadata_single, f, protocol=pickle.HIGHEST_PROTOCOL)
-"""
 #Single cell studies from study to the species name
 study_to_species_single = {study:species_name for species_name, studies_metadata in gse_metadata_single.items() for study in studies_metadata.keys()}
-
-
+numstudies_single= [len(gse_metadata_single['human_single'].keys()), len(gse_metadata_single['mouse_single'].keys())]
 numstudies = [len(gse_metadata['human']), len(gse_metadata['mouse']), len(gse_metadata_single['human_single']), len(gse_metadata_single['mouse_single'])]
+
+def load_new_studies():
+	mouse_gses = list(s3.walk(f'{base_url}/mouse', maxdepth=1))[0][1]
+	human_gses = list(s3.walk(f'{base_url}/human', maxdepth=1))[0][1]
+	#Bulk and microarray study to species name dictionary
+	if numstudies[0] == len(human_gses) and numstudies[1] == len(mouse_gses):
+		for species, geo_accession_ids in species_mapping.items():
+			if species not in gse_metadata:
+				gse_metadata[species] = {}
+			for geo_accession in geo_accession_ids:
+				if geo_accession not in gse_metadata[species]:
+					gse_metadata[species][geo_accession] = get_metadata(geo_accession, url_to_folder[species])
+		with open('static/searchdata/metadata-v1.pickle', 'wb') as f:
+			pickle.dump(gse_metadata, f, protocol=pickle.HIGHEST_PROTOCOL)
+
+	
+	mouse_singlegses = list(s3.walk(f'{base_url}/mouse_single', maxdepth=1))[0][1]
+	human_singlegses = list(s3.walk(f'{base_url}/human_single', maxdepth=1))[0][1]
+	if numstudies_single[0] != len(human_singlegses) and numstudies_single[1] != len(mouse_singlegses):
+		for species, geo_accession_ids in species_mapping_single.items():
+			for geo_accession in geo_accession_ids:
+				if geo_accession not in gse_metadata_single[species]:
+					gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
+		with open('static/searchdata/metadatasingle-v1.pickle', 'wb') as f:
+			pickle.dump(gse_metadata_single, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 @app.route(f'{ROOT_PATH}/<species_or_gse>', methods=['GET', 'POST'])
@@ -858,6 +841,13 @@ def query_options():
 	res = select_option(response, options)
 	return res
 
+@app.route(f'{ROOT_PATH}/api/record_chat',  methods=['GET', 'POST'])
+def record_chat():
+	response_json = request.get_json()
+	user_chat = response_json['user_chat']
+	response = response_json['response']
+	log_chat(user_chat, response)
+	return {}
 
 #######################################################
 #######################################################
@@ -865,5 +855,7 @@ def query_options():
 #######################################################
 #######################################################
 if __name__ == "__main__":
+	if (UPDATE_STUDIES):
+		load_new_studies()
 	app.run(debug=DEBUG, host="0.0.0.0", port=5000)
 

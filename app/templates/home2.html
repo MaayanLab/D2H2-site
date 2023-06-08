@@ -143,7 +143,7 @@
     import { human_list, mouse_list, processes, chatN, geneset_entries, geneset_buttons, geneset_buttons_up_down, geneset_up_down_entries } from '../static/js/modules/constants.js';
     import { gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from '../static/js/modules/single-gene-queries.js';
     import { geneset_signatures, geneset_enrichment, geneset_kea3, geneset_chea3, geneset_sigcomlincs } from '../static/js/modules/geneset-queries.js';
-    import { parse_gene, select_option, runFindQuery, run_process_gene } from '../static/js/modules/query.js';
+    import { parse_gene, select_option, runFindQuery, run_process_gene, log_chat } from '../static/js/modules/query.js';
     const process_dict = await processes;
 
     var new_process = true;
@@ -166,6 +166,7 @@
         document.getElementById("chat-bubbles-section").appendChild(chatN('start', 'intro', '#d3d3d3', message));
         $(`#chat-intro`).fadeIn(1000)
     }
+
 
     async function submit_gene_set() {
         var geneset = '';
@@ -212,25 +213,29 @@
         process_info['geneset'] = geneset;
         process_info['up'] = geneset_up;
         process_info['down'] = geneset_down;
-        await run_process_gene(process_info, chat_num);
+        await run_process_gene('[USER ENTERED GENESET]', process_info, chat_num);
         chat_num++;
         chat_num++;
         await reset_process();
     }
 
-    async function ask_questions() {
+    async function ask_questions(query) {
+        var d2h2_response = '';
         var response = document.getElementById('gpt-query').value.trim();
         if (response != '') {
             document.getElementById("chat-bubbles-section").appendChild(chatN('end', chat_num, '#d3d3d3', response));
             await $(`#chat-${chat_num}`).fadeIn(1000);
             chat_num++;
+            query = response;
         }
         if (process_info['geneSymbol'] == '') {
             const [gene, species] = await parse_gene(response);
             if (gene == '') {
-                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I did not recognize that gene symbol, please try again."));
+                d2h2_response = "I did not recognize that gene symbol, please try again.";
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', res));
                 await $(`#chat-${chat_num}`).fadeIn(2000);
                 chat_num++;
+                log_chat(query, d2h2_response);
                 return;
             } else {
                 process_info['geneSymbol'] = gene;
@@ -241,14 +246,18 @@
         if (curr_arg != '') {
             const res = await select_option(response, options);
             if (res == 'error') {
-                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I did not recognize that option. Please try again."));
+                d2h2_response = "I did not recognize that option. Please try again.";
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                 await $(`#chat-${chat_num}`).fadeIn(2000);
                 chat_num++;
+                log_chat(query, d2h2_response);
                 return;
             } else if (res == 'busy') {
-                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I'm sorry, the OpenAPI endpoint is currently overloaded. Please try again in a few seconds."));
+                d2h2_response = "I'm sorry, the OpenAPI endpoint is currently overloaded. Please try again in a few seconds.";
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                 await $(`#chat-${chat_num}`).fadeIn(2000);
                 chat_num++;
+                log_chat(query, d2h2_response);
                 return;
             } else process_info[curr_arg] = res;
         }
@@ -257,9 +266,11 @@
                 var readable_options = qs[i].options.map(x => (x.replace('_', " ")));
                 readable_options[readable_options.length - 1] = "and " + readable_options[readable_options.length - 1] + ".";
                 readable_options = readable_options.join(", ");
-                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', qs[i].q + ' The options include ' + readable_options + " Please type in the option you would like to select."));
+                d2h2_response = qs[i].q + ' The options include ' + readable_options + " Please type in the option you would like to select.";
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                 await $(`#chat-${chat_num}`).fadeIn(2000);
                 chat_num++;
+                log_chat(query, d2h2_response);
                 curr_arg = qs[i].arg;
                 options = qs[i].options;
                 return;
@@ -267,7 +278,7 @@
         }
         let process_info_copy = { ...process_info };
         let chat_num_copy = chat_num.valueOf()
-        await run_process_gene(process_info_copy, chat_num);
+        await run_process_gene(query, process_info_copy, chat_num);
         chat_num++;
         chat_num++;
         await reset_process();
@@ -275,7 +286,7 @@
 
 
     async function run_chat() {
-        console.log(chat_num)
+        var d2h2_response = '';
         var q = document.getElementById('gpt-query').value.trim();
         if (q != '') {
             document.getElementById("chat-bubbles-section").appendChild(chatN('end', chat_num, '#d3d3d3', q))
@@ -286,14 +297,18 @@
                 var response = await runFindQuery(q);
                 if (response['response'] == 1) {
                     if (response['error'] == 'busy') {
-                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I'm sorry, the OpenAPI endpoint is currently overloaded. Please try again in a few seconds."));
+                        d2h2_response = "I'm sorry, the OpenAPI endpoint is currently overloaded. Please try again in a few seconds.";
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                         await $(`#chat-${chat_num}`).fadeIn(2000);
                         chat_num++;
+                        log_chat(q, d2h2_response);
                         return;
                     } else {
-                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "I'm sorry, I don't understand the your question. Please try again."));
+                        d2h2_response = "I'm sorry, I don't understand the your question. Please try again.";
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                         await $(`#chat-${chat_num}`).fadeIn(2000);
                         chat_num++;
+                        log_chat(q, d2h2_response);
                         return;
                     }
                 }
@@ -301,17 +316,21 @@
                 process_info = response;
                 if (response['input'] == '[Gene]') {
                     if (response['geneSymbol'] == '') {
-                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', 'Please provide a gene symbol'))
+                        d2h2_response = 'Please provide a gene symbol.'
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                         await $(`#chat-${chat_num}`).fadeIn(2000);
                         chat_num++;
+                        log_chat(q, d2h2_response);
                     } else {
                         document.getElementById('gpt-query').value = '';
-                        ask_questions();
+                        ask_questions(q);
                     }
                 } else if (response['input'] == '[GeneSet]') {
-                    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "Please enter your gene set:"))
+                    d2h2_response = "Please enter your gene set:";
+                    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                     await $(`#chat-${chat_num}`).fadeIn(2000)
                     chat_num++;
+                    log_chat(q, d2h2_response);
                     if (process_dict[response.input][response.output].args.includes('up')) {
                         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_up_down_entries(chat_num + 1) + geneset_buttons_up_down(chat_num + 1)))
                     } else document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries(chat_num + 1) + geneset_buttons(chat_num + 1)))
@@ -321,10 +340,8 @@
                     await $(`#chat-${chat_num}`).fadeIn(2000);
                     chat_num++;
                 }
-            },
-                1000);
+            }, 1000);
         }
-
     }
 
     function run() {
