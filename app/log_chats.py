@@ -6,6 +6,8 @@ import datetime
 
 dotenv.load_dotenv()
 #Authorize the API
+
+DEBUG = os.environ.get('DEBUG', True)
 scope = [
     'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/drive.file'
@@ -38,10 +40,11 @@ except:
 
 
 def log_chat(user_query, response):
-  try:
-    row = [str(datetime.datetime.now()), user_query, response]
-    sheet.append_row(row)
-    return
-  except:
-    print('Error adding to chat data to log')
-    return
+  if not DEBUG:
+    try:
+      row = [str(datetime.datetime.now()), user_query, response]
+      sheet.append_row(row)
+      return
+    except:
+      print('Error adding to chat data to log')
+      return
