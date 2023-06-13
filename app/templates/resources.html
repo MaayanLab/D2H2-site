@@ -15,6 +15,23 @@
     <div id="resources" class="m-3 justify-content-center"></div>
 
   </div>
+
+  <!-- Twitter Table -->
+  <div class="row text-center justify-content-center" style="flex-wrap: wrap;">
+    <div class="col-md-10 col-sm-10 col-lg-6 col-10 text-center custom-col mb-4 mr-2 ml-2">
+      <div class="question p-2 justify-content-center row">
+        <h4 class="mt-4">Recent Diabetes and Related Metabolic Disorder Publications Containing a Gene-Centric Title
+        </h4>
+      </div>
+      <div id="tweets-res" class="mb-2 mt-1"></div>
+    </div>
+
+    <div class="col-md-6 col-sm-7 col-lg-3 text-center custom-col mb-4 mr-2 ml-2">
+      <a class="twitter-timeline" data-height="600" data-chrome="nofooter noborders transparent"
+        href="https://twitter.com/D2H2Bot?ref_src=twsrc%5Etfw">Tweets by D2H2Bot</a>
+      <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    </div>
+  </div>
 </div>
 
 {% endblock %}
@@ -22,14 +39,14 @@
 
 {% block footer %}
 <script>
-function createResourcesTable() {
-  document.getElementById("resources").innerHTML = "<div class='loader justify-content-center'></div>";
-  $.ajax({
+  function createResourcesTable() {
+    document.getElementById("resources").innerHTML = "<div class='loader justify-content-center'></div>";
+    $.ajax({
       url: "getresources",
       type: "POST",
       data: {},
       dataType: 'json',
-  }).done(function(response) {
+    }).done(function (response) {
 
       const data = response['resources']
 
@@ -37,39 +54,39 @@ function createResourcesTable() {
 
       var tabletext = "<table id='table-resources' class='styled-table'><thead><tr>"
 
-      headers.forEach(function(header) {
-          if (header != 'URL') {
-              tabletext += "<th>" + header + "</th>"
-          }     
+      headers.forEach(function (header) {
+        if (header != 'URL') {
+          tabletext += "<th>" + header + "</th>"
+        }
       });
       tabletext += "</tr><tbody>"
 
       for (var k = 1; k < data.length; k++) {
-          tabletext += "<tr><td><a href='" + data[k][2] +"' target='_blank'>"+data[k][0]+"</a></td><td>"+ data[k][1]+ "</td>"
-          if (data[k][3] != 'N/A') {
-              tabletext += "<td><a href='https://pubmed.ncbi.nlm.nih.gov/" + data[k][3] +"' target='_blank'>"+data[k][3]+"</a></td>"
-          } else {
-              tabletext += "<td>"+ data[k][3]+ "</td>"
-          }
-          tabletext += "<td>"+ data[k][4]+ "</td><td>" + data[k][5] + "</td></tr>"
+        tabletext += "<tr><td><a href='" + data[k][2] + "' target='_blank'>" + data[k][0] + "</a></td><td>" + data[k][1] + "</td>"
+        if (data[k][3] != 'N/A') {
+          tabletext += "<td><a href='https://pubmed.ncbi.nlm.nih.gov/" + data[k][3] + "' target='_blank'>" + data[k][3] + "</a></td>"
+        } else {
+          tabletext += "<td>" + data[k][3] + "</td>"
+        }
+        tabletext += "<td>" + data[k][4] + "</td><td>" + data[k][5] + "</td></tr>"
 
       }
 
       tabletext += "</tbody></table>";
 
 
-      $(document).ready(function(){
-          document.getElementById("resources").innerHTML = tabletext;
-          table = $('#table-resources').DataTable({
-              dom: 'Bfrtip',
-              buttons: [
-                  'copy', {extend: 'csv', title: 'D2H2-resourceslist'}
-              ]
-          });
+      $(document).ready(function () {
+        document.getElementById("resources").innerHTML = tabletext;
+        table = $('#table-resources').DataTable({
+          dom: 'Bfrtip',
+          buttons: [
+            'copy', { extend: 'csv', title: 'D2H2-resourceslist' }
+          ]
+        });
       });
-  });
-}
+    });
+  }
 
-createResourcesTable()
+  createResourcesTable()
 </script>
 {% endblock %}

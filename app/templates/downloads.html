@@ -15,6 +15,220 @@
         <div class="custom-col col-10 p-3 mb-5 justify-content-center mx-auto" id="downloads">
         
         </div>
+        <div class="custom-col col-10 p-3 mb-5 justify-content-center mx-auto" id="downloads-studies">
+            <table class="table table-bordered table-hover styled-table" id="studies-table-downloads">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">GSE Accession ID</th>
+                        <th scope="col">Organism</th>
+                        <th scope="col">Assay</th>
+                        <th scope="col">Num Samples</th>
+                        <th scope="col">Submission Date</th>
+                        <th scope="col">PMID</th>
+                        <th scope="col">Expression</th>
+                        <th scope="col">Metadata</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gse_id, geo_metadata in gse_metadata['human'].items() %}
+                    <tr>
+                        <th scope="row"><a class="text-br-red" href="{{ geo_metadata.get('gse_link', ['#'])[0]|safe }}"
+                                target="_blank" rel="noopener noreferrer">{{ gse_id }}</a></th>
+                        <td>
+                            {% if geo_metadata.get('cur_gpl', ['Single GPL'])[0] != 'Single GPL' %}
+                            {% for gpl_metadata in geo_metadata['all_gpls'] %}
+                            {% if gpl_metadata['geo_accession'][0] == geo_metadata.get('cur_gpl')[0] %}
+                            {{ gpl_metadata['organism'][0]|safe }}
+                            {% endif %}
+                            {% endfor %}
+                            {% else %}
+                            {{ geo_metadata['all_gpls'][0].get('organism', ['No Organism'])[0]|safe }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if geo_metadata.get('type', ['No Assay'])|length > 1 %}
+                            {% for assay in geo_metadata.get('type', ['No Assay']) %}
+                            {{ assay|safe }}
+                            {% endfor %}
+                            {% else %}
+                            {{ geo_metadata.get('type', ['No Assay'])[0]|safe }}
+                            {% endif %}
+                        </td>
+                        <td>
+                        {{ geo_metadata.get('numsamples') }}
+        
+                        </td>
+                        <td data-order="{{geo_metadata.get('submission_date')[0][-5:] + month_dict[geo_metadata.get('submission_date')[0][:3]] + geo_metadata.get('submission_date')[0][4:6]}}" >
+                            {{month_dict[geo_metadata.get('submission_date')[0][:3]] + '/' + geo_metadata.get('submission_date')[0][4:6] + '/' + geo_metadata.get('submission_date')[0][-4:]}}
+                        </td>
+                        <td>
+                            {% if geo_metadata.get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed ID' %}
+                            <a class="text-br-red" href="{{ geo_metadata.get('pubmed_link', ['#'])[0]|safe }}" target="_blank"
+                                rel="noopener noreferrer">
+                                {{ geo_metadata.get('pubmed_id', ['No Pubmed ID'])[0]|safe }}
+                            </a>
+                            {% else %}
+                            <p>N/A</p>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ endpoint }}d2h2/data/human/{{ gse_id }}/{{ gse_id }}_Expression.txt" target='_blank'><img src='static/img/download.png' alt='' style='width: 15px;'></a>
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ endpoint }}d2h2/data/human/{{ gse_id }}/{{ gse_id }}_Metadata.txt" target='_blank'><img src='static/img/download.png' alt='' style='width: 15px;'></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% for gse_id, geo_metadata in gse_metadata['mouse'].items() %}
+                    <tr>
+                        <th scope="row"><a class="text-br-red" href="{{ geo_metadata.get('gse_link', ['#'])[0]|safe }}"
+                                target="_blank" rel="noopener noreferrer">{{ gse_id }}</a></th>
+                        <td>
+                            {% if geo_metadata.get('cur_gpl', ['Single GPL'])[0] != 'Single GPL' %}
+                            {% for gpl_metadata in geo_metadata['all_gpls'] %}
+                            {% if gpl_metadata['geo_accession'][0] == geo_metadata.get('cur_gpl')[0] %}
+                            {{ gpl_metadata['organism'][0]|safe }}
+                            {% endif %}
+                            {% endfor %}
+                            {% else %}
+                            {{ geo_metadata['all_gpls'][0].get('organism', ['No Organism'])[0]|safe }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if geo_metadata.get('type', ['No Assay'])|length > 1 %}
+                            {% for assay in geo_metadata.get('type', ['No Assay']) %}
+                            {{ assay|safe }}
+                            {% endfor %}
+                            {% else %}
+                            {{ geo_metadata.get('type', ['No Assay'])[0]|safe }}
+                            {% endif %}
+                        </td>
+                        <td>
+                        {{ geo_metadata.get('numsamples') }}
+        
+                        </td>
+                        <td data-order="{{geo_metadata.get('submission_date')[0][-5:] + month_dict[geo_metadata.get('submission_date')[0][:3]] + geo_metadata.get('submission_date')[0][4:6]}}" >
+                            {{month_dict[geo_metadata.get('submission_date')[0][:3]] + '/' + geo_metadata.get('submission_date')[0][4:6] + '/' + geo_metadata.get('submission_date')[0][-4:]}}
+                        </td>
+                        <td>
+                            {% if geo_metadata.get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed ID' %}
+                            <a class="text-br-red" href="{{ geo_metadata.get('pubmed_link', ['#'])[0]|safe }}" target="_blank"
+                                rel="noopener noreferrer">
+                                {{ geo_metadata.get('pubmed_id', ['No Pubmed ID'])[0]|safe }}
+                            </a>
+                            {% else %}
+                            <p>N/A</p>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ endpoint }}d2h2/data/mouse/{{ gse_id }}/{{ gse_id }}_Expression.txt" target='_blank' download="{{ gse_id }}_Expression.tsv"><img src='static/img/download.png' alt='' style='width: 15px;'></a>
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ endpoint }}d2h2/data/mouse/{{ gse_id }}/{{ gse_id }}_Metadata.txt" target='_blank' download><img src='static/img/download.png' alt='' style='width: 15px;'></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% for gse_id, geo_metadata in gse_metadata_single['human_single'].items() %}
+                    <tr>
+                        <th scope="row"><a class="text-br-red" href="{{ geo_metadata.get('gse_link', ['#'])[0]|safe }}"
+                                target="_blank" rel="noopener noreferrer">{{ gse_id }}</a></th>
+                        <td>
+                            {% if geo_metadata.get('cur_gpl', ['Single GPL'])[0] != 'Single GPL' %}
+                            {% for gpl_metadata in geo_metadata['all_gpls'] %}
+                            {% if gpl_metadata['geo_accession'][0] == geo_metadata.get('cur_gpl')[0] %}
+                            {{ gpl_metadata['organism'][0]|safe }}
+                            {% endif %}
+                            {% endfor %}
+                            {% else %}
+                            {{ geo_metadata['all_gpls'][0].get('organism', ['No Organism'])[0]|safe }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if geo_metadata.get('type', ['No Assay'])|length > 1 %}
+                            {% for assay in geo_metadata.get('type', ['No Assay']) %}
+                            {{ assay|safe }}
+                            {% endfor %}
+                            {% else %}
+                            {{ geo_metadata.get('type', ['No Assay'])[0]|safe }}
+                            {% endif %}
+                        </td>
+                        <td>
+                        {{ geo_metadata.get('numsamples') }}
+        
+                        </td>
+                        <td data-order="{{geo_metadata.get('submission_date')[0][-5:] + month_dict[geo_metadata.get('submission_date')[0][:3]] + geo_metadata.get('submission_date')[0][4:6]}}" >
+                            {{month_dict[geo_metadata.get('submission_date')[0][:3]] + '/' + geo_metadata.get('submission_date')[0][4:6] + '/' + geo_metadata.get('submission_date')[0][-4:]}}
+                        </td>
+                        <td>
+                            {% if geo_metadata.get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed ID' %}
+                            <a class="text-br-red" href="{{ geo_metadata.get('pubmed_link', ['#'])[0]|safe }}" target="_blank"
+                                rel="noopener noreferrer">
+                                {{ geo_metadata.get('pubmed_id', ['No Pubmed ID'])[0]|safe }}
+                            </a>
+                            {% else %}
+                            <p>N/A</p>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ endpoint }}d2h2/data/human_single/{{ gse_id }}/{{ gse_id }}_Expression.h5" target='_blank' download><img src='static/img/download.png' alt='' style='width: 15px;'></a>
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ endpoint }}d2h2/data/human_single/{{ gse_id }}/{{ gse_id }}_Metadata.txt" target='_blank' download><img src='static/img/download.png' alt='' style='width: 15px;'></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% for gse_id, geo_metadata in gse_metadata_single['mouse_single'].items() %}
+                    <tr>
+                        <th scope="row"><a class="text-br-red" href="{{ geo_metadata.get('gse_link', ['#'])[0]|safe }}"
+                                target="_blank" rel="noopener noreferrer">{{ gse_id }}</a></th>
+                        <td>
+                            {% if geo_metadata.get('cur_gpl', ['Single GPL'])[0] != 'Single GPL' %}
+                            {% for gpl_metadata in geo_metadata['all_gpls'] %}
+                            {% if gpl_metadata['geo_accession'][0] == geo_metadata.get('cur_gpl')[0] %}
+                            {{ gpl_metadata['organism'][0]|safe }}
+                            {% endif %}
+                            {% endfor %}
+                            {% else %}
+                            {{ geo_metadata['all_gpls'][0].get('organism', ['No Organism'])[0]|safe }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if geo_metadata.get('type', ['No Assay'])|length > 1 %}
+                            {% for assay in geo_metadata.get('type', ['No Assay']) %}
+                            {{ assay|safe }}
+                            {% endfor %}
+                            {% else %}
+                            {{ geo_metadata.get('type', ['No Assay'])[0]|safe }}
+                            {% endif %}
+                        </td>
+                        <td>
+                        {{ geo_metadata.get('numsamples') }}
+        
+                        </td>
+                        <td data-order="{{geo_metadata.get('submission_date')[0][-5:] + month_dict[geo_metadata.get('submission_date')[0][:3]] + geo_metadata.get('submission_date')[0][4:6]}}" >
+                            {{month_dict[geo_metadata.get('submission_date')[0][:3]] + '/' + geo_metadata.get('submission_date')[0][4:6] + '/' + geo_metadata.get('submission_date')[0][-4:]}}
+                        </td>
+                        <td>
+                            {% if geo_metadata.get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed ID' %}
+                            <a class="text-br-red" href="{{ geo_metadata.get('pubmed_link', ['#'])[0]|safe }}" target="_blank"
+                                rel="noopener noreferrer">
+                                {{ geo_metadata.get('pubmed_id', ['No Pubmed ID'])[0]|safe }}
+                            </a>
+                            {% else %}
+                            <p>N/A</p>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ endpoint }}d2h2/data/mouse_single/{{ gse_id }}/{{ gse_id }}_Expression.h5" target='_blank' download><img src='static/img/download.png' alt='' style='width: 15px;'></a>
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ endpoint }}d2h2/data/mouse_single/{{ gse_id }}/{{ gse_id }}_Metadata.txt" target='_blank' download><img src='static/img/download.png' alt='' style='width: 15px;'></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -38,7 +252,7 @@ function createDownloadsTable() {
 
         var headers = data[0]
 
-        var tabletext = "<table id='table-downloads' class='styled-table mb-5'><thead><tr>"
+        var tabletext = "<table id='table-downloads' class='styled-table'><thead><tr>"
 
         headers.forEach(function(header) {
             tabletext += "<th>" + header + "</th>"
@@ -70,6 +284,11 @@ function createDownloadsTable() {
     });
 }
 createDownloadsTable()
+
+$(document).ready(function(){
+    console.log($('#studies-table-downloads'))
+    table = $('#studies-table-downloads').DataTable();
+});
 
 </script>
 

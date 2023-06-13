@@ -70,7 +70,7 @@ def resources():
 
 @app.route(f'{ROOT_PATH}/downloads', methods=['GET', 'POST'])
 def downloads():
-	return render_template('downloads.html', base_path=BASE_PATH, numstudies=numstudies, endpoint=endpoint)
+	return render_template('downloads.html', base_path=BASE_PATH, gse_metadata=gse_metadata, gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, numstudies=numstudies,  month_dict=month_dict, endpoint=endpoint)
 ####################
 
 
