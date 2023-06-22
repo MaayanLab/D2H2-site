@@ -1,13 +1,9 @@
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-import dotenv
 import os
 import datetime
-
-dotenv.load_dotenv()
 #Authorize the API
 
-DEBUG = os.environ.get('DEBUG', True)
 scope = [
     'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/drive.file'
@@ -40,11 +36,11 @@ except:
 
 
 def log_chat(user_query, response):
-  if not DEBUG:
-    try:
-      row = [str(datetime.datetime.now()), user_query, response]
-      sheet.append_row(row)
-      return
-    except:
-      print('Error adding to chat data to log')
-      return
+  try:
+    row = [str(datetime.datetime.now()), user_query, response]
+    sheet.append_row(row)
+    return
+  except Exception as e:
+    print(e)
+    print('Error adding to chat data to log')
+    return

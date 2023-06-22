@@ -15,15 +15,57 @@ validation = {"[Gene]": list(processes["[Gene]"].keys()),
 
 gene_process_descs = "\n".join(map(lambda output: f'[Gene]->{output} - {processes["[Gene]"][output]["gpt_desc"]}', list(processes["[Gene]"].keys())))
 geneset_process_descs = "\n".join(map(lambda output: f'[GeneSet]->{output} - {processes["[GeneSet]"][output]["gpt_desc"]}', list(processes["[GeneSet]"].keys())))
-processes_descs = f"{gene_process_descs}\n{geneset_process_descs}"
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-@lru_cache()
-def find_process(query):
+def determine_valid(query):
     prompt = f"""
     Based on the query from the user: "{query}"
-    Additional context: If a gene symbol or name is included in the input then the input will most likely be [Gene]. A GeneSet is a collection of mulitple genes, thus is the user includes 'genes' or 'gene set' the input will likely be [GeneSet]. 
+    Pick an input type from the list: [[Metabolite],[RNA-seq file],[Variant],[Transcript],[Gene],[GeneSet]]
+    Additional context: If a gene symbol is included in the input then the input will most likely be [Gene]. A GeneSet is a collection of mulitple genes, thus is the user includes 'genes' or 'gene set' the input will likely be [GeneSet]. If the user provides a query with the word gene in it, they could be asking for a gene as an output which is not valid. 
+    If the user is asking for a gene or a gene set as an output, you should respond with [Other].
+    Please also provide a confidence score in the range of: [0, 1].
+    Respond in this format:
+    [confidence score],[Type]
+    """
+    try:
+        tag_line = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+        {"role": "system", "content": "You are an assitant meant to process a user query and decide what type of input and output the user is specifiying"},
+        {"role": "user", "content": prompt}
+            ],
+        max_tokens =20,
+        temperature=1,
+        )
+
+        response = tag_line['choices'][0]['message']['content']
+        print(response)
+        response = response.split(',')[1]
+        if '[Gene]' in response:
+            return (True, '[Gene]')
+        elif '[GeneSet]' in response:
+            return (True, '[GeneSet]')
+        else: 
+            return (False, '[None]')
+    except:
+        return (False, '[None]')
+    
+
+
+@lru_cache()
+def find_process(query):
+    valid, input_type = determine_valid(query)
+    if not valid:
+        return {"response": 1, "error": "input"}
+    if input_type == '[Gene]':
+        processes_descs = gene_process_descs
+    else: 
+        processes_descs = geneset_process_descs
+    
+    prompt = f"""
+    Based on the query from the user: "{query}"
+    Additional context: If a gene symbol is included in the input then the input will most likely be [Gene]. A GeneSet is a collection of mulitple genes, thus is the user includes 'genes' or 'gene set' the input will likely be [GeneSet]. If the user provides a query with an input does not match any of the included processes, please use the type: [None]. 
 
     Pick an input type from the list: [[Gene], [GeneSet]]
 
@@ -41,10 +83,11 @@ def find_process(query):
         {"role": "user", "content": prompt}
             ],
         max_tokens =20,
-        temperature=0,
+        temperature=.1,
         )
 
         response = tag_line['choices'][0]['message']['content']
+        response = response.replace('(|)', '')
         try:
             input, output = response.split('->')
             if output in validation[input]:
@@ -55,7 +98,7 @@ def find_process(query):
             return {"response": 1, "error": "Parsing error"}
     except:
         return {"response": 1, "error": "busy"}
-    
+
 def select_option(response, options):
     prompt = f"""
     Based on the reponse from the user: "{response}"

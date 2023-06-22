@@ -2,233 +2,460 @@
 
 {% block body %}
 <div class="justify-content-center container-fluid p-0 m-0">
-  <div class="col-9 justify-content-center mx-auto p-0 m-0">
+    <div class="col-xl-8 col-lg-10 col-md-10 col-sm-10 justify-content-center mx-auto p-0 m-0">
 
-    <div class="justify-content-center p-0 m-0" style="flex-wrap: wrap;">
+        <div class="justify-content-center p-0 m-0" style="flex-wrap: wrap;">
 
-      <!-- Main Panel -->
-      <div class="banner">
-        <div class="row">
-          <div class="text-center justify-content-center p-3 pb-0 mb-0 mx-auto">
-            <h2 style="color: black;">Diabetes Data and Hypothesis Hub (D2H2)</h2>
-            <h5 class="m-2 mb-0" style="color: black;"> A platform that facilitates data-driven hypothesis generation
-              for
-              the diabetes and related metabolic
-              disorder research community. </h5>
-          </div>
-        </div>
-        <div hidden>
-          <div id="human-bulk-num">{{ numstudies[0] }}</div>
-          <div id="mouse-bulk-num">{{ numstudies[1] }}</div>
-          <div id="human-sc-num">{{ numstudies[2] }}</div>
-          <div id="mouse-sc-num">{{ numstudies[3] }}</div>
-        </div>
-      </div>
-
-      <div class="row m-2 justify-content-center">
-        <div class="vertical">
-          <div class="input-wrapper row mt-3">
-            <input id="gpt-query" style="right: 0rem;" type="text" placeholder="Enter a gene related query..."
-              name="text" class="input pr-0 mr-0">
-            <button id="gpt-query-button" class="pl-0 ml-0 query-submit"
-              style="width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
-              <img src="static/img/doublearrow.png" style="width: 60%" alt="Query">
-            </button>
-          </div>
-          <p class="m-0 p-0 pl-3 pt-2" style="font-size: smaller;">Try an example: </p>
-          <a class="pl-3" style="color: rgb(10, 13, 149); font-size: smaller;"
-            onclick="fillQueryExample('In what tissues is STAT3 expressed?')">In what tissues is STAT3 expressed?</a>,
-          <p>
-            <a class="pl-3" style="color:rgb(10, 13, 149); font-size: smaller;"
-              onclick="fillQueryExample('What transcription factors regulate my geneset?')">What transcription factors
-              regulate my geneset?</a>
-          </p>
-        </div>
-
-        <div class="p-2 pt-0 mt-0 text-center col-lg-4 col-sm-6">
-          <p>
-            Curated transcriptomics datasets from various Type 2 Diabetes studies are made available for download,
-            visualization, and enrichment analysis.
-          </p>
-          <h5 style="font-size: 16px;">Processed Bulk RNA-seq, Microarray, and scRNA-seq Studies</h5>
-          <div class="col mb-4">
-            <div class="row">
-              <div class="col text-center mb-3">
-                <h6>Human</h6>
-                <div class="countup num-style" style="font-size: 30px;">{{ numstudies[0] + numstudies[2] }}</div>
-              </div>
-              <div class="col text-center mb-3">
-                <h6>Mouse</h6>
-                <div class="countup num-style" style="font-size: 30px;">{{ numstudies[1] + numstudies[3] }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="vertical m-5">
-          <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}">
-            <button class="learn-more">
-              <span class="circle" aria-hidden="true">
-                <span class="icon arrow"></span>
-              </span>
-              <span class="button-text">Explore Datasets</span>
-            </button></a>
-        </div>
-      </div>
-    </div>
-
-    <div class=" row justify-content-center mb-2" style="flex-wrap: wrap;">
-
-      <div class="col-lg-5 col-md-10 col-sm-10 custom-col m-2" id="visualize">
-
-        <div class="question mt-3 justify-content-center row p-2 text-center">
-          <h4>Query a Single Gene across Curated Diabetes-Related Signatures</h4>
-        </div>
-        <div class="mt-3 justify-content-center row mb-3">
-          <label class="mt-3 mr-1 ml-4" for="gene-select"> Enter gene symbol: </label>
-          <select id="gene-select" class="mt-2" data-url-genes="{{ url_for('genes_api', geo_accession='human') }}"
-            style="width: 200px;"></select>
-        </div>
-        <div class="row text-center justify-content-center">
-          <p> Try an example: <a onclick="fillSingleExampleHome('STAT3')" style="color:rgb(10, 13, 149);">STAT3</a>,
-            <a onclick="fillSingleExampleHome('AKT1')" style="color:rgb(10, 13, 149);">AKT1</a>
-          </p>
-        </div>
-        <div class="row justify-content-center">
-          <!-- 
-          <button class="species-tab btn btn-primary m-1" id="human" role="tab">Human </button>
-          <button class="species-tab btn btn-inactive m-1" id="mouse" role="tab">Mouse </button> -->
-          <label class="mt-2 mr-1" for="species-toggle">Select species: </label>
-          <label class="toggle" id="species-toggle">
-            <input type="checkbox" id="species-val">
-            <span class="slider"></span>
-            <span class="labels" data-on="Mouse" data-off="Human"></span>
-          </label>
-        </div>
-
-
-        <div class="row ml-1 mr-1">
-          <p class="mt-3" style="text-align: justify">This module provides a volcano plot visualization of the
-            expression levels of a given gene in
-            various Type 2 Diabetes transcriptomics signatures. Users may enter in a single gene symbol as input; the
-            output is a volcano plot which plots each T2D signature by gene-specific p-value (y-axis) and fold change
-            (x-axis) as well as the corresponding tables available for download.</p>
-        </div>
-
-
-
-        <div class="row justify-content-center mb-2">
-          <img src="static/img/t2d-thumbnail.png" alt="" class="img-fluid img-thumbnail">
-        </div>
-
-        <div class="justify-content-center row text-center mb-2 mt-2" style="bottom: 0;"">
-          <a id=" appyter-home"><button type="button" class="btn btn-primary btn-group-sm mt-3 mb-2">
-            <span id="appyter-action">Generate plot</span>
-          </button>
-          </a>
-        </div>
-        <div id="volcano-loading"></div>
-      </div>
-
-
-
-
-      <div class="col-lg-5 col-md-10 col-sm-10 custom-col m-2" id="enrichranalysis">
-
-        <div class="question mt-3 p-2 justify-content-center row text-center">
-          <h4>Query a Gene Set across Curated Diabetes-Related Signatures</h4>
-        </div>
-
-        <div class="row mt-4 justify-content-center" style="flex-wrap: wrap;">
-          <div class="col-md-5 col-sm-7 col-lg-4 text-center mr-5 mt-4">
-            <textarea name="list" rows="8" id="text-area1"
-              placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
-              onkeyup="geneCount($(this).val(), 1)" onchange="geneCount($(this).val(), 1)"
-              onfocus="geneCount($(this).val(), 1)"></textarea>
-            <div class="mt-1">
-              <span id="gene-count1"> 0 </span> gene(s) entered
-            </div>
-            <div class="text-center">
-              <a id="examplefill1" style="color: rgb(10, 13, 149)">Try an example gene set</a>
+            <!-- Main Panel -->
+            <div class="banner">
+                <div class="row">
+                    <div class="text-center justify-content-center p-3 pb-0 mb-0 mx-auto mt-4">
+                        <h2 style="color: black;">Diabetes Data and Hypothesis Hub (D2H2)</h2>
+                        <h5 class="m-2 mb-0" style="color: black;"> A platform that facilitates data-driven hypothesis
+                            generation
+                            for the diabetes and related metabolic disorder research community.
+                        </h5>
+                    </div>
+                </div>
+                <div hidden>
+                    <div id="human-bulk-num">{{ numstudies[0] }}</div>
+                    <div id="mouse-bulk-num">{{ numstudies[1] }}</div>
+                    <div id="human-sc-num">{{ numstudies[2] }}</div>
+                    <div id="mouse-sc-num">{{ numstudies[3] }}</div>
+                </div>
             </div>
 
-          </div>
-          <div class="col-md-7 col-sm-7 col-lg-6 text-center mr-3" style="overflow-y: visible !important;">
-            <p>
-              File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
-            </p>
-            <form action="/action_page.php" style="flex-wrap: wrap;">
-              <input type="file" id="gene-file1" name="filename">
-            </form>
-            <label class="mt-1 mr-1" for="desc1">Enter gene set description (optional): </label>
-            <input class="form-control-md" id="desc1" type="text">
-            <p class="mt-2">Perform enrichement analysis through Enricher with the entered or uploaded gene set agasint
-              our curated
-              Diabetes gene set library.
-              Any overlapping gene can be submitted to the <a href="{{ url_for('singlegene_home')}}">Single Gene
-                Queries</a> page and the sets of overlapping genes can be submitted to the <a
-                href="{{ url_for('geneset_home') }}">Gene Set Queries page.</p>
-          </div>
-          <div class="flex-column justify-content-center text-center m-2" style="overflow-y: visible !important;">
+            <div class="vertical mt-4" id="chat-section"
+            style="border-style: solid; border-radius: 2rem; border-color: rgb(184, 184, 184); width: 100%; overflow: auto;">
+            <div id="chat-bubbles-section" style="overflow: auto;">
+                <div class="chat chat-start mb-2" id="chat-intro" style="display: none;">
+                    <div class="chat-image avatar pl-2" style="width: 50px">
+                        <img src="static/img/d2h2_chat_bot.png" />
+                    </div>
+                    <div class="chat-header">
+                        D2H2
+                    </div>
+                    <div class="chat-bubble chat-bubble-info mb-1" style="background-color: #d3d3d3">I am an AI-powered chat
+                        interface designed to help answer gene and gene set related queries. Please start by entering a
+                        question.
+                    </div>
+                </div>
+            </div>
+            <div class="text-right pr-3 pb-1">
+                <div id="reset"><img id="reset-arrow" src="static/img/reset-arrow.png" alt="reset" style="width: 20px;"/></div>
+            </div>
+        </div>
+        
 
-          </div>
+        <div id="query-section" class="col m-2 mx-right mb-5">
+            <div class="vertical">
+                <div class="input-wrapper row mt-3" style="flex-wrap: nowrap;">
+                    <input id="gpt-query" style="right: 0rem; width: 100rem;" type="text"
+                        placeholder="Enter a gene or a gene set related query..." name="text" class="input pr-0 mr-0">
+                    <button id="gpt-query-button" class="pl-0 ml-0 query-submit"
+                        style="width: 40px; min-width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
+                        <img src="static/img/doublearrow.png" style="width: 60%" alt="Query">
+                    </button>
+                </div>
+                <h5 class="pt-2 text-center" style="font-size: 18px;">Example Queries</h5>
+                <div class="m-0 p-0 cards" style="font-size: smaller; max-width: 96%;">
+                    <div class="card">
+                        <div class="q-example" id="q-example1">
+                        In what tissues is STAT3 expressed?
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="q-example" id="q-example2">
+                        Which transcription factors regulate my gene set?
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="q-example" id="q-example3">
+                        Which diabetes-related GEO signatures up- or down-regulate the expression of AKT1?
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="q-example" id="q-example4">
+                        Which LINCS L1000 small molecules may reverser or mimic my up and down gene sets?
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="q-example" id="q-example5">
+                        Which diabetes related gene sets significantly overlap with my gene set?
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="q-example" id="q-example6">
+                            Which genes are most correlated with NFATC1?
+                        </div>
+                    </div>
+                </div>
+                </p>
+            </div>
         </div>
 
 
-        <div class="justify-content-center row text-center mt-1">
-          <a id="diabetesEnrichr-query">
-            <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Submit to Enrichr
-              <img src="{{ url_for('static', filename='img/enrichrlogo.png') }}" class="img-fluid mr-3"
-                style="width: 45px" alt="Enrichr">
-            </button>
-          </a>
+            <div class="row justify-content-center text-center">
+
+                <div class="m-2 pt-0 mt-0 text-center col-lg-4 col-sm-6">
+                    <p>
+                        Curated transcriptomics datasets from various Type 2 Diabetes studies are made available for
+                        download,
+                        visualization, and enrichment analysis.
+                    </p>
+                    <h5 style="font-size: 16px;">Processed Bulk RNA-seq, Microarray, and scRNA-seq Studies</h5>
+                    <div class="col mb-4">
+                        <div class="row">
+                            <div class="col text-center mb-3">
+                                <h6>Human</h6>
+                                <div class="countup num-style" style="font-size: 30px;">{{ numstudies[0] + numstudies[2]
+                                    }}</div>
+                            </div>
+                            <div class="col text-center mb-3">
+                                <h6>Mouse</h6>
+                                <div class="countup num-style" style="font-size: 30px;">{{ numstudies[1] + numstudies[3]
+                                    }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="vertical ml-5" style="margin-top: 6%">
+                    <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}">
+                        <button class="learn-more">
+                            <span class="circle" aria-hidden="true">
+                                <span class="icon arrow"></span>
+                            </span>
+                            <span class="button-text">Explore Datasets</span>
+                        </button></a>
+                </div>
+            </div>
         </div>
+        
 
 
-      </div>
     </div>
-
-    <div class="container justify-content-center">
-
-      <div id="volcano-plot" class="justify-content-center centered"></div>
-      <div id="buttons"></div>
-      <div id="t2d-tables"></div>
-    </div>
-
-    <div class="container justify-content-center">
-      <div id="enrich-res"></div>
-    </div>
-    <!-- Twitter Table -->
-    <div class="row text-center justify-content-center" style="flex-wrap: wrap;">
-      <div class="col-md-10 col-sm-10 col-lg-7 col-10 text-center custom-col mb-4 mr-2 ml-2">
-        <div class="question p-2 justify-content-center row">
-          <h4 class="mt-4">Recent Diabetes and Related Metabolic Disorder Publications Containing a Gene-Centric Title
-          </h4>
-        </div>
-        <div id="tweets-res" class="mb-2 mt-1"></div>
-      </div>
-
-      <div class="col-md-6 col-sm-7 col-lg-3 text-center custom-col mb-4 mr-2 ml-2">
-        <a class="twitter-timeline" data-height="600" data-chrome="nofooter noborders transparent"
-          href="https://twitter.com/D2H2Bot?ref_src=twsrc%5Etfw">Tweets by D2H2Bot</a>
-        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-      </div>
-    </div>
-  </div>
-
-
-
-
-  {% endblock %}
 </div>
+{% endblock %}
 </div>
 
 {% block footer %}
-<script>
+<script type="module">
+    import { human_list, mouse_list, processes, chatN, geneset_entries, geneset_buttons, geneset_buttons_up_down, geneset_up_down_entries } from '../static/js/modules/constants.js';
+    import { gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from '../static/js/modules/single-gene-queries.js';
+    import { geneset_signatures, geneset_enrichment, geneset_kea3, geneset_chea3, geneset_sigcomlincs } from '../static/js/modules/geneset-queries.js';
+    import { parse_gene, select_option, runFindQuery, run_process_gene, log_chat } from '../static/js/modules/query.js';
+    const process_dict = await processes;
 
-  
-  const countupEls = document.querySelectorAll('.countup');
-  countupEls.forEach(animateCountUp);
+    var new_process = true;
+    var process_number = false;
+    var chat_num = 0;
+    var process_info = {};
+    var curr_arg = '';
+    var options = [];
 
+    var options_str = "<br>";
+    const options_dict = {}
+    var outputs = Object.keys(process_dict['[Gene]']);
+    var process_numbers = []
+    let i = 0;
+    for (i; i < outputs.length; i++) {
+        console.log(process_dict['[Gene]'])
+        console.log(outputs[i])
+        options_str += `${(i + 1).toString()}. ${process_dict['[Gene]'][outputs[i]].gpt_desc}<br>`;
+        options_dict[(i + 1).toString()] = {"response": 0, "input": '[Gene]', "output": outputs[i]};
+        process_numbers.push((i + 1).toString())
+    }
+    outputs = Object.keys(process_dict['[GeneSet]']);
+    for (let j = 0; j < outputs.length; j++) {
+        options_str += `${(i + j + 1).toString()}. ${process_dict['[GeneSet]'][outputs[j]].gpt_desc}<br>`;
+        options_dict[(i + j + 1).toString()] = {"response": 0, "input": '[GeneSet]', "output": outputs[j], 'geneset': ''};
+        process_numbers.push((i + j + 1).toString())
+    }
+
+    function find_number(q) {
+        var r = /\d+/g;
+        var m;
+        while ((m = r.exec(q)) != null) {
+            return m[0];
+        }
+        return ''
+    }
+
+    async function reset_process() {
+        new_process = true;
+        process_info = {};
+        curr_arg = '';
+        options = [];
+    }
+
+    async function reset_chat() {
+        await reset_process();
+        document.getElementById('chat-bubbles-section').innerHTML = "";
+        const message = `I am an AI-powered chat interface designed to help answer gene and gene set related queries. Please start by entering a question.`;
+        document.getElementById("chat-bubbles-section").appendChild(chatN('start', 'intro', '#d3d3d3', message));
+        $(`#chat-intro`).fadeIn(1000)
+    }
+
+
+    async function submit_gene_set() {
+        var geneset = '';
+        var geneset_up = '';
+        var geneset_down = '';
+
+        if (document.getElementById(`enter-geneset${chat_num}`).style.display == "flex") {
+            var inputvalue = document.getElementById(`text-area${chat_num}`).value;
+            var file = document.getElementById(`gene-file${chat_num}`).value;
+            var section = `gene-file${chat_num}`;
+            geneset;
+
+            if (inputvalue) {
+                geneset = inputvalue.split("\n").join(',')
+            }
+
+            if (file) {
+                geneset = await loadFileAsText(section, ",");
+            }
+        } else {
+            var inputvalue_up = document.getElementById(`text-area-up${chat_num}`).value;
+            var inputvalue_down = document.getElementById(`text-area-down${chat_num}`).value;
+            var file_up = document.getElementById(`gene-file-up${chat_num}`).value;
+            var file_down = document.getElementById(`gene-file-down${chat_num}`).value;
+            var section_up = `gene-file-up${chat_num}`;
+            var section_down = `gene-file-down${chat_num}`;
+
+            if (inputvalue_up) {
+                geneset_up = inputvalue_up.split("\n").join(',')
+            }
+            if (file_up) {
+                geneset_up = await loadFileAsText(section_up, ",");
+            }
+
+            if (inputvalue_down) {
+                geneset_down = inputvalue_down.split("\n").join(',')
+            }
+
+            if (file_down) {
+                geneset_down = await loadFileAsText(section_down, ",");
+            }
+        }
+
+        process_info['geneset'] = geneset;
+        process_info['up'] = geneset_up;
+        process_info['down'] = geneset_down;
+        await run_process_gene('[USER ENTERED GENESET]', process_info, chat_num);
+        chat_num++;
+        chat_num++;
+        await reset_process();
+    }
+
+    async function ask_questions(query) {
+        var d2h2_response = '';
+        var response = document.getElementById('gpt-query').value.trim();
+        if (response != '') {
+            document.getElementById("chat-bubbles-section").appendChild(chatN('end', chat_num, '#d3d3d3', response));
+            await $(`#chat-${chat_num}`).fadeIn(1000);
+            chat_num++;
+            query = response;
+        }
+        if (process_info['geneSymbol'] == '') {
+            const [gene, species] = await parse_gene(response);
+            if (gene == '') {
+                d2h2_response = "I did not recognize that gene symbol, please try again.";
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
+                await $(`#chat-${chat_num}`).fadeIn(2000);
+                chat_num++;
+                log_chat(query, d2h2_response);
+                return;
+            } else {
+                process_info['geneSymbol'] = gene;
+                process_info['species'] = species;
+            }
+        }
+        const qs = process_dict[process_info.input][process_info.output].questions
+        if (curr_arg != '') {
+            const res = await select_option(response, options);
+            if (res == 'error') {
+                d2h2_response = "I did not recognize that option. Please try again.";
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
+                await $(`#chat-${chat_num}`).fadeIn(2000);
+                chat_num++;
+                log_chat(query, d2h2_response);
+                return;
+            } else if (res == 'busy') {
+                d2h2_response = "I'm sorry, the OpenAPI endpoint is currently overloaded. Please try again in a few seconds.";
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
+                await $(`#chat-${chat_num}`).fadeIn(2000);
+                chat_num++;
+                log_chat(query, d2h2_response);
+                return;
+            } else process_info[curr_arg] = res;
+        }
+        for (let i = 0; i < qs.length; i++) {
+            if (!(qs[i].arg in process_info)) {
+                var readable_options = qs[i].options.map(x => (x.replace('_', " ")));
+                readable_options[readable_options.length - 1] = "and " + readable_options[readable_options.length - 1] + ".";
+                readable_options = readable_options.join(", ");
+                d2h2_response = qs[i].q + ' The options include ' + readable_options + " Please type in the option you would like to select.";
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
+                await $(`#chat-${chat_num}`).fadeIn(2000);
+                chat_num++;
+                log_chat(query, d2h2_response);
+                curr_arg = qs[i].arg;
+                options = qs[i].options;
+                return;
+            }
+        }
+        let process_info_copy = { ...process_info };
+        let chat_num_copy = chat_num.valueOf()
+        await run_process_gene(query, process_info_copy, chat_num);
+        chat_num++;
+        chat_num++;
+        await reset_process();
+    }
+
+
+    async function run_chat() {
+        var d2h2_response = '';
+        var q = document.getElementById('gpt-query').value.trim();
+        if (q != '') {
+            document.getElementById("chat-bubbles-section").appendChild(chatN('end', chat_num, '#d3d3d3', q))
+            $(`#chat-${chat_num}`).fadeIn(2000)
+
+            setTimeout(async () => {
+                chat_num++;
+                var response;
+                console.log(find_number(q))
+                if (process_number && process_numbers.includes(find_number(q))) {
+                    response = options_dict[find_number(q)];
+                    process_number = false;
+                    if (response['input'] == '[Gene]') {
+                        const res = await parse_gene(q);
+                        response['geneSymbol'] = res[0]
+                        response['species'] = res[1]
+                    }
+                } else response = await runFindQuery(q);
+
+                if (response['response'] == 1) {
+                    if (response['error'] == 'busy') {
+                        d2h2_response = "I'm sorry, the OpenAPI endpoint is currently overloaded. Please try again in a few seconds.";
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
+                        await $(`#chat-${chat_num}`).fadeIn(2000);
+                        chat_num++;
+                        log_chat(q, d2h2_response);
+                        return;
+                    } else if (response['error'] == 'input') {
+                        var options_str = "<br>";
+                        var outputs = Object.keys(process_dict['[Gene]']);
+                        let i = 0;
+                        for (i; i < outputs.length; i++) {
+                            console.log(process_dict['[Gene]'])
+                            console.log(outputs[i])
+                            options_str += `${(i + 1).toString()}. ${process_dict['[Gene]'][outputs[i]].gpt_desc}<br>`
+                        }
+                        outputs = Object.keys(process_dict['[GeneSet]']);
+                        for (let j = 0; j < outputs.length; j++) {
+                            options_str += `${(i + j + 1).toString()}. ${process_dict['[GeneSet]'][outputs[j]].gpt_desc}<br>`
+                        }
+                        d2h2_response = `I'm sorry, I didn't understand your question. The possible questions include: ${options_str}You can type the number to select a desired process.`;
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
+                        await $(`#chat-${chat_num}`).fadeIn(2000);
+                        chat_num++;
+                        log_chat(q, d2h2_response);
+                        process_number = true;
+                        return;
+                    } else {
+                        d2h2_response = "I'm sorry, I don't understand the your question. Please try again.";
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
+                        await $(`#chat-${chat_num}`).fadeIn(2000);
+                        chat_num++;
+                        log_chat(q, d2h2_response);
+                        return;
+                    }
+                }
+                new_process = false;
+                process_info = response;
+                if (response['input'] == '[Gene]') {
+                    if (response['geneSymbol'] == '') {
+                        d2h2_response = 'Please provide a gene symbol.'
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
+                        await $(`#chat-${chat_num}`).fadeIn(2000);
+                        chat_num++;
+                        log_chat(q, d2h2_response);
+                    } else {
+                        document.getElementById('gpt-query').value = '';
+                        ask_questions(q);
+                    }
+                } else if (response['input'] == '[GeneSet]') {
+                    d2h2_response = "Please enter your gene set:";
+                    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
+                    await $(`#chat-${chat_num}`).fadeIn(2000)
+                    chat_num++;
+                    log_chat(q, d2h2_response);
+                    if (process_dict[response.input][response.output].args.includes('up')) {
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_up_down_entries(chat_num + 1) + geneset_buttons_up_down(chat_num + 1)))
+                    } else document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries(chat_num + 1) + geneset_buttons(chat_num + 1)))
+                    document.getElementById(`submit_gene_set${chat_num + 1}`).addEventListener("click", function () {
+                        submit_gene_set(process_info);
+                    });
+                    await $(`#chat-${chat_num}`).fadeIn(2000);
+                    chat_num++;
+                }
+            }, 1000);
+        }
+    }
+
+    function run() {
+        if (new_process) {
+            run_chat();
+        } else {
+            ask_questions();
+        }
+        document.getElementById('gpt-query').value = '';
+    }
+
+    $("#gpt-query").on('keyup', function (e) {
+        if (e.key === 'Enter') {
+            run()
+        }
+    })
+
+    $("#gpt-query-button").on('click', function (e) {
+        run_chat()
+    })
+
+
+    document.getElementById("gpt-query").onfocus = function () { fadeChatIn() };
+
+    async function fadeChatIn() {
+        await $("#chat-section").fadeIn(1000);
+        setTimeout(() => $("#chat-intro").fadeIn(), 1500)
+        $("#chat-intro").fadeIn(2000)
+        $('html, body').animate({
+            scrollTop: $("#query-section").offset().top
+        }, 1000);
+    }
+
+    function fillQuery(q) {
+        document.getElementById('gpt-query').value = q;
+        fadeChatIn();
+        run();
+        document.getElementById('gpt-query').value = '';
+    }
+
+    const exampleArray = Array.from(document.querySelectorAll('.q-example'));
+    exampleArray.forEach((elt) => {
+        document.getElementById(elt.id).addEventListener("click", function () {
+            fillQuery(elt.innerText);
+        });
+    }
+    );
+
+    document.getElementById('reset').addEventListener("click", function () {
+        reset_chat();
+    });
+
+
+    const countupEls = document.querySelectorAll('.countup');
+    countupEls.forEach(animateCountUp);
 </script>
-
 {% endblock %}
