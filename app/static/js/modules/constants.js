@@ -89,7 +89,7 @@ export function geneset_entries(chatnum) {
             </div>
             <div class="text-text-center">
                 <a onclick="fillSet('text-area${chatnum}', 'desc', ${chatnum}); "
-                    style="color: rgb(10, 13, 149)">Try an example gene set</a>
+                    style="color: rgb(10, 13, 149)">Try an example set</a>
             </div>
         </div>
         <div class="col-sm-12 col-md-6 col-lg-3 justify-content-start text-center ml-4"

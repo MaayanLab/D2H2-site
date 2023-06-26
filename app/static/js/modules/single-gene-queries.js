@@ -183,8 +183,7 @@ export function single_gene_perturbations(gene, species, resultid) {
               <div class="row" style="flex-wrap: wrap;">
                 <div class="col-md-6 col-lg-6 col-sm-12">
                   <div class="row text-center">
-                    <p class="mt-4 ml-1"> This linked Appyter generates a volcano plot visualization displaying
-                      human/mouse signatures for a gene of interest.</p>
+                    <p class="mt-4 ml-1">This Appyter can be used to find conditions to maximally up/down regulate the expression of a gene in human/mouse based on curated GEO studies.</p>
                   </div>
                   <div class="row justify-content-center mt-3 mb-3">
                     <img src="static/img/genecentric-thumbnail.png" alt="" class="img-fluid img-thumbnail">
@@ -201,8 +200,7 @@ export function single_gene_perturbations(gene, species, resultid) {
                 </div>
                 <div class="col-md-6 col-lg-6 col-sm-12">
                   <div class="row text-center mr-2">
-                    <p class="mt-3">This linked Appyter generates a volcano plot visualization displaying the expression
-                      of a specific gene in RNA-seq signatures generated from transformed L1000 data.</p>
+                    <p class="mt-3">This Appyter generates a volcano plot displaying how different drugs and small molecules may induce or suppress the expression of a specific gene based on transformed L1000 data.</p>
                   </div>
                   <div class="row justify-content-center mb-3">
                     <img src="static/img/L1000-thumbnail.png" alt="" class="img-fluid img-thumbnail">

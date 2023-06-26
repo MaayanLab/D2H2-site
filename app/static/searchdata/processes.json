@@ -42,7 +42,7 @@
                 "geneSymbol",
                 "species"
             ],
-            "text": "Here are two Appyters and their correposnding texts which query a gene symbol agasint L1000 chemical perturbations and gene KOs and signatures from GEO.",
+            "text": "Here are two Appyters that can be used to identify drugs, small molecules, and other perturbations to maximally up- or down-regulate the expression of a gene.",
             "questions": []
         },
         "[TFs]": {
@@ -102,7 +102,7 @@
             "questions": []
         },
         "[TFs]": {
-            "gpt_desc": "What transcription factors regulate my gene set?",
+            "gpt_desc": "Which transcription factors regulate my gene set?",
             "process": "geneset_chea3",
             "args": [
                 "geneset"
@@ -111,7 +111,7 @@
             "questions": []
         },
         "[Kinases]": {
-            "gpt_desc": "What kinases regulate my gene set?",
+            "gpt_desc": "Which kinases regulate my set of proteins or phospho-proteins?",
             "process": "geneset_kea3",
             "args": [
                 "geneset"

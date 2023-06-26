@@ -356,7 +356,7 @@
                         for (let j = 0; j < outputs.length; j++) {
                             options_str += `${(i + j + 1).toString()}. ${process_dict['[GeneSet]'][outputs[j]].gpt_desc}<br>`
                         }
-                        d2h2_response = `I'm sorry, I didn't understand your question. The possible questions include: ${options_str}You can type the number to select a desired process.`;
+                        d2h2_response = `D2H2 can only answer specific questions by invoking APIs from a set of selected tools. Below are some examples of questions D2H2 can answer: ${options_str}You can type the number to select a desired process.`;
                         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                         await $(`#chat-${chat_num}`).fadeIn(2000);
                         chat_num++;
@@ -386,7 +386,9 @@
                         ask_questions(q);
                     }
                 } else if (response['input'] == '[GeneSet]') {
-                    d2h2_response = "Please enter your gene set:";
+                    if (response['output'] == '[Kinases]') {
+                        d2h2_response = "Input a list of proteins:";
+                    } else d2h2_response = "Please enter your gene set:";
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                     await $(`#chat-${chat_num}`).fadeIn(2000)
                     chat_num++;
