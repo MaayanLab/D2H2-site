@@ -20,6 +20,9 @@ load_dotenv()
 
 endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
 base_url = os.environ.get('BASE_URL', 'd2h2/data')
+#Added the route for s3 bucket
+endpoint = os.environ.get('ENDPOINT', 'https://d2h2.s3.amazonaws.com/')
+base_url = os.environ.get('BASE_URL', 'data')
 ROOT_PATH = os.environ.get('ROOT_PATH', '/')
 BASE_PATH = os.environ.get('BASE_PATH', 'maayanlab.cloud')
 DEBUG = os.environ.get('DEBUG')
@@ -426,18 +429,31 @@ species_mapping_single = {'human_single': gse_metadata_single['human_single'], '
 study_to_species_single = {study:species_name for species_name, studies_metadata in gse_metadata_single.items() for study in studies_metadata.keys()}
 numstudies_single= [len(gse_metadata_single['human_single'].keys()), len(gse_metadata_single['mouse_single'].keys())]
 numstudies = [len(gse_metadata['human']), len(gse_metadata['mouse']), len(gse_metadata_single['human_single']), len(gse_metadata_single['mouse_single'])]
-
+print(numstudies)
 def load_new_studies():
+	s3 = s3fs.S3FileSystem(key = os.environ.get('AWS_ACCESS_KEY_ID'), secret = os.environ.get('AWS_SECRET_ACCESS_KEY'))
+	base_url = os.environ.get('BASE_URL', 'd2h2/data')
 	mouse_gses = list(s3.walk(f'{base_url}/mouse', maxdepth=1))[0][1]
 	human_gses = list(s3.walk(f'{base_url}/human', maxdepth=1))[0][1]
+	print(len(mouse_gses))
 	#Bulk and microarray study to species name dictionary
-	if numstudies[0] == len(human_gses) and numstudies[1] == len(mouse_gses):
+	if numstudies[0] != len(human_gses) and numstudies[1] != len(mouse_gses):
 		for species, geo_accession_ids in species_mapping.items():
 			if species not in gse_metadata:
 				gse_metadata[species] = {}
-			for geo_accession in geo_accession_ids:
-				if geo_accession not in gse_metadata[species]:
-					gse_metadata[species][geo_accession] = get_metadata(geo_accession, url_to_folder[species])
+			#Added
+			if species =='human':
+				for geo_accession in human_gses:
+					if geo_accession not in geo_accession_ids:
+						gse_metadata[species][geo_accession] = get_metadata(geo_accession, url_to_folder[species])
+			if species == 'mouse':
+				for geo_accession in mouse_gses:
+					if geo_accession not in geo_accession_ids:
+						gse_metadata[species][geo_accession] = get_metadata(geo_accession, url_to_folder[species])
+			#Removed
+			# for geo_accession in geo_accession_ids:
+			# 	if geo_accession not in gse_metadata[species]:
+			# 		gse_metadata[species][geo_accession] = get_metadata(geo_accession, url_to_folder[species])
 		with open('static/searchdata/metadata-v1.pickle', 'wb') as f:
 			pickle.dump(gse_metadata, f, protocol=pickle.HIGHEST_PROTOCOL)
 
@@ -446,9 +462,19 @@ def load_new_studies():
 	human_singlegses = list(s3.walk(f'{base_url}/human_single', maxdepth=1))[0][1]
 	if numstudies_single[0] != len(human_singlegses) and numstudies_single[1] != len(mouse_singlegses):
 		for species, geo_accession_ids in species_mapping_single.items():
-			for geo_accession in geo_accession_ids:
-				if geo_accession not in gse_metadata_single[species]:
-					gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
+			#added
+			if species =='human_single':
+				for geo_accession in human_singlegses:
+					if geo_accession not in geo_accession_ids:
+						gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
+			if species == 'mouse_single':
+				for geo_accession in mouse_singlegses:
+					if geo_accession not in geo_accession_ids:
+						gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
+			#Removed
+			# for geo_accession in geo_accession_ids:
+			# 	if geo_accession not in gse_metadata_single[species]:
+			# 		gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
 		with open('static/searchdata/metadatasingle-v1.pickle', 'wb') as f:
 			pickle.dump(gse_metadata_single, f, protocol=pickle.HIGHEST_PROTOCOL)
 
@@ -494,6 +520,7 @@ def species_or_viewerpg(species_or_gse):
 		default_condition = list_of_conditions[0]
 		expression_base_name = metadata_json[default_condition]['filename']
 		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + expression_base_name
+		print(expression_file)
 		adata = read_anndata_h5(expression_file)
 		#Stores the list of cluster names. 
 		leiden_data = adata["var/leiden/categories"][:].astype(str)
