@@ -18,8 +18,7 @@ import anndata
 from dotenv import load_dotenv
 load_dotenv()
 
-endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
-base_url = os.environ.get('BASE_URL', 'd2h2/data')
+
 #Added the route for s3 bucket
 endpoint = os.environ.get('ENDPOINT', 'https://d2h2.s3.amazonaws.com/')
 base_url = os.environ.get('BASE_URL', 'data')
@@ -431,6 +430,7 @@ numstudies_single= [len(gse_metadata_single['human_single'].keys()), len(gse_met
 numstudies = [len(gse_metadata['human']), len(gse_metadata['mouse']), len(gse_metadata_single['human_single']), len(gse_metadata_single['mouse_single'])]
 print(numstudies)
 def load_new_studies():
+	#Need to use account and pass in order to update the files.
 	s3 = s3fs.S3FileSystem(key = os.environ.get('AWS_ACCESS_KEY_ID'), secret = os.environ.get('AWS_SECRET_ACCESS_KEY'))
 	base_url = os.environ.get('BASE_URL', 'd2h2/data')
 	mouse_gses = list(s3.walk(f'{base_url}/mouse', maxdepth=1))[0][1]

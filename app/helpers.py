@@ -29,9 +29,6 @@ import hashlib
 import h5py
 import anndata
 
-
-base_url = os.environ.get('BASE_URL', 'd2h2/data')
-endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
 endpoint = os.environ.get('ENDPOINT', 'https://d2h2.s3.amazonaws.com/')
 base_url = os.environ.get('BASE_URL', 'data')
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
