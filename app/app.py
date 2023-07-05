@@ -462,10 +462,6 @@ def load_new_studies():
 					if geo_accession not in geo_accession_ids:
 						gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
 			if species == 'mouse_single':
-				print(gse_metadata_single[species]['GSE198837'])
-				gse_metadata_single[species].pop('GSE198837')
-				if 'GSE198837' not in gse_metadata_single[species]:
-					print('removed')
 				for geo_accession in mouse_singlegses:
 					if geo_accession not in geo_accession_ids:
 						gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
