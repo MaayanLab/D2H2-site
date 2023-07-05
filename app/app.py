@@ -428,16 +428,14 @@ species_mapping_single = {'human_single': gse_metadata_single['human_single'], '
 study_to_species_single = {study:species_name for species_name, studies_metadata in gse_metadata_single.items() for study in studies_metadata.keys()}
 numstudies_single= [len(gse_metadata_single['human_single'].keys()), len(gse_metadata_single['mouse_single'].keys())]
 numstudies = [len(gse_metadata['human']), len(gse_metadata['mouse']), len(gse_metadata_single['human_single']), len(gse_metadata_single['mouse_single'])]
-print(numstudies)
 def load_new_studies():
 	#Need to use account and pass in order to update the files.
 	s3 = s3fs.S3FileSystem(key = os.environ.get('AWS_ACCESS_KEY_ID'), secret = os.environ.get('AWS_SECRET_ACCESS_KEY'))
 	base_url = os.environ.get('BASE_URL', 'd2h2/data')
 	mouse_gses = list(s3.walk(f'{base_url}/mouse', maxdepth=1))[0][1]
 	human_gses = list(s3.walk(f'{base_url}/human', maxdepth=1))[0][1]
-	print(len(mouse_gses))
 	#Bulk and microarray study to species name dictionary
-	if numstudies[0] != len(human_gses) and numstudies[1] != len(mouse_gses):
+	if numstudies[0] != len(human_gses) or numstudies[1] != len(mouse_gses):
 		for species, geo_accession_ids in species_mapping.items():
 			if species not in gse_metadata:
 				gse_metadata[species] = {}
@@ -450,17 +448,13 @@ def load_new_studies():
 				for geo_accession in mouse_gses:
 					if geo_accession not in geo_accession_ids:
 						gse_metadata[species][geo_accession] = get_metadata(geo_accession, url_to_folder[species])
-			#Removed
-			# for geo_accession in geo_accession_ids:
-			# 	if geo_accession not in gse_metadata[species]:
-			# 		gse_metadata[species][geo_accession] = get_metadata(geo_accession, url_to_folder[species])
 		with open('static/searchdata/metadata-v1.pickle', 'wb') as f:
 			pickle.dump(gse_metadata, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 	
 	mouse_singlegses = list(s3.walk(f'{base_url}/mouse_single', maxdepth=1))[0][1]
 	human_singlegses = list(s3.walk(f'{base_url}/human_single', maxdepth=1))[0][1]
-	if numstudies_single[0] != len(human_singlegses) and numstudies_single[1] != len(mouse_singlegses):
+	if numstudies_single[0] != len(human_singlegses) or numstudies_single[1] != len(mouse_singlegses):
 		for species, geo_accession_ids in species_mapping_single.items():
 			#added
 			if species =='human_single':
@@ -471,10 +465,6 @@ def load_new_studies():
 				for geo_accession in mouse_singlegses:
 					if geo_accession not in geo_accession_ids:
 						gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
-			#Removed
-			# for geo_accession in geo_accession_ids:
-			# 	if geo_accession not in gse_metadata_single[species]:
-			# 		gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
 		with open('static/searchdata/metadatasingle-v1.pickle', 'wb') as f:
 			pickle.dump(gse_metadata_single, f, protocol=pickle.HIGHEST_PROTOCOL)
 
