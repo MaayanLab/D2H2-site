@@ -294,7 +294,7 @@ a {
 .styled-table {
     border-collapse: collapse;
     margin: 25px 0;
-    font-size: 0.9em;
+    font-size: 0.85em;
     font-family: 'Open Sans', sans-serif !important;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
     overflow: scroll;

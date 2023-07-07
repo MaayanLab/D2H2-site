@@ -34,6 +34,10 @@
                 Total Samples
                 <div class="countup num-style">{{ num_samples }}</div>
             </div>
+            <div class="text-center mr-5">
+                Total Single Cells
+                <div class="countup num-style">{{ num_cells }}</div>
+            </div>
         </div>
     </div>
 </div>
@@ -49,6 +53,7 @@
                 <th scope="col">Organism</th>
                 <th scope="col">Assay</th>
                 <th scope="col">Num Samples</th>
+                <th scope="col">Single Cells</th>
                 <th scope="col">Submission Date</th>
                 <th scope="col">Study Design</th>
                 <th scope="col">PMID</th>
@@ -87,6 +92,14 @@
                 {{ geo_metadata.get('numsamples') }}
 
                 </td>
+
+                <td>
+                    {% for key, value in geo_metadata.get('cell_count').items() %}
+                    <span style="white-space: nowrap;">{{ key }}: {{ value }}</span>
+                    {% endfor %}
+                </td>
+
+
                 <td data-order="{{geo_metadata.get('submission_date')[0][-5:] + month_dict[geo_metadata.get('submission_date')[0][:3]] + geo_metadata.get('submission_date')[0][4:6]}}" >
                     {{month_dict[geo_metadata.get('submission_date')[0][:3]] + '/' + geo_metadata.get('submission_date')[0][4:6] + '/' + geo_metadata.get('submission_date')[0][-4:]}}
                 </td>

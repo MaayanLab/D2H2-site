@@ -323,8 +323,6 @@ def getclusterinfo():
 	metadict = json.load(metajson)
 	base_expression_filename = metadict[condition_group]['filename']
 	expression_file = base_url + '/' + species + '/' + gse + '/' + base_expression_filename
-	#Transposing to get the data with cells as rows and genes as columns. 
-
 	adata = read_anndata_h5(expression_file)
 	#Stores the list of cluster names. 
 	leiden_data = adata["var/leiden/categories"][:].astype(str)
@@ -456,15 +454,48 @@ def load_new_studies():
 	human_singlegses = list(s3.walk(f'{base_url}/human_single', maxdepth=1))[0][1]
 	if numstudies_single[0] != len(human_singlegses) or numstudies_single[1] != len(mouse_singlegses):
 		for species, geo_accession_ids in species_mapping_single.items():
-			#added
 			if species =='human_single':
 				for geo_accession in human_singlegses:
 					if geo_accession not in geo_accession_ids:
 						gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
+					metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=geo_accession, base_url=base_url),'r')
+					metadict = json.load(metajson)
+					dict_to_store_cell_numbers = {}
+					total_cells = 0
+					for key in metadict:
+						key_for_dict = key.split(':')[0]
+						base_expression_filename = metadict[key]['filename']
+						expression_file = 'data' + '/' + species + '/' + geo_accession + '/' + base_expression_filename
+						adata = read_anndata_h5(expression_file)
+						clus_numbers = adata["var/leiden/codes"][:]
+						num_cells = len(clus_numbers)
+						total_cells += num_cells
+						dict_to_store_cell_numbers[key_for_dict] = num_cells
+					dict_to_store_cell_numbers['Total'] = total_cells
+					gse_metadata_single[species][geo_accession]['cell_count'] = dict_to_store_cell_numbers
+					print(geo_accession)
+					print(dict_to_store_cell_numbers)
 			if species == 'mouse_single':
 				for geo_accession in mouse_singlegses:
 					if geo_accession not in geo_accession_ids:
 						gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
+					metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=geo_accession, base_url=base_url),'r')
+					metadict = json.load(metajson)
+					dict_to_store_cell_numbers = {}
+					total_cells = 0
+					for key in metadict:
+						key_for_dict = key.split(':')[0]
+						base_expression_filename = metadict[key]['filename']
+						expression_file = 'data' + '/' + species + '/' + geo_accession + '/' + base_expression_filename
+						adata = read_anndata_h5(expression_file)
+						clus_numbers = adata["var/leiden/codes"][:]
+						num_cells = len(clus_numbers)
+						total_cells += num_cells
+						dict_to_store_cell_numbers[key_for_dict] = num_cells
+					dict_to_store_cell_numbers['Total'] = total_cells
+					gse_metadata_single[species][geo_accession]['cell_count'] = dict_to_store_cell_numbers
+					print(geo_accession)
+					print(dict_to_store_cell_numbers)
 		with open('static/searchdata/metadatasingle-v1.pickle', 'wb') as f:
 			pickle.dump(gse_metadata_single, f, protocol=pickle.HIGHEST_PROTOCOL)
 
@@ -478,7 +509,8 @@ def species_or_viewerpg(species_or_gse):
 	#Checking for the single cell studies and loading that summary page
 	elif species_or_gse in gse_metadata_single:
 		num_samples = sum(map(lambda x: x.get('numsamples'), gse_metadata_single[species_or_gse].values()))
-		return render_template('single_species.html', species=species_or_gse, gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, gse_metadata=gse_metadata, num_samples=num_samples, numstudies=numstudies,  month_dict=month_dict)
+		num_cells = sum(map(lambda x: x.get('cell_count').get('Total'), gse_metadata_single[species_or_gse].values()))
+		return render_template('single_species.html', species=species_or_gse, gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, gse_metadata=gse_metadata, num_samples=num_samples, numstudies=numstudies,  month_dict=month_dict, num_cells=num_cells)
 	# test if gsea
 	elif species_or_gse in study_to_species:
 		geo_accession = species_or_gse
