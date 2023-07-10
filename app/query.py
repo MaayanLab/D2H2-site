@@ -30,7 +30,7 @@ def determine_valid(query):
     """
     try:
         tag_line = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[
         {"role": "system", "content": "You are an assitant meant to process a user query and decide what type of input and output the user is specifiying"},
         {"role": "user", "content": prompt}
@@ -77,7 +77,7 @@ def find_process(query):
     """
     try:
         tag_line = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[
         {"role": "system", "content": "You are an assitant meant to process a user query and pick a given workflow"},
         {"role": "user", "content": prompt}
@@ -108,7 +108,7 @@ def select_option(response, options):
     """
     try:
         tag_line = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[
         {"role": "system", "content": "You are an assitant meant to process a user response and pick from a predefined list of options"},
         {"role": "user", "content": prompt}
