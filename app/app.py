@@ -24,8 +24,8 @@ endpoint = os.environ.get('ENDPOINT', 'https://d2h2.s3.amazonaws.com/')
 base_url = os.environ.get('BASE_URL', 'data')
 ROOT_PATH = os.environ.get('ROOT_PATH', '/')
 BASE_PATH = os.environ.get('BASE_PATH', 'maayanlab.cloud')
-DEBUG = os.environ.get('DEBUG')
-UPDATE_STUDIES = os.environ.get('UPDATE_STUDIES', False)
+DEBUG = os.environ.get('DEBUG', True).lower() in ('true', '1', 't')
+UPDATE_STUDIES = os.environ.get('UPDATE_STUDIES', False).lower() in ('true', '1', 't')
 
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
@@ -892,7 +892,8 @@ def record_chat():
 	response_json = request.get_json()
 	user_chat = response_json['user_chat']
 	response = response_json['response']
-	log_chat(user_chat, response)
+	if not DEBUG:
+		log_chat(user_chat, response)
 	return {}
 
 #######################################################
@@ -901,7 +902,7 @@ def record_chat():
 #######################################################
 #######################################################
 if __name__ == "__main__":
-	if (UPDATE_STUDIES):
+	if UPDATE_STUDIES:
 		load_new_studies()
 	app.run(debug=DEBUG, host="0.0.0.0", port=5000)
 
