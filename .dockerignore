@@ -4,3 +4,4 @@ env
 .DS_Store
 app/__pycache__/
 *.env
+ETL
