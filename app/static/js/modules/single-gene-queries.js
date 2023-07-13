@@ -11,6 +11,10 @@ export function gen_table(link, data, table_id, title, gene) {
     data.forEach(function (row) {
         var gse = row[row.length - 1].split("=")[1]
         var curr = window.location.href
+        var split_url = curr.split('/')
+        if (split_url[split_url.length - 1] == 'singlegene') {
+            curr = split_url.splice(0, split_url.length - 2).join('/')
+        } 
         var studyviewer = curr + gse
         tabletext += "<tr><td>" + row[0].split(/[-_]+/).join(" ") + "</td><td><a href='" + row[row.length - 1] + "' target='_blank'>" + gse + "</a></td><td>" + row[1] + "</td><td>" + row[2] + "</td><td>" + row[row.length - 2] + "</td><td><a href='" + studyviewer + `' target='_blank'><button class='btn btn-primary btn-group-sm' onclick="setGene('${gene}')">` + gse + " Gene Viewer</button></a></td></tr>"
     });
@@ -44,31 +48,30 @@ export async function gene_signatures(gene, species, resultid) {
     await $.ajax({
         url: "api/volcano",
         type: "POST",
-        dataType: 'json',
         data: jsonData,
-        success: function (jdata) {
-            var plot = jdata['plot']
-            var tables = jdata['tables']
-            var table_values = jdata['table_values']
-            var micro = jdata['micro']
-            plot.target_id = `volcano-plot-${resultid}`;
-            console.log(plot)
-            if (document.getElementById("buttons")) {
-                document.getElementById("buttons").innerHTML += `<div class='row text-center justify-content-center'>${clear_button}</div>`
-            }
-            window.Bokeh.embed.embed_item(plot)
-            var dir = "up";
-            var titleRNA = `Top ${species} RNA-seq signatures where ${gene} is ${dir}-regulated`
-            var titlemicro = `Top ${species} microarray signatures where ${gene} is ${dir}-regulated`
-
-            gen_table(tables[0], table_values[0], `${species}_up`, titleRNA, gene)
-            if (micro) gen_table(tables[2], table_values[2], `${species}_micro_up`, titlemicro, gene)
-            dir = "down";
-            var titleRNA = `Top ${species} RNA-seq signatures where ${gene} is ${dir}-regulated`
-            var titlemicro = `Top ${species} microarray signatures where ${gene} is ${dir}-regulated`
-            gen_table(tables[1], table_values[1], `${species}_down`, titleRNA, gene)
-            if (micro) gen_table(tables[3], table_values[3], `${species}_micro_down`, titlemicro, gene)
+    }).then(function (res) {
+        var jdata = JSON.parse(res)
+        var plot = jdata['plot']
+        var tables = jdata['tables']
+        var table_values = jdata['table_values']
+        var micro = jdata['micro']
+        plot['target_id']= `volcano-plot-${resultid}`;
+        console.log(plot)
+        if (document.getElementById("buttons")) {
+            document.getElementById("buttons").innerHTML += `<div class='row text-center justify-content-center'>${clear_button}</div>`
         }
+        window.Bokeh.embed.embed_item(plot)
+        var dir = "up";
+        var titleRNA = `Top ${species} RNA-seq signatures where ${gene} is ${dir}-regulated`
+        var titlemicro = `Top ${species} microarray signatures where ${gene} is ${dir}-regulated`
+
+        gen_table(tables[0], table_values[0], `${species}_up`, titleRNA, gene)
+        if (micro) gen_table(tables[2], table_values[2], `${species}_micro_up`, titlemicro, gene)
+        dir = "down";
+        var titleRNA = `Top ${species} RNA-seq signatures where ${gene} is ${dir}-regulated`
+        var titlemicro = `Top ${species} microarray signatures where ${gene} is ${dir}-regulated`
+        gen_table(tables[1], table_values[1], `${species}_down`, titleRNA, gene)
+        if (micro) gen_table(tables[3], table_values[3], `${species}_micro_down`, titlemicro, gene)
     });
 }
 

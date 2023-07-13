@@ -1,5 +1,5 @@
 ,Filename,Species,Description,Downloads
-0,all_human_pval,Homo sapiens,RNA-seq p-values,"d2h2/t2d-datasets/all_human_pval.f,d2h2/t2d-datasets/all_human_pval.csv"
-1,all_mouse_pval,Mus musculus,RNA-seq p-values,"d2h2/t2d-datasets/all_mouse_pval.f,d2h2/t2d-datasets/all_mouse_pval.csv"
-2,human_microarray_pv,Homo sapiens,Microarray p-values,"d2h2/t2d-datasets/human_microarray_pval.f,d2h2/t2d-datasets/human_microarray_pval.csv"
-3,mouse_microarray_pval,Mus musculus,Microarray p-values,"d2h2/t2d-datasets/mouse_microarray_pval.f,d2h2/t2d-datasets/mouse_microarray_pval.csv"
+0,human_rna_pval,Homo sapiens,RNA-seq p-values,"t2d-datasets/v1.1/rna_human_pval.f,t2d-datasets/v1.1/rna_human_pval.csv"
+1,mouse_rna_pval,Mus musculus,RNA-seq p-values,"t2d-datasets/v1.1/rna_mouse_pval.f,t2d-datasets/v1.1/rna_mouse_pval.csv"
+2,human_micro_pval,Homo sapiens,Microarray p-values,"t2d-datasets/v1.1/micro_human_pval.f,t2d-datasets/v1.1/micro_human_pval.csv"
+3,mouse_micro_pval,Mus musculus,Microarray p-values,"t2d-datasets/v1.1/micro_mouse_pval.f,t2d-datasets/v1.1/micro_mouse_pval.csv"

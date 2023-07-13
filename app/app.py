@@ -10,13 +10,14 @@ import GEOparse
 import ftfy
 from functools import lru_cache
 import pickle
+import anndata
+from dotenv import load_dotenv
+load_dotenv()
+
 from helpers import *
 from dge import *
 from query import *
 from log_chats import *
-import anndata
-from dotenv import load_dotenv
-load_dotenv()
 
 
 #Added the route for s3 bucket

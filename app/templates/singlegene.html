@@ -489,7 +489,9 @@
     if (check_list.includes(gene)) species = 'Human';
     else species = 'Mouse';
     document.getElementById('[Signatures]loading').innerHTML = loading;
+    
     await gene_signatures(gene, species, '[Signatures]result');
+    
     document.getElementById('[Signatures]loading').innerHTML = "";
   });
 
