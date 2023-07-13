@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
 
 {% block body %}
+
+
 <div class="justify-content-center container-fluid p-0 m-0">
     <div class="col-xl-8 col-lg-10 col-md-10 col-sm-10 justify-content-center mx-auto p-0 m-0">
+
+        
 
         <div class="justify-content-center p-0 m-0" style="flex-wrap: wrap;">
 
@@ -140,6 +144,42 @@
 
 {% block footer %}
 <script type="module">
+
+    const modal = document.querySelector('[data-modal]')
+
+    const pageAccessedByReload = (
+    (window.performance.navigation && window.performance.navigation.type === 1) ||
+    window.performance
+      .getEntriesByType('navigation')
+      .map((nav) => nav.type)
+      .includes('reload')
+    );
+
+    var from_site = false;
+
+    if (localStorage.getItem('no_splash') != null) {
+        from_site = true;
+        localStorage.removeItem('no_splash')
+    }
+
+
+    if (!pageAccessedByReload && !from_site) {
+        modal.showModal()
+    }
+    
+    function onClick(event) {
+        if (event.target === modal) {
+            modal.close();
+        } 
+    }
+    modal.addEventListener("click", onClick);
+    
+    const closeButton = document.querySelector('[data-close-modal]')
+
+    closeButton.addEventListener('click', () => {
+        modal.close()
+    })
+
     import { human_list, mouse_list, processes, chatN, geneset_entries, geneset_buttons, geneset_buttons_up_down, geneset_up_down_entries } from '../static/js/modules/constants.js';
     import { gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from '../static/js/modules/single-gene-queries.js';
     import { geneset_signatures, geneset_enrichment, geneset_kea3, geneset_chea3, geneset_sigcomlincs } from '../static/js/modules/geneset-queries.js';
@@ -159,8 +199,6 @@
     var process_numbers = []
     let i = 0;
     for (i; i < outputs.length; i++) {
-        console.log(process_dict['[Gene]'])
-        console.log(outputs[i])
         options_str += `${(i + 1).toString()}. ${process_dict['[Gene]'][outputs[i]].gpt_desc}<br>`;
         options_dict[(i + 1).toString()] = {"response": 0, "input": '[Gene]', "output": outputs[i]};
         process_numbers.push((i + 1).toString())
