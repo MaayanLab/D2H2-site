@@ -12,12 +12,6 @@ RUN set -x \
     && rm -rf /var/lib/apt/lists/* \
     && pip3 install --no-cache-dir --upgrade pip
 
-RUN set -x \
-  && echo "Installing R..." \
-  && apt-get -y update \
-  && apt-get -y install r-base \
-  && rm -rf /var/lib/apt/lists/* 
-
 RUN mkdir D2H2
 
 COPY requirements.txt /D2H2
@@ -29,8 +23,6 @@ RUN pip3 install -r requirements.txt
 COPY . .
 
 WORKDIR /D2H2/app
-
-RUN Rscript setup.R
 
 EXPOSE 5000
 

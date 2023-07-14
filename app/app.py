@@ -241,10 +241,8 @@ def dge():
 	norms = response_json['norms']
 	expr_file = '{base_url}/{species}/{gse}/{gse}_Expression.txt'.format(species=species, gse=gse, base_url=base_url)
 	meta_file = '{base_url}/{species}/{gse}/{gse}_Metadata.txt'.format(species=species, gse=gse, base_url=base_url)
-	if method == 'limma' or method == 'edgeR':
-		data, title = compute_dge(expr_file, meta_file, method, control, perturb, False, False, False, False)
-	else:
-		data, title = compute_dge(expr_file, meta_file, method, control, perturb, norms['logCPM'], norms['log'], norms['z'], norms['q'])
+
+	data, title = compute_dge(expr_file, meta_file, method, control, perturb, norms['logCPM'], norms['log'], norms['z'], norms['q'])
 
 	jsonplot = make_dge_plot(data,title, method)
 

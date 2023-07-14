@@ -78,15 +78,7 @@
             </div>
             <div id="change-loading" class="m-3"></div>
             <div class="h4 pl-2 mt-4 mb-4 text-center">PCA, tSNE, and UMAP Visualizations Labeled by Clusters:</div>
-            <!-- <div class="row justify-content-center text-center">
-                <button id="singleplots-button" class="btn btn-primary mx-auto mt-2 mb-3" style="width: 125px"
-                    data-url-samp="{{ url_for('samples_api', geo_accession=geo_accession) }}"
-                    data-gse-id="{{ gse_metadata_single[species][geo_accession].get('geo_accession', ['No GSE ID'])[0] }}"
-                    data-gpl-id="{{ gse_metadata_single[species][geo_accession].get('cur_gpl', ['No GPL ID'])[0] }}">
-                    Compute Visualizations
-                </button>
-            </div> -->
-            <!-- <div id="singleplots-loading" class="m-3 mx-auto"></div> -->
+
             <div id="singleplots-loading" class="m-3"></div>
             <div class="row justify-content-center mt-4 singleplotclass centered">
                 <ul class="nav nav-tabs">
@@ -228,10 +220,9 @@
             <div class="h6 text-center mt-3"> Select differential expression analysis method:</div>
             <div class="row justify-items-center justify-content-center mb-3 mt-3 text-center">
                 <select name="Select Method" id="method" class="libpicker" style="width: 100px;">
-                    <option value="limma">limma</option>
-                    <!-- <option value="wilcoxon">wilcoxon</option> -->
-                    <option value="edgeR">edgeR</option>
-                    <!-- <option value="DESeq2">DESeq2</option> -->
+                    <option value="wilcoxon">wilcoxon</option>
+                    <option value="DESeq2">DESeq2</option>
+                    <option value="characteristic_direction">Characteristic Direction</option>
                 </select>
             </div>
             <div id="normalization" style="display: none;">

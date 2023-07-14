@@ -575,17 +575,7 @@ def send_plot(species, gene):
 def make_dge_plot(data, title, method, id_plot='dge-plot'):
 
     # set color and size for each point on plot
-    if method == 'limma':
-        colors = [map_color(r[1]['logFC'], r[1]['P.Value']) for r in data.iterrows()]
-        sizes = [12 if r[1]['P.Value'] < 0.05 else 6 for r in data.iterrows()]
-        data['logp'] = data['P.Value'].apply(lambda x: -np.log10(x))
-        data['gene'] = data.index.values
-    elif method == 'edgeR':
-        colors = [map_color(r[1]['logFC'], r[1]['PValue']) for r in data.iterrows()]
-        sizes = [12 if r[1]['PValue'] < 0.05 else 6 for r in data.iterrows()]
-        data['logp'] = data['PValue'].apply(lambda x: -np.log10(x))
-        data['gene'] = data.index.values
-    elif method == 'DESeq2':
+    if method == 'DESeq2':
         colors = [map_color(r[1]['log2FoldChange'], r[1]['pvalue']) for r in data.iterrows()]
         sizes = [12 if r[1]['pvalue'] < 0.05 else 6 for r in data.iterrows()]
         data['logp'] = data['pvalue'].apply(lambda x: -np.log10(x))
@@ -595,53 +585,12 @@ def make_dge_plot(data, title, method, id_plot='dge-plot'):
         sizes = [12 if r[1]['pvals'] < 0.05 else 6 for r in data.iterrows()]
         data['logp'] = data['pvals'].apply(lambda x: -np.log10(x))
         data['gene'] = data.index.values
+    elif method == 'characteristic_direction':
+        colors = [map_color(r[1]['CD-coefficient'], r[1]['Significance']) for r in data.iterrows()]
+        sizes = [12 if r[1]['Significance'] < 0.05 else 6 for r in data.iterrows()]
+        data['logp'] = data['Significance'].apply(lambda x: -np.log10(x))
+        data['gene'] = data.index.values
 
-
-    # generate data source
-    if method == 'limma':
-        data_source = ColumnDataSource(
-            data=dict(
-                x = data['logFC'],
-                y = data['logp'],
-                gene =  data['gene'],
-                t = data['t'],
-                pval = data['P.Value'], 
-                adjpval = data['adj.P.Val'],
-                avgExpr = data['AvgExpr'], 
-                B = data['B'],
-                colors = colors, 
-                sizes = sizes,
-            )
-        )
-        tools = [
-        ("Gene", "@gene"),
-        ("t-test", "@t"),
-        ("P-Value", "@pval"),
-        ("Adj. P-Value", "@adjpval"),
-        ("log2 Fold Change", "@x"),
-        ("log-odds", "@B"),
-        ("Avg. Expression", "@avgExpr")
-    ]
-    if method == 'edgeR':
-        data_source = ColumnDataSource(
-            data=dict(
-                x = data['logFC'],
-                y = data['logp'],
-                logCPM = data['logCPM'],
-                gene =  data['gene'],
-                pval = data['PValue'], 
-                FDR = data['FDR'],
-                colors = colors, 
-                sizes = sizes,
-            )
-        )
-        tools = [
-        ("Gene", "@gene"),
-        ("P-Value", "@pval"),
-        ("log2 Fold Change", "@x"),
-        ("-log10(p)", "@y"),
-        ("logCPM", "@logCPM")
-    ]
     if method == 'DESeq2':
         data_source = ColumnDataSource(
             data=dict(
@@ -688,6 +637,25 @@ def make_dge_plot(data, title, method, id_plot='dge-plot'):
         ("adj. P-value", "@adjpval"),
         ("scores", "@scores")
         ]
+
+    if method == 'characteristic_direction':
+        data_source = ColumnDataSource(
+            data=dict(
+                x = data['CD-coefficient'],
+                y = data['logp'],
+                gene =  data['gene'],
+                pval = data['Significance'],
+                colors = colors, 
+                sizes = sizes,
+            )
+        )
+        tools = [
+        ("Gene", "@gene"),
+        ("P-value", "@pval"),
+        ("CD-coefficient", "@x"),
+        ("-log10(p)", "@y"),
+        ]
+    
     
 
     # create hover tooltip
@@ -707,8 +675,11 @@ def make_dge_plot(data, title, method, id_plot='dge-plot'):
         fill_color='colors', 
         name=None,
     )
-
-    plot.xaxis.axis_label = 'log2(Fold Change)'
+    if method == 'characteristic_direction':
+        plot.xaxis.axis_label = 'CD Coeffecient'
+    else:
+        plot.xaxis.axis_label = 'log2(Fold Change)'
+    
     plot.yaxis.axis_label = '-log10(P-value)'
     plot.title.text = f"DGE of {title}"
     plot.title.align = 'center'

@@ -162,10 +162,16 @@
         localStorage.removeItem('no_splash')
     }
 
+    if (sessionStorage.getItem('is_reloaded') != null) {
+        from_site = true;
+    }
 
-    if (!pageAccessedByReload && !from_site) {
+
+    if (!from_site) {
         modal.showModal()
     }
+
+    sessionStorage.setItem("is_reloaded", true);
     
     function onClick(event) {
         if (event.target === modal) {

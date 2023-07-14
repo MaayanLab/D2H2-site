@@ -108,19 +108,19 @@
                 </thead>
                 <tbody>
                     {% for group, conditions in metadata_dict.items() %}
-                        {% set grouploop = loop %}
-                        {% for condition in conditions %}
-                        <tr>
-                            {% if loop.first %}
-                            <td rowspan="{{ conditions|length }}" class="align-middle" style="width: auto">
-                                {{ group|safe }}
-                            </td>
-                            {% endif %}
-                            <!-- <td class="border p-0"><button style="background-color: #ECEFF1; color: black; width: max-content;" class="btn w-100 m-0 rounded-0 py-0 condition-btn{{' active plotted' if grouploop.first}}" data-toggle="button" aria-pressed="{{ grouploop.first|lower }}" autocomplete="off" data-group_label="{{ condition }}">{{ condition|safe }}</button></td> -->
+                    {% set grouploop = loop %}
+                    {% for condition in conditions %}
+                    <tr>
+                        {% if loop.first %}
+                        <td rowspan="{{ conditions|length }}" class="align-middle" style="width: auto">
+                            {{ group|safe }}
+                        </td>
+                        {% endif %}
+                        <!-- <td class="border p-0"><button style="background-color: #ECEFF1; color: black; width: max-content;" class="btn w-100 m-0 rounded-0 py-0 condition-btn{{' active plotted' if grouploop.first}}" data-toggle="button" aria-pressed="{{ grouploop.first|lower }}" autocomplete="off" data-group_label="{{ condition }}">{{ condition|safe }}</button></td> -->
                         <td class="p-0 ml-3 border"><button
                                 style="background-color: #ECEFF1; color: black; width: max-content;"
-                                class="btn m-0 rounded-0 py-0 condition-btn{{' active plotted ' if grouploop.first}}" data-toggle="button"
-                                aria-pressed="{{ grouploop.first|lower }}" autocomplete="off"
+                                class="btn m-0 rounded-0 py-0 condition-btn{{' active plotted ' if grouploop.first}}"
+                                data-toggle="button" aria-pressed="{{ grouploop.first|lower }}" autocomplete="off"
                                 data-group_label="{{ condition  + ' ' + group }}">{{ condition|safe }} </button>
                         </td>
 
@@ -129,7 +129,8 @@
                                 class="btn-custom btn-group-sm btn-collapse collapsed d-flex align-items-center text-center"
                                 data-toggle="collapse" data-target="#samples-{{ gse_id }}" aria-expanded="false"
                                 aria-controls="samples-{{ gse_id }}">
-                                <div class="text">Show Sample IDs ({{ metadata_dict_samples[group + ' ' + condition]['count'] }})
+                                <div class="text">Show Sample IDs ({{ metadata_dict_samples[group + ' ' +
+                                    condition]['count'] }})
                                 </div>
                             </button>
                             <div class="collapse" id="samples-{{ gse_id }}">
@@ -197,7 +198,7 @@
     <div class="col-7">
         <div class="custom-col justify-content-center" style="overflow: visible">
             <div class="h4 pl-2 mt-4 mb-4 text-center">Visualize Samples</div>
-            
+
             <div class="row justify-content-center mt-4 singleplotclass centered">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
@@ -209,9 +210,9 @@
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" data-bs-target="#pca" href="#pca">PCA</a>
                     </li>
-                    </ul>
-                    
-                    <!-- Tab panes -->
+                </ul>
+
+                <!-- Tab panes -->
                 <div class="h4 pl-2 mt-4 mb-4 text-center">
                     <div class="tab-content">
                         <div class="tab-pane container active" id="umap">
@@ -238,7 +239,7 @@
     <div class="col-7">
         <div class="custom-col justify-content-center" style="overflow: visible">
             <h4 class="text-center mt-3">Select conditions:</h4>
-        
+
             <div class="row justify-content-center mt-4">
                 <div class="w-25">
                     <p class="text-br-red text-center font-weight-bold">Control Condition</p>
@@ -250,7 +251,7 @@
                     <select id="condition-select-perturb" class="mt-2 mb-2 ml-2"
                         data-url-perturb="{{ url_for('conditions_api', geo_accession=geo_accession) }}"></select>
                 </div>
-                
+
             </div>
             <div class="row text-center">
                 <p class="mx-auto"> Only conditions with at least 1 replicate are available to select</p>
@@ -258,42 +259,41 @@
 
 
 
-        
+
             <div class="h4 pl-2 mt-4 mb-4 text-center">Differential Gene Expression Analysis</div>
 
-            
+
             <div class="h6 text-center mt-3"> Select differential expression analysis method:</div>
             <div class="row justify-items-center justify-content-center mb-3 mt-3 text-center">
                 <select name="Select Method" id="method" class="libpicker" style="width: 100px;">
-                    <option value="limma">limma</option>
-                    <option value="edgeR">edgeR</option>
                     <option value="DESeq2">DESeq2</option>
+                    <option value="characteristic_direction">Characteristic Direction</option>
                 </select>
             </div>
             <div id="normalization" style="display: none;">
                 <div class="h6 text-center mb-2"> Select Normalization Methods:</div>
-                    <div class="row justify-items-center justify-content-center">
-                        <div class="h9 m-2">logCPM normalization:</div>
-                        <label class="switch" for="logCPM">
-                            <input type="checkbox" id="logCPM" checked>
-                            <span class="slider round"></span>
-                        </label>
-                        <div class="h9 m-2">log normalization:</div>
-                        <label class="switch" for="log"> 
-                            <input type="checkbox" id="log">
-                            <span class="slider round"></span>
-                        </label>
-                        <div class="h9 m-2">Z normalization:</div>
-                        <label class="switch" for="z"> 
-                            <input type="checkbox" id="z" checked>
-                            <span class="slider round"></span>
-                        </label>
-                        <div class="h9 m-2">Quantile normalization:</div>
-                        <label class="switch" for="q"> 
-                            <input type="checkbox" id="q">
-                            <span class="slider round"></span>
-                        </label>
-                    </div>
+                <div class="row justify-items-center justify-content-center">
+                    <div class="h9 m-2">logCPM normalization:</div>
+                    <label class="switch" for="logCPM">
+                        <input type="checkbox" id="logCPM" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <div class="h9 m-2">log normalization:</div>
+                    <label class="switch" for="log">
+                        <input type="checkbox" id="log">
+                        <span class="slider round"></span>
+                    </label>
+                    <div class="h9 m-2">Z normalization:</div>
+                    <label class="switch" for="z">
+                        <input type="checkbox" id="z" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <div class="h9 m-2">Quantile normalization:</div>
+                    <label class="switch" for="q">
+                        <input type="checkbox" id="q">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
             </div>
 
             <div class="row justify-content-center">
@@ -309,11 +309,12 @@
             <div id="dge-plot" class="centered"></div>
             <div id="geneset-buttons" class="justify-content-center"></div>
             <div class="col-10 justify-content-center mx-auto" id="dge-table-area"></div>
-    
 
-            {% if 'Expression profiling by high throughput sequencing' == gse_metadata[species][geo_accession].get('type')[0] %}
+
+            {% if 'Expression profiling by high throughput sequencing' ==
+            gse_metadata[species][geo_accession].get('type')[0] %}
             <div class="row justify-content-center mt-4">
-                
+
                 <div class="h4 pl-2 mt-4 mb-4 text-center">Bulk RNA-seq Appyter</div>
                 <div class="row text-center justify-content-center mt-2">
                     <div class="col-10">
@@ -326,10 +327,10 @@
                         <img src="static/img/bulkdeg-thumbnail.png" alt="" class="img-fluid img-thumbnail">
                     </div>
                 </div>
-                
+
 
             </div>
-            
+
 
             <div class="row justify-content-center">
                 <button id="dgea-button" class="btn btn-primary mx-auto mt-2 mb-3"
@@ -338,7 +339,7 @@
                     data-gpl-id="{{ gse_metadata[species][geo_accession].get('cur_gpl', ['No GPL ID'])[0] }}">
                     Open in <img src="{{ url_for('static', filename='img/appyters_logo.svg')}}" style="width: 100px;">
                 </button>
-                
+
             </div>
             {% endif %}
 
@@ -361,56 +362,56 @@
 
 {% block footer %}
 <script>
-const el = document.getElementById('method');
+    const el = document.getElementById('method');
 
-const box = document.getElementById('normalization');
+    const box = document.getElementById('normalization');
 
-/* el.addEventListener('change', function handleChange(event) {
-  if (event.target.value === 'DESeq2') {
-    box.style.display = 'block';
-  } else {
-    box.style.display = 'none';
-  }
-*/
+    /* el.addEventListener('change', function handleChange(event) {
+      if (event.target.value === 'DESeq2') {
+        box.style.display = 'block';
+      } else {
+        box.style.display = 'none';
+      }
+    */
 
-function generate_plots(){
-    document.getElementById("umap-plot").innerHTML = "";
-    document.getElementById("tsne-plot").innerHTML = "";
-    document.getElementById("pca-plot").innerHTML = "";
-    document.getElementById("plots-loading").innerHTML = "<p>PCA, t-SNE, UMAP plots may take a minute to load</p>";
-    document.getElementById("singleplots-loading").innerHTML = "<div class='loader justify-content-center'></div>";
-    // $('#singleplots-loading').addClass('loader justify-content-center');
-    var gse = document.getElementById("gse").innerText
-    var species = document.getElementById("species").innerText
-
-
-    var gsedata = JSON.stringify({'gse': gse, 'species': species});
-    $.ajax({
-        url: "api/bulksampvis",
-        contentType: 'application/json',
-        type: "POST",
-        dataType: 'json',
-        data: gsedata,
-    }).done(function(response) {
-
-        document.getElementById("singleplots-loading").innerHTML = "";
-        document.getElementById("plots-loading").innerHTML = "";
-        // $('#singleplots-loading').removeClass('loader justify-content-center');
-        var umap_plot = response['umapplot']
-        var pca_plot = response['pcaplot']
-        var tsne_plot = response['tsneplot']
-
-        window.Bokeh.embed.embed_item(umap_plot)
-        window.Bokeh.embed.embed_item(pca_plot)
-        window.Bokeh.embed.embed_item(tsne_plot)
-    });
-}
-
-generate_plots()
+    function generate_plots() {
+        document.getElementById("umap-plot").innerHTML = "";
+        document.getElementById("tsne-plot").innerHTML = "";
+        document.getElementById("pca-plot").innerHTML = "";
+        document.getElementById("plots-loading").innerHTML = "<p>PCA, t-SNE, UMAP plots may take a minute to load</p>";
+        document.getElementById("singleplots-loading").innerHTML = "<div class='loader justify-content-center'></div>";
+        // $('#singleplots-loading').addClass('loader justify-content-center');
+        var gse = document.getElementById("gse").innerText
+        var species = document.getElementById("species").innerText
 
 
-$("#viewer").addClass('active'); 
-$("#viewer").parents('li').addClass('active');
+        var gsedata = JSON.stringify({ 'gse': gse, 'species': species });
+        $.ajax({
+            url: "api/bulksampvis",
+            contentType: 'application/json',
+            type: "POST",
+            dataType: 'json',
+            data: gsedata,
+        }).done(function (response) {
+
+            document.getElementById("singleplots-loading").innerHTML = "";
+            document.getElementById("plots-loading").innerHTML = "";
+            // $('#singleplots-loading').removeClass('loader justify-content-center');
+            var umap_plot = response['umapplot']
+            var pca_plot = response['pcaplot']
+            var tsne_plot = response['tsneplot']
+
+            window.Bokeh.embed.embed_item(umap_plot)
+            window.Bokeh.embed.embed_item(pca_plot)
+            window.Bokeh.embed.embed_item(tsne_plot)
+        });
+    }
+
+    generate_plots()
+
+
+    $("#viewer").addClass('active');
+    $("#viewer").parents('li').addClass('active');
 
 </script>
 

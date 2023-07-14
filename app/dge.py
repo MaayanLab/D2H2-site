@@ -1,11 +1,7 @@
 from functools import lru_cache
 import pandas as pd
-import rpy2
-from rpy2 import robjects
-from rpy2.robjects import r, pandas2ri
 from maayanlab_bioinformatics.normalization.quantile import quantile_normalize
 from maayanlab_bioinformatics.dge.characteristic_direction import characteristic_direction
-from maayanlab_bioinformatics.dge.limma_voom import limma_voom_differential_expression
 from itertools import combinations
 import warnings
 import numpy as np
@@ -16,7 +12,8 @@ import anndata
 import random
 from helpers import read_anndata_h5, read_anndata_raw
 import os
-
+from pydeseq2.dds import DeseqDataSet
+from pydeseq2.ds import DeseqStats
 
 base_url = os.environ.get('BASE_URL', 'd2h2/data')
 endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
@@ -64,90 +61,6 @@ def log(data):
 
 def get_signatures(classes, dataset, normalization, method, meta_class_column_name, filter_genes):
 
-    robjects.r('''limma <- function(rawcount_dataframe, design_dataframe, filter_genes=FALSE, adjust="BH") {
-        # Load packages
-        suppressMessages(require(limma))
-        suppressMessages(require(edgeR))
-        # Convert design matrix
-        design <- as.matrix(design_dataframe)
-        
-        # Create DGEList object
-        dge <- DGEList(counts=rawcount_dataframe)
-        # Filter genes
-        if (filter_genes) {
-            keep <- filterByExpr(dge, design)
-            dge <- dge[keep,]
-        }
-        # Calculate normalization factors
-        dge <- calcNormFactors(dge)
-        # Run VOOM
-        v <- voom(dge, plot=FALSE)
-        # Fit linear model
-        fit <- lmFit(v, design)
-        # Make contrast matrix
-        cont.matrix <- makeContrasts(de=B-A, levels=design)
-        # Fit
-        fit2 <- contrasts.fit(fit, cont.matrix)
-        # Run DE
-        fit2 <- eBayes(fit2)
-        # Get results
-        limma_dataframe <- topTable(fit2, adjust=adjust, number=nrow(rawcount_dataframe))
-        
-        # Return
-        results <- list("limma_dataframe"= limma_dataframe, "rownames"=rownames(limma_dataframe))
-        return (results)
-    }''')
-
-    robjects.r('''edgeR <- function(rawcount_dataframe, g1, g2) {
-    # Load packages
-    suppressMessages(require(limma))
-    suppressMessages(require(edgeR))
-    
-    colData <- as.data.frame(c(rep(c("Control"),length(g1)),rep(c("Condition"),length(g2))))
-    rownames(colData) <- c(g1,g2)
-    colnames(colData) <- c("group")
-    colData$group = relevel(as.factor(colData$group), "Control")
-    
-    y <- DGEList(counts=rawcount_dataframe, group=colData$group)
-    y <- calcNormFactors(y)
-    y <- estimateCommonDisp(y)
-    y <- estimateTagwiseDisp(y)
-    et <- exactTest(y)
-    res <- topTags(et, n=Inf)
-    # Return
-    res <- as.data.frame(res)
-    results <- list("edgeR_dataframe"= res, "rownames"=rownames(res))
-    return (results) 
-    }
-    ''')
-
-    robjects.r('''deseq2 <- function(rawcount_dataframe, g1, g2) {
-    # Load packages
-    suppressMessages(require(DESeq2))
-    colData <- as.data.frame(c(rep(c("Control"),length(g1)),rep(c("Condition"),length(g2))))
-    rownames(colData) <- c(g1,g2)
-    colnames(colData) <- c("group")
-    colData$group = relevel(as.factor(colData$group), "Control")
-    dds <- DESeqDataSetFromMatrix(countData = rawcount_dataframe, colData = colData, design=~(group))
-
-    dds <- DESeq(dds)
-    res <- results(dds)
-    
-    res[which(is.na(res$padj)),] <- 1
-    res <- as.data.frame(res)
-    
-    results <- list("DESeq_dataframe"= res, "rownames"=rownames(res))
-    return(results)
-    
-    
-    
-    }
-    ''')
-    pandas2ri.activate()
-
-    tmp_normalization = normalization.replace(
-        "+z_norm+q_norm", "").replace("+z_norm", "")
-    raw_expr_df = dataset['rawdata']
     expr_df = dataset['rawdata']
     if filter_genes == True:
         expr_df = dataset['rawdata+filter_genes']
@@ -159,52 +72,23 @@ def get_signatures(classes, dataset, normalization, method, meta_class_column_na
                                                           [meta_class_column_name] == cls1, :].index.tolist()  # control
         cls2_sample_ids = dataset["dataset_metadata"].loc[dataset["dataset_metadata"]
                                                           [meta_class_column_name] == cls2, :].index.tolist()  # case
-
         signature_label = " vs. ".join([cls1, cls2])
-
-        if method == "limma":
-            limma = robjects.r['limma']
-
-            design_dataframe = pd.DataFrame([{'index': x, 'A': int(x in cls1_sample_ids), 'B': int(
-                x in cls2_sample_ids)} for x in raw_expr_df.columns]).set_index('index')
-
-            processed_data = {"expression": raw_expr_df,
-                              'design': design_dataframe}
-
-            expr_r = pandas2ri.py2rpy(processed_data['expression'])
-            design_r = pandas2ri.py2rpy(processed_data['design'])
-            limma_results = pandas2ri.rpy2py(limma(expr_r, design_r))
-
-            signature = pd.DataFrame(limma_results[0])
-            signature.columns = ['logFC', 'AvgExpr',
-                                 't', 'P.Value', 'adj.P.Val', 'B']
-            signature.index = limma_results[1]
-            signature = signature.sort_values("t", ascending=False)
-
-        elif method == "characteristic_direction":
-            signature = characteristic_direction(
-                dataset[tmp_normalization].loc[:, cls1_sample_ids], dataset[normalization].loc[:, cls2_sample_ids], calculate_sig=True)
-            signature = signature.sort_values(
-                "CD-coefficient", ascending=False)
-        elif method == "edgeR":
-            edgeR = robjects.r['edgeR']
-
-            edgeR_results = pandas2ri.conversion.rpy2py(edgeR(pandas2ri.conversion.py2rpy(
-                expr_df), pandas2ri.conversion.py2rpy(cls1_sample_ids), pandas2ri.conversion.py2rpy(cls2_sample_ids)))
-
-            signature = pd.DataFrame(edgeR_results[0])
-            signature.index = edgeR_results[1]
-            signature = signature.sort_values("logFC", ascending=False)
+        if method == "characteristic_direction":
+            signature = characteristic_direction(dataset[normalization].loc[:, cls1_sample_ids], dataset[normalization].loc[:, cls2_sample_ids], calculate_sig=True)
+            signature = signature.sort_values("CD-coefficient", ascending=False)
+            print(signature)
         elif method == "DESeq2":
-            # deseq2 receives raw counts
-            DESeq2 = robjects.r['deseq2']
-            DESeq2_results = pandas2ri.conversion.rpy2py(DESeq2(pandas2ri.conversion.py2rpy(
-                expr_df), pandas2ri.conversion.py2rpy(cls1_sample_ids), pandas2ri.conversion.py2rpy(cls2_sample_ids)))
-
-            signature = pd.DataFrame(DESeq2_results[0])
-            signature.index = DESeq2_results[1]
-            signature = signature.sort_values(
-                "log2FoldChange", ascending=False)
+            dds = DeseqDataSet(
+            counts=expr_df.T,
+            clinical=dataset['dataset_metadata'],
+            design_factors="Condition",
+            refit_cooks=True,
+            n_cpus=2,
+            )
+            dds.deseq2()
+            stat_res = DeseqStats(dds, n_cpus=2)
+            stat_res.summary()
+            signature = stat_res.results_df.sort_values("padj", ascending=True)
 
         signatures[signature_label] = signature
 
@@ -249,12 +133,10 @@ def compute_dge(rnaseq_data_filename, meta_data_filename, diff_gex_method, contr
     if len(set(meta_df['Group'])) > 1:
         meta_df['Combined'] = meta_df['Condition'] + ' ' + meta_df['Group']
         meta_class_column_name = 'Combined'
-    meta_df = meta_df[meta_df[meta_class_column_name].isin(
-        [control_name, perturb_name])]
+    meta_df = meta_df[meta_df[meta_class_column_name].isin([control_name, perturb_name])]
 
     meta_df.index = meta_df.index.map(str)
-    expr_df = pd.read_csv(s3.open(rnaseq_data_filename),
-                          index_col=0, sep="\t").sort_index()
+    expr_df = pd.read_csv(s3.open(rnaseq_data_filename), index_col=0, sep="\t").sort_index()
     expr_df = expr_df.loc[expr_df.sum(axis=1) > 0, :]
 
     # Match samples between the metadata and the datasets
@@ -269,8 +151,6 @@ def compute_dge(rnaseq_data_filename, meta_data_filename, diff_gex_method, contr
     log_normalization = False
     z_normalization = True
     q_normalization = False
-
-    
 
     classes = list(meta_df[meta_class_column_name].unique())
 
@@ -310,46 +190,6 @@ def compute_dge(rnaseq_data_filename, meta_data_filename, diff_gex_method, contr
 
 ########## SINGLE CELL DGE METHODS ###########
 def get_signatures_single(classes, expr_file, method, meta_class_column_name, cluster=True, filter_genes=True, aggregate=False):
-
-    robjects.r('''edgeR <- function(rawcount_dataframe, g1, g2) {
-        # Load packages
-        suppressMessages(require(limma))
-        suppressMessages(require(edgeR))
-        colData <- as.data.frame(c(rep(c("Control"),length(g1)),rep(c("Condition"),length(g2))))
-        rownames(colData) <- c(g1,g2)
-        colnames(colData) <- c("group")
-        colData$group = relevel(as.factor(colData$group), "Control")
-        y <- DGEList(counts=rawcount_dataframe, group=colData$group)
-        y <- calcNormFactors(y)
-        y <- estimateCommonDisp(y)
-        y <- estimateTagwiseDisp(y)
-        et <- exactTest(y)
-        res <- topTags(et, n=Inf)
-        # Return
-        res <- as.data.frame(res)
-        results <- list("edgeR_dataframe"= res, "rownames"=rownames(res), "colnames"=colnames(res))
-        return (results)
-    }
-    ''')
-
-    robjects.r('''deseq2 <- function(rawcount_dataframe, g1, g2) {
-        # Load packages
-        suppressMessages(require(DESeq2))
-        colData <- as.data.frame(c(rep(c("Control"),length(g1)),rep(c("Condition"),length(g2))))
-        rownames(colData) <- c(g1,g2)
-        colnames(colData) <- c("group")
-        colData$group = relevel(as.factor(colData$group), "Control")
-        dds <- DESeqDataSetFromMatrix(countData = rawcount_dataframe, colData = colData, design=~(group))
-        dds <- DESeq(dds)
-        res <- results(dds)
-        res[which(is.na(res$padj)),] <- 1
-        res <- as.data.frame(res)
-        print(dim(res))
-        results <- list("DESeq_dataframe"= res, "rownames"=rownames(res), "colnames"=colnames(res))
-        return(results)
-    }
-    ''')
-    pandas2ri.activate()
 
     # expr_df = dataset.to_df().T
     # raw_expr_df = dataset.raw.to_adata().to_df().T
@@ -392,21 +232,6 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
         cluster_list = pd.Series(cluster_list)
 
     signatures = dict()
-    # GETTING THE TOP GENES RATHER THAN DOING DGE WITH CERTAIN METHODS
-    """if method == 'none':
-        for cls1 in classes:
-            signature_label = f"{cls1} vs. rest"
-            print("Analyzing.. {} using {}".format(signature_label, method))
-            raw_adata = dataset.raw.to_adata()
-            cluster_data = raw_adata[raw_adata.obs[meta_class_column_name] == cls1]
-            df = cluster_data.to_df()
-            df = df.divide(df.sum(axis=1), axis=0)
-            mean_df = df.mean().sort_values(ascending=False)
-            yaxis_gene_names = list(mean_df.index)[:100]
-            print(yaxis_gene_names)
-            print(cluster_data.shape)
-            signatures[signature_label] = yaxis_gene_names
-        return signatures """
 
     if cluster == True and aggregate == True:
 
@@ -416,43 +241,33 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
             cols = pd.Series(full_adata.columns)
             clus_idx = cluster_list[cluster_list == cls1].index.tolist()
             rest_idx = cluster_list[cluster_list != cls1].index.tolist()
-            cls1_sample_ids = cols[clus_idx]  # case
-            non_cls1_sample_ids = cols[rest_idx]  # control
+            cls1_sample_ids = list(cols[clus_idx].astype(str))  # case
+            non_cls1_sample_ids = list(cols[rest_idx].astype(str)) # control
 
             tmp_raw_expr_df = raw_expr_df
 
-            tmp_raw_expr_df.index.name = "gene_symbols"
-            tmp_raw_expr_df.columns.name = "column_names"
+            tmp_raw_expr_df.columns.name = "Sample"
 
-            if method == "limma":
-                signature = limma_voom_differential_expression(
-                    raw_expr_df.loc[:, non_cls1_sample_ids], raw_expr_df.loc[:, cls1_sample_ids])
-                signature.rename(columns={"AveExpr": "AvgExpr"}, inplace=True)
-            elif method == "characteristic_direction":
+            if method == "characteristic_direction":
                 signature = characteristic_direction(
-                    expr_df.loc[:, non_cls1_sample_ids], expr_df.loc[:, cls1_sample_ids], calculate_sig=False)
-            elif method == "edgeR":
-                edgeR = robjects.r['edgeR']
-                edgeR_results = pandas2ri.conversion.rpy2py(edgeR(pandas2ri.conversion.py2rpy(
-                    tmp_raw_expr_df), pandas2ri.conversion.py2rpy(non_cls1_sample_ids), pandas2ri.conversion.py2rpy(cls1_sample_ids)))
-
-                signature = pd.DataFrame(edgeR_results[0])
-                if (signature.shape[0] == 4):
-                    signature = signature.T
-                signature.index = edgeR_results[1]
-                signature.columns = edgeR_results[2]
-                signature = signature.sort_values("logFC", ascending=False)
+                    expr_df.loc[:, non_cls1_sample_ids], expr_df.loc[:, cls1_sample_ids], calculate_sig=True).dropna()
             elif method == "DESeq2":
-                DESeq2 = robjects.r['deseq2']
-                DESeq2_results = pandas2ri.conversion.rpy2py(DESeq2(pandas2ri.conversion.py2rpy(
-                    tmp_raw_expr_df), pandas2ri.conversion.py2rpy(non_cls1_sample_ids), pandas2ri.conversion.py2rpy(cls1_sample_ids)))
-                signature = pd.DataFrame(DESeq2_results[0])
-                if (signature.shape[0] == 6):
-                    signature = signature.T
-                signature.index = DESeq2_results[1]
-                signature.columns = DESeq2_results[2]
-                signature = signature.sort_values(
-                    "log2FoldChange", ascending=False)
+                print(cls1_sample_ids, non_cls1_sample_ids)
+                condition_labels = ['C'] * expr_df.loc[:, non_cls1_sample_ids].shape[1] + ['RS'] *  expr_df.loc[:, cls1_sample_ids].shape[1]
+                sample_names = expr_df.loc[:, non_cls1_sample_ids].columns.tolist() + expr_df.loc[:, cls1_sample_ids].columns.tolist()
+                metadata = pd.DataFrame({'Sample': sample_names, 'Condition': condition_labels}).set_index("Sample")
+                print(expr_df.T.index == metadata.index)
+                dds = DeseqDataSet(
+                    counts=expr_df[non_cls1_sample_ids + cls1_sample_ids].T,
+                    clinical=metadata,
+                    design_factors="Condition",
+                    refit_cooks=True,
+                    n_cpus=2,
+                )
+                dds.deseq2()
+                stat_res = DeseqStats(dds, n_cpus=2)
+                stat_res.summary()
+                signature = stat_res.results_df.sort_values("padj", ascending=True).dropna()
             elif method == "wilcoxon":
                 dataset = read_anndata_raw(expr_file)
                 dataset_raw = dataset.raw.to_adata()
@@ -467,33 +282,12 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
                     'names').sort_values('pvals', ascending=True)
                 dedf = dedf.replace([np.inf, -np.inf], np.nan).dropna()
                 dedf = dedf.sort_values("logfoldchanges", ascending=False)
-                signature = dedf
-
+                signature = dedf.dropna()
             signatures[signature_label] = signature
     return signatures
 
 
 def compute_dge_single(expr_file, diff_gex_method, enrichment_groupby, meta_class_column_name, clustergroup, agg):
-    if diff_gex_method == "characteristic_direction":
-        fc_colname = "CD-coefficient"
-        sort_genes_by = "CD-coefficient"
-        ascending = False
-    elif diff_gex_method == "limma":
-        fc_colname = "logFC"
-        sort_genes_by = "t"
-        ascending = False
-    elif diff_gex_method == "edgeR":
-        fc_colname = "logFC"
-        sort_genes_by = "PValue"
-        ascending = True
-    elif diff_gex_method == "DESeq2":
-        fc_colname = "log2FoldChange"
-        sort_genes_by = "padj"
-        ascending = True
-    elif diff_gex_method == "wilcoxon":
-        fc_colname = "logfoldchanges"
-        sort_genes_by = "scores"
-        ascending = False
 
     meta_class_column_name = "leiden"
     classes = [clustergroup]
@@ -501,5 +295,4 @@ def compute_dge_single(expr_file, diff_gex_method, enrichment_groupby, meta_clas
 
     signatures = get_signatures_single(classes, expr_file, method=diff_gex_method,
                                        meta_class_column_name=meta_class_column_name, cluster=bool_cluster, aggregate=agg)
-
     return signatures
