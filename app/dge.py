@@ -74,9 +74,8 @@ def get_signatures(classes, dataset, normalization, method, meta_class_column_na
                                                           [meta_class_column_name] == cls2, :].index.tolist()  # case
         signature_label = " vs. ".join([cls1, cls2])
         if method == "characteristic_direction":
-            signature = characteristic_direction(dataset[normalization].loc[:, cls1_sample_ids], dataset[normalization].loc[:, cls2_sample_ids], calculate_sig=True)
-            signature = signature.sort_values("CD-coefficient", ascending=False)
-            print(signature)
+            expr_df.dropna(inplace=True)
+            signature = characteristic_direction(expr_df.loc[:, cls1_sample_ids], expr_df.loc[:, cls2_sample_ids], calculate_sig=True)
         elif method == "DESeq2":
             dds = DeseqDataSet(
             counts=expr_df.T,
@@ -252,20 +251,17 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
                 signature = characteristic_direction(
                     expr_df.loc[:, non_cls1_sample_ids], expr_df.loc[:, cls1_sample_ids], calculate_sig=True).dropna()
             elif method == "DESeq2":
-                print(cls1_sample_ids, non_cls1_sample_ids)
                 condition_labels = ['C'] * expr_df.loc[:, non_cls1_sample_ids].shape[1] + ['RS'] *  expr_df.loc[:, cls1_sample_ids].shape[1]
                 sample_names = expr_df.loc[:, non_cls1_sample_ids].columns.tolist() + expr_df.loc[:, cls1_sample_ids].columns.tolist()
                 metadata = pd.DataFrame({'Sample': sample_names, 'Condition': condition_labels}).set_index("Sample")
-                print(expr_df.T.index == metadata.index)
                 dds = DeseqDataSet(
                     counts=expr_df[non_cls1_sample_ids + cls1_sample_ids].T,
                     clinical=metadata,
                     design_factors="Condition",
-                    refit_cooks=True,
-                    n_cpus=2,
+                    refit_cooks=True
                 )
                 dds.deseq2()
-                stat_res = DeseqStats(dds, n_cpus=2)
+                stat_res = DeseqStats(dds)
                 stat_res.summary()
                 signature = stat_res.results_df.sort_values("padj", ascending=True).dropna()
             elif method == "wilcoxon":
