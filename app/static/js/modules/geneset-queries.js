@@ -21,7 +21,7 @@ export async function geneset_signatures(geneset, resultid) {
         } else clear_button = "";
 
         var tabletext = `<table id='table-enrichr${resultid}' class='styled-table' style:'width=100%; vertical-align:top;'><thead><tr><th>Rank</th><th>Term name</th><th>P-value</th><th>Z-score</th><th>Combined score</th><th>Overlapping genes</th><th>Adjusted p-value</th></tr><tbody>`;
-        const currURL = window.location.href.split('/')
+        const currURL = window.location.href.replace('singlegene', '').replace('geneset', '').split('/')
         for (var k = 0; k < data.length; k++) {
             tabletext += "<tr><td>" + data[k][0] + "</td><td>" + data[k][1] + "</td><td>" + Number(data[k][2]).toPrecision(4) + "</td><td>" + Number(data[k][3]).toPrecision(4) + "</td><td>" + Number(data[k][4]).toPrecision(4) + "</td><td>"
             var url = currURL.join('/') + 'singlegene'

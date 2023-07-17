@@ -77,6 +77,7 @@ def get_signatures(classes, dataset, normalization, method, meta_class_column_na
             expr_df.dropna(inplace=True)
             signature = characteristic_direction(expr_df.loc[:, cls1_sample_ids], expr_df.loc[:, cls2_sample_ids], calculate_sig=True)
         elif method == "DESeq2":
+            print(expr_df)
             dds = DeseqDataSet(
             counts=expr_df.T,
             clinical=dataset['dataset_metadata'],

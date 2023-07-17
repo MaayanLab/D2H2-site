@@ -12,38 +12,7 @@ export const processes = fetch(
 
 export const loading = "<div class='loadingspinner'><div id='square1'></div><div id='square2'></div><div id='square3'></div><div id='square4'></div><div id='square5'></div></div>";
 
-export function chatN(side, chatNum, color, content) {
-    var icon;
-    var padding;
-    var name;
-    if (side == 'start') {
-        icon = "static/img/d2h2_chat_bot.png";
-        padding = "pl-2";
-        name = 'D2H2'
-    }
-    else {
-        icon = "static/img/user_icon.png";
-        padding = "pr-2";
-        name = 'User'
-    }
-    const chathtml = `
-    <div class="chat chat-${side} mb-1" id="chat-${chatNum}" style="display: none; opacity: 1.0 !important;"> 
-        <div class="chat-image avatar ${padding}" style="width: 50px">
-            <img src="${icon}"/>
-        </div>
-        <div class="chat-header">
-            ${name}
-        </div>
-        <div class="chat-bubble chat-bubble-info" style="background-color: ${color};">
-            ${content}
-        </div>
-    </div>
-    `   
-    const placeholder = document.createElement("div");
-    placeholder.innerHTML = chathtml;
-    const node = placeholder.firstElementChild;
-    return node
-}
+
 
 
 export function chatNresult(side, chatNum, color, resultid) {

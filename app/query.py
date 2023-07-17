@@ -127,4 +127,30 @@ def select_option(response, options):
             return {'option': 'error'}
     except:
         return {'option': 'busy'}
+
+
+
+def infer_gene(gene):
+    prompt = f"""
+    Based on text from the user: "{gene}"
+    Respond with three comma-separated valid Entrez gene symbols (either human or mouse) that most closely resemble them the user's original input. Only include the three gene symbols with no other text or reasoning."""
+    try:
+        tag_line = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+        {"role": "system", "content": "You are an assitant meant to predict which gene a user was asking for based on a misspelled or unrecognized entry"},
+        {"role": "user", "content": prompt}
+            ],
+        max_tokens =20,
+        temperature=0,
+        )
+
+        response = tag_line['choices'][0]['message']['content']
+        print(response)
+        gs = response.split(',')
+        gs = list(map(lambda x: x.strip(), gs))
+        print(gs)
+        return {'genes': gs}
+    except:
+        return {'option': 'busy'}
     

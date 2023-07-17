@@ -886,6 +886,13 @@ def query_options():
 	res = select_option(response, options)
 	return res
 
+@app.route(f'{ROOT_PATH}/api/query_genes',  methods=['GET', 'POST'])
+def query_genes():
+	response_json = request.get_json()
+	g = response_json['gene']
+	res = infer_gene(g)
+	return res
+
 @app.route(f'{ROOT_PATH}/api/record_chat',  methods=['GET', 'POST'])
 def record_chat():
 	response_json = request.get_json()

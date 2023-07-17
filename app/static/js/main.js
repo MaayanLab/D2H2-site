@@ -10,6 +10,43 @@ function up_down_toggle(chatnum) {
     }
 }
 
+function chatN(side, chatNum, color, content) {
+    var icon;
+    var padding;
+    var name;
+    if (side == 'start') {
+        icon = "static/img/d2h2_chat_bot.png";
+        padding = "pl-2";
+        name = 'D2H2'
+    }
+    else {
+        icon = "static/img/user_icon.png";
+        padding = "pr-2";
+        name = 'User'
+    }
+    const chathtml = `
+    <div class="chat chat-${side} mb-1" id="chat-${chatNum}" style="display: none; opacity: 1.0 !important;"> 
+        <div class="chat-image avatar ${padding}" style="width: 50px">
+            <img src="${icon}"/>
+        </div>
+        <div class="chat-header">
+            ${name}
+        </div>
+        <div class="chat-bubble chat-bubble-info" style="background-color: ${color};">
+            ${content}
+        </div>
+    </div>
+    `   
+    const placeholder = document.createElement("div");
+    placeholder.innerHTML = chathtml;
+    const node = placeholder.firstElementChild;
+    return node
+}
+function make_option(chat_num, option) {
+    document.getElementById('chat-bubbles-section').appendChild(chatN('end', chat_num, '#d3d3d3', option))
+}
+
+
 
 function check_genes_present(genes) {
     if (genes.length == 0) {

@@ -1,4 +1,4 @@
-import { human_list, mouse_list, processes, chatN, chatNresult, loading, geneset_entries} from "./constants.js";
+import { human_list, mouse_list, processes, chatNresult, loading, geneset_entries} from "./constants.js";
 import { gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from './single-gene-queries.js';
 import { geneset_signatures, geneset_enrichment, geneset_kea3, geneset_chea3, geneset_sigcomlincs } from './geneset-queries.js';
 
@@ -13,6 +13,18 @@ export async function select_option(q, options) {
         data: data
     })
     return response['option']
+}
+
+export async function infer_gene(q) {
+    var data = JSON.stringify({ 'gene': q })
+    var response = await $.ajax({
+        url: "api/query_genes",
+        contentType: 'application/json',
+        type: "POST",
+        dataType: 'json',
+        data: data
+    })
+    return response['genes']
 }
 
 export async function log_chat(user_query, response) {

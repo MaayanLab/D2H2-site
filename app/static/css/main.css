@@ -162,16 +162,16 @@ body {
 
 
 .btn-primary:hover {
-    background-color: #2e3093;
-    border-color: #000000;
-    color: rgb(255, 254, 254);
+    background-color: rgb(211, 143, 214);
+    border-color: transparent;
+    color: white;
 }
 .btn-primary {
-    border-color: rgb(113, 112, 112);
+    border-color: rgb(121, 83, 123);
     border-width: 1px;
     border-style: solid;
-    background-color: #3c3ebf8f;
-    color: rgb(255, 255, 255);
+    background-color: transparent;
+    color: rgb(92, 49, 94);
 }
 
 .btn-primary .span {
@@ -180,6 +180,12 @@ body {
   background-color: #f5efef;
   color: black;
 
+}
+
+.chat-option {
+  color: #9242a4 !important;
+  text-decoration: underline !important;
+  cursor: pointer;
 }
 
 .btn-custom {
@@ -1038,12 +1044,12 @@ nav select {
   
   grid-auto-rows: auto;
   
-  grid-gap: 1rem;
+  grid-gap: .5rem;
   
   }
 
 
-.card {
+.cards > .card {
   display: flex;
   border: 2px solid #e7e7e7;
   align-items: center;

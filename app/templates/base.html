@@ -44,41 +44,6 @@
 </head>
 
 <body data-spy="scroll" data-target="#toc" class="m-0">
-  <dialog data-modal>
-    <div class="text-center justify-content-center">
-      <div class="text-center mb-5">
-        <h4>D2H2 facilitates data-driven hypothesis generation through curated diabetes studies processed<br>from GEO and offering the ability to answer many gene and gene set related queries</h4>
-      </div>
-    </div>
-    <div class="row justify-content-center text-center">
-      <div class="col">
-        <p>Chat with the AI-powered D2H2 chatbot to answer gene and gene set related queries on the fly.</p>
-        <img src="static/img/chat-thumbnail.png" alt="" style="width: 800px; height: fit-content;" class="img-thumbnail mb-2">
-        <button class="btn btn-primary" data-close-modal>
-          Chat
-        </button>
-      </div>
-      <div class="col">
-        <p>Answer a series of single gene queries, including in which diabetes-related GEO studies a chosen gene is most differentially expressed.</p>
-        <img src="static/img/t2d-thumbnail.png" alt="" style="width: 800px; height: fit-content;" class="img-thumbnail mb-2">
-        <a href="{{ url_for('singlegene_home') }}">
-        <button class="btn btn-primary">
-          Single Gene
-        </button>
-        </a>
-      </div>
-      <div class="col">
-        <p>Answer a series of gene set queries, including performing enrichment analysis agasint our curated diabetes gene set library.</p>
-        <img src="static/img/geneset-thumbnail.png" alt="" style="width: 800px; height: fit-content;" class="img-thumbnail mb-2">
-        <a href="{{ url_for('geneset_home') }}">
-          <button class="btn btn-primary">
-            Gene Set
-          </button>
-        </a>
-      </div>
-      
-    </div>
-  </dialog>
   <div class="page-contaier" style="position: relative;">
     <div id="content-wrap m-0 p-0">
       <!-- Navbar -->
