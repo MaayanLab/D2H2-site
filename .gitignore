@@ -6,4 +6,6 @@ app/static/searchdata/t2d-files/
 extras
 env
 *.env
-
+ETL/human
+ETL/mouse
+ETL/signatures

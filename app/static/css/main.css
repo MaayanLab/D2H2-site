@@ -1092,3 +1092,11 @@ nav select {
   transform: rotate(270deg);
   cursor: pointer;
 }
+
+.modal {
+  color: black;
+}
+
+dialog::backdrop {
+  backdrop-filter: blur(3px);
+}

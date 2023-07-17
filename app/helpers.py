@@ -31,6 +31,7 @@ import anndata
 
 endpoint = os.environ.get('ENDPOINT', 'https://d2h2.s3.amazonaws.com/')
 base_url = os.environ.get('BASE_URL', 'data')
+sigs_version = os.environ.get('SIGS_VERSION', 'v1.1')
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
 ########################## QUERY ENRICHER ###############################
@@ -380,34 +381,31 @@ blue_map = cm.get_cmap('Blues_r')
 blue_norm = colors.Normalize(vmin=-0.25, vmax=1)
 
 def load_files(species, gene):
-    root_path = f'{endpoint}d2h2/t2d-datasets/'
-    pval_rna_df = pd.read_feather(f'{root_path}all_{species}_pval.f', columns=['index', gene]).set_index('index')
+    root_path = f'{endpoint}t2d-datasets/{sigs_version}/'
+    pval_rna_df = pd.read_feather(f'{root_path}rna_{species}_pval.f', columns=['index', gene]).set_index('index')
     # RNA-seq fold change
-    fc_rna_df = pd.read_feather(f'{root_path}all_{species}_fc.f', columns=['index', gene]).set_index('index')
+    fc_rna_df = pd.read_feather(f'{root_path}rna_{species}_fc.f', columns=['index', gene]).set_index('index')
 
     # microarray data
     try:
         has_micro = True 
-        pval_micro_df = pd.read_feather(f"{root_path}{species}_pruned_affy_pv.f", columns=['index', gene]).set_index('index')
-        fc_micro_df = pd.read_feather(f"{root_path}{species}_pruned_affy_fc.f", columns=['index', gene]).set_index('index')
+        pval_micro_df = pd.read_feather(f"{root_path}micro_{species}_pval.f", columns=['index', gene]).set_index('index')
+        fc_micro_df = pd.read_feather(f"{root_path}micro_{species}_fc.f", columns=['index', gene]).set_index('index')
     except:
         print('no micro data')
         has_micro = False 
         pval_micro_df = pd.DataFrame()
         fc_micro_df = pd.DataFrame()
-    inst_df_input = pd.read_csv(f"{root_path}{species}_instances.tsv", sep='\t', index_col=0)
 
-    return  pval_rna_df, fc_rna_df, inst_df_input, pval_micro_df, fc_micro_df, has_micro
+    return  pval_rna_df, fc_rna_df, pval_micro_df, fc_micro_df, has_micro
 
-def combine_data(pval_df, fc_df, gene, isRNA=False, inst_df=None):
+def combine_data(pval_df, fc_df, gene):
     # extract and combine data for each gene
     comb_df = pd.DataFrame()
     comb_df['sig'] = pval_df.index.tolist()
     comb_df['pval'] = pval_df[gene].tolist()
     comb_df['logpv'] = np.negative(np.log10(comb_df['pval']))
     comb_df['fc'] = fc_df[gene].tolist()
-    if isRNA:
-        comb_df['inst'] = comb_df['sig'].apply(lambda x: inst_df.loc[x, 'session_id'])
     return comb_df
 
 
@@ -424,7 +422,6 @@ def map_color(fc, pv):
 
 def make_plot(comb_df, species, gene, micro=False, micro_df=None):
     # create links from Bulk RNA-seq Appyter instance session IDs
-    comb_df['inst'] = comb_df['inst'].apply(lambda x: f'https://appyters.maayanlab.cloud/Bulk_RNA_seq/{x}')
 
     # set color and size for each point on plot
     rna_colors = [map_color(r.fc, r.pval) for r in comb_df.itertuples()]
@@ -509,22 +506,18 @@ def make_plot(comb_df, species, gene, micro=False, micro_df=None):
 
 # create download link for table results
 def download_link(df, fname, isRNA=False):
-    if isRNA:
-        df['Link to Bulk RNA-seq Analysis'] = df['Link to Bulk RNA-seq Analysis'].apply(
-            lambda x: x.split('href=')[1].split('>')[0].replace('"', '')
-        )
 
     df['Link to GEO Study'] = df['Link to GEO Study'].apply(
         lambda x: x.split('href=')[1].split('>')[0].replace('"', '')
     )
 
     df['Signature'] = df['Signature'].apply(lambda x: x.replace('* ', ''))
-    return fname, df.values.tolist()
+    return fname, df.dropna().values.tolist()
 
 # get GEO links 
 @lru_cache()
 def geo_link(sig_name, clickable):
-    gse_id = sig_name.split('_')[0].replace('* ', '')
+    gse_id = sig_name.split('-')[0].replace('* ', '')
     geo_path = 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc='
     if clickable:
         return f'<a target="_blank" href="{geo_path}{gse_id}">{gse_id}</a>'
@@ -538,30 +531,27 @@ def appyter_link(sig_name, inst=''):
 
 # create tables of significant results with links to GEO 
 def make_tables(comb_df, species, gene, is_upreg, isRNA=False):
-    root_path = f'{endpoint}d2h2/t2d-datasets/'
+    root_path = f'{endpoint}t2d-datasets/{sigs_version}/'
     if isRNA:
-        sigranks = pd.read_feather(f"{root_path}all_{species}_fc_sigrank.f", columns=['index', gene]).set_index('index')
+        sigranks = pd.read_feather(f"{root_path}{species}_rna_fc_sigrank.f", columns=['index', gene]).set_index('index')
     else:
-        sigranks = pd.read_feather(f"{root_path}{species}_affy_fc_sigrank.f", columns=['index', gene]).set_index('index')
+        sigranks = pd.read_feather(f"{root_path}{species}_micro_fc_sigrank.f", columns=['index', gene]).set_index('index')
     dir_df = comb_df[comb_df['fc'] > 0] if is_upreg else comb_df[comb_df['fc'] < 0]
     dir_df = dir_df.drop(columns='logpv').sort_values(by='pval', ascending=True)
-    if isRNA:
-        dir_df['inst'] = dir_df.apply(lambda row: appyter_link(row.sig, inst=row.inst), axis=1)
+
     dir_df['rank'] = [sigranks.loc[sig, gene] for sig in dir_df['sig']]
     if dir_df.shape[0] != 0:
         dir_df['sig'] = dir_df.apply(lambda row: f"* {row.sig}" if row.pval < 0.05 else row.sig, axis=1)
         dir_df['pval'] = dir_df['pval'].apply(lambda x: f'{x:.3e}')
         dir_df['fc'] = dir_df['fc'].apply(lambda x: f'{x:.4f}')
-    if isRNA:
-        dir_df = dir_df.rename(columns={'sig': 'Signature', 'pval': 'P-value', 'fc': 'Log2 Fold Change', 'inst': 'Link to Bulk RNA-seq Analysis', 'rank': 'Gene Rank in Signature'})
-    else:
-        dir_df = dir_df.rename(columns={'sig': 'Signature', 'pval': 'P-value', 'fc': 'Log2 Fold Change', 'rank': 'Gene Rank in Signature'})
+
+    dir_df = dir_df.rename(columns={'sig': 'Signature', 'pval': 'P-value', 'fc': 'Log2 Fold Change', 'rank': 'Gene Rank in Signature'})
     dir_df['Link to GEO Study'] = dir_df['Signature'].apply(geo_link, clickable=True)
     return dir_df
 
 def send_plot(species, gene):
-    pval_rna_df, fc_rna_df, inst_df_input, pval_micro_df, fc_micro_df, micro_exists = load_files(species, gene)
-    comb_df_input = combine_data(pval_rna_df, fc_rna_df, gene, isRNA=True, inst_df=inst_df_input)
+    pval_rna_df, fc_rna_df, pval_micro_df, fc_micro_df, micro_exists = load_files(species, gene)
+    comb_df_input = combine_data(pval_rna_df, fc_rna_df, gene)
     if micro_exists:
         micro_df_input = combine_data(pval_micro_df, fc_micro_df, gene)
         plot = make_plot(comb_df_input, species, gene, micro=True, micro_df=micro_df_input)
@@ -585,17 +575,7 @@ def send_plot(species, gene):
 def make_dge_plot(data, title, method, id_plot='dge-plot'):
 
     # set color and size for each point on plot
-    if method == 'limma':
-        colors = [map_color(r[1]['logFC'], r[1]['P.Value']) for r in data.iterrows()]
-        sizes = [12 if r[1]['P.Value'] < 0.05 else 6 for r in data.iterrows()]
-        data['logp'] = data['P.Value'].apply(lambda x: -np.log10(x))
-        data['gene'] = data.index.values
-    elif method == 'edgeR':
-        colors = [map_color(r[1]['logFC'], r[1]['PValue']) for r in data.iterrows()]
-        sizes = [12 if r[1]['PValue'] < 0.05 else 6 for r in data.iterrows()]
-        data['logp'] = data['PValue'].apply(lambda x: -np.log10(x))
-        data['gene'] = data.index.values
-    elif method == 'DESeq2':
+    if method == 'DESeq2':
         colors = [map_color(r[1]['log2FoldChange'], r[1]['pvalue']) for r in data.iterrows()]
         sizes = [12 if r[1]['pvalue'] < 0.05 else 6 for r in data.iterrows()]
         data['logp'] = data['pvalue'].apply(lambda x: -np.log10(x))
@@ -605,53 +585,12 @@ def make_dge_plot(data, title, method, id_plot='dge-plot'):
         sizes = [12 if r[1]['pvals'] < 0.05 else 6 for r in data.iterrows()]
         data['logp'] = data['pvals'].apply(lambda x: -np.log10(x))
         data['gene'] = data.index.values
+    elif method == 'characteristic_direction':
+        colors = [map_color(r[1]['CD-coefficient'], r[1]['Significance']) for r in data.iterrows()]
+        sizes = [12 if r[1]['Significance'] < 0.05 else 6 for r in data.iterrows()]
+        data['logp'] = data['Significance'].apply(lambda x: -np.log10(x))
+        data['gene'] = data.index.values
 
-
-    # generate data source
-    if method == 'limma':
-        data_source = ColumnDataSource(
-            data=dict(
-                x = data['logFC'],
-                y = data['logp'],
-                gene =  data['gene'],
-                t = data['t'],
-                pval = data['P.Value'], 
-                adjpval = data['adj.P.Val'],
-                avgExpr = data['AvgExpr'], 
-                B = data['B'],
-                colors = colors, 
-                sizes = sizes,
-            )
-        )
-        tools = [
-        ("Gene", "@gene"),
-        ("t-test", "@t"),
-        ("P-Value", "@pval"),
-        ("Adj. P-Value", "@adjpval"),
-        ("log2 Fold Change", "@x"),
-        ("log-odds", "@B"),
-        ("Avg. Expression", "@avgExpr")
-    ]
-    if method == 'edgeR':
-        data_source = ColumnDataSource(
-            data=dict(
-                x = data['logFC'],
-                y = data['logp'],
-                logCPM = data['logCPM'],
-                gene =  data['gene'],
-                pval = data['PValue'], 
-                FDR = data['FDR'],
-                colors = colors, 
-                sizes = sizes,
-            )
-        )
-        tools = [
-        ("Gene", "@gene"),
-        ("P-Value", "@pval"),
-        ("log2 Fold Change", "@x"),
-        ("-log10(p)", "@y"),
-        ("logCPM", "@logCPM")
-    ]
     if method == 'DESeq2':
         data_source = ColumnDataSource(
             data=dict(
@@ -698,6 +637,25 @@ def make_dge_plot(data, title, method, id_plot='dge-plot'):
         ("adj. P-value", "@adjpval"),
         ("scores", "@scores")
         ]
+
+    if method == 'characteristic_direction':
+        data_source = ColumnDataSource(
+            data=dict(
+                x = data['CD-coefficient'],
+                y = data['logp'],
+                gene =  data['gene'],
+                pval = data['Significance'],
+                colors = colors, 
+                sizes = sizes,
+            )
+        )
+        tools = [
+        ("Gene", "@gene"),
+        ("P-value", "@pval"),
+        ("CD-coefficient", "@x"),
+        ("-log10(p)", "@y"),
+        ]
+    
     
 
     # create hover tooltip
@@ -717,8 +675,11 @@ def make_dge_plot(data, title, method, id_plot='dge-plot'):
         fill_color='colors', 
         name=None,
     )
-
-    plot.xaxis.axis_label = 'log2(Fold Change)'
+    if method == 'characteristic_direction':
+        plot.xaxis.axis_label = 'CD Coeffecient'
+    else:
+        plot.xaxis.axis_label = 'log2(Fold Change)'
+    
     plot.yaxis.axis_label = '-log10(P-value)'
     plot.title.text = f"DGE of {title}"
     plot.title.align = 'center'

@@ -10,13 +10,14 @@ import GEOparse
 import ftfy
 from functools import lru_cache
 import pickle
+import anndata
+from dotenv import load_dotenv
+load_dotenv()
+
 from helpers import *
 from dge import *
 from query import *
 from log_chats import *
-import anndata
-from dotenv import load_dotenv
-load_dotenv()
 
 
 #Added the route for s3 bucket
@@ -24,8 +25,8 @@ endpoint = os.environ.get('ENDPOINT', 'https://d2h2.s3.amazonaws.com/')
 base_url = os.environ.get('BASE_URL', 'data')
 ROOT_PATH = os.environ.get('ROOT_PATH', '/')
 BASE_PATH = os.environ.get('BASE_PATH', 'maayanlab.cloud')
-DEBUG = os.environ.get('DEBUG')
-UPDATE_STUDIES = os.environ.get('UPDATE_STUDIES', False)
+DEBUG = os.environ.get('DEBUG', True).lower() in ('true', '1', 't')
+UPDATE_STUDIES = os.environ.get('UPDATE_STUDIES', False).lower() in ('true', '1', 't')
 
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
@@ -240,10 +241,8 @@ def dge():
 	norms = response_json['norms']
 	expr_file = '{base_url}/{species}/{gse}/{gse}_Expression.txt'.format(species=species, gse=gse, base_url=base_url)
 	meta_file = '{base_url}/{species}/{gse}/{gse}_Metadata.txt'.format(species=species, gse=gse, base_url=base_url)
-	if method == 'limma' or method == 'edgeR':
-		data, title = compute_dge(expr_file, meta_file, method, control, perturb, False, False, False, False)
-	else:
-		data, title = compute_dge(expr_file, meta_file, method, control, perturb, norms['logCPM'], norms['log'], norms['z'], norms['q'])
+
+	data, title = compute_dge(expr_file, meta_file, method, control, perturb, norms['logCPM'], norms['log'], norms['z'], norms['q'])
 
 	jsonplot = make_dge_plot(data,title, method)
 
@@ -892,7 +891,8 @@ def record_chat():
 	response_json = request.get_json()
 	user_chat = response_json['user_chat']
 	response = response_json['response']
-	log_chat(user_chat, response)
+	if not DEBUG:
+		log_chat(user_chat, response)
 	return {}
 
 #######################################################
@@ -901,7 +901,7 @@ def record_chat():
 #######################################################
 #######################################################
 if __name__ == "__main__":
-	if (UPDATE_STUDIES):
+	if UPDATE_STUDIES:
 		load_new_studies()
 	app.run(debug=DEBUG, host="0.0.0.0", port=5000)
 
