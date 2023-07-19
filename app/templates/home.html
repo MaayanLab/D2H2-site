@@ -56,14 +56,14 @@
                         <div class="vertical">
                             <div class="input-wrapper row mt-3" style="flex-wrap: nowrap;">
                                 <input id="gpt-query" style="right: 0rem; width: 100rem;" type="text"
-                                    placeholder="Enter a gene or a gene set related query..." name="text"
+                                    placeholder="Ask D2H2 any question to form hypotheses in T2D research..." name="text"
                                     class="input pr-0 mr-0">
                                 <button id="gpt-query-button" class="pl-0 ml-0 query-submit"
                                     style="width: 40px; min-width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
                                     <img src="static/img/doublearrow.png" style="width: 60%" alt="Query">
                                 </button>
                             </div>
-                            <h5 class="pt-2 text-center" style="font-size: 18px;">Example Queries</h5>
+                            <h5 class="pt-2 text-center" style="font-size: 18px;">Examples</h5>
                             <div class="m-0 p-0 cards" style="font-size: smaller; max-width: 96%;">
                                 <div class="card">
                                     <div class="q-example" id="q-example1">
@@ -147,7 +147,7 @@
                                     data-toggle="collapse" data-target="#collapseOne" aria-expanded="true"
                                     aria-controls="collapseOne"
                                     style="background-color: rgb(212, 213, 214); color: black;">
-                                    Single Gene
+                                    Explore knowledge about a single gene
                                 </button>
                             </h2>
                         </div>
@@ -155,7 +155,7 @@
                         <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
                             data-parent="#accordionExample">
                             <div class="card-body text-center">
-                                <p>Answer a collection of single gene queries, including in which diabetes-related GEO
+                                <p>Find knowledge about a single gene, including in which diabetes-related GEO
                                     studies a chosen gene is most differentially expressed.</p>
                                 <img src="static/img/t2d-thumbnail.png" alt=""
                                     style="width: 800px; height: fit-content;" class="img-thumbnail mb-2">
@@ -174,14 +174,14 @@
                                     data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
                                     aria-controls="collapseTwo"
                                     style="background-color: rgb(212, 213, 214); color: black;">
-                                    Gene Set
+                                    Explore knowledge about a gene set
                                 </button>
                             </h2>
                         </div>
                         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
                             data-parent="#accordionExample">
                             <div class="card-body text-center">
-                                <p>Answer a collection of gene set queries, including performing enrichment analysis
+                                <p>Find knowledge about a gene set, including performing enrichment analysis
                                     agasint
                                     our curated diabetes gene set library.</p>
                                 <img src="static/img/geneset-thumbnail.png" alt=""
@@ -201,17 +201,15 @@
                                     data-toggle="collapse" data-target="#collapseThree" aria-expanded="false"
                                     aria-controls="collapseThree"
                                     style="background-color: rgb(212, 213, 214); color: black;">
-                                    Bulk RNA-seq
+                                    Browse curated bulk RNA-seq studies
                                 </button>
                             </h2>
                         </div>
                         <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
                             data-parent="#accordionExample">
                             <div class="card-body text-center">
-                                <p>Explore a collection of curated diabetes related Bulk-RNA-seq and microarray studies
-                                    from GEO. Users may explor the expression single genes across conditions in a
-                                    customized box plot viewer, visualize the samples as UMAP, tSNE and PCA, and compute
-                                    differential expression.</p>
+                                <p>Explore a collection of curated diabetes related Bulk-RNA-seq and microarray studies manually extracted and processed from NCBI's GEO. The expression level of single genes across conditions is visualized as
+                                   a customized box plot viewer; the samples can be visualized as UMAP, tSNE and PCA plots; and users cam compute differential expression for any two conditions with replicates.</p>
                                 <img src="static/img/dge-features.jpg" alt=""
                                     style="width: 1000px; height: fit-content;" class="img-thumbnail mb-2">
                                 <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}">
@@ -234,18 +232,14 @@
                                     data-toggle="collapse" data-target="#collapseFour" aria-expanded="false"
                                     aria-controls="collapseFour"
                                     style="background-color: rgb(212, 213, 214); color: black;">
-                                    scRNA-seq
+                                    Browse curated single cell RNA-seq studies
                                 </button>
                             </h2>
                         </div>
                         <div id="collapseFour" class="collapse" aria-labelledby="headingFour"
                             data-parent="#accordionExample">
                             <div class="card-body text-center">
-                                <p>Explore a collection of curated diabetes related sc-RNA studies from GEO. Users may
-                                    explore the expression single genes across clusters of a chosen profile in a
-                                    customized
-                                    box plot viewer, visualize the clustered cells as UMAP, tSNE and PCA, and compute
-                                    differential expression for each cluster.</p>
+                                <p>Explore a collection of curated diabetes related scRNA-seq studies extracted from NCBI's GEO. The expression of single genes across clusters of a chosen profile can be visualized as a customized box plot viewer; the single cells can be visualized in a UMAP, t-SNE and PCA; and users can compute differential expression for each automatically identified cluster</p>
                                 <img src="static/img/single-features.jpg" alt=""
                                     style="width: 800px; height: fit-content;" class="img-thumbnail mb-2">
                                 <a href="{{ url_for('species_or_viewerpg', species_or_gse='human_single') }}">
