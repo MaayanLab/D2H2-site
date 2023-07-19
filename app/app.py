@@ -823,8 +823,6 @@ def get_study_data():
 	metadata_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 	expression_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
 
-	
-
 	with s3.open(metadata_file, 'r') as f:
 		meta_data = f.read()
 
@@ -835,13 +833,14 @@ def get_study_data():
 	for i, row in enumerate(meta_data.split('\n')):
 		if i == 0:
 			selected_conditions.append(row)
-		
 		entries = row.split('\t')
 		if len(entries) != 3:
 			break
 		if entries[1] == control or entries[1] == perturb:
 			selected_conditions.append(row)
-
+		elif f'{entries[1]} {entries[2]}' == control or f'{entries[1]} {entries[2]}' == perturb:
+			entries[1] = f'{entries[1]} {entries[2]}'
+			selected_conditions.append('\t'.join(entries))
 
 	selected_meta = '\n'.join(selected_conditions)
 

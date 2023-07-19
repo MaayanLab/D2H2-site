@@ -75,16 +75,12 @@ def enrichr_id(genes, desc=''):
 def query_enricher(gene):
     ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/genemap'
     query_string = '?json=true&setup=true&gene=%s'
-
-
-
+    
     response = requests.get(ENRICHR_URL + query_string % gene)
     if not response.ok:
         raise Exception('Error finding gene')
 
     data = json.loads(response.text)
-
-
 
     for l in data['categories']:
         if l['name'] == 'Transcription':
