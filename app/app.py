@@ -541,7 +541,6 @@ def species_or_viewerpg(species_or_gse):
 		default_condition = list_of_conditions[0]
 		expression_base_name = metadata_json[default_condition]['filename']
 		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + expression_base_name
-		print(expression_file)
 		adata = read_anndata_h5(expression_file)
 		#Stores the list of cluster names. 
 		leiden_data = adata["var/leiden/categories"][:].astype(str)
