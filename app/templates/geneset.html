@@ -86,7 +86,7 @@
               </a>
             </div>
               <div id="[Signatures]loading"></div>
-              <div id="[Signatures]result"></div>
+              <div id="Signatures-result"></div>
           </div>
         </div>
       </div>
@@ -357,7 +357,7 @@
     }
 
     document.getElementById('[Signatures]loading').innerHTML = loading;
-    await geneset_signatures(geneset, '[Signatures]result');
+    await geneset_signatures(geneset, 'Signatures-result');
     document.getElementById('[Signatures]loading').innerHTML = "";
   });
 

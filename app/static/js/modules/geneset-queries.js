@@ -47,6 +47,8 @@ export async function geneset_signatures(geneset, resultid) {
         tabletext += "</tbody></table>";
 
 
+        document.getElementById(resultid).innerHTML = tabletext + clear_button;
+        
         $(document).ready(function () {
             $(`#table-enrichr${resultid}`).DataTable({
                 dom: 'Bfrtip',
@@ -56,7 +58,7 @@ export async function geneset_signatures(geneset, resultid) {
             });
 
         });
-        document.getElementById(resultid).innerHTML = tabletext + clear_button;
+       
     });
 }
 
