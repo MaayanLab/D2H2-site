@@ -41,35 +41,21 @@
   <div id="homehelp" class="custom-col col-lg-7 justify-content-center mx-auto mt-2 text-center">
     <h4 class="m-3" style="font-weight:bolder;">Functionality Available from the Home </h4>
     <p>
-      The D2H2 home page features two modules that enable users to explore knowledge about a single gene or a gene set in the context of diabetes-related signatures from the processed GEO studies. 
+      The D2H2 home page features several modules that enable users to explore knowledge about a single gene or a gene set in the context of diabetes-related signatures from the processed GEO studies. 
     </p>
     <p>
-      This is the interface for single gene queries against the diabetes-related processed signatures collection:
+      On the left side of the home page, users may enter gene or gene set related queries. The D2H2 AI-powered chatbot interprets user queries and attempts to answer their question, providing its methods and asking for any required parameters: 
     </p>
-    <img class="mb-3" src="{{url_for('static',filename= 'img/singlegenethumb.png')}}" alt="" style="width: 400px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
+    <img class="mb-3" src="{{url_for('static',filename= 'img/1-chat.png')}}" alt="" style="width: 600px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
-      After selecting or typing a gene name and clicking on the generate plot button, an interactive volcano plot and corresponding tables will appear below the module. See an example below:
+      Users may select any of the example queries below the input bar to demonstrate a portion of functionality available through the chat. Additionally, all processes are available in descrete modules on the 
+      <a href="{{ url_for('singlegene_home') }}">Single Gene Queries</a>
+      and the 
+      <a href="{{ url_for('geneset_home') }}">Gene Set Queries</a>
+      pages. The right side of the home page highlights some of the features available from the gene queries pages as well as from the GEO-study dedicated pages.
     </p>
-    <img class="mb-3" src="{{url_for('static',filename= 'img/singlegenevolcanothumb.png')}}" alt="" style="width: 400px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
-    <img class="mb-3" src="{{url_for('static',filename= 'img/singlegenetabthumb.png')}}" alt="" style="width: 600px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
-    <p>
-      By hovering over the points in the volcano plot you can see for which signatures are most significant in up- or down-regulating the expression of the queried gene. Clicking on the GSE number in the table will take the user to the study entry on GEO, and clicking on the Gene Viewer button to the far right of the table will navigate the browser to a dedicated page for the study that contains a customized box plot viewer that displays the expression of the queried gene across samples and conditions in the selected study. 
-    </p>
-    <p>
-      Also, on the home page, there is a module where users can query a gene set against a diabetes-related gene set library:
-    </p>
-    <img class="mb-3" src="{{url_for('static',filename= 'img/genesetthumb.png')}}" alt="" style="width: 400px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
-    <p>
-      Here once a gene set is submitted, a table is produced with the most significantly enriched diabetes-related signatures:
-    </p>
-    <img class="mb-3" src="{{url_for('static',filename= 'img/genesettabthumb.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
-    <p>
-      Users can expand the content of the table to see the overlapping genes by clicking the white button in the second to last column of the results table. This will reveal a comma-separated list of the overlapping genes as seen in the example below:
-    </p>
-    <img class="mb-3" src="{{url_for('static',filename= 'img/genesetrowthumb.png')}}" alt="" style="width: 600px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
-    <p>
-      Users can further investigate these genes by submitting them to the <a href="{{url_for('geneset_home')}}">Gene Set Queries</a>  by clicking on the purple button, or investigate a single gene by clicking it in the list. This click will open the <a href="{{url_for('singlegene_home')}}">Single Gene Queries</a> page with the clicked gene populating the various query fields on the page.
-    </p>
+
+   
   </div>
 
   <div id="geoviewerhelp" class="custom-col col-lg-7 justify-content-center mx-auto mt-4 text-center">
@@ -81,7 +67,7 @@
     <p>
       After selecting the species, a table with the available studies to browse and view will be displayed.
     </p>
-    <img class="mb-3" src="{{url_for('static',filename= 'img/geotabthumb.png')}}" alt="" style="width: 600px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
+    <img class="mb-3" src="{{url_for('static',filename= 'img/geotabthumb.png')}}" alt="" style="width: 800px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
     <p>
       Here users can see the study's GEO ID (GSE), which is linked to the applicable page on GEO, as well as additional information about each study. Clicking the show study design will expand the entry for the study to show additional information about the study design. Clicking the purple Gene Viewer button to the far right of the table will open the study landing page which contains several features to explore the processed data in more detail.  
     </p>
@@ -136,6 +122,31 @@
     <h4 class="m-3" style="font-weight:bolder;">Single Gene and Gene Set Query Pages</h4>
 
     <p>
+      D2H2 offers numerous gene and gene set related modules, harmonizing information from a variety of sources. The first module available on the Single Gene Queries page, allows users to view the expression of a single gene across all the processed bulk RNA-seq and microarray studies hosted on D2H2.
+      After selecting or typing a gene name and clicking on the generate plot button, an interactive volcano plot and corresponding tables will appear below the module. See an example below:
+    </p>
+    <img class="mb-3" src="{{url_for('static',filename= 'img/singlegenevolcanothumb.png')}}" alt="" style="width: 400px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
+    <img class="mb-3" src="{{url_for('static',filename= 'img/singlegenetabthumb.png')}}" alt="" style="width: 600px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
+    <p>
+      By hovering over the points in the volcano plot you can see for which signatures are most significant in up- or down-regulating the expression of the queried gene. Clicking on the GSE number in the table will take the user to the study entry on GEO, and clicking on the Gene Viewer button to the far right of the table will navigate the browser to a dedicated page for the study that contains a customized box plot viewer that displays the expression of the queried gene across samples and conditions in the selected study. 
+    </p>
+    <p>
+      Also, on the home page, there is a module where users can query a gene set against a diabetes-related gene set library:
+    </p>
+    <img class="mb-3" src="{{url_for('static',filename= 'img/genesetthumb.png')}}" alt="" style="width: 400px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
+    <p>
+      Here once a gene set is submitted, a table is produced with the most significantly enriched diabetes-related signatures:
+    </p>
+    <img class="mb-3" src="{{url_for('static',filename= 'img/genesettabthumb.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
+    <p>
+      Users can expand the content of the table to see the overlapping genes by clicking the white button in the second to last column of the results table. This will reveal a comma-separated list of the overlapping genes as seen in the example below:
+    </p>
+    <img class="mb-3" src="{{url_for('static',filename= 'img/genesetrowthumb.png')}}" alt="" style="width: 600px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
+    <p>
+      Users can further investigate these genes by submitting them to the <a href="{{url_for('geneset_home')}}">Gene Set Queries</a>  by clicking on the purple button, or investigate a single gene by clicking it in the list. This click will open the <a href="{{url_for('singlegene_home')}}">Single Gene Queries</a> page with the clicked gene populating the various query fields on the page.
+    </p>
+
+    <p>
       Several tools and search engines are available from D2H2 to provide information about single genes and gene sets. The currently available queries can be accessed from the home page:
     </p>
     <img class="mb-3" src="{{url_for('static',filename= 'img/queriesthumb.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
@@ -163,14 +174,6 @@
   <div id="additionalhelp" class="custom-col col-lg-7 justify-content-center mx-auto mt-4 text-center">
     <h4 class="m-3" style="font-weight:bolder;">Additional Features</h4>
 
-    <h6 class="mt-4">Customized Worflows</h6>
-    <p>
-      The <a href="{{url_for('scg')}}">Customized Workflows </a>page allows users to select from premade workflows that dynamically change based on the input parameter. Here for example is a workflow concerning a single gene:
-    </p>
-    <img class="mb-3" src="{{url_for('static',filename= 'img/customworkflowthumb.png')}}" alt="" style="width: 500px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
-    <p>
-      Here when a new gene is entered at the top of the workflow the rest will update automatically to display various information about the gene. Users may also <a href="https://scg.maayanlab.cloud/" target="_blank">create your own</a> customized workflows.
-    </p>
     <h6 class="mt-4">Resources</h6>
     <p>
       The Resources page provides a variety of diabetes-related databases and portals for researchers. The table is downloadable and searchable.
@@ -180,7 +183,11 @@
     <p>
       The downloads page provides the processed diabetes-related signatures which are queried from the modules on the <a href="{{url_for('home')}}">Home page</a> as either CSV or feather files.
     </p>
-    <img class="mb-3" src="{{url_for('static',filename= 'img/resourcesthumb.png')}}" alt="" style="width: 700px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
+    <img class="mb-3" src="{{url_for('static',filename= 'img/downloadsthumb.png')}}" alt="" style="width: 700px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
+    <p>
+      Addtionally, expression and metadata files are available for each study hosted on D2H2.
+    </p>
+    <img class="mb-3" src="{{url_for('static',filename= 'img/downloadsthumb2.png')}}" alt="" style="width: 700px; border: rgb(119, 119, 121); border-style: solid; border-width: 2px;">
   </div>
   <div class="m-5"></div>
 

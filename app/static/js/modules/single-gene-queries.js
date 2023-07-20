@@ -6,7 +6,7 @@ export const human_list = fetch(
 
 export function gen_table(link, data, table_id, title, gene) {
     var titletext = `<div class ="row text-center mt-3"> <h4>${title}</h4></div>`;
-    var tabletext = `<table id='${table_id}' class='styled-table' style='width: 50%;'><thead><tr>`
+    var tabletext = `<table id='${table_id}' class='styled-table' style='width: 90%;'><thead><tr>`
     tabletext += "<th>Signature</th><th>GEO Entry</th><th>P-value</th><th>Log2 Fold Change</th><th>Gene Rank in Signature</th><th>Boxplot Viewer</th></tr><tbody>"
     data.forEach(function (row) {
         var gse = row[row.length - 1].split("=")[1]
