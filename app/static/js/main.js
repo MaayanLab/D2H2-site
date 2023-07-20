@@ -777,10 +777,10 @@ $(document).ready(function () {
                 pvals = table.column(2).data()
 
             } else if (method === 'characteristic_direction') {
-                tabletext += "<th></th><th>CD Coeffecient</th><th>Significance</th></tr><tbody>"
+                tabletext += "<th></th><th>CD Coeffecient</th><th>P-value</th><th>LogFC</th></tr><tbody>"
                 rows.forEach(function (row) {
                     var vals = row.replace(/\s\s+/g, ' ').split(' ');
-                    tabletext += `<tr><td><a onclick="setGene('${vals[0]}')" href='${url}' target='_blank'>` + vals[0] + "</a></td><td>" + Number(vals[1]).toPrecision(4) + "</td><td>" + Number(vals[2]).toPrecision(4) + "</td></tr>"
+                    tabletext += `<tr><td><a onclick="setGene('${vals[0]}')" href='${url}' target='_blank'>` + vals[0] + "</a></td><td>" + Number(vals[1]).toPrecision(4) + "</td><td>" + Number(vals[2]).toPrecision(4) + "</td><td>" + Number(vals[3]).toPrecision(4) + "</td></tr>"
                 });
                 tabletext += "</tbody></table>";
 

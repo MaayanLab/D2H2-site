@@ -2,13 +2,14 @@ from functools import lru_cache
 import pandas as pd
 from maayanlab_bioinformatics.normalization.quantile import quantile_normalize
 from maayanlab_bioinformatics.dge.characteristic_direction import characteristic_direction
+from maayanlab_bioinformatics.dge.logfc import logfc_differential_expression
+from scipy.stats.mstats import zscore
 from itertools import combinations
 import warnings
 import numpy as np
 import scipy.stats as ss
 import s3fs
 import scanpy as sc
-import anndata
 import random
 from helpers import read_anndata_h5, read_anndata_raw
 import os
@@ -75,9 +76,10 @@ def get_signatures(classes, dataset, normalization, method, meta_class_column_na
         signature_label = " vs. ".join([cls1, cls2])
         if method == "characteristic_direction":
             expr_df.dropna(inplace=True)
-            signature = characteristic_direction(expr_df.loc[:, cls1_sample_ids], expr_df.loc[:, cls2_sample_ids], calculate_sig=True)
+            signature = characteristic_direction(expr_df.loc[:, cls1_sample_ids], expr_df.loc[:, cls2_sample_ids])
+            signature['P-value'] = ss.norm.sf(np.abs(zscore(signature['CD-coefficient'])))
+            signature['LogFC'] = logfc_differential_expression(expr_df.loc[:, cls1_sample_ids], expr_df.loc[:, cls2_sample_ids]).loc[signature.index.values]['LogFC']
         elif method == "DESeq2":
-            print(expr_df)
             dds = DeseqDataSet(
             counts=expr_df.T,
             clinical=dataset['dataset_metadata'],
@@ -249,8 +251,9 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
             tmp_raw_expr_df.columns.name = "Sample"
 
             if method == "characteristic_direction":
-                signature = characteristic_direction(
-                    expr_df.loc[:, non_cls1_sample_ids], expr_df.loc[:, cls1_sample_ids], calculate_sig=True).dropna()
+                signature = characteristic_direction(expr_df.loc[:, non_cls1_sample_ids], expr_df.loc[:, cls1_sample_ids]).dropna()
+                signature['P-value'] = ss.norm.sf(np.abs(zscore(signature['CD-coefficient'])))
+                signature['LogFC'] = logfc_differential_expression(expr_df.loc[:, non_cls1_sample_ids], expr_df.loc[:, cls1_sample_ids]).loc[signature.index.values]['LogFC']
             elif method == "DESeq2":
                 condition_labels = ['C'] * expr_df.loc[:, non_cls1_sample_ids].shape[1] + ['RS'] *  expr_df.loc[:, cls1_sample_ids].shape[1]
                 sample_names = expr_df.loc[:, non_cls1_sample_ids].columns.tolist() + expr_df.loc[:, cls1_sample_ids].columns.tolist()
