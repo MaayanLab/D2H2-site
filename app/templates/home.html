@@ -13,10 +13,10 @@
         </div>
     </div>
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 justify-content-center mx-auto p-0 m-0">
-        <div class="row flex-wrap">
+        <div class="row flex-wrap justify-content-center mx-auto">
             
-            <div class="col-lg-5 col-md-10 col-sm-10 offset-1 mt-3">
-                <div class="justify-content-center p-0 m-0" style="flex-wrap: wrap;">
+            <div id="chat-div" class="col-lg-5 col-md-10 col-sm-10 mt-3 ml-5">
+                <div class="justify-content-center p-0 m-0 text-center" style="flex-wrap: wrap;">
                     <!-- Main Panel -->
                     <div class="banner">
 
@@ -29,7 +29,7 @@
                     </div>
 
                     <div class="vertical mt-4" id="chat-section"
-                        style="border-style: solid; border-radius: 2rem; border-color: rgb(184, 184, 184); width: 100%; overflow: auto;">
+                        style="border-style: solid; border-radius: 2rem; border-color: rgb(184, 184, 184); width: 100%; overflow: auto; text-align: left;">
                         <div id="chat-bubbles-section" style="overflow: auto;">
                             <div class="chat chat-start mb-2" id="chat-intro" style="display: none;">
                                 <div class="chat-image avatar pl-2" style="width: 50px">
@@ -139,7 +139,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-5 col-md-10 col-sm-10 ml-5 mt-2 mb-4">
+            <div id="features-div" class="col-lg-5 col-md-10 col-sm-10 ml-5 mt-2 mb-4">
                 <div class="accordion" id="accordionExample">
                     <div class="card">
                         <div class="card-header" id="headingOne">
@@ -160,11 +160,13 @@
                                     studies a chosen gene is most differentially expressed.</p>
                                 <img src="static/img/t2d-thumbnail.png" alt=""
                                     style="width: 800px; height: fit-content;" class="img-thumbnail mb-2">
-                                <a href="{{ url_for('singlegene_home') }}">
-                                    <button class="btn btn-primary">
-                                        Single Gene Queries
-                                    </button>
-                                </a>
+                                <div>
+                                    <a href="{{ url_for('singlegene_home') }}">
+                                        <button class="btn btn-primary">
+                                            Single Gene Queries
+                                        </button>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -589,11 +591,13 @@
         document.getElementById("gpt-query").onfocus = function () { fadeChatIn() };
 
         async function fadeChatIn() {
+            $('#chat-div').addClass('col-lg-10')
+            $('#features-div').addClass('col-lg-6')
             await $("#chat-section").fadeIn(1000);
             setTimeout(() => $("#chat-intro").fadeIn(), 1500)
             $("#chat-intro").fadeIn(2000)
             $('html, body').animate({
-                scrollTop: $("#query-section").offset().top
+                scrollTop: $(`#chat-${chat_num}`).offset().top
             }, 1000);
         }
 
@@ -614,6 +618,9 @@
 
         document.getElementById('reset').addEventListener("click", function () {
             reset_chat();
+            $('#chat-div').removeClass('col-lg-10')
+            $('#features-div').removeClass('col-lg-6')
+            
         });
 
 
