@@ -445,8 +445,680 @@ function fillSet2(id, descid, count_id) {
 function setGene(gene) {
     localStorage.setItem('gene', gene)
 }
+//
+// NIDDK RESEARCHER CODE 
+//
+function example_researcher(tag) {
+    console.log(tag.text)
+    $('#search_researcher').val(tag.text);
+    search_researcher(tag.text);
+}
+
+function createResearchCardGridElement(filenames){
+    var elem = document.createElement('div');
+    elem.className = 'grid-item-researcher';
+    elem.setAttribute("data-toggle", "modal")
+    elem.setAttribute("data-toggle", "imagecardmodal")
+    elem.innerHTML = `<img class="cardimage" onclick="showResearcherCardModal(this)" data-src=${filenames[0]} src=${filenames[1]}>`
+    elem.style.position = null
+    // console.log(elem)
+    return elem
+}
+function search_researcher(name) {
+    $('.researcher-grid').empty()
+    $('.researcher-grid').html('<div class="grid-sizer"></div>')
+    $('#researcher-cy-network').empty()
+    document.getElementById('researcher-network-title').innerText = ''
+    document.getElementById('researcher-cy-network').style.display = 'none'
+    document.getElementById('researcher-title').innerText = `Research Summary Information for ${name}`
+    document.getElementById('researcher-data-loading-none').style.display = 'none'
+    document.getElementById('researcher-data-loading').style.display = 'block'
+    document.getElementById('navbar-toc').style.display = 'block'
+    document.getElementById('results_researcher').style.display = 'block'
+    
+    const formData = JSON.stringify({'researcher':name})
+    console.log(formData)
+    fetch("researcher_name", {
+        method: "POST",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type':'application/json'
+        },
+        body: formData,
+    }).then(response => response.json())
+    .then(data_dict => {
+        const file_names = data_dict['png_paths']
+        if (file_names.length == 0) {
+            console.log('No images for this researcher. Need to do manual API calls.');
+            document.getElementById('researcher-data-loading').style.display = 'none';
+            document.getElementById('researcher-data-loading-none').style.display = 'block';
+            document.getElementById('researcher-data-loading-none').innerHTML = "NOT IN DATABASE. QUERYING INFORMATION FROM API CALLS. NEED TO IMPLEMENT"
+        }else{
+            elements = file_names.map(filename => createResearchCardGridElement(filename))
+            console.log(elements)
+            var $grid = $('.researcher-grid').masonry({
+                itemSelector: '.grid-item-researcher',
+                columnWidth: '.grid-sizer'
+              });
+            console.log($grid)
+            var $elems = $( elements )
+            $grid.append( $elems ).masonry( 'appended', $elems );
+            document.getElementById('researcher-data-loading').style.display = 'none'
+        }
+    })
+
+    //MAKING API CALL TO NIDDK KG and Loading base Cytoscape
+    route_for_kg_connections = `http://localhost:3000/api/knowledge_graph?start=Principal Investigator&start_term=${name}&start_field=label&limit=25&end=Principal Investigator&relation=PI Gene,PI Diseases`
+    fetch(route_for_kg_connections, {
+        method: "GET",
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type':'application/json', 
+        }
+    }).then(response => response.json())
+    .then((data) => {
+        console.log(typeof(data))
+        if (data.length == 0){
+            document.getElementById('researcher-network').innerText = "No connections to other Researchers"
+        }else{
+            
+            document.getElementById('researcher-network-title').innerText = `Researcher Subnetwork for ${name}`
+            text_content = ``
+            for (i = 0; i< data.length; i++) {
+                console.log(data[i]['data'])
+                text_content += `<p>${JSON.stringify(data[i]['data'])}</p>`
+            }
+            document.getElementById('researcher-network').innerText = text_content
+
+            document.getElementById('researcher-cy-network').style.display = 'block'
+            network_div = document.getElementById('researcher-cy-network')
+            var cy = cytoscape({
+
+                container: network_div, // container to render in
+              
+                elements: data,
+              
+                style : [{
+                    "selector": 'node',
+                    "style": {
+                    'background-color': 'data(color)',
+                    'border-color': 'data(borderColor)',
+                    'border-width': 'data(borderWidth)',
+                    'label': 'data(label)',
+                    "text-valign": "center",
+                    "text-halign": "center",
+                    'width': "50",
+                    'height': "50",
+                    }
+                },
+                {
+                    "selector": 'edge',
+                    "style": {
+                    'curve-style': 'straight',
+                    'line-color': 'data(lineColor)',
+                    'width': '3',
+                    'label': 'data(relation)',
+                    "text-rotation": "autorotate",
+                    "text-margin-x": "0px",
+                    "text-margin-y": "0px",
+                    'font-size': '12px',
+                    'target-arrow-shape': "data(directed)",
+                    'target-endpoint': 'outside-to-node',
+                    'source-endpoint': 'outside-to-node',
+                    'target-arrow-color': 'data(lineColor)',
+                    }
+                },
+                {
+                    "selector": 'node.highlight',
+                    "style": {
+                        'border-color': 'gray',
+                        'border-width': '2px',
+                        'font-weight': 'bold',
+                        'font-size': '18px',
+                        'width': "90",
+                        'height': "90",
+                    }
+                },
+                {
+                    "selector": 'node.focused',
+                    "style": {
+                        'border-color': 'gray',
+                        'border-width': '2px',
+                        'font-weight': 'bold',
+                        'font-size': '18px',
+                        'width': "90",
+                        'height': "90",
+                    }
+                },
+                {
+                    "selector": 'edge.focusedColored',
+                    "style": {
+                        'line-color': '#F8333C',
+                        'width': '6'
+                    }
+                },
+                {
+                    "selector": 'node.semitransp',
+                    "style":{ 'opacity': '0.5' }
+                },
+                {
+                    "selector": 'node.focusedSemitransp',
+                    "style":{ 'opacity': '0.5' }
+                },
+                {
+                    "selector": 'edge.colored',
+                    "style": {
+                        'line-color': '#F8333C',
+                        'target-arrow-color': '#F8333C',
+                        'width': '6'
+                    }
+                },
+                {
+                    "selector": 'edge.semitransp',
+                    "style":{ 'opacity': '0.5' }
+                },
+                {
+                    "selector": 'edge.focusedSemitransp',
+                    "style":{ 'opacity': '0.5' }
+                }],
+              
+                layout: {
+                  name: 'grid'
+                }
+              
+              });
+
+        }
+
+    })
+
+}
+function showResearcherCardModal(element) {
+    // The element parameter here is the img tag with the src holding the path to the image. 
+    image_path = element.getAttribute("data-src")
+    // console.log(image_path)
+    modal_body = document.getElementById('modalbodycontent')
+    // console.log(modal_body)
+    modal_body.innerHTML = ''
+    modal_body.innerHTML = `<img src="${image_path}" style=height:400px;>`
+    $('#imagecardmodal').modal()
+}
+
+// Autocomplete for the input for NIDDK researcher page
+const researcher_list = fetch("static/researcher_list.json").then(data => {
+    return data.json()
+
+}).then(data => data);
+
+(function () {
+    $('#search_researcher').val('');
+    const autoCompleteJSResearcher = new autoComplete({
+        selector: "#search_researcher",
+        placeHolder: "Input an NIDDK researcher name",
+        data: {
+            src: researcher_list
+        },
+        resultsList: {
+            element: (list, data) => {
+                const info = document.createElement("p");
+                if (data.results.length > 0) {
+                    info.innerHTML = `Displaying <strong>${data.results.length}</strong> out of <strong>${data.matches.length}</strong> results`;
+                } else {
+                    info.innerHTML = `Found <strong>${data.matches.length}</strong> matching results for <strong>"${data.query}"</strong>`;
+                }
+                list.prepend(info);
+            },
+            noResults: true,
+            maxResults: 15,
+            tabSelect: true
+        },
+        resultItem: {
+            highlight: true
+        },
+        events: {
+            input: {
+                selection: (event) => {
+                    autoCompleteJSResearcher.input.value = event.detail.selection.value;
+                    search_researcher(event.detail.selection.value);
+                }
+            }
+        }
+    });
+})();
 
 
+// //Map implementation using leaflet and tile maps from online
+// var map = L.map('map').setView(['37.0902','-95.7129'], 4);
+
+
+// // L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+// // maxZoom: 7,
+// // attribution: '© OpenStreetMap'
+// // }).addTo(map);
+
+// L.tileLayer('https://{s}.tile.jawg.io/jawg-sunny/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
+// 	attribution: '<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+// 	minZoom: 0,
+// 	maxZoom: 15,
+// 	subdomains: 'abcd',
+// 	accessToken: 'kP5zFalUlpUkkreJz6QYMRiXibhtyZVMNYoOv199RUSjrJf73RCdSjXYRxjucPgk'
+// }).addTo(map);
+
+
+// async function getLocData(){
+//     const location_info = await fetch("static/location_info.json").then(data => data.json()).then(data => data);
+//     let count_here = 0
+//     for (const key in location_info) {
+//         console.log('Here')
+//         count_here += 1
+
+//         html_string = ''
+//         html_string = '<div class="scroll">'
+//         for (i= 0 ; i < location_info[key].length; i++) {
+//             var marker = L.marker(key.split(',')).addTo(map);
+//             html_string += `<a href=#search_researcher onClick="example_researcher(this)">${location_info[key][i]}</a><br>`
+//         }
+//         html_string += '</div>'
+//         marker.bindPopup(html_string);
+//         if (count_here == 30){
+//             break
+//         }
+
+//     }
+//     console.log('In function get loc')
+
+// }
+
+// getLocData()
+
+function toggle_map(){
+    map_div = document.getElementById('map-div-d3');
+    map_button = document.getElementById('map-button');
+    if (map_div.style.display == 'none') {
+        map_div.style.display = 'block';
+    }
+    else{
+        map_div.style.display = 'none';
+    }
+    console.log(map_button.innerText);
+    if (map_button.innerText.includes('Hide')) {
+        map_button.innerText = "Show Map";
+    }
+    else{
+        map_button.innerText = "Hide Map";
+    }
+}
+
+
+// async function makeLocMapSVG(){
+//     const location_info = await fetch("static/location_info_d3.json").then(data => data.json()).then(data => data);
+//     const margin = { top: 5, right: 5, bottom: 5, left: 5 };
+// 	let width = document.querySelector("body").clientWidth;
+// 	let height = 700;
+//     let projection = d3.geoEquirectangular().center([0, 0]);
+//     const pathGenerator = d3.geoPath().projection(projection);
+
+//     const hexbin = d3.hexbin()
+//     .extent([[0, 0], [width, height]])
+//     .radius(3)
+//     .x(d => d.xy[0])
+//     .y(d => d.xy[1]);
+
+//     const bins = hexbin(location_info.map(d => ({xy: projection([d.longitude, d.latitude])})))
+
+//     const svg = d3.select("#map-svg").attr("viewBox", [0, 0, width, height]);
+
+//     let g = svg.append("g");
+//     d3.json(
+//             "https://raw.githubusercontent.com/iamspruce/intro-d3/main/data/countries-110m.geojson"
+//         )
+//         .then((data) => {
+//             g.selectAll("path").data(data.features).join("path").attr("d", pathGenerator);
+//             svg.append('g').selectAll("path")
+//             .data(bins)
+//             .join("path")
+//             .attr("transform", d => `translate(${d.x},${d.y})`)
+//             .attr("d", d => hexbin.hexagon())
+//             .attr("fill", 'green')
+//             .attr("stroke", 'white');
+//         });
+
+// }
+
+// async function makeUSALocMapSVG(){
+//     const location_info = await fetch("static/location_info_d3.json").then(data => data.json()).then(data => data);
+//     const margin = { top: 5, right: 5, bottom: 5, left: 5 },
+// 	width = document.querySelector("body").clientWidth,
+// 	height = 700;
+//     let projection = d3.geoAlbers();
+//     const pathGenerator = d3.geoPath().projection(projection);
+
+//     const hexbin = d3.hexbin()
+//     .extent([[0, 0], [width, height]])
+//     .radius(10)
+//     .x(d => d.xy[0])
+//     .y(d => d.xy[1]);
+//     const bins = hexbin(location_info.map(d => ({xy: projection([d.longitude, d.latitude])})))
+
+//     const svg = d3.select("#map-svg2").attr("viewBox", [0, 0, width, height]);
+//     let g = svg.append("g");
+//     d3.json("static/counties-10m.json")
+//     .then((data) => {
+//             stateMesh = topojson.mesh(data, data.objects.states)
+//             g.append("path")
+//             .datum(stateMesh)
+//             .attr("fill", "none")
+//             .attr("stroke", "#777")
+//             .attr("stroke-width", 0.5)
+//             .attr("stroke-linejoin", "round")
+//             .attr("d", d3.geoPath(projection));
+//             // g.append('path').attr('fill', )
+
+//             svg.append('g').selectAll("path")
+//             .data(bins)
+//             .join("path")
+//             .attr("transform", d => `translate(${d.x},${d.y})`)
+//             .attr("d", d => hexbin.hexagon())
+//             .attr("fill", 'black')
+//             .attr("stroke", 'white');
+//         });
+
+// }
+
+async function makeUSAMap(){
+    document.getElementById("map-loading").innerHTML = "<div class='loader justify-content-center'></div>";
+    console.log('Width of site body')
+    console.log(document.querySelector("body").clientWidth);
+    const width = 975;
+    const height = 610;
+    //Setting up the projection in order to convert coordinates into points that fit on the map in screen
+    const projection = d3.geoAlbers().scale(1300).translate([487.5,305]);
+    const path  = d3.geoPath();
+    const svg = d3.select("#map-svg3").attr("height", height).attr('width', '100%').attr("viewBox", [0, 0, width, height]);
+    //.style('max-width', '100%').style('height', 'auto');
+
+    const us = await fetch("static/states-albers-10m.json").then(data => data.json()).then(data => data);
+    //Creating the background and outline of the US using topojson module and the path attribute for svg elements
+    const statesBackground = svg
+    .append('path')
+    .attr('fill', '#ddd')
+    .attr('d', path(topojson.feature(us, us.objects.nation)));
+    //Appnding another path element to make the shape of each of the states
+    const statesBorders = svg
+    .append('path')
+    .attr('fill', 'none')
+    .attr('stroke', '#fff')
+    .attr('stroke-linejoin', 'round')
+    .attr('stroke-linecap', 'round')
+    .attr('d', path(topojson.mesh(us, us.objects.states, (a, b) => a !== b)));
+
+    let location_info = await fetch("static/location_info_d3.json").then(data => data.json()).then(data => data);
+    location_info = location_info.slice(0, 3);
+    console.log(location_info)
+    const researcherLocationElements = svg
+    .selectAll('g')
+    .data(location_info)
+    .join('g');
+
+    const researcherLocationPoints = researcherLocationElements
+    .append('g')
+    .attr('class', 'researcherLocationG')
+    .attr('transform', (d) => `translate(${projection([d.longitude, d.latitude]).join(",")})`);
+    
+    researcherLocationPoints.append('circle')
+    .attr('r', 5)
+    .attr('class', 'researcherLocationPoint')
+    .attr('stroke', 'white')
+    .style('fill', 'black');
+
+
+    // let tooltip = d3
+    // .select("body")
+    // .append("div")
+    // .attr("class", "tooltip scroll")
+    // .attr("id", "researchertooltiplist")
+    // .style('border-style', 'solid')
+    // .style('background-color', '#ddd')
+    // .style("opacity", 0);
+
+    // d3.selectAll('circle')
+    // .on("click", (event, data) => {
+    //     tooltip.transition().duration(200).style("opacity", 0.9);
+    //     tooltip.style("display", 'block');
+    //     html_string = '<button type="button" class="close sticky-top" onClick="closeResearcherList()" ><span aria-hidden="true">&times;</span></button><br>'
+    //     for (i= 0 ; i < data.names.length; i++) {
+    //         html_string += `<a href=#search_researcher onClick="example_researcher(this)">${data.names[i]}</a><br>`
+    //     }
+    //     tooltip.html(html_string)
+    //     .style("left", event.pageX + "px")
+    //     .style("top", event.pageY - 28 + "px");
+
+    // })
+
+
+    let tooltip = d3
+    .select("body")
+    .append("div")
+    .attr("class", 'tooltip')
+    .attr("id", "researchertooltiplist")
+    .style('border-style', 'solid')
+    .style('border-radius', '10px')
+    .style('box-shadow', '3px 4px 5px black')
+    .style('background-color', '#ddd')
+    .style("opacity", 0);
+    d3.selectAll('circle')
+    .on("click", (event, data) => {
+        html_string = `<button type="button" class="close sticky-top" onClick="closeResearcherList()" ><span aria-hidden="true">&times;</span></button><br>`
+        html_string += `<p class=text-center><strong>${data.institution}</strong></p>`
+        html_string += `<div class="scroll">`
+        document.getElementById('researchertooltiplist').innerHTML = '';
+        console.log(data)
+        for (i= 0 ; i < data.names.length; i++) {
+            html_string += `<a href=#search_researcher onClick="example_researcher(this)">${data.names[i]}</a><br>`
+        }
+        html_string += `</div>`
+        tooltip.html(html_string)
+        .style("left", event.pageX + "px")
+        .style("top", event.pageY - 28 + "px");
+        tooltip.transition().duration(200).style("opacity", 0.9);
+        tooltip.style("display", 'block');
+
+    })
+
+    let zooming = d3
+    .zoom()
+    .scaleExtent([1, 3])
+    .on("zoom", (event) => {
+        svg.selectAll("path").attr("transform", event.transform);
+        console.log(event.transform)
+        console.log(event.transform.k)
+        console.log(event.transform.x)
+        console.log(event.transform.y)
+        // svg.selectAll(".researcherLocationG")
+        //   .attr("transform", event.transform)
+        // transform circles when zoomed
+
+        svg.selectAll("circle")
+          .attr("transform", event.transform)
+          .attr("r", 6 / event.transform.k);
+          
+  });
+  svg.call(zooming)
+  document.getElementById("map-loading").innerHTML = "";
+
+}
+function closeResearcherList(){
+    document.getElementById('researchertooltiplist').innerHTML = ''
+    document.getElementById('researchertooltiplist').style.display = 'none';
+}
+
+
+// makeUSAMap();
+
+
+async function makeUSAMapZoom(){
+    document.getElementById("map-loading").innerHTML = "<div class='loader justify-content-center'></div>";
+    console.log('Width of site body')
+    console.log(document.querySelector("body").clientWidth);
+    const width = 975;
+    const height = 610;
+    //Setting up the projection in order to convert coordinates into points that fit on the map in screen
+    const projection = d3.geoAlbers().scale(1300).translate([487.5,305]);
+    const path  = d3.geoPath();
+    const svg = d3.select("#map-svg3").attr("height", height).attr('width', '100%').attr("viewBox", [0, 0, width, height]);
+    //.style('max-width', '100%').style('height', 'auto');
+
+    const us = await fetch("static/states-albers-10m.json").then(data => data.json()).then(data => data);
+    //Creating the background and outline of the US using topojson module and the path attribute for svg elements
+    var g = svg.append("g");
+    const statesBackground = g
+    .append('path')
+    .attr('fill', '#ddd')
+    .attr('d', path(topojson.feature(us, us.objects.nation)));
+    //Appnding another path element to make the shape of each of the states
+    const statesBorders = g
+    .append('path')
+    .attr('fill', 'none')
+    .attr('stroke', '#fff')
+    .attr('stroke-linejoin', 'round')
+    .attr('stroke-linecap', 'round')
+    .attr('d', path(topojson.mesh(us, us.objects.states, (a, b) => a !== b)));
+
+    let location_info = await fetch("static/location_info_d3.json").then(data => data.json()).then(data => data);
+    // location_info = location_info.slice(0, 3);
+    console.log(location_info);
+
+
+    
+    var circle = svg
+    .select("g").selectAll("circle")
+    .data(location_info);
+
+
+    circle.enter().append("circle")
+    .attr("class", "researcherLocationPoint")
+    .attr("cx", function(d){ return projection([d.longitude, d.latitude])[0] })
+   .attr("cy", function(d){ return projection([d.longitude, d.latitude])[1] })
+   .attr("r", 3)
+   .style("fill", "black")
+   .attr("stroke", "#012B4E")
+   .style("opacity", 0.9);
+
+    let tooltip = d3
+    .select("body")
+    .append("div")
+    .attr("class", 'tooltip')
+    .attr("id", "researchertooltiplist")
+    .style('border-style', 'solid')
+    .style('border-radius', '10px')
+    .style('box-shadow', '3px 4px 5px black')
+    .style('background-color', '#ddd')
+    .style("opacity", 0);
+    d3.selectAll('circle')
+    .on("click", (event, data) => {
+        html_string = `<button type="button" class="close sticky-top" onClick="closeResearcherList()" ><span aria-hidden="true">&times;</span></button><br>`
+        html_string += `<p class=text-center><strong>${data.institution}</strong></p>`
+        html_string += `<div class="scroll">`
+        document.getElementById('researchertooltiplist').innerHTML = '';
+        console.log(data)
+        for (i= 0 ; i < data.names.length; i++) {
+            html_string += `<a href=#search_researcher onClick="example_researcher(this)">${data.names[i]}</a><br>`
+        }
+        html_string += `</div>`
+        tooltip.html(html_string)
+        .style("left", event.pageX + "px")
+        .style("top", event.pageY - 28 + "px");
+        tooltip.transition().duration(200).style("opacity", 0.9);
+        tooltip.style("display", 'block');
+
+    })
+
+    let zooming = d3
+    .zoom()
+    .on("zoom", (event) => {
+        g.attr("transform", event.transform);
+        console.log(event.transform)
+        console.log(event.transform.k)
+        console.log(event.transform.x)
+        console.log(event.transform.y)
+        // svg.selectAll(".researcherLocationG")
+        //   .attr("transform", event.transform)
+        // transform circles when zoomed
+
+        // svg.selectAll("circle")
+        //   .attr("transform", event.transform)
+        //   .attr("r", 6 / event.transform.k);
+          
+  });
+
+  function recenter() {
+    console.log('recentering')
+    try {
+      // get a handle to the transform object, and reset it to the
+      // zoom identity (resets to zoom out all the way)
+      let d3zoom = zooming
+      let ztrans = d3zoom.transform
+      let t = d3.zoomIdentity 
+      svg.transition().duration(1000).call(ztrans,t)
+
+      // get the object and measurements to determine the virtual
+      // "bounding" rectangle around the directional extremes of sites
+      // i.e., north (topmost), east (rightmost), etc
+      let circles    = svg.select('g').selectAll('circle')
+      let data       = circles.data()
+      let long       = data.map(o => parseFloat(o.longitude))
+      let lat        = data.map(o => parseFloat(o.latitude))
+      let rightmost  = d3.max(long)
+      let leftmost   = d3.min(long)
+      let topmost    = d3.max(lat)
+      let bottommost = d3.min(lat)
+      // convert the lat/long to points in the projection
+      let lt = projection([leftmost,topmost])
+      let rb = projection([rightmost,bottommost])
+      // calc the gaps (east - west, south - north) in pixels
+      let g  = rb[0]-lt[0]
+      let gh = rb[1]-lt[1]
+
+      // get the dimensions of the panel in which the map sits
+      let w  = svg.node().parentElement.getBoundingClientRect().width
+      let h  = svg.node().parentElement.getBoundingClientRect().height
+
+      // the goal here is to move the halfway point between leftmost and rightmost
+      // on the projection sites to the halfway point of the panel in which the
+      // svg element resides, and same for 'y'
+      // the scale is the value 90% of the scale factor of either east-west to width
+      // or south-north to height, whichever is greater
+      let neoScale = 0.9 / Math.max(g/w, gh/h)
+
+      // now recalculate what will be the difference between the current
+      // center and the center of the scaled virtual rectangle
+      // this finds the difference between the centers
+      // the new center of the scaled rectangle is the average of the left and right
+      // or top and bottom points
+      let neoX = w/2 - (neoScale * ((lt[0]+rb[0])/2))
+      let neoY = h/2 - (neoScale * ((lt[1]+rb[1])/2))
+
+      // TRANSLATE FIRST!  then scale.
+      t = d3.zoomIdentity.translate(neoX,neoY).scale(neoScale)
+      svg.transition().duration(1000).call(ztrans, t)
+    }
+    catch(e)
+    {
+      console.log(e)
+    }
+  }
+
+
+svg.call(zooming)
+
+
+document.getElementById("map-loading").innerHTML = "";
+
+
+
+}
+
+makeUSAMapZoom();
 $(document).ready(function () {
 
     // SMALL NAV MENU
@@ -1176,5 +1848,7 @@ $(document).ready(function () {
         });
         document.getElementById("change-loading").innerHTML = ''
     })
+
+
 })
 

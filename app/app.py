@@ -72,7 +72,65 @@ def resources():
 def downloads():
 	return render_template('downloads.html', base_path=BASE_PATH, gse_metadata=gse_metadata, gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, numstudies=numstudies,  month_dict=month_dict, endpoint=endpoint)
 ####################
+#Load NIDDK query page
+@app.route(f'{ROOT_PATH}/niddkresearchers', methods=['GET', 'POST'])
+def load_niddk_page():
+	return render_template('niddk_researcher.html', base_path=BASE_PATH, numstudies=numstudies)
+@app.route(f'{ROOT_PATH}/researcher_name', methods=['POST'])
+def load_card_data():
+	print(request.data.decode('utf-8'))
+	print(json.loads(request.data.decode('utf-8')))
+	request_body = request.get_json()
+	researcher = request_body['researcher'].upper()
+	base_path = 'static/output_images'
+	# all_pngs = os.listdir(base_path)
+	# all_pngs = sorted(all_pngs)
+	# dict_with_data = {'png_paths':[]}
+	# for file in all_pngs:
+	# 	if 'card' in file:
+	# 		dict_with_data['png_paths'].append('../'+base_path+'/'+file)
+	# 	else:
+	# 		dict_with_data['png_paths'].append('../'+base_path+'/'+file)
+	# print(dict_with_data['png_paths'])
 
+	researcher_names_list = os.listdir(base_path)
+	for name in researcher_names_list:
+		if researcher.split()[0] in name and researcher.split()[-1] in name:
+			full_path = base_path + '/' + name
+			all_pngs = os.listdir(full_path)
+			all_pngs = sorted(all_pngs)
+			dict_with_data = {'png_paths':[]}
+			#NEED TO DELETE THIS IF STATEMENT
+			if "AVI_MA'AYAN" in name or "SERGIO_A_LIRA" in name:
+				for file in all_pngs:
+					if 'card' in file:
+						dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+file])
+					elif 'thumbnail' not in file:
+						dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+ 'thumbnail_' + file])
+				return dict_with_data
+			for file in all_pngs:
+				if 'card' in file:
+					dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+file])
+				elif 'thumbnail' not in file:
+					dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+ file])
+				
+			print('matched')
+			print(dict_with_data['png_paths'])
+			return dict_with_data
+
+
+	all_pngs = os.listdir(base_path+'/ORIGINAL-CARD-TITLES')
+	all_pngs = sorted(all_pngs)
+	dict_with_data = {'png_paths':[]}
+	full_path = base_path+'/ORIGINAL-CARD-TITLES'
+	for file in all_pngs:
+		if '.png' in file:
+			if 'card' in file:
+				dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+file])
+			else:
+				dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+file])
+	print(dict_with_data['png_paths'])
+	return dict_with_data
 
 
 ########## QUERY APIs ####################

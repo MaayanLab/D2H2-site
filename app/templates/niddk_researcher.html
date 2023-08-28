@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+    <div class="row text-center">
+        <div class="col mt-5">
+            <h2 class="display-5">NIDDK Researcher Query and Network Visualization</h2>
+        </div>
+    </div>
+    <!-- <div class="row justify-content-center">
+        <div class="col-7">
+            <p style="font-weight: 200; font-size: 1.6rem; line-height: 1.3;" class="text-center">Query an NIDDK researcher in order to obtain results of their research and a subnetwork connecting them to other researchers based on disease and gene associations.</p>
+        </div>
+        
+    </div> -->
+    <div class="row justify-content-center">
+        <button class="btn btn-outline-primary btn-sm" type="button" id="map-button"
+        onclick="toggle_map()">Hide Map</button>
+        
+    </div>
+    
+    <div class="row justify-content-center">
+    <div id="map-loading" class="m-2"></div>
+    </div>
+    <!-- <div id="map" class="mt-2" style="display:block;"></div> -->
+    <!-- <div style="border-style: solid;">
+        <svg id="map-svg"></svg>
+    </div>
+    <div style="border-style: solid;">
+        <svg id="map-svg2"></svg>
+    </div> -->
+
+    <div class="card" id="map-div-d3" style="display:block;">
+        <div class="card-body text-center">
+            <svg id="map-svg3"></svg>
+        </div>
+    </div>
+
+
+
+    <div class="row justify-content-center" style="flex-wrap: wrap;">
+        <div class="col-8">
+            <div class="input-group mt-4 mb-2">
+                <div class="col-10">
+                    <input id="search_researcher" type="text" autocapitalize="on" maxlength="50" class="form-control"
+                    aria-label="NIDDK Researcher"
+                    aria-describedby="search-button"/>
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-outline-secondary" type="button" id="search-button"
+                    onclick="search_researcher($('#search_researcher').val())">Search
+                    </button>
+                </div>
+                <!-- <input id="search_researcher" type="text" autocapitalize="on" maxlength="50" class="form-control"
+                aria-label="NIDDK Researcher"
+                aria-describedby="search-button"/>
+                <button class="btn btn-outline-secondary" type="button" id="search-button"
+                onclick="search_researcher($('#search_researcher').val())">Search
+                </button> -->
+                
+            </div>
+            <p id="examples" class="small text-muted">For example: <a href="#researcher-title" onclick="example_researcher(this);">Original-Card-Titles</a>,  <a href="#researcher-title" onclick="example_researcher(this);">AVI MA'AYAN</a>, <a href="#researcher-title" onclick="example_researcher(this);">SERGIO A. LIRA</a></p>
+            <!-- , <a href="#" onclick="example_researcher(this);">ROBERT LEFKOWITZ</a>, -->
+        </div>
+
+    </div>
+
+    <div id="researcher-data-loading" class="row justify-content-center my-3" style="display: none;">
+        <p>Loading...</p>
+    </div>
+    <div id="researcher-data-loading-none" class="row justify-content-center my-3" style="display: none;">
+    </div>
+
+</div>
+
+<div class="container">
+    <div class="row justify-content-center my-3" >
+        <div class="col-2">
+            <nav id="navbar-toc" class="navbar navbar-light bg-light flex-column align-items-stretch p-3 sticky-top"
+            style="display: none;">
+                <nav class="nav nav-pills flex-column">
+                    <a class="nav-link" href="#results_researcher">Back to top ↑</a>
+                    <a class="nav-link" href="#researcher-title">Overview of Researcher<span class="gene-name"></span></a>
+                    <a class="nav-link" href="#researcher-network-title">Researcher Subnetwork <span
+                                class="gene-name"></span></a>
+                </nav>
+            </nav>
+        </div>
+        <div class="col-10 card" id="results_researcher" style="display:none">
+            <div class="'card-body">
+                <h3 class='text-center' id="researcher-title"></h3>
+                <div class="researcher-grid mx-auto text-center justify-content-center">
+                    <div class="grid-sizer"></div>
+                </div>
+            
+                <h3 class='text-center' id="researcher-network-title"></h3>
+                <div class="mx-auto justify-content-center" id="researcher-cy-network"></div>
+            
+                <div class="mx-auto text-center justify-content-center" id="researcher-network"></div>
+            </div>
+
+        </div>
+    </div>
+    
+</div>
+
+
+
+
+<div class="modal fade" id="imagecardmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body justify-content-center text-center" id="modalbodycontent">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
+
+
+{% block footer %}
+<script>
+</script>
+{% endblock %}
