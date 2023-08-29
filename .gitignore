@@ -9,3 +9,4 @@ env
 ETL/human
 ETL/mouse
 ETL/signatures
+app/static/output_images/

@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<div class="justify-content-center container">
+    <div class="col-12 justify-content-center mx-auto banner">
+        <div class="row justify-content-center mb-3 mt-4">
+            <div class=" text-center col-lg-12">
+                <h2>Contribute Potential Studies</h2>
+                <p> Fill in the form below with study information related to diabetes in order to suggest additional studies that may be added to the database.</p>
+            </div>
+        </div>
+
+        
+        <div class="custom-col col-10 p-3 mb-2 justify-content-center mx-auto" id="downloads">
+            <form id="contribute-form">
+                <div class="form-group">
+                  <label for="studyTitle">Title of Study</label>
+                  <input type="text" class="form-control" id="studyTitle" placeholder="Enter title of Study" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="studyPMID">Pubmed ID (PMID)</label>
+                        <input type="text" class="form-control" id="studyPMID" placeholder="PMID">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="studyGEO">GEO ID</label>
+                        <input type="text" class="form-control" id="studyGEO" placeholder="GEO ID">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="studyConditions">Contrast Condition(s)</label>
+                    <textarea type="text" class="form-control" id="studyConditions" placeholder="Please enter the different conditions of the study separated by a new line (e.g., gene knockout, knock-in, strain-background, treatments)" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="studyModel">Model System</label>
+                    <input type="text" class="form-control" id="studyModel" placeholder="Enter the model being studied (e.g., animal model, tissue, tissue culture cell line)" required>
+                </div>
+                <div class="form-group">
+                    <label for="studyPlatform">Analysis Platform</label>
+                    <input type="text" class="form-control" id="studyPlatform" placeholder="Enter the Analysis platform (e.g. RNA-seq, microarray)" required>
+                </div>
+                <div class="form-group">
+                    <label for="studyKeywords">Keywords</label>
+                    <input type="text" class="form-control" id="studyKeywords" placeholder="Enter keywords for the study followed by commas" required>
+                </div>
+                <div class="form-group">
+                    <label for="studyAuthors">Authors</label>
+                    <textarea type="text" class="form-control" id="studyAuthors" placeholder="Please enter the different authors followed by a new line" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="studyEmail">Contact Email</label>
+                    <input type="email" class="form-control" id="studyEmail" aria-describedby="emailHelp" placeholder="Please enter your email">
+                  </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+        </div>
+ 
+    </div>
+
+    <div class="row justify-content-center mb-2 mt-1">
+        <div class="text-center col-lg-12">
+            <h3 id="contributionFormMessage"></h3>
+        </div>
+    </div>
+</div>
+
+<div id="endpoint" style="display: none;">{{endpoint}}</div>
+<div id="version" style="display: none;">{{version}}</div>
+
+
+{% endblock %}
+
+
+{% block footer %}
+<script>
+var form = document.getElementById('contribute-form');
+form.addEventListener('submit', function(event) {
+        const formdata = new FormData(form);
+        const title = document.getElementById('studyTitle').value;
+        const pmid = document.getElementById('studyPMID').value;
+        const geo = document.getElementById('studyGEO').value;
+        const conditions = document.getElementById('studyConditions').value;
+        const model = document.getElementById('studyModel').value;
+        const platform = document.getElementById('studyPlatform').value;
+        const keywords = document.getElementById('studyKeywords').value;
+        const authors = document.getElementById('studyAuthors').value;
+        const email = document.getElementById('studyEmail').value;
+        formdata.append('title', title);
+        formdata.append('pmid', pmid);
+        formdata.append('geo', geo);
+        formdata.append('conditions', conditions);
+        formdata.append('model', model);
+        formdata.append('platform', platform);
+        formdata.append('keywords', keywords);
+        formdata.append('authors', authors);
+        formdata.append('email', email);
+        event.preventDefault();
+        event.stopPropagation();
+        const formData = JSON.stringify({'title':title, 'pmid': pmid,'geo': geo, 'conditions':conditions, 'model': model, 'platform':platform, 'keywords':keywords, 'authors':authors, 'email':email });
+        $.ajax({
+        url: "/submitcontributionform",
+        contentType: 'application/json',
+        type: "POST",
+        dataType: 'json',
+        data: formData,
+    }).done(function (response) {
+        var messageToUserElement = document.getElementById("contributionFormMessage");
+        messageToUserElement.innerText = response['response']
+        if (response['status'] === 'success'){
+            form.reset();
+        }
+        setInterval(function(){ messageToUserElement.innerText = ''; }, 4000);
+    });
+      }, false);
+</script>
+
+{% endblock %}

@@ -18,7 +18,7 @@ from helpers import *
 from dge import *
 from query import *
 from log_chats import *
-
+from log_suggested_study import *
 
 #Added the route for s3 bucket
 endpoint = os.environ.get('ENDPOINT', 'https://d2h2.s3.amazonaws.com/')
@@ -67,6 +67,10 @@ def scg():
 @app.route(f'{ROOT_PATH}/resources', methods=['GET', 'POST'])
 def resources():
 	return render_template('resources.html', base_path=BASE_PATH, numstudies=numstudies)
+
+@app.route(f'{ROOT_PATH}/contribute', methods=['GET', 'POST'])
+def contribute():
+	return render_template('contribute.html', base_path=BASE_PATH, numstudies=numstudies)
 
 @app.route(f'{ROOT_PATH}/downloads', methods=['GET', 'POST'])
 def downloads():
@@ -333,7 +337,39 @@ def getclusterinfo():
 	metadata_dict_counts = pd.Series(leiden_data_vals).value_counts().to_dict()
 
 	return {"classes":classes, "metadict":metadata_dict_counts}
-	
+
+
+@app.route('/submitcontributionform',  methods=['GET','POST'])
+def submit_contribution_form():
+	request_json = request.get_json()
+	title = request_json['title']
+	pmid = request_json['pmid']
+	geo = request_json['geo']
+	conditions = request_json['conditions']
+	model = request_json['model']
+	platform = request_json['platform']
+	keywords = request_json['keywords']
+	authors = request_json['authors']
+	email = request_json['email']
+	if len(pmid.strip()) == 0:
+		pmid = 'N/A'
+	if len(geo.strip()) == 0:
+		geo = 'N/A'
+	if len(email.strip()) == 0:
+		email = 'N/A'
+	conditions = '|'.join(conditions.strip().split('\n'))
+	keywords = ','.join(keywords.strip().split(','))
+	authors = '|'.join(authors.strip().split('\n'))
+	data_for_sheet = [title,pmid, geo, conditions, model, platform, keywords, authors, email]
+	print(data_for_sheet)
+	print(request.get_json())
+	status = log_suggested_study(data_for_sheet)
+	if status == 'success':
+		message = "Thank you for suggesting the study: \"{}\"".format(title)
+	else:
+		message = "There was an error in submitting the data. Please try again".format(title)
+	return json.dumps({'response': message, 'status': status})
+
 #############################################
 ########## 2. Data
 #############################################ow toow
