@@ -76,7 +76,6 @@
 <script>
 var form = document.getElementById('contribute-form');
 form.addEventListener('submit', function(event) {
-        const formdata = new FormData(form);
         const title = document.getElementById('studyTitle').value;
         const pmid = document.getElementById('studyPMID').value;
         const geo = document.getElementById('studyGEO').value;
@@ -86,15 +85,6 @@ form.addEventListener('submit', function(event) {
         const keywords = document.getElementById('studyKeywords').value;
         const authors = document.getElementById('studyAuthors').value;
         const email = document.getElementById('studyEmail').value;
-        formdata.append('title', title);
-        formdata.append('pmid', pmid);
-        formdata.append('geo', geo);
-        formdata.append('conditions', conditions);
-        formdata.append('model', model);
-        formdata.append('platform', platform);
-        formdata.append('keywords', keywords);
-        formdata.append('authors', authors);
-        formdata.append('email', email);
         event.preventDefault();
         event.stopPropagation();
         const formData = JSON.stringify({'title':title, 'pmid': pmid,'geo': geo, 'conditions':conditions, 'model': model, 'platform':platform, 'keywords':keywords, 'authors':authors, 'email':email });
@@ -110,7 +100,8 @@ form.addEventListener('submit', function(event) {
         if (response['status'] === 'success'){
             form.reset();
         }
-        setInterval(function(){ messageToUserElement.innerText = ''; }, 4000);
+        let userMessage = setTimeout(function(){ messageToUserElement.innerText = ''; }, 4000);
+
     });
       }, false);
 </script>
