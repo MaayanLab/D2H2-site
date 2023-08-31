@@ -1155,6 +1155,7 @@ div.scroll {
 
 #researcher-cy-network {
   height: 500px;
+  width: 100%;
   display: none;
 }
 .researcherLocationPoint {

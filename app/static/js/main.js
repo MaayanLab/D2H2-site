@@ -465,17 +465,19 @@ function createResearchCardGridElement(filenames){
     return elem
 }
 function search_researcher(name) {
-    $('.researcher-grid').empty()
-    $('.researcher-grid').html('<div class="grid-sizer"></div>')
-    $('#researcher-cy-network').empty()
-    document.getElementById('researcher-network-title').innerText = ''
-    document.getElementById('researcher-cy-network').style.display = 'none'
-    document.getElementById('researcher-title').innerText = `Research Summary Information for ${name}`
-    document.getElementById('researcher-data-loading-none').style.display = 'none'
-    document.getElementById('researcher-data-loading').style.display = 'block'
+    $('.researcher-grid').empty();
+    //Inlcude this grid sizer for proper layout and sizing of the masonry image layout
+    $('.researcher-grid').html('<div class="grid-sizer"></div>');
+    $('#researcher-cy-network').empty();
+    document.getElementById('researcher-network-title').innerText = '';
+    document.getElementById('researcher-cy-network').style.display = 'none';
+    document.getElementById('researcher-title').innerText = `Research Summary Information for ${name}`;
+    document.getElementById('researcher-data-loading-none').style.display = 'none';
+    document.getElementById('researcher-data-loading').style.display = 'block';
     document.getElementById('navbar-toc').style.display = 'block'
     document.getElementById('results_researcher').style.display = 'block'
-    
+    //Api call to the backend in order to load the masonry data images for the researcher. Need to implement the API calls if their
+    //data is not there.
     const formData = JSON.stringify({'researcher':name})
     console.log(formData)
     fetch("researcher_name", {
@@ -492,7 +494,7 @@ function search_researcher(name) {
             console.log('No images for this researcher. Need to do manual API calls.');
             document.getElementById('researcher-data-loading').style.display = 'none';
             document.getElementById('researcher-data-loading-none').style.display = 'block';
-            document.getElementById('researcher-data-loading-none').innerHTML = "NOT IN DATABASE. QUERYING INFORMATION FROM API CALLS. NEED TO IMPLEMENT"
+            document.getElementById('researcher-data-loading-none').innerHTML = "NOT IN DATABASE. QUERYING INFORMATION FROM API CALLS. NEED TO IMPLEMENT";
         }else{
             elements = file_names.map(filename => createResearchCardGridElement(filename))
             console.log(elements)
@@ -519,19 +521,19 @@ function search_researcher(name) {
     .then((data) => {
         console.log(typeof(data))
         if (data.length == 0){
-            document.getElementById('researcher-network').innerText = "No connections to other Researchers"
+            document.getElementById('researcher-network').innerText = "No connections to other Researchers";
         }else{
             
-            document.getElementById('researcher-network-title').innerText = `Researcher Subnetwork for ${name}`
+            document.getElementById('researcher-network-title').innerText = `Researcher Subnetwork for ${name}`;
             text_content = ``
             for (i = 0; i< data.length; i++) {
                 console.log(data[i]['data'])
                 text_content += `<p>${JSON.stringify(data[i]['data'])}</p>`
             }
-            document.getElementById('researcher-network').innerText = text_content
+            document.getElementById('researcher-network').innerText = text_content;
 
-            document.getElementById('researcher-cy-network').style.display = 'block'
-            network_div = document.getElementById('researcher-cy-network')
+            document.getElementById('researcher-cy-network').style.display = 'block';
+            network_div = document.getElementById('researcher-cy-network');
             var cy = cytoscape({
 
                 container: network_div, // container to render in
@@ -623,7 +625,7 @@ function search_researcher(name) {
                 }],
               
                 layout: {
-                  name: 'grid'
+                  name: 'breadthfirst'
                 }
               
               });
@@ -934,10 +936,6 @@ async function makeUSAMap(){
         console.log(event.transform.k)
         console.log(event.transform.x)
         console.log(event.transform.y)
-        // svg.selectAll(".researcherLocationG")
-        //   .attr("transform", event.transform)
-        // transform circles when zoomed
-
         svg.selectAll("circle")
           .attr("transform", event.transform)
           .attr("r", 6 / event.transform.k);
@@ -947,10 +945,7 @@ async function makeUSAMap(){
   document.getElementById("map-loading").innerHTML = "";
 
 }
-function closeResearcherList(){
-    document.getElementById('researchertooltiplist').innerHTML = ''
-    document.getElementById('researchertooltiplist').style.display = 'none';
-}
+
 
 
 // makeUSAMap();
@@ -958,8 +953,6 @@ function closeResearcherList(){
 
 async function makeUSAMapZoom(){
     document.getElementById("map-loading").innerHTML = "<div class='loader justify-content-center'></div>";
-    console.log('Width of site body')
-    console.log(document.querySelector("body").clientWidth);
     const width = 975;
     const height = 610;
     //Setting up the projection in order to convert coordinates into points that fit on the map in screen
@@ -975,6 +968,7 @@ async function makeUSAMapZoom(){
     .append('path')
     .attr('fill', '#ddd')
     .attr('d', path(topojson.feature(us, us.objects.nation)));
+
     //Appnding another path element to make the shape of each of the states
     const statesBorders = g
     .append('path')
@@ -998,11 +992,11 @@ async function makeUSAMapZoom(){
     circle.enter().append("circle")
     .attr("class", "researcherLocationPoint")
     .attr("cx", function(d){ return projection([d.longitude, d.latitude])[0] })
-   .attr("cy", function(d){ return projection([d.longitude, d.latitude])[1] })
-   .attr("r", 3)
-   .style("fill", "black")
-   .attr("stroke", "#012B4E")
-   .style("opacity", 0.9);
+    .attr("cy", function(d){ return projection([d.longitude, d.latitude])[1] })
+    .attr("r", 4)
+    .style("fill", "black")
+    .attr("stroke", "#012B4E")
+    .style("opacity", 0.9);
 
     let tooltip = d3
     .select("body")
@@ -1014,6 +1008,7 @@ async function makeUSAMapZoom(){
     .style('box-shadow', '3px 4px 5px black')
     .style('background-color', '#ddd')
     .style("opacity", 0);
+
     d3.selectAll('circle')
     .on("click", (event, data) => {
         html_string = `<button type="button" class="close sticky-top" onClick="closeResearcherList()" ><span aria-hidden="true">&times;</span></button><br>`
@@ -1025,9 +1020,11 @@ async function makeUSAMapZoom(){
             html_string += `<a href=#search_researcher onClick="example_researcher(this)">${data.names[i]}</a><br>`
         }
         html_string += `</div>`
+
         tooltip.html(html_string)
         .style("left", event.pageX + "px")
         .style("top", event.pageY - 28 + "px");
+
         tooltip.transition().duration(200).style("opacity", 0.9);
         tooltip.style("display", 'block');
 
@@ -1035,19 +1032,12 @@ async function makeUSAMapZoom(){
 
     let zooming = d3
     .zoom()
+    .scaleExtent([1, 50])
     .on("zoom", (event) => {
         g.attr("transform", event.transform);
         console.log(event.transform)
-        console.log(event.transform.k)
-        console.log(event.transform.x)
-        console.log(event.transform.y)
-        // svg.selectAll(".researcherLocationG")
-        //   .attr("transform", event.transform)
-        // transform circles when zoomed
-
-        // svg.selectAll("circle")
-        //   .attr("transform", event.transform)
-        //   .attr("r", 6 / event.transform.k);
+        svg.selectAll("circle")
+          .attr("r", 4 / event.transform.k);
           
   });
 
@@ -1109,7 +1099,7 @@ async function makeUSAMapZoom(){
   }
 
 
-svg.call(zooming)
+svg.call(zooming);
 
 
 document.getElementById("map-loading").innerHTML = "";
@@ -1119,6 +1109,11 @@ document.getElementById("map-loading").innerHTML = "";
 }
 
 makeUSAMapZoom();
+
+function closeResearcherList(){
+    document.getElementById('researchertooltiplist').innerHTML = ''
+    document.getElementById('researchertooltiplist').style.display = 'none';
+}
 $(document).ready(function () {
 
     // SMALL NAV MENU
