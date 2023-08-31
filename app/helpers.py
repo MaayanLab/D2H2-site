@@ -76,15 +76,11 @@ def query_enricher(gene):
     ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/genemap'
     query_string = '?json=true&setup=true&gene=%s'
 
-
-
     response = requests.get(ENRICHR_URL + query_string % gene)
     if not response.ok:
         raise Exception('Error finding gene')
 
     data = json.loads(response.text)
-
-
 
     for l in data['categories']:
         if l['name'] == 'Transcription':
@@ -586,9 +582,9 @@ def make_dge_plot(data, title, method, id_plot='dge-plot'):
         data['logp'] = data['pvals'].apply(lambda x: -np.log10(x))
         data['gene'] = data.index.values
     elif method == 'characteristic_direction':
-        colors = [map_color(r[1]['CD-coefficient'], r[1]['Significance']) for r in data.iterrows()]
-        sizes = [12 if r[1]['Significance'] < 0.05 else 6 for r in data.iterrows()]
-        data['logp'] = data['Significance'].apply(lambda x: -np.log10(x))
+        colors = [map_color(r[1]['LogFC'], r[1]['P-value']) for r in data.iterrows()]
+        sizes = [12 if r[1]['P-value'] < 0.05 else 6 for r in data.iterrows()]
+        data['logp'] = data['P-value'].apply(lambda x: -np.log10(x))
         data['gene'] = data.index.values
 
     if method == 'DESeq2':
@@ -641,10 +637,11 @@ def make_dge_plot(data, title, method, id_plot='dge-plot'):
     if method == 'characteristic_direction':
         data_source = ColumnDataSource(
             data=dict(
-                x = data['CD-coefficient'],
+                x = data['LogFC'],
                 y = data['logp'],
                 gene =  data['gene'],
-                pval = data['Significance'],
+                pval = data['P-value'],
+                cd = data['CD-coefficient'],
                 colors = colors, 
                 sizes = sizes,
             )
@@ -652,7 +649,8 @@ def make_dge_plot(data, title, method, id_plot='dge-plot'):
         tools = [
         ("Gene", "@gene"),
         ("P-value", "@pval"),
-        ("CD-coefficient", "@x"),
+        ("LogFC", "@x"),
+        ("CD-coefficient", "@cd"),
         ("-log10(p)", "@y"),
         ]
     
@@ -675,10 +673,8 @@ def make_dge_plot(data, title, method, id_plot='dge-plot'):
         fill_color='colors', 
         name=None,
     )
-    if method == 'characteristic_direction':
-        plot.xaxis.axis_label = 'CD Coeffecient'
-    else:
-        plot.xaxis.axis_label = 'log2(Fold Change)'
+
+    plot.xaxis.axis_label = 'log2(Fold Change)'
     
     plot.yaxis.axis_label = '-log10(P-value)'
     plot.title.text = f"DGE of {title}"

@@ -1089,6 +1089,33 @@ nav select {
   .navbar-expand-custom .navbar-toggler {
       display: none;
   }
+  #navbarSupportedContent {
+    display: none;
+  }
+}
+@media (max-width: 1298.98px){
+  #expandedNav {
+      display: none;
+  }
+}
+.navicon{
+  position: relative;
+}
+.navicon .tooltip{
+  opacity: 0;
+  position: absolute;
+  background-color: #ddd;
+  border-radius: 6px;
+  padding: 5px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.navicon:hover .tooltip {
+  /* bottom: -25px; */
+  right: -10px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 #reset-arrow {
   transition: transform .7s ease-in-out;

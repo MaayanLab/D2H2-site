@@ -265,9 +265,12 @@
 
             <div class="h6 text-center mt-3"> Select differential expression analysis method:</div>
             <div class="row justify-items-center justify-content-center mb-3 mt-3 text-center">
-                <select name="Select Method" id="method" class="libpicker" style="width: 100px;">
-                    <option value="DESeq2">DESeq2</option>
+                <select name="Select Method" id="method" class="libpicker" style="width: auto;">
                     <option value="characteristic_direction">Characteristic Direction</option>
+                    {% if 'Expression profiling by high throughput sequencing' ==
+                    gse_metadata[species][geo_accession].get('type')[0] %}
+                    <option value="DESeq2">DESeq2</option>
+                    {% endif %}
                 </select>
             </div>
             <div id="normalization" style="display: none;">
@@ -344,13 +347,8 @@
             {% endif %}
 
             <div id="dgea-loading" class="m-3"></div>
-
         </div>
-
-
-
     </div>
-
 </div>
 
 

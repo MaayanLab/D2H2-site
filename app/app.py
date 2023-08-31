@@ -18,7 +18,7 @@ from helpers import *
 from dge import *
 from query import *
 from log_chats import *
-
+from log_suggested_study import *
 
 #Added the route for s3 bucket
 endpoint = os.environ.get('ENDPOINT', 'https://d2h2.s3.amazonaws.com/')
@@ -68,9 +68,13 @@ def scg():
 def resources():
 	return render_template('resources.html', base_path=BASE_PATH, numstudies=numstudies)
 
+@app.route(f'{ROOT_PATH}/contribute', methods=['GET', 'POST'])
+def contribute():
+	return render_template('contribute.html', base_path=BASE_PATH, numstudies=numstudies)
+
 @app.route(f'{ROOT_PATH}/downloads', methods=['GET', 'POST'])
 def downloads():
-	return render_template('downloads.html', base_path=BASE_PATH, gse_metadata=gse_metadata, gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, numstudies=numstudies,  month_dict=month_dict, endpoint=endpoint)
+	return render_template('downloads.html', base_path=BASE_PATH, gse_metadata=gse_metadata, gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, numstudies=numstudies,  month_dict=month_dict, endpoint=endpoint, version=sigs_version)
 ####################
 #Load NIDDK query page
 @app.route(f'{ROOT_PATH}/niddkresearchers', methods=['GET', 'POST'])
@@ -391,7 +395,39 @@ def getclusterinfo():
 	metadata_dict_counts = pd.Series(leiden_data_vals).value_counts().to_dict()
 
 	return {"classes":classes, "metadict":metadata_dict_counts}
-	
+
+
+@app.route('/submitcontributionform',  methods=['GET','POST'])
+def submit_contribution_form():
+	request_json = request.get_json()
+	title = request_json['title']
+	pmid = request_json['pmid']
+	geo = request_json['geo']
+	conditions = request_json['conditions']
+	model = request_json['model']
+	platform = request_json['platform']
+	keywords = request_json['keywords']
+	authors = request_json['authors']
+	email = request_json['email']
+	if len(pmid.strip()) == 0:
+		pmid = 'N/A'
+	if len(geo.strip()) == 0:
+		geo = 'N/A'
+	if len(email.strip()) == 0:
+		email = 'N/A'
+	conditions = '|'.join(conditions.strip().split('\n'))
+	keywords = ','.join(keywords.strip().split(','))
+	authors = '|'.join(authors.strip().split('\n'))
+	data_for_sheet = [title,pmid, geo, conditions, model, platform, keywords, authors, email]
+	print(data_for_sheet)
+	print(request.get_json())
+	status = log_suggested_study(data_for_sheet)
+	if status == 'success':
+		message = "Thank you for suggesting the study: \"{}\"".format(title)
+	else:
+		message = "There was an error in submitting the data. Please try again".format(title)
+	return json.dumps({'response': message, 'status': status})
+
 #############################################
 ########## 2. Data
 #############################################ow toow
@@ -599,7 +635,6 @@ def species_or_viewerpg(species_or_gse):
 		default_condition = list_of_conditions[0]
 		expression_base_name = metadata_json[default_condition]['filename']
 		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + expression_base_name
-		print(expression_file)
 		adata = read_anndata_h5(expression_file)
 		#Stores the list of cluster names. 
 		leiden_data = adata["var/leiden/categories"][:].astype(str)
@@ -881,8 +916,6 @@ def get_study_data():
 	metadata_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
 	expression_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
 
-	
-
 	with s3.open(metadata_file, 'r') as f:
 		meta_data = f.read()
 
@@ -893,13 +926,14 @@ def get_study_data():
 	for i, row in enumerate(meta_data.split('\n')):
 		if i == 0:
 			selected_conditions.append(row)
-		
 		entries = row.split('\t')
 		if len(entries) != 3:
 			break
 		if entries[1] == control or entries[1] == perturb:
 			selected_conditions.append(row)
-
+		elif f'{entries[1]} {entries[2]}' == control or f'{entries[1]} {entries[2]}' == perturb:
+			entries[1] = f'{entries[1]} {entries[2]}'
+			selected_conditions.append('\t'.join(entries))
 
 	selected_meta = '\n'.join(selected_conditions)
 
@@ -968,5 +1002,5 @@ def record_chat():
 if __name__ == "__main__":
 	if UPDATE_STUDIES:
 		load_new_studies()
-	app.run(debug=DEBUG, host="0.0.0.0", port=5001)
+	app.run(debug=DEBUG, host="0.0.0.0", port=5000)
 

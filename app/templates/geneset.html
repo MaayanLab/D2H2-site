@@ -86,7 +86,7 @@
               </a>
             </div>
               <div id="[Signatures]loading"></div>
-              <div id="[Signatures]result"></div>
+              <div id="Signatures-result" class="m-4 mx-auto" style="width: 80%;"></div>
           </div>
         </div>
       </div>
@@ -307,7 +307,7 @@
               <div class="justify-content-center row text-center mt-3">
                 <a id="sigcoms">
                   <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Submit to
-                    <img src="{{url_for('static',filename= 'img/sigcom_lincs_logo.png')}}" class="img-fluid mr-3"
+                    <img src="{{url_for('static',filename= 'img/sigcom_lincs_logo2.png')}}" class="img-fluid mr-3"
                       style="width: 60px" alt="SigCom LINCS">
                   </button>
                 </a>
@@ -357,7 +357,7 @@
     }
 
     document.getElementById('[Signatures]loading').innerHTML = loading;
-    await geneset_signatures(geneset, '[Signatures]result');
+    await geneset_signatures(geneset, 'Signatures-result');
     document.getElementById('[Signatures]loading').innerHTML = "";
   });
 
