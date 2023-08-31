@@ -840,12 +840,12 @@ $(document).ready(function () {
             </div>
             <div class="row justify-content-center mx-auto text-center">
                 <button type="button" class="btn btn-primary btn-group-sm m-2"
-                    onclick="filter_and_submit_to_enrichr('${genes.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', , '${logfc.join(',')}', '${gse}-${control_condition}-vs-${perturb_condition}')">
+                    onclick="filter_and_submit_to_enrichr('${genes.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', '${logfc.join(',')}', '${gse}-${control_condition}-vs-${perturb_condition}')">
                     Enrichr
                     <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
                 </button>
                 <button type="button" class="btn btn-primary btn-group-sm m-2"
-                    onclick="filter_and_submit_to_kg('${genes.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', , '${logfc.join(',')}', '${gse}-${control_condition}-vs-${perturb_condition}')">
+                    onclick="filter_and_submit_to_kg('${genes.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', '${logfc.join(',')}', '${gse}-${control_condition}-vs-${perturb_condition}')">
                     Enrichr-KG
                     <img src="/static/img/enrichr-kg.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
                 </button>

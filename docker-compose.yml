@@ -3,7 +3,7 @@ services:
   app:
     platform: linux/x86_64
     build: .
-    image: maayanlab/d2h2:1.2.46
+    image: maayanlab/d2h2:1.2.47
     environment:
       - ROOT_PATH=/
       - BASE_PATH=https://maayanalab.cloud
