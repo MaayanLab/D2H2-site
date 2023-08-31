@@ -130,15 +130,26 @@
                             </div>
                         </div>
                     </div>
-                    <div class="vertical ml-5 mb-4" style="margin-top: 6%">
+                    <div class="vertical ml-5 mb-4 col-lg-5 col-sm-6" style="margin-top: 6%">
                         <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}">
                             <button class="learn-more">
                                 <span class="circle" aria-hidden="true">
                                     <span class="icon arrow"></span>
                                 </span>
                                 <span class="button-text">Explore Datasets</span>
-                            </button></a>
+                            </button>
+                        </a>
+
+                        <a href="{{ url_for('contribute') }}">
+                            <button class="mt-2 learn-more">
+                                <span class="circle" aria-hidden="true">
+                                    <span class="icon arrow"></span>
+                                </span>
+                                <span class="pl-4 button-text">Contribute Datasets</span>
+                            </button>
+                        </a>
                     </div>
+
                 </div>
             </div>
             <div id="features-div" class="col-lg-5 col-md-10 col-sm-10 ml-5 mt-2 mb-4">
