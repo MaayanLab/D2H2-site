@@ -27,8 +27,8 @@ export async function infer_gene(q) {
     return response['genes']
 }
 
-export async function log_chat(user_query, response) {
-    var data = JSON.stringify({'user_chat': user_query , 'response': response})
+export async function log_chat(user_query, response, userid) {
+    var data = JSON.stringify({'user_chat': user_query , 'response': response, 'user_id': userid})
     $.ajax({
         url: "api/record_chat",
         contentType: 'application/json',
@@ -84,7 +84,7 @@ export async function runFindQuery(q) {
 }
 
 
-export async function run_process_gene(user_query, process_info_copy, chat_num) {
+export async function run_process_gene(user_query, process_info_copy, chat_num, userid) {
     var chat_num = chat_num;
     var process_eval = await processes;
     var process = process_eval[process_info_copy.input][process_info_copy.output];
@@ -92,7 +92,7 @@ export async function run_process_gene(user_query, process_info_copy, chat_num) 
     args.push("result");
     
     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', process.text))
-    log_chat(user_query, process.text);
+    log_chat(user_query, process.text, userid);
     $(`#chat-${chat_num}`).fadeIn(2000, async () => {
         chat_num++;
         const placeholder = document.createElement("div");

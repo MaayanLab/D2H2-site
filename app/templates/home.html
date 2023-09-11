@@ -310,6 +310,16 @@
             process_numbers.push((i + j + 1).toString())
         }
 
+        var userid;
+        if (localStorage.getItem('userid') == null) {
+            userid = "id" + Math.random().toString(16).slice(2);
+            localStorage.setItem('userid', userid)
+        } else {
+            userid = localStorage.getItem('userid')
+        }
+
+
+
         function find_number(q) {
             var r = /\d+/g;
             var m;
@@ -380,7 +390,7 @@
             process_info['geneset'] = geneset;
             process_info['up'] = geneset_up;
             process_info['down'] = geneset_down;
-            await run_process_gene('[USER ENTERED GENESET]', process_info, chat_num);
+            await run_process_gene('[USER ENTERED GENESET]', process_info, chat_num, userid);
             chat_num++;
             chat_num++;
             await reset_process();
@@ -402,10 +412,9 @@
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                     await $(`#chat-${chat_num}`).fadeIn(2000);
                     chat_num++;
-                    log_chat(query, d2h2_response);
+                    log_chat(query, d2h2_response, userid);
 
                     var gs = await infer_gene(query)
-                    console.log(gs)
                     gs = gs.map((x) => `<a class="chat-option" id="option-${x}-${chat_num}" value="${x}">${x}</a>`).join(", ");
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "Did you mean to enter one of these genes: " + gs + ". You can click a gene to enter it or type in an alternative gene symbol."));
                     await $(`#chat-${chat_num}`).fadeIn(2000);
@@ -413,12 +422,11 @@
 
                     const options_array = Array.from(document.querySelectorAll('.chat-option'));
                     options_array.forEach((elt) => {
-                        console.log(elt)
                         document.getElementById(elt.id).addEventListener("click", function () {
                             make_option(chat_num, elt.innerText);
                             $(`#chat-${chat_num}`).fadeIn(2000);
                             chat_num++;
-                            log_chat(query, elt.innerText);
+                            log_chat(query, elt.innerText, userid);
                             ask_questions(elt.innerText)
                         });
                     }
@@ -438,14 +446,14 @@
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                     await $(`#chat-${chat_num}`).fadeIn(2000);
                     chat_num++;
-                    log_chat(query, d2h2_response);
+                    log_chat(query, d2h2_response, userid);
                     return;
                 } else if (res == 'busy') {
                     d2h2_response = "I'm sorry, the OpenAPI endpoint is currently overloaded. Please try again in a few seconds.";
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                     await $(`#chat-${chat_num}`).fadeIn(2000);
                     chat_num++;
-                    log_chat(query, d2h2_response);
+                    log_chat(query, d2h2_response, userid);
                     return;
                 } else process_info[curr_arg] = res;
             }
@@ -467,13 +475,13 @@
                             make_option(chat_num, elt.innerText);
                             $(`#chat-${chat_num}`).fadeIn(2000);
                             chat_num++;
-                            log_chat(query, elt.innerText);
+                            log_chat(query, elt.innerText, userid);
                             ask_questions(elt.innerText)
                         });
                     }
                     );
                     
-                    log_chat(query, d2h2_response);
+                    log_chat(query, d2h2_response, userid);
 
                     curr_arg = qs[i].arg;
                     options = qs[i].options;
@@ -482,7 +490,7 @@
             }
             let process_info_copy = { ...process_info };
             let chat_num_copy = chat_num.valueOf()
-            await run_process_gene(query, process_info_copy, chat_num);
+            await run_process_gene(query, process_info_copy, chat_num, userid);
             chat_num++;
             chat_num++;
             await reset_process();
@@ -516,7 +524,7 @@
                             document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                             await $(`#chat-${chat_num}`).fadeIn(2000);
                             chat_num++;
-                            log_chat(q, d2h2_response);
+                            log_chat(q, d2h2_response, userid);
                             return;
                         } else if (response['error'] == 'input') {
                             var options_str = "<br>";
@@ -535,7 +543,7 @@
                             document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                             await $(`#chat-${chat_num}`).fadeIn(2000);
                             chat_num++;
-                            log_chat(q, d2h2_response);
+                            log_chat(q, d2h2_response, userid);
                             process_number = true;
                             return;
                         } else {
@@ -543,7 +551,7 @@
                             document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                             await $(`#chat-${chat_num}`).fadeIn(2000);
                             chat_num++;
-                            log_chat(q, d2h2_response);
+                            log_chat(q, d2h2_response, userid);
                             return;
                         }
                     }
@@ -555,7 +563,7 @@
                             document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                             await $(`#chat-${chat_num}`).fadeIn(2000);
                             chat_num++;
-                            log_chat(q, d2h2_response);
+                            log_chat(q, d2h2_response, userid);
                         } else {
                             document.getElementById('gpt-query').value = '';
                             ask_questions(q);
@@ -567,7 +575,7 @@
                         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                         await $(`#chat-${chat_num}`).fadeIn(2000)
                         chat_num++;
-                        log_chat(q, d2h2_response);
+                        log_chat(q, d2h2_response, userid);
                         if (process_dict[response.input][response.output].args.includes('up')) {
                             document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_up_down_entries(chat_num + 1) + geneset_buttons_up_down(chat_num + 1)))
                         } else document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries(chat_num + 1) + geneset_buttons(chat_num + 1)))
