@@ -973,8 +973,9 @@ def record_chat():
 	response_json = request.get_json()
 	user_chat = response_json['user_chat']
 	response = response_json['response']
+	userid = response_json['user_id']
 	if not DEBUG:
-		log_chat(user_chat, response)
+		log_chat(user_chat, response, userid)
 	return {}
 
 #######################################################
