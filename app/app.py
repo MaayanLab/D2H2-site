@@ -505,11 +505,13 @@ numstudies = [len(gse_metadata['human']), len(gse_metadata['mouse']), len(gse_me
 def load_new_studies():
 	#Need to use account and pass in order to update the files.
 	s3 = s3fs.S3FileSystem(key = os.environ.get('AWS_ACCESS_KEY_ID'), secret = os.environ.get('AWS_SECRET_ACCESS_KEY'))
-	base_url = os.environ.get('BASE_URL', 'd2h2/data')
+	#This needs to be the base URL when accessing the s3 bucket through a verified account
+	base_url = 'd2h2/data'
 	mouse_gses = list(s3.walk(f'{base_url}/mouse', maxdepth=1))[0][1]
 	human_gses = list(s3.walk(f'{base_url}/human', maxdepth=1))[0][1]
 	#Bulk and microarray study to species name dictionary
 	if numstudies[0] != len(human_gses) or numstudies[1] != len(mouse_gses):
+		print("Change in bulk studies")
 		for species, geo_accession_ids in species_mapping.items():
 			if species not in gse_metadata:
 				gse_metadata[species] = {}
@@ -529,6 +531,7 @@ def load_new_studies():
 	mouse_singlegses = list(s3.walk(f'{base_url}/mouse_single', maxdepth=1))[0][1]
 	human_singlegses = list(s3.walk(f'{base_url}/human_single', maxdepth=1))[0][1]
 	if numstudies_single[0] != len(human_singlegses) or numstudies_single[1] != len(mouse_singlegses):
+		print("Change in single cell studies")
 		for species, geo_accession_ids in species_mapping_single.items():
 			if species =='human_single':
 				for geo_accession in human_singlegses:
@@ -973,8 +976,9 @@ def record_chat():
 	response_json = request.get_json()
 	user_chat = response_json['user_chat']
 	response = response_json['response']
+	userid = response_json['user_id']
 	if not DEBUG:
-		log_chat(user_chat, response)
+		log_chat(user_chat, response, userid)
 	return {}
 
 #######################################################

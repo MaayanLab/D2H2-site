@@ -35,9 +35,9 @@ except:
 
 
 
-def log_chat(user_query, response):
+def log_chat(user_query, response, userid):
   try:
-    row = [str(datetime.datetime.now()), user_query, response]
+    row = [str(datetime.datetime.now()), user_query, response, userid]
     sheet.append_row(row)
     return
   except Exception as e:
