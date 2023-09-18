@@ -454,13 +454,17 @@ function createResearchCardGridElement(filenames){
     return elem
 }
 function search_researcher(name) {
+    // document.getElementById('subnetwork-table-area').innerHTML = '';
+    document.getElementById('researcher-subnetwork-nav-tab').innerHTML = '';
+    document.getElementById('nav-subnetworkTabContent').innerHTML = '';
     $('.researcher-grid').empty();
     //Inlcude this grid sizer for proper layout and sizing of the masonry image layout
     $('.researcher-grid').html('<div class="grid-sizer"></div>');
     $('#researcher-cy-network').empty();
-    document.getElementById('researcher-network-title').innerText = '';
-    document.getElementById('researcher-cy-network').style.display = 'none';
     document.getElementById('researcher-title').innerText = `Research Summary Information for ${name}`;
+    document.getElementById('researcher-network-title').innerText = '';
+    document.getElementById('subnetworkOptionsHolder').style.display = 'none';
+    document.getElementById('researcher-cy-network').style.display = 'none';
     document.getElementById('researcher-data-loading-none').style.display = 'none';
     document.getElementById('researcher-data-loading').style.display = 'block';
     document.getElementById('navbar-toc').style.display = 'block'
@@ -499,27 +503,93 @@ function search_researcher(name) {
     })
 
     //MAKING API CALL TO NIDDK KG and Loading base Cytoscape
-    route_for_kg_connections = `http://localhost:3000/api/knowledge_graph?start=Principal Investigator&start_term=${name}&start_field=label&limit=25&end=Principal Investigator&relation=PI Gene,PI Diseases`
+    route_for_kg_connections = `http://localhost:3000/api/knowledge_graph?start=Principal Investigator&start_term=${name}&start_field=label&limit=10&end=Principal Investigator&relation=PI Gene,PI Diseases`
     fetch(route_for_kg_connections, {
         method: "GET",
         headers: {
             'Accept': 'application/json',
             'Content-Type':'application/json', 
         }
-    }).then(response => response.json())
+    })
+    .then(response => response.json())
     .then((data) => {
         console.log(typeof(data))
         if (data.length == 0){
             document.getElementById('researcher-network').innerText = "No connections to other Researchers";
         }else{
-            
             document.getElementById('researcher-network-title').innerText = `Researcher Subnetwork for ${name}`;
+            document.getElementById('subnetworkOptionsHolder').style.display = 'block';
+            var subnetworkTabList = document.getElementById('researcher-subnetwork-nav-tab');
+            var subnetworkTabListContent = document.getElementById('nav-subnetworkTabContent');
+            const researchernetworkDict = new Object();
             text_content = ``
+            
             for (i = 0; i< data.length; i++) {
-                console.log(data[i]['data'])
                 text_content += `<p>${JSON.stringify(data[i]['data'])}</p>`
+                if (data[i]['data']['kind'] !== "Relation" && !(data[i]['data']['kind'] in researchernetworkDict)){
+                    var dataKind = data[i]['data']['kind'];
+                    console.log('Hereee')
+                    let htmlId = dataKind.replaceAll(" ", "_");
+                    
+                    if (Object.keys(researchernetworkDict).length === 0){
+                        console.log(htmlId);
+                        console.log('Hereee in if')
+                        subnetworkTabList.innerHTML += `<button class="nav-link active" id="${htmlId}-tab" data-toggle="tab" data-target="#${htmlId}" type="button" role="tab" aria-controls="nav-home" aria-selected="true">${dataKind}</button>`
+                        subnetworkTabListContent.innerHTML += `<div class="tab-pane fade show active" id="${htmlId}" role="tabpanel" aria-labelledby="${htmlId}-tab"></div>`
+                        researchernetworkDict[data[i]['data']['kind']] = new Set();
+                    } else if (!(dataKind in researchernetworkDict)){
+                        subnetworkTabList.innerHTML += `<button class="nav-link" id="${htmlId}-tab" data-toggle="tab" data-target="#${htmlId}" type="button" role="tab" aria-controls="nav-home" aria-selected="true">${dataKind}</button>`;
+                        subnetworkTabListContent.innerHTML += `<div class="tab-pane fade show" id="${htmlId}" role="tabpanel" aria-labelledby="${htmlId}-tab"></div>`;
+                        researchernetworkDict[dataKind] = new Set();
+                    }
+                    var tableContentElement = document.getElementById(htmlId);
+                    var table_id = `${htmlId}-table`;
+                    var tabletext = `<table id='${table_id}' class='styled-table'><thead><tr>`;
+                    for (j = 0; j< data.length; j++) {
+                        // Principal Investigator Check
+                        if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Principal') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label']) && researchernetworkDict[data[j]['data']['kind']].size === 0){
+                            tabletext += "<th>Principal Investigator</th><th>Organization</th></tr><tbody>";
+                            tabletext += `<tr><td><a href="#researcher-title" onclick="example_researcher(this)">${data[j]['data']['label']}</a></td><td>${data[j]['data']['properties']['organization']}</td></tr>`;
+                            researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
+                        } else if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Principal') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label'])){
+                            tabletext += `<tr><td><a href="#researcher-title" onclick="example_researcher(this)">${data[j]['data']['label']}</a></td><td>${data[j]['data']['properties']['organization']}</td></tr>`;
+                            researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
+                        }
+
+                        if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Gene') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label']) && researchernetworkDict[data[j]['data']['kind']].size === 0){
+                            tabletext += "<th>Gene</th><th>Gene ID</th><th>URL</th></tr><tbody>";
+                            tabletext += `<tr><td>${data[j]['data']['label']}</td><td>${data[j]['data']['properties']['id']}</td><td><a href="${data[j]['data']['properties']['uri']}" target= _blank >${data[j]['data']['properties']['uri']}</a></td></tr>`;
+                            researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
+                        } else if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Gene') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label'])){
+                            tabletext += `<tr><td>${data[j]['data']['label']}</td><td>${data[j]['data']['properties']['id']}</td><td><a href="${data[j]['data']['properties']['uri']}" target= _blank >${data[j]['data']['properties']['uri']}</a></td></tr>`;
+                            researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
+                        }
+
+                        if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Diseases') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label']) && researchernetworkDict[data[j]['data']['kind']].size === 0){
+                            tabletext += "<th>Disease</th><th>Disease ID</th></tr><tbody>";
+                            tabletext += `<tr><td>${data[j]['data']['label']}</td><td>${data[j]['data']['properties']['id']}</td></tr>`;
+                            researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
+                        } else if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Diseases') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label'])){
+                            tabletext += `<tr><td>${data[j]['data']['label']}</td><td>${data[j]['data']['properties']['id']}</td></tr>`;
+                            researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
+                        }
+                    }
+                    tabletext += "</tbody></table>";
+                    tableContentElement.innerHTML += tabletext;
+                    var table = $(`#${table_id}`).DataTable({
+                        dom: 'Bfrtip',
+                        "ordering": false,
+                        buttons: [
+                            'copy', { extend: 'csv', title: `${dataKind} Table` }
+                        ]
+                    });
+
+                }        
+
             }
-            document.getElementById('researcher-network').innerText = text_content;
+
+
+            // document.getElementById('researcher-network').innerHTML = text_content;
 
             document.getElementById('researcher-cy-network').style.display = 'block';
             network_div = document.getElementById('researcher-cy-network');
@@ -533,8 +603,8 @@ function search_researcher(name) {
                     "selector": 'node',
                     "style": {
                     'background-color': 'data(color)',
-                    'border-color': 'data(borderColor)',
-                    'border-width': 'data(borderWidth)',
+                    // 'border-color': 'data(borderColor)',
+                    // 'border-width': 'data(borderWidth)',
                     'label': 'data(label)',
                     "text-valign": "center",
                     "text-halign": "center",
@@ -618,12 +688,114 @@ function search_researcher(name) {
                 }
               
               });
+              console.log(document.getElementById('change-layout-button').value);
+              document.getElementById('change-layout-button').addEventListener('change',function(){
+                let optionchange = document.getElementById('change-layout-button').value
+                cy.layout({name:optionchange}).run();
+              })
+
+              document.getElementById('change-connection-size-button').addEventListener('change',function(){
+                let optionchange = document.getElementById('change-connection-size-button').value
+                console.log('Hello');
+                route_for_kg_connections = `http://localhost:3000/api/knowledge_graph?start=Principal Investigator&start_term=${name}&start_field=label&limit=${optionchange}&end=Principal Investigator&relation=PI Gene,PI Diseases`
+                fetch(route_for_kg_connections, {
+                    method: "GET",
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type':'application/json', 
+                    }
+                }).then(response => response.json())
+                .then((data) => {
+                    cy.remove( 'node' );
+                    cy.remove( 'edge' );
+                    cy.add(data);
+                    let optionchange = document.getElementById('change-layout-button').value
+                    cy.layout({name:optionchange}).run();
+                    
+
+
+                    var subnetworkTabList = document.getElementById('researcher-subnetwork-nav-tab');
+                    subnetworkTabList.innerHTML = '';
+                    var subnetworkTabListContent = document.getElementById('nav-subnetworkTabContent');
+                    subnetworkTabListContent.innerHTML = '';
+                    const researchernetworkDict = new Object();
+                    // text_content = ``
+                    
+                    for (i = 0; i< data.length; i++) {
+                        // console.log(data[i]['data'])
+                        // text_content += `<p>${JSON.stringify(data[i]['data'])}</p>`
+                        if (data[i]['data']['kind'] !== "Relation" && !(data[i]['data']['kind'] in researchernetworkDict)){
+                            var dataKind = data[i]['data']['kind'];
+                            console.log('Hereee')
+                            let htmlId = dataKind.replaceAll(" ", "_");
+                            
+                            if (Object.keys(researchernetworkDict).length === 0){
+                                console.log(htmlId);
+                                console.log('Hereee in if')
+                                subnetworkTabList.innerHTML += `<button class="nav-link active" id="${htmlId}-tab" data-toggle="tab" data-target="#${htmlId}" type="button" role="tab" aria-controls="nav-home" aria-selected="true">${dataKind}</button>`
+                                subnetworkTabListContent.innerHTML += `<div class="tab-pane fade show active" id="${htmlId}" role="tabpanel" aria-labelledby="${htmlId}-tab"></div>`
+                                researchernetworkDict[data[i]['data']['kind']] = new Set();
+                            } else if (!(dataKind in researchernetworkDict)){
+                                subnetworkTabList.innerHTML += `<button class="nav-link" id="${htmlId}-tab" data-toggle="tab" data-target="#${htmlId}" type="button" role="tab" aria-controls="nav-home" aria-selected="true">${dataKind}</button>`;
+                                subnetworkTabListContent.innerHTML += `<div class="tab-pane fade show" id="${htmlId}" role="tabpanel" aria-labelledby="${htmlId}-tab"></div>`;
+                                researchernetworkDict[dataKind] = new Set();
+                            }
+                            var tableContentElement = document.getElementById(htmlId);
+                            var table_id = `${htmlId}-table`;
+                            var tabletext = `<table id='${table_id}' class='styled-table'><thead><tr>`;
+                            for (j = 0; j< data.length; j++) {
+                                // Principal Investigator Check
+                                if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Principal') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label']) && researchernetworkDict[data[j]['data']['kind']].size === 0){
+                                    tabletext += "<th>Principal Investigator</th><th>Organization</th></tr><tbody>";
+                                    tabletext += `<tr><td><a href="#researcher-title" onclick="example_researcher(this)">${data[j]['data']['label']}</a></td><td>${data[j]['data']['properties']['organization']}</td></tr>`;
+                                    researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
+                                } else if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Principal') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label'])){
+                                    tabletext += `<tr><td><a href="#researcher-title" onclick="example_researcher(this)">${data[j]['data']['label']}</a></td><td>${data[j]['data']['properties']['organization']}</td></tr>`;
+                                    researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
+                                }
+        
+                                if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Gene') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label']) && researchernetworkDict[data[j]['data']['kind']].size === 0){
+                                    tabletext += "<th>Gene</th><th>Gene ID</th><th>URL</th></tr><tbody>";
+                                    tabletext += `<tr><td>${data[j]['data']['label']}</td><td>${data[j]['data']['properties']['id']}</td><td><a href="${data[j]['data']['properties']['uri']}" target= _blank >${data[j]['data']['properties']['uri']}</a></td></tr>`;
+                                    researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
+                                } else if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Gene') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label'])){
+                                    tabletext += `<tr><td>${data[j]['data']['label']}</td><td>${data[j]['data']['properties']['id']}</td><td><a href="${data[j]['data']['properties']['uri']}" target= _blank >${data[j]['data']['properties']['uri']}</a></td></tr>`;
+                                    researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
+                                }
+
+                                if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Diseases') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label']) && researchernetworkDict[data[j]['data']['kind']].size === 0){
+                                    tabletext += "<th>Disease</th><th>Disease ID</th></tr><tbody>";
+                                    tabletext += `<tr><td>${data[j]['data']['label']}</td><td>${data[j]['data']['properties']['id']}</td></tr>`;
+                                    researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
+                                } else if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Diseases') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label'])){
+                                    tabletext += `<tr><td>${data[j]['data']['label']}</td><td>${data[j]['data']['properties']['id']}</td></tr>`;
+                                    researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
+                                }
+                            }
+                            tabletext += "</tbody></table>";
+                            tableContentElement.innerHTML += tabletext;
+                            var table = $(`#${table_id}`).DataTable({
+                                dom: 'Bfrtip',
+                                "ordering": false,
+                                buttons: [
+                                    'copy', { extend: 'csv', title: `${dataKind} Table` }
+                                ]
+                            });
+        
+                        }               
+        
+                    }
+        
+                })
+
+              })
 
         }
 
     })
 
 }
+
 function showResearcherCardModal(element) {
     // The element parameter here is the img tag with the src holding the path to the image. 
     image_path = element.getAttribute("data-src")
@@ -677,50 +849,6 @@ const researcher_list = fetch("static/researcher_list.json").then(data => {
     });
 })();
 
-
-// //Map implementation using leaflet and tile maps from online
-// var map = L.map('map').setView(['37.0902','-95.7129'], 4);
-
-
-// // L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-// // maxZoom: 7,
-// // attribution: '© OpenStreetMap'
-// // }).addTo(map);
-
-// L.tileLayer('https://{s}.tile.jawg.io/jawg-sunny/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
-// 	attribution: '<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-// 	minZoom: 0,
-// 	maxZoom: 15,
-// 	subdomains: 'abcd',
-// 	accessToken: 'kP5zFalUlpUkkreJz6QYMRiXibhtyZVMNYoOv199RUSjrJf73RCdSjXYRxjucPgk'
-// }).addTo(map);
-
-
-// async function getLocData(){
-//     const location_info = await fetch("static/location_info.json").then(data => data.json()).then(data => data);
-//     let count_here = 0
-//     for (const key in location_info) {
-//         console.log('Here')
-//         count_here += 1
-
-//         html_string = ''
-//         html_string = '<div class="scroll">'
-//         for (i= 0 ; i < location_info[key].length; i++) {
-//             var marker = L.marker(key.split(',')).addTo(map);
-//             html_string += `<a href=#search_researcher onClick="example_researcher(this)">${location_info[key][i]}</a><br>`
-//         }
-//         html_string += '</div>'
-//         marker.bindPopup(html_string);
-//         if (count_here == 30){
-//             break
-//         }
-
-//     }
-//     console.log('In function get loc')
-
-// }
-
-// getLocData()
 
 function toggle_map(){
     map_div = document.getElementById('map-div-d3');
@@ -886,7 +1014,6 @@ async function makeUSAMap(){
 
     // })
 
-
     let tooltip = d3
     .select("body")
     .append("div")
@@ -921,10 +1048,6 @@ async function makeUSAMap(){
     .scaleExtent([1, 3])
     .on("zoom", (event) => {
         svg.selectAll("path").attr("transform", event.transform);
-        console.log(event.transform)
-        console.log(event.transform.k)
-        console.log(event.transform.x)
-        console.log(event.transform.y)
         svg.selectAll("circle")
           .attr("transform", event.transform)
           .attr("r", 6 / event.transform.k);
@@ -935,13 +1058,8 @@ async function makeUSAMap(){
 
 }
 
-
-
-// makeUSAMap();
-
-
 async function makeUSAMapZoom(){
-    document.getElementById("map-loading").innerHTML = "<div class='loader justify-content-center'></div>";
+    // document.getElementById("map-loading").innerHTML = "<div class='loader justify-content-center'></div>";
     const width = 975;
     const height = 610;
     //Setting up the projection in order to convert coordinates into points that fit on the map in screen
@@ -969,14 +1087,24 @@ async function makeUSAMapZoom(){
 
     let location_info = await fetch("static/location_info_d3.json").then(data => data.json()).then(data => data);
     // location_info = location_info.slice(0, 3);
+    console.log('In map');
     console.log(location_info);
+    var text = svg
+    .select("g").selectAll("text")
+    .data(location_info);
 
-
+    text.enter().append("text")
+    .attr("x", function(d){ return projection([d.longitude, d.latitude])[0] })
+    .attr("y", function(d){ return projection([d.longitude, d.latitude])[1] })
+    .attr("dy", -7)
+    .style("fill", "black")
+    .style("font-size", 10)
+    .attr("text-anchor", "middle")
+    .text((d) => d.names.length);
     
     var circle = svg
     .select("g").selectAll("circle")
     .data(location_info);
-
 
     circle.enter().append("circle")
     .attr("class", "researcherLocationPoint")
@@ -985,7 +1113,9 @@ async function makeUSAMapZoom(){
     .attr("r", 4)
     .style("fill", "black")
     .attr("stroke", "#012B4E")
+    .attr("stroke-width", 2)
     .style("opacity", 0.9);
+
 
     let tooltip = d3
     .select("body")
@@ -998,13 +1128,23 @@ async function makeUSAMapZoom(){
     .style('background-color', '#ddd')
     .style("opacity", 0);
 
+    let tooltip_hover = d3
+    .select("body")
+    .append("div")
+    .attr("class", 'tooltip')
+    .attr("id", "researcherhovertooltiplist")
+    .style('border-style', 'solid')
+    .style('border-radius', '10px')
+    .style('background-color', '#ddd')
+    .style("opacity", 0);
+
     d3.selectAll('circle')
     .on("click", (event, data) => {
+        document.getElementById('researcherhovertooltiplist').style.display = 'none';
         html_string = `<button type="button" class="close sticky-top" onClick="closeResearcherList()" ><span aria-hidden="true">&times;</span></button><br>`
         html_string += `<p class=text-center><strong>${data.institution}</strong></p>`
         html_string += `<div class="scroll">`
         document.getElementById('researchertooltiplist').innerHTML = '';
-        console.log(data)
         for (i= 0 ; i < data.names.length; i++) {
             html_string += `<a href=#search_researcher onClick="example_researcher(this)">${data.names[i]}</a><br>`
         }
@@ -1019,81 +1159,112 @@ async function makeUSAMapZoom(){
 
     })
 
+    d3.selectAll('circle')
+    .on("mouseover", (event, data) => {
+        html_string = `<p class=text-center style="margin: 1px;"><strong>${data.institution} (${data.names.length})</strong></p>`
+        // if (data.names.length == 1){
+        //     html_string += `<p class=text-center style="margin: 1px;">1 Researcher</p>`
+        // }
+        // else{
+        //     html_string += `<p class=text-center style="margin: 1px;">${data.names.length} Researchers</p>`
+        // }
+        console.log(data);
+
+        tooltip_hover.html(html_string)
+        .style("left", (event.pageX+10) + "px")
+        .style("top", event.pageY - 28 + "px");
+
+        tooltip_hover.transition().duration(200).style("opacity", 1);
+        tooltip_hover.style("display", 'inline-block');
+
+    })
+
+    d3.selectAll('path')
+    .on("mouseover", (event, data) => {
+        tooltip_hover.transition().duration(200).style("opacity", 0);
+        tooltip_hover.style("display", 'none');
+
+    })
+
+
     let zooming = d3
     .zoom()
-    .scaleExtent([1, 50])
+    .scaleExtent([1, 100])
     .on("zoom", (event) => {
+        document.getElementById('researchertooltiplist').innerHTML = ''
+        document.getElementById('researchertooltiplist').style.display = 'none';
         g.attr("transform", event.transform);
-        console.log(event.transform)
         svg.selectAll("circle")
-          .attr("r", 4 / event.transform.k);
+          .attr("r", 4 / event.transform.k)
+          .attr("stroke-width", 2 / event.transform.k);
+        svg.selectAll("text")
+          .style("font-size", `${10 / event.transform.k}`)
+          .attr("dy", -7 / event.transform.k);
           
   });
 
-  function recenter() {
-    console.log('recentering')
-    try {
-      // get a handle to the transform object, and reset it to the
-      // zoom identity (resets to zoom out all the way)
-      let d3zoom = zooming
-      let ztrans = d3zoom.transform
-      let t = d3.zoomIdentity 
-      svg.transition().duration(1000).call(ztrans,t)
+//   function recenter() {
+//     console.log('recentering')
+//     try {
+//       // get a handle to the transform object, and reset it to the
+//       // zoom identity (resets to zoom out all the way)
+//       let d3zoom = zooming
+//       let ztrans = d3zoom.transform
+//       let t = d3.zoomIdentity 
+//       svg.transition().duration(1000).call(ztrans,t)
 
-      // get the object and measurements to determine the virtual
-      // "bounding" rectangle around the directional extremes of sites
-      // i.e., north (topmost), east (rightmost), etc
-      let circles    = svg.select('g').selectAll('circle')
-      let data       = circles.data()
-      let long       = data.map(o => parseFloat(o.longitude))
-      let lat        = data.map(o => parseFloat(o.latitude))
-      let rightmost  = d3.max(long)
-      let leftmost   = d3.min(long)
-      let topmost    = d3.max(lat)
-      let bottommost = d3.min(lat)
-      // convert the lat/long to points in the projection
-      let lt = projection([leftmost,topmost])
-      let rb = projection([rightmost,bottommost])
-      // calc the gaps (east - west, south - north) in pixels
-      let g  = rb[0]-lt[0]
-      let gh = rb[1]-lt[1]
+//       // get the object and measurements to determine the virtual
+//       // "bounding" rectangle around the directional extremes of sites
+//       // i.e., north (topmost), east (rightmost), etc
+//       let circles    = svg.select('g').selectAll('circle')
+//       let data       = circles.data()
+//       let long       = data.map(o => parseFloat(o.longitude))
+//       let lat        = data.map(o => parseFloat(o.latitude))
+//       let rightmost  = d3.max(long)
+//       let leftmost   = d3.min(long)
+//       let topmost    = d3.max(lat)
+//       let bottommost = d3.min(lat)
+//       // convert the lat/long to points in the projection
+//       let lt = projection([leftmost,topmost])
+//       let rb = projection([rightmost,bottommost])
+//       // calc the gaps (east - west, south - north) in pixels
+//       let g  = rb[0]-lt[0]
+//       let gh = rb[1]-lt[1]
 
-      // get the dimensions of the panel in which the map sits
-      let w  = svg.node().parentElement.getBoundingClientRect().width
-      let h  = svg.node().parentElement.getBoundingClientRect().height
+//       // get the dimensions of the panel in which the map sits
+//       let w  = svg.node().parentElement.getBoundingClientRect().width
+//       let h  = svg.node().parentElement.getBoundingClientRect().height
 
-      // the goal here is to move the halfway point between leftmost and rightmost
-      // on the projection sites to the halfway point of the panel in which the
-      // svg element resides, and same for 'y'
-      // the scale is the value 90% of the scale factor of either east-west to width
-      // or south-north to height, whichever is greater
-      let neoScale = 0.9 / Math.max(g/w, gh/h)
+//       // the goal here is to move the halfway point between leftmost and rightmost
+//       // on the projection sites to the halfway point of the panel in which the
+//       // svg element resides, and same for 'y'
+//       // the scale is the value 90% of the scale factor of either east-west to width
+//       // or south-north to height, whichever is greater
+//       let neoScale = 0.9 / Math.max(g/w, gh/h)
 
-      // now recalculate what will be the difference between the current
-      // center and the center of the scaled virtual rectangle
-      // this finds the difference between the centers
-      // the new center of the scaled rectangle is the average of the left and right
-      // or top and bottom points
-      let neoX = w/2 - (neoScale * ((lt[0]+rb[0])/2))
-      let neoY = h/2 - (neoScale * ((lt[1]+rb[1])/2))
+//       // now recalculate what will be the difference between the current
+//       // center and the center of the scaled virtual rectangle
+//       // this finds the difference between the centers
+//       // the new center of the scaled rectangle is the average of the left and right
+//       // or top and bottom points
+//       let neoX = w/2 - (neoScale * ((lt[0]+rb[0])/2))
+//       let neoY = h/2 - (neoScale * ((lt[1]+rb[1])/2))
 
-      // TRANSLATE FIRST!  then scale.
-      t = d3.zoomIdentity.translate(neoX,neoY).scale(neoScale)
-      svg.transition().duration(1000).call(ztrans, t)
-    }
-    catch(e)
-    {
-      console.log(e)
-    }
-  }
+//       // TRANSLATE FIRST!  then scale.
+//       t = d3.zoomIdentity.translate(neoX,neoY).scale(neoScale)
+//       svg.transition().duration(1000).call(ztrans, t)
+//     }
+//     catch(e)
+//     {
+//       console.log(e)
+//     }
+//   }
 
-
-svg.call(zooming);
-
-
-document.getElementById("map-loading").innerHTML = "";
-
-
+    svg.call(zooming);
+    document.getElementById("map-loading").innerHTML = "";
+    document.getElementById("map-button").style.display = "block";
+    document.getElementById("map-div-d3").style.display = "block";
+    
 
 }
 
@@ -1103,6 +1274,7 @@ function closeResearcherList(){
     document.getElementById('researchertooltiplist').innerHTML = ''
     document.getElementById('researchertooltiplist').style.display = 'none';
 }
+
 $(document).ready(function () {
 
     // SMALL NAV MENU

@@ -87,15 +87,6 @@ def load_card_data():
 	request_body = request.get_json()
 	researcher = request_body['researcher'].upper()
 	base_path = 'static/output_images'
-	# all_pngs = os.listdir(base_path)
-	# all_pngs = sorted(all_pngs)
-	# dict_with_data = {'png_paths':[]}
-	# for file in all_pngs:
-	# 	if 'card' in file:
-	# 		dict_with_data['png_paths'].append('../'+base_path+'/'+file)
-	# 	else:
-	# 		dict_with_data['png_paths'].append('../'+base_path+'/'+file)
-	# print(dict_with_data['png_paths'])
 
 	researcher_names_list = os.listdir(base_path)
 	for name in researcher_names_list:
@@ -104,19 +95,11 @@ def load_card_data():
 			all_pngs = os.listdir(full_path)
 			all_pngs = sorted(all_pngs)
 			dict_with_data = {'png_paths':[]}
-			#NEED TO DELETE THIS IF STATEMENT
-			if "AVI_MA'AYAN" in name or "SERGIO_A_LIRA" in name:
-				for file in all_pngs:
-					if 'card' in file:
-						dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+file])
-					elif 'thumbnail' not in file:
-						dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+ 'thumbnail_' + file])
-				return dict_with_data
 			for file in all_pngs:
 				if 'card' in file:
 					dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+file])
 				elif 'thumbnail' not in file:
-					dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+ file])
+					dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+ 'thumbnail_' + file])
 				
 			print('matched')
 			print(dict_with_data['png_paths'])

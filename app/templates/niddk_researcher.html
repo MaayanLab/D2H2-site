@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row text-center">
         <div class="col mt-5">
-            <h2 class="display-5">NIDDK Researcher Query and Network Visualization</h2>
+            <h2 class="display-5">A network of NIDDK funded researchers</h2>
         </div>
     </div>
     <!-- <div class="row justify-content-center">
@@ -14,13 +14,13 @@
         
     </div> -->
     <div class="row justify-content-center">
-        <button class="btn btn-outline-primary btn-sm" type="button" id="map-button"
+        <button class="btn btn-outline-primary btn-sm" type="button" id="map-button" style="display:none;"
         onclick="toggle_map()">Hide Map</button>
         
     </div>
     
     <div class="row justify-content-center">
-    <div id="map-loading" class="m-2"></div>
+        <div id="map-loading" class="mt-2"><div class='loader justify-content-center'></div></div>
     </div>
     <!-- <div id="map" class="mt-2" style="display:block;"></div> -->
     <!-- <div style="border-style: solid;">
@@ -30,13 +30,7 @@
         <svg id="map-svg2"></svg>
     </div> -->
 
-    <!-- <div class="card" id="map-div-d3" style="display:block;">
-        <div class="card-body text-center">
-            <svg id="map-svg3"></svg>
-        </div>
-    </div> -->
-
-    <div class="custom-col" id="map-div-d3" style="display:block;">
+    <div class="custom-col" id="map-div-d3" style="display:none;">
         <div class="text-center">
             <svg id="map-svg3"></svg>
         </div>
@@ -65,8 +59,9 @@
                 </button> -->
                 
             </div>
-            <p id="examples" class="small text-muted">For example: <a href="#researcher-title" onclick="example_researcher(this);">Original-Card-Titles</a>,  <a href="#researcher-title" onclick="example_researcher(this);">AVI MA'AYAN</a>, <a href="#researcher-title" onclick="example_researcher(this);">SERGIO A. LIRA</a></p>
+            <p id="examples" class="small text-muted">For example: <a href="#researcher-title" onclick="example_researcher(this);">AVI MA'AYAN</a>, <a href="#researcher-title" onclick="example_researcher(this);">SERGIO A. LIRA</a>, <a href="#researcher-title" onclick="example_researcher(this);">INGA PETER</a>, <a href="#researcher-title" onclick="example_researcher(this);">JUDY H. CHO</a></p>
             <!-- , <a href="#" onclick="example_researcher(this);">ROBERT LEFKOWITZ</a>, -->
+            <!-- <a href="#researcher-title" onclick="example_researcher(this);">Original-Card-Titles</a>, -->
         </div>
 
     </div>
@@ -98,9 +93,33 @@
                 <div class="researcher-grid mx-auto text-center justify-content-center">
                     <div class="grid-sizer"></div>
                 </div>
-            
+                
                 <h3 class='text-center' id="researcher-network-title"></h3>
-                <div class=" custom-col mx-auto justify-content-center" id="researcher-cy-network"></div>
+                <div class="row mx-auto" id="subnetworkOptionsHolder">
+                    <select name="Select Method" class="form-select form-select-lg mb-3" id="change-layout-button" class="libpicker">
+                        <option selected disabled hidden value="breadthfirst">Select Graph Layout</option>
+                        <option value="breadthfirst">Hierarchal</option>
+                        <option value="concentric">Geometric</option>
+                        <option value="grid">Grid</option>
+                    </select>
+    
+                    <select name="Select Size" class="form-select form-select-lg mb-3" id="change-connection-size-button" class="libpicker">
+                        <option selected disabled hidden value="10">Select Connection Size</option>
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                
+                <div class="custom-col mx-auto justify-content-center" id="researcher-cy-network"></div>
+                <div class="justify-content-center mx-auto mt-2" id="subnetwork-table-area">
+                    <nav>
+                        <div class="nav nav-tabs" id="researcher-subnetwork-nav-tab" role="tablist">
+                        </div>
+                      </nav>
+                      <div class="tab-content" id="nav-subnetworkTabContent">
+                      </div>
+                </div>
             
                 <div class="mx-auto text-center justify-content-center" id="researcher-network"></div>
             </div>
