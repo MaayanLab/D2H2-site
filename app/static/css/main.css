@@ -1188,3 +1188,40 @@ div.scroll {
 .researcherLocationPoint {
   cursor: pointer;
 }
+
+#float-button-group {
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	opacity: 0.5;
+	display: flex;
+	flex-direction: column;
+  border: rgb(182, 182, 182);
+  background-color: #ddd;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 0.5rem;
+
+}
+
+#float-button-group:hover {
+	opacity: 1;
+}
+.svg-icon {
+	width: 1.5em;
+	height: 1.5em;
+}
+.btn-default {
+	color: #333;
+	background-color: #ddd;
+	border-color: #ccc;
+	padding: 0.4rem;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 0.5rem;
+}
+.svg-icon path,
+.svg-icon polygon,
+.svg-icon rect {
+	fill: #333;
+}

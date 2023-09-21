@@ -1052,9 +1052,9 @@ async function makeUSAMap(){
           .attr("transform", event.transform)
           .attr("r", 6 / event.transform.k);
           
-  });
-  svg.call(zooming)
-  document.getElementById("map-loading").innerHTML = "";
+    });
+    svg.call(zooming)
+    document.getElementById("map-loading").innerHTML = "";
 
 }
 
@@ -1201,7 +1201,7 @@ async function makeUSAMapZoom(){
           .style("font-size", `${10 / event.transform.k}`)
           .attr("dy", -7 / event.transform.k);
           
-  });
+    });
 
 //   function recenter() {
 //     console.log('recentering')
@@ -1261,6 +1261,20 @@ async function makeUSAMapZoom(){
 //   }
 
     svg.call(zooming);
+    d3.select("#zoomIn").on("click", () => {
+        svg.transition().call(zooming.scaleBy, 2);
+    });
+    d3.select("#zoomOut").on("click", () => {
+        svg.transition().call(zooming.scaleBy, 0.5);
+    });
+    d3.select("#resetZoom").on("click", () => {
+        svg.transition().call(zooming.scaleTo, 0);
+        svg.transition().call(
+            zooming.transform,
+            d3.zoomIdentity,
+            d3.zoomTransform(svg.node()).invert([width / 2, height / 2])
+          );
+    });
     document.getElementById("map-loading").innerHTML = "";
     document.getElementById("map-button").style.display = "block";
     document.getElementById("map-div-d3").style.display = "block";
