@@ -90,10 +90,35 @@ export async function run_process_gene(user_query, process_info_copy, chat_num, 
     var process = process_eval[process_info_copy.input][process_info_copy.output];
     var args = process.args.map((x) => x);
     args.push("result");
-    
-    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', process.text))
-    log_chat(user_query, process.text, userid);
-    $(`#chat-${chat_num}`).fadeIn(2000, async () => {
+    if (process_eval[process_info_copy.input] == '[Gene]') {
+        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', process.text))
+        log_chat(user_query, process.text, userid);
+        $(`#chat-${chat_num}`).fadeIn(2000, async () => {
+            chat_num++;
+            const placeholder = document.createElement("div");
+            placeholder.innerHTML = `<div id='loading${chat_num}'>${loading}</div>`;
+            const loadingNode = placeholder.firstElementChild;
+            document.getElementById("chat-bubbles-section").appendChild(loadingNode)
+            document.getElementById("chat-bubbles-section").appendChild(chatNresult('start', chat_num, '#d3d3d3', "result" + chat_num))
+            
+            process_info_copy['result'] = "result" + chat_num
+            for (let j = 0; j < args.length; j ++) {
+                args[j] = process_info_copy[args[j]];
+            }
+            var args_string = "";
+            for (let i = 0; i < args.length; i++) {
+                if (i == 0) args_string += `'${args[i]}'`;
+                else args_string += `,'${args[i]}'`;
+            }
+            var process_eval = `${process.process}(${args_string})`;
+            console.log(process_eval)
+            await eval(process_eval);
+            document.getElementById('loading' + chat_num).style.display = 'none';
+            await $(`#chat-${chat_num}`).fadeIn(2000);
+        
+            return;
+        })
+    } else {
         chat_num++;
         const placeholder = document.createElement("div");
         placeholder.innerHTML = `<div id='loading${chat_num}'>${loading}</div>`;
@@ -117,6 +142,7 @@ export async function run_process_gene(user_query, process_info_copy, chat_num, 
         await $(`#chat-${chat_num}`).fadeIn(2000);
     
         return;
-    })
+    }
+    
     
 }

@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from functools import lru_cache
 import json
+from time import sleep
 
 
 load_dotenv()
@@ -11,22 +12,25 @@ with open('static/searchdata/processes.json') as f:
     processes = json.load(f)
 
 validation = {"[Gene]": list(processes["[Gene]"].keys()),
-              "[GeneSet]": list(processes["[GeneSet]"].keys())}
+              "[GeneSet]": list(processes["[GeneSet]"].keys()),
+              "[Term]": list(processes["[GeneSet]"].keys())
+              }
 
 gene_process_descs = "\n".join(map(lambda output: f'[Gene]->{output} - {processes["[Gene]"][output]["gpt_desc"]}', list(processes["[Gene]"].keys())))
 geneset_process_descs = "\n".join(map(lambda output: f'[GeneSet]->{output} - {processes["[GeneSet]"][output]["gpt_desc"]}', list(processes["[GeneSet]"].keys())))
+
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def determine_valid(query):
     prompt = f"""
     Based on the query from the user: "{query}"
-    Pick an input type from the list: [[Metabolite],[RNA-seq file],[Variant],[Transcript],[Gene],[GeneSet]]
+    Pick an input type from the list: [[Metabolite],[RNA-seq file],[Variant],[Transcript],[Gene],[GeneSet],[Term],[Differential Expression],[Study Metadata],[Other]]
     Additional context: If a gene symbol is included in the input then the input will most likely be [Gene]. A GeneSet is a collection of mulitple genes, thus is the user includes 'genes' or 'gene set' the input will likely be [GeneSet]. If the user provides a query with the word gene in it, they could be asking for a gene as an output which is not valid. 
-    If the user is asking for a gene or a gene set as an output, you should respond with [Other].
-    Please also provide a confidence score in the range of: [0, 1].
+    If the user is asking for a genes or a gene set as an output, you should respond with [Term]. Also select [Term] if the user appears to be asking a general question about a disease, or in general any biomedical term.
+    If the the user's query is not relevant to any type in the list, or in general the question is not relevant in a biomedical context, then please respond with [Other].
     Respond in this format:
-    [confidence score],[Type]
+    [Type]
     """
     try:
         tag_line = openai.ChatCompletion.create(
@@ -41,11 +45,14 @@ def determine_valid(query):
 
         response = tag_line['choices'][0]['message']['content']
         print(response)
-        response = response.split(',')[1]
         if '[Gene]' in response:
             return (True, '[Gene]')
         elif '[GeneSet]' in response:
             return (True, '[GeneSet]')
+        elif '[Term]' in response:
+            return (True, '[Term]')
+        elif '[Study Metadata]' in response:
+            return (True, '[Study Metadata]')
         else: 
             return (False, '[None]')
     except:
@@ -60,18 +67,24 @@ def find_process(query):
         return {"response": 1, "error": "input"}
     if input_type == '[Gene]':
         processes_descs = gene_process_descs
-    else: 
+    elif input_type == '[GeneSet]': 
         processes_descs = geneset_process_descs
+    elif input_type == '[Term]':
+        res = identify_search_term(query)
+        if 'term' in res:
+            return {"response": 0, "input": '[Term]', "output": '[Search]', "term": res['term']}
+        return {"response": 1, "error": "busy"}
+    elif input_type == '[Study Metadata]':
+        res = identify_search_term(query)
+        if 'term' in res:
+            return {"response": 0, "input": '[Study Metadata]', "output": '[Search]', "term": res['term']}
+        return {"response": 1, "error": "busy"}
+
     
     prompt = f"""
     Based on the query from the user: "{query}"
-    Additional context: If a gene symbol is included in the input then the input will most likely be [Gene]. A GeneSet is a collection of mulitple genes, thus is the user includes 'genes' or 'gene set' the input will likely be [GeneSet]. If the user provides a query with an input does not match any of the included processes, please use the type: [None]. 
-
-    Pick an input type from the list: [[Gene], [GeneSet]]
-
-    Then, pick a process to be exceuted from below based on the query and the chosen input type:
+    Pick one of the following processes based on their description's similarity to the user's query:
     {processes_descs}
-
     Your response must strictly follow the following format with no other text, description or reasoning:
     [Input]->[Output]
     """
@@ -79,7 +92,7 @@ def find_process(query):
         tag_line = openai.ChatCompletion.create(
         model="gpt-4",
         messages=[
-        {"role": "system", "content": "You are an assitant meant to process a user query and pick a given workflow"},
+        {"role": "system", "content": "You are an assitant meant to process a user query and pick the relevant input type from the provided list of options."},
         {"role": "user", "content": prompt}
             ],
         max_tokens =20,
@@ -151,6 +164,28 @@ def infer_gene(gene):
         gs = list(map(lambda x: x.strip(), gs))
         print(gs)
         return {'genes': gs}
+    except:
+        return {'option': 'busy'}
+    
+
+def identify_search_term(query):
+    prompt = f"""
+    Based on text from the user: "{query}"
+    Respond with the biomedical term the user included in their question. Only include the term which should be used to serach with and no other text or reasoning."""
+    try:
+        tag_line = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+        {"role": "system", "content": "You are an assitant meant to select the biomedical term from the user's query"},
+        {"role": "user", "content": prompt}
+            ],
+        max_tokens =20,
+        temperature=0,
+        )
+
+        response = tag_line['choices'][0]['message']['content'].strip()
+        print(response)
+        return {'term': response}
     except:
         return {'option': 'busy'}
     
