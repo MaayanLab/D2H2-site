@@ -474,7 +474,7 @@ def load_new_studies():
 		for species, geo_accession_ids in species_mapping.items():
 			if species not in gse_metadata:
 				gse_metadata[species] = {}
-			#Added
+			#Adding additional human and mouse studies from the s3 bucket.
 			if species =='human':
 				for geo_accession in human_gses:
 					if geo_accession not in geo_accession_ids:
@@ -496,44 +496,50 @@ def load_new_studies():
 				for geo_accession in human_singlegses:
 					if geo_accession not in geo_accession_ids:
 						gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
-					metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=geo_accession, base_url=base_url),'r')
-					metadict = json.load(metajson)
-					dict_to_store_cell_numbers = {}
-					total_cells = 0
-					for key in metadict:
-						key_for_dict = key.split(':')[0]
-						base_expression_filename = metadict[key]['filename']
-						expression_file = 'data' + '/' + species + '/' + geo_accession + '/' + base_expression_filename
-						adata = read_anndata_h5(expression_file)
-						clus_numbers = adata["var/leiden/codes"][:]
-						num_cells = len(clus_numbers)
-						total_cells += num_cells
-						dict_to_store_cell_numbers[key_for_dict] = num_cells
-					dict_to_store_cell_numbers['Total'] = total_cells
-					gse_metadata_single[species][geo_accession]['cell_count'] = dict_to_store_cell_numbers
-					print(geo_accession)
-					print(dict_to_store_cell_numbers)
+						metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=geo_accession, base_url=base_url),'r')
+						metadict = json.load(metajson)
+						dict_to_store_cell_numbers = {}
+						total_cells = 0
+						for key in metadict:
+							#Getting each profile from the single cell data and storing the cell count for each of the different profiles. 
+							key_for_dict = key.split(':')[0]
+							base_expression_filename = metadict[key]['filename']
+							#Add the base path of data here since it uses another modules public s3 credentials 
+							expression_file = 'data' + '/' + species + '/' + geo_accession + '/' + base_expression_filename
+							adata = read_anndata_h5(expression_file)
+							clus_numbers = adata["var/leiden/codes"][:]
+							num_cells = len(clus_numbers)
+							total_cells += num_cells
+							dict_to_store_cell_numbers[key_for_dict] = num_cells
+						dict_to_store_cell_numbers['Total'] = total_cells
+						gse_metadata_single[species][geo_accession]['cell_count'] = dict_to_store_cell_numbers
+						print("Human Single Cell Study")
+						print(geo_accession)
+						print(dict_to_store_cell_numbers)
 			if species == 'mouse_single':
 				for geo_accession in mouse_singlegses:
 					if geo_accession not in geo_accession_ids:
 						gse_metadata_single[species][geo_accession] = get_metadata(geo_accession, url_to_folder_single[species])
-					metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=geo_accession, base_url=base_url),'r')
-					metadict = json.load(metajson)
-					dict_to_store_cell_numbers = {}
-					total_cells = 0
-					for key in metadict:
-						key_for_dict = key.split(':')[0]
-						base_expression_filename = metadict[key]['filename']
-						expression_file = 'data' + '/' + species + '/' + geo_accession + '/' + base_expression_filename
-						adata = read_anndata_h5(expression_file)
-						clus_numbers = adata["var/leiden/codes"][:]
-						num_cells = len(clus_numbers)
-						total_cells += num_cells
-						dict_to_store_cell_numbers[key_for_dict] = num_cells
-					dict_to_store_cell_numbers['Total'] = total_cells
-					gse_metadata_single[species][geo_accession]['cell_count'] = dict_to_store_cell_numbers
-					print(geo_accession)
-					print(dict_to_store_cell_numbers)
+						metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=geo_accession, base_url=base_url),'r')
+						metadict = json.load(metajson)
+						dict_to_store_cell_numbers = {}
+						total_cells = 0
+						for key in metadict:
+							#Getting each profile from the single cell data and storing the cell count for each of the different profiles. 
+							key_for_dict = key.split(':')[0]
+							base_expression_filename = metadict[key]['filename']
+							#Add the base path of data here since it uses another modules public s3 credentials 
+							expression_file = 'data' + '/' + species + '/' + geo_accession + '/' + base_expression_filename
+							adata = read_anndata_h5(expression_file)
+							clus_numbers = adata["var/leiden/codes"][:]
+							num_cells = len(clus_numbers)
+							total_cells += num_cells
+							dict_to_store_cell_numbers[key_for_dict] = num_cells
+						dict_to_store_cell_numbers['Total'] = total_cells
+						gse_metadata_single[species][geo_accession]['cell_count'] = dict_to_store_cell_numbers
+						print("Mouse Single Cell Study")
+						print(geo_accession)
+						print(dict_to_store_cell_numbers)
 		with open('static/searchdata/metadatasingle-v1.pickle', 'wb') as f:
 			pickle.dump(gse_metadata_single, f, protocol=pickle.HIGHEST_PROTOCOL)
 
