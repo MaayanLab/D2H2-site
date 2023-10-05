@@ -139,7 +139,7 @@
                 "term",
                 "resource"
             ],
-            "text": "I performed enrichement analysis through Enricher with your gene set agasint our curated Diabetes gene set library. Any overlapping gene can be submitted to the Single Gene Queries page and the sets of overlapping genes can be submitted to the Gene Set Queries page.",
+            "text": "",
             "questions": [
                 {
                     "q": "Please select a resource to query:\n",

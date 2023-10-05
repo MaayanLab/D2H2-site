@@ -22,14 +22,26 @@ export function gen_table(link, data, table_id, title, gene) {
     })
 }
 
+export async function search_for_genesets(term, resource, id) {
+    if (resource == 'Enrichr') {
+        genesets = query_enrichr_metadata(term)
+    } else if (resource == 'Rummagene') {
+        query_rummagene(term, id)
+
+    } else if (resource == 'Geneshot') {
+
+    }
+
+    return 
+}
+
 
 // Term to Enrichr Metadata
 // [Term]->[Enrichr]
-export async function query_enrichr_metadata(term, id) {
+export async function query_enrichr_metadata(term) {
     const {terms} = await (
         await fetch(`https://maayanlab.cloud/Enrichr/termmap?meta=${term}&json=true`, {
-            method: 'GET',
-            signal: controller.signal
+            method: 'GET'
         })
     ).json()
     const options = []
@@ -41,24 +53,71 @@ export async function query_enrichr_metadata(term, id) {
             })
         }
     }
+    console.log(options)
+
+    
+
+    return options
 }
 
 
-
-
-
-
-
-const {library, term} = params
-const controller = get_controller() 
-const res = await fetch(`https://maayanlab.cloud/Enrichr/geneSetLibrary?term=${term}&libraryName=${library}&mode=json`, {
-    method: 'GET',
-})
-const results = await res.json()
-const vals = Object.entries(results)           
-if (vals) {
-    const [description, genes] = vals[0]
-    setInput({description: `${description} (${library})`, genes})
-    setOpen(false)
+export async function get_enrichr_geneset(term, library) {
+    const res = await fetch(`https://maayanlab.cloud/Enrichr/geneSetLibrary?term=${term}&libraryName=${library}&mode=json`, {
+        method: 'GET',
+    })
+    const results = await res.json()
+    const vals = Object.entries(results)           
+    if (vals) {
+        const [description, genes] = vals[0]
+        return {description: `${description} (${library})`, genes}
+    }
 }
 
+export async function query_rummagene(term) {
+
+    /* const query = `query MyQuery {
+        geneSetTermSearch(terms: "${term}", first: 1000) {
+          edges {
+            node {
+              term
+              id
+              nGeneIds
+            }
+          }
+        }
+      }`
+
+    const res = await fetch("https://rummagene.com/graphiql", {
+        method: "POST",
+        body: query,
+        headers: {
+            "Content-type": "application/graphiql"
+        }
+    }).json()
+
+    console.log(res) */
+
+    const url1 = `https://rummagene.com/pubmed-search?q=${term}`;
+    const url2 = `https://rummagene.com/term-search?q=${term})`;
+
+
+    document.getElementById(resultid).innerHTML =
+        `
+        <div class="row">
+            Search by querying column names:
+            <a href="${url1}" target="_blank">
+                <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Open in
+                    <img src="static/img/rummagene_logo.png" class="img-fluid mr-3"
+                        style="width: 60px" alt="Rummagene">
+                </button>
+            </a>
+            Search by querying PMC:
+            <a href="${url2}" target="_blank">
+                <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Open in
+                    <img src="static/img/rummagene_logo.png" class="img-fluid mr-3"
+                        style="width: 60px" alt="Rummagene">
+                </button>
+            </a>
+        </div>
+        `
+}

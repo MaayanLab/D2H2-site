@@ -193,26 +193,17 @@ def compute_dge(rnaseq_data_filename, meta_data_filename, diff_gex_method, contr
 ########## SINGLE CELL DGE METHODS ###########
 def get_signatures_single(classes, expr_file, method, meta_class_column_name, cluster=True, filter_genes=True, aggregate=False):
 
-    # expr_df = dataset.to_df().T
-    # raw_expr_df = dataset.raw.to_adata().to_df().T
-    # meta_df = dataset.obs
     # Getting the same number of samples from each cluster to use for diffrential gene expression.
     f = read_anndata_h5(expr_file)
 
-    # dataset = read_anndata_raw(expr_file)
-
-    # leiden_data = f["var/leiden/categories"][:].astype(str)
     clus_numbers = f["var/leiden/codes"][:]
     leiden_data_vals = list(map(lambda x: "Cluster " + str(x), clus_numbers))
-    # classes = sorted(leiden_data)
-    # classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
-    # Stores the number of of cells correlated to each cluster.
+
     metadata_dict_counts = pd.Series(leiden_data_vals).value_counts()
     genes = np.array(f['obs/gene_symbols'][:].astype(str))
     cells = f['var/column_names'][:].astype(str)
     cluster_list = []
     if cluster == True and aggregate == True:
-
         num_to_sample = min(min(metadata_dict_counts), 15)
         list_of_adata = []
         for cls in metadata_dict_counts.keys():

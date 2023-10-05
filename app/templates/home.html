@@ -293,6 +293,12 @@
         import { gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from '../static/js/modules/single-gene-queries.js';
         import { geneset_signatures, geneset_enrichment, geneset_kea3, geneset_chea3, geneset_sigcomlincs } from '../static/js/modules/geneset-queries.js';
         import { parse_gene, infer_gene, select_option, runFindQuery, run_process_gene, log_chat } from '../static/js/modules/query.js';
+        import { query_enrichr_metadata, query_rummagene } from '../static/js/modules/term-queries.js';
+
+        query_enrichr_metadata('diabetes')
+        query_rummagene('diabetes')
+
+
         const process_dict = await processes;
 
         var new_process = true;

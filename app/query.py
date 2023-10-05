@@ -3,7 +3,6 @@ import os
 from dotenv import load_dotenv
 from functools import lru_cache
 import json
-from time import sleep
 
 
 load_dotenv()
@@ -40,7 +39,7 @@ def determine_valid(query):
         {"role": "user", "content": prompt}
             ],
         max_tokens =20,
-        temperature=1,
+        temperature=.1,
         )
 
         response = tag_line['choices'][0]['message']['content']

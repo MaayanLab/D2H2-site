@@ -80,7 +80,10 @@ export async function runFindQuery(q) {
         response['geneset'] = '';
         return response
 
-    } else document.getElementById('loading').innerHTML = "";
+    } else if (response['input'] == '[Term]') {
+        return response
+    }
+    else document.getElementById('loading').innerHTML = "";
 }
 
 
