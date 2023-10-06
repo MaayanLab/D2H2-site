@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 import os
+import ast
 import json
 import s3fs
 import plotly
@@ -372,7 +373,7 @@ def submit_contribution_form():
 
 #############################################
 ########## 2. Data
-#############################################ow toow
+#############################################
 ##### 1. Files #####
 
 
@@ -600,12 +601,7 @@ def species_or_viewerpg(species_or_gse):
 ########## 1. Genes
 #############################################
 
-
-# this will likely stay the same.
-
 @app.route(f'{ROOT_PATH}/api/genes/<geo_accession>')
-
-# this will likely stay the same.
 @lru_cache(maxsize=None)
 def genes_api(geo_accession):
 	if geo_accession == 'human':
@@ -945,6 +941,17 @@ def record_chat():
 	if not DEBUG:
 		log_chat(user_chat, response, userid)
 	return {}
+
+@app.route('/api/run_geneshot', methods=['GET', 'POST'])
+def run_geneshot():
+	if request.method == "POST":
+		term = request.get_json()['term']
+		try:
+			res = query_geneshot(term) 
+			return {'search_term':term, 'genes': str(res[0]), 'count': str(res[1])}
+		except:
+			return {'search_term':term, 'error': True}
+
 
 #######################################################
 #######################################################

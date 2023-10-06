@@ -23,10 +23,8 @@ async function show_geneset_modal(library, term) {
 
     // Create a blog object with the file content which you want to add to the file
     const file = new Blob([`${res.description}\t${res.genes.join('\t')}`], { type: 'text/plain' });
-
     // Add file content in the object URL
     genesetDownload.href = URL.createObjectURL(file);
-
     genesetDownload.download = `${library}_${term}.txt`;
 
 
@@ -512,10 +510,6 @@ $(document).ready(function () {
             $(this).addClass('active');
             $(this).parents('li').addClass('active');
         }
-        // if (url.split('/')[3].startsWith('GSE')) {
-        //     $("#viewer").addClass('active'); 
-        //     $("#viewer").parents('li').addClass('active');
-        // }
     });
 
     var currURL = window.location.href.split("/");

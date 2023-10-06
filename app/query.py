@@ -25,10 +25,13 @@ def determine_valid(query):
     prompt = f"""
     Based on the query from the user: "{query}"
     Pick an input type from the list: [[Metabolite],[RNA-seq file],[Variant],[Transcript],[Gene],[GeneSet],[Term],[Differential Expression],[Study Metadata],[Other]]
-    Additional context: If a gene symbol is included in the input then the input will most likely be [Gene]. A GeneSet is a collection of mulitple genes, thus is the user includes 'genes' or 'gene set' the input will likely be [GeneSet]. If the user provides a query with the word gene in it, they could be asking for a gene as an output which is not valid. 
-    If the user is asking for a genes or a gene set as an output, you should respond with [Term]. Also select [Term] if the user appears to be asking a general question about a disease, or in general any biomedical term.
+    Additional context: 
+    A GeneSet is a collection of mulitple genes.
+    If the user is asking for associated or upregulated genes or a gene set as an output, you should respond with [Term]. 
+    Also select [Term] if the user appears to be asking a general question about a disease, or in general any biomedical term.
+    If the user provides a term and a gene, then you should respond with [Term].
     If the the user's query is not relevant to any type in the list, or in general the question is not relevant in a biomedical context, then please respond with [Other].
-    Respond in this format:
+    Respond in this format including only 1 type:
     [Type]
     """
     try:
@@ -170,7 +173,7 @@ def infer_gene(gene):
 def identify_search_term(query):
     prompt = f"""
     Based on text from the user: "{query}"
-    Respond with the biomedical term the user included in their question. Only include the term which should be used to serach with and no other text or reasoning."""
+    Respond with the biomedical term(s) the user included in their question. Only include the term which should be used to serach with and no other text or reasoning. Genes or geneset are general terms and should not be included."""
     try:
         tag_line = openai.ChatCompletion.create(
         model="gpt-4",
@@ -188,3 +191,61 @@ def identify_search_term(query):
     except:
         return {'option': 'busy'}
     
+
+    
+def determine_association(user_query): 
+    prompt = f"""
+    You will be provided with text delimited by triple quotes. 
+    A functional term is a gene, biological pathway, biological function, drug, phenotype or disease contained in the
+    query.
+    If it is a query asking about a gene set related to two or more functional terms, the response should be ['Association', [terms in association]]. Otherwise if the query is
+    not asking about a gene set related to two or more functional terms, the output should be [False]. 
+        ```{user_query}``` 
+    """
+    try:
+        tag_line = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+        {"role": "system", "content": "You are an assitant meant to select the biomedical term from the user's query"},
+        {"role": "user", "content": prompt}
+            ],
+        max_tokens =20,
+        temperature=0,
+        )
+
+        response = tag_line['choices'][0]['message']['content'].strip()
+        print(response)
+        return {'term': response}
+    except:
+        return {'option': 'busy'}
+
+
+def select_args(query):
+    prompt = f"""
+    Process the query delimited by triple backticks and return only one most important term. 
+    This term should be the gene, list of genes, 
+    biological pathway, biological function, drug, phenotype or disease contained in the
+    query. The output should not include any prepositions and only one term in the format: [response]. 
+    For example, if the query is 'Provide all the differentially expressed 
+    genes in alopecia', the output should be [alopecia].
+    Another example, if the query is 'Imagine a geneset of all genes that are mentioned with hair loss', 
+    the output is should be [hair loss]
+ 
+    ```{query}```
+    """
+    try:
+        tag_line = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+        {"role": "system", "content": "You are an assitant meant to select the biomedical term from the user's query"},
+        {"role": "user", "content": prompt}
+            ],
+        max_tokens =20,
+        temperature=0,
+        )
+
+        response = tag_line['choices'][0]['message']['content'].strip()
+        print(response)
+        return {'term': response}
+    except:
+        return {'option': 'busy'}

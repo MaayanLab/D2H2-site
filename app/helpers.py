@@ -308,6 +308,18 @@ def sigcom_gene_set(gene_set):
 
     return ("https://maayanlab.cloud/sigcom-lincs/#/SignatureSearch/Set/%s"%persistent_id)
 
+### QUERY GENESHOT
+def query_geneshot(term):
+
+    GENESHOT_URL = 'https://maayanlab.cloud/geneshot/api/search'
+    payload = {"rif": "autorif", "term": term}
+    response = requests.post(GENESHOT_URL, json=payload)
+    print(response)
+    data = json.loads(response.text)
+    gene_list = list(data['gene_count'].keys())
+    gene_list_count = data['return_size']
+
+    return (gene_list, gene_list_count)
 
 
 ############## GET RESOURCES TABLE FROM GOOGLE DRIVE ##############
