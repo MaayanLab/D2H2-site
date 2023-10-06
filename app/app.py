@@ -932,10 +932,16 @@ def query_genes():
 
 @app.route(f'{ROOT_PATH}/api/record_chat',  methods=['GET', 'POST'])
 def record_chat():
-	response_json = request.get_json()
-	user_chat = response_json['user_chat']
-	response = response_json['response']
-	userid = response_json['user_id']
+	try:
+		response_json = request.get_json()
+		user_chat = response_json['user_chat']
+		response = response_json['response']
+		userid = response_json['user_id']
+	except:
+		print('Error logging chat:')
+		print('User chat:', 'user_chat' in response_json)
+		print('D2H2 response:', 'response' in response_json)
+		print('User id:', 'user_id' in response_json)
 	if not DEBUG:
 		log_chat(user_chat, response, userid)
 	return {}

@@ -143,11 +143,11 @@
             "questions": [
                 {
                     "q": "Please select a resource to query:\n",
-                    "arg": "library",
+                    "arg": "resource",
                     "options": [
-                        "Enrichr: Perform a metadata search across thousands of curated gene sets\n",
-                        "Rummagene: Peform a metadata serach across hundreds of thousands automatically extracted gene sets from PubMed Central\n",
-                        "Geneshot: Submit biomedical terms to receive ranked lists of relevant genes from the literature and coexpression"
+                        "Enrichr",
+                        "Rummagene",
+                        "Geneshot"
                     ]
                 }
             ]

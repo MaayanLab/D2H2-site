@@ -1,3 +1,38 @@
+async function get_enrichr_geneset(term, library) {
+    const res = await fetch(`https://maayanlab.cloud/Enrichr/geneSetLibrary?term=${term}&libraryName=${library}&mode=json`, {
+        method: 'GET',
+    })
+    const results = await res.json()
+    const vals = Object.entries(results)           
+    if (vals) {
+        const [description, genes] = vals[0]
+        return {description: `${description} (${library})`, genes: genes}
+    }
+}
+
+async function show_geneset_modal(library, term) {
+    const modal = document.getElementById('geneset-modal');
+    const textfield = document.getElementById('geneset-modal-text');
+    const modalTitle = document.getElementById('geneset-modal-title');
+    const queryButton = document.getElementById('geneset-modal-queries');
+    const genesetDownload = document.getElementById('geneset-modal-download');
+    const res = await get_enrichr_geneset(term, library);
+    textfield.value = res.genes.join('\r\n')
+    queryButton.setAttribute('onclick', `setGenes('${res.genes.join('&')}')`)
+    modalTitle.innerText = `${library}: ${term} (${res.genes.length})`
+
+    // Create a blog object with the file content which you want to add to the file
+    const file = new Blob([`${res.description}\t${res.genes.join('\t')}`], { type: 'text/plain' });
+
+    // Add file content in the object URL
+    genesetDownload.href = URL.createObjectURL(file);
+
+    genesetDownload.download = `${library}_${term}.txt`;
+
+
+    modal.showModal()
+}
+
 function up_down_toggle(chatnum) {
     if (document.getElementById(`enter-geneset${chatnum}`).style.display == "flex") {
         document.getElementById(`enter-geneset${chatnum}`).style.display = "none";
@@ -240,6 +275,7 @@ function clear_dge_single() {
 function on_change(el) {
 
     for (var i = 0; i < el.options.length; i++) {
+        console.log(document.getElementById(el.options[i].val))
         document.getElementById(el.options[i].value).style.display = 'none';
     }
     document.getElementById(el.options[el.selectedIndex].value).style.display = 'block'; // Show el

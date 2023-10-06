@@ -1,7 +1,29 @@
 {% extends 'base.html' %}
 
 {% block body %}
-
+<!-- For gene set modal -->
+<dialog data-modal id="geneset-modal" style="margin: auto;">
+    <div class="text-center justify-content-center">
+        <p id="geneset-modal-title"></p>
+        <textarea id="geneset-modal-text" class="text-center" style="height: 20rem; overflow-y: scroll; white-space: pre-wrap;" readonly>
+        </textarea>
+    </div>
+    <div class="row">
+        <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('geneset-modal-text').value)" class="btn btn-primary btn-group-sm m-2 ">
+            Copy to clipboard
+        </button>
+        <a id="geneset-modal-queries" href="{{ url_for('geneset_home') }}" onclick="" target='_blank' style="text-decoration: none">
+            <button type="button" class="btn btn-primary btn-group-sm m-2">
+                Open in Geneset Queries
+            </button>
+        </a>
+        <a id="geneset-modal-download" href="" style="text-decoration: none">
+            <button type="button" class="btn btn-primary btn-group-sm m-2">
+            Download
+            </button>
+        </a>
+    </div>
+</dialog>
 
 <div class="justify-content-center container-fluid p-0 m-0">
     <div class="row text-center justify-content-center" style="display: flexbox;">
@@ -295,9 +317,7 @@
         import { parse_gene, infer_gene, select_option, runFindQuery, run_process_gene, log_chat } from '../static/js/modules/query.js';
         import { query_enrichr_metadata, query_rummagene } from '../static/js/modules/term-queries.js';
 
-        query_enrichr_metadata('diabetes')
-        query_rummagene('diabetes')
-
+        //query_enrichr_metadata('diabetes')
 
         const process_dict = await processes;
 
@@ -411,8 +431,6 @@
                 return;
             }
 
-            console.log('here')
-
             process_info['geneset'] = geneset;
             process_info['up'] = geneset_up;
             process_info['down'] = geneset_down;
@@ -487,8 +505,9 @@
             for (let i = 0; i < qs.length; i++) {
                 if (!(qs[i].arg in process_info)) {
                     var readable_options = qs[i].options.map(x => (x.replace('_', " ")));
+                    readable_options = readable_options.map((x) => `<a class="chat-option" id="option-${x}-${chat_num}" value="${x}">${x}</a>`);
                     readable_options[readable_options.length - 1] = "and " + readable_options[readable_options.length - 1] + ".";
-                    readable_options = readable_options.map((x) => `<a class="chat-option" id="option-${x}-${chat_num}" value="${x}">${x}</a>`).join(", ");
+                    readable_options = readable_options.join(", ");
                     d2h2_response = qs[i].q + ' The options include ' + readable_options + " Please click or enter the option you would like to select.";
 
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
@@ -503,6 +522,7 @@
                             $(`#chat-${chat_num}`).fadeIn(2000);
                             chat_num++;
                             log_chat(query, elt.innerText, userid);
+                            console.log(elt.innerText)
                             ask_questions(elt.innerText)
                         });
                     }
@@ -623,9 +643,10 @@
                         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                         await $(`#chat-${chat_num}`).fadeIn(2000)
                         chat_num++;
+                        console.log
                         log_chat(q, d2h2_response, userid);
                         document.getElementById('gpt-query').value = '';
-                        ask_questions();
+                        ask_questions(q);
                     }
                 }, 1000);
             }
@@ -691,5 +712,17 @@
 
         const countupEls = document.querySelectorAll('.countup');
         countupEls.forEach(animateCountUp);
+        const modal = document.getElementById('geneset-modal');
+        modal.addEventListener("click", e => {
+        const dialogDimensions = modal.getBoundingClientRect()
+        if (
+            e.clientX < dialogDimensions.left ||
+            e.clientX > dialogDimensions.right ||
+            e.clientY < dialogDimensions.top ||
+            e.clientY > dialogDimensions.bottom
+        ) {
+            modal.close()
+            }
+        })
     </script>
     {% endblock %}

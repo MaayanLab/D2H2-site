@@ -1,51 +1,27 @@
-export function gen_table(link, data, table_id, title, gene) {
-    var titletext = `<div class ="row text-center mt-3"> <h4>${title}</h4></div>`;
-    var tabletext = `<table id='${table_id}' class='styled-table' style='width: 90%;'><thead><tr>`
-    tabletext += "<th>Signature</th><th>GEO Entry</th><th>P-value</th><th>Log2 Fold Change</th><th>Gene Rank in Signature</th><th>Boxplot Viewer</th></tr><tbody>"
-    data.forEach(function (row) {
-        var gse = row[row.length - 1].split("=")[1]
-        var curr = window.location.href.replace('singlegene', '')
-        var studyviewer = curr + gse
-        tabletext += "<tr><td>" + row[0].split(/[-_]+/).join(" ") + "</td><td><a href='" + row[row.length - 1] + "' target='_blank'>" + gse + "</a></td><td>" + row[1] + "</td><td>" + row[2] + "</td><td>" + row[row.length - 2] + "</td><td><a href='" + studyviewer + `' target='_blank'><button class='btn btn-primary btn-group-sm' onclick="setGene('${gene}')">` + gse + " Gene Viewer</button></a></td></tr>"
-    });
-    tabletext += "</tbody></table>";
-    var filename = link.split("/")[link.split("/").length - 1]
-    document.getElementById("t2d-tables").innerHTML += (titletext + tabletext)
-    $(document).ready(function () {
-        $(`#${table_id}`).DataTable({
-            order: [[2, 'asc']],
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', { extend: 'csv', title: filename }
-            ]
-        });
-    })
-}
-
 export async function search_for_genesets(term, resource, id) {
     if (resource == 'Enrichr') {
-        genesets = query_enrichr_metadata(term)
+        await query_enrichr_metadata(term, id);
     } else if (resource == 'Rummagene') {
-        query_rummagene(term, id)
-
+        await query_rummagene(term, id);
     } else if (resource == 'Geneshot') {
-
+        await query_geneshot(term, id);
     }
-
-    return 
+    return;
 }
 
 
 // Term to Enrichr Metadata
 // [Term]->[Enrichr]
-export async function query_enrichr_metadata(term) {
+export async function query_enrichr_metadata(term, id) {
     const {terms} = await (
         await fetch(`https://maayanlab.cloud/Enrichr/termmap?meta=${term}&json=true`, {
             method: 'GET'
         })
     ).json()
     const options = []
+    var libraries = new Set();
     for (const [library,v] of Object.entries(terms)) {
+        libraries.add(library)
         for (const term of v)  {
             options.push({
                 library,
@@ -53,25 +29,47 @@ export async function query_enrichr_metadata(term) {
             })
         }
     }
-    console.log(options)
 
+    libraries = Array.from(libraries)
+
+    var selecter = `<div class='text-center'><p>Select from one the annotated libraries: </p><select class="m-2 libpicker" data-style="btn-primary" onchange="on_change(this)" data-width="500px">`
+    for (var i = 0; i < libraries.length; i++) {
+        var lib = libraries[i];
+        var libDisplay = lib.replaceAll("_", " ")
+        selecter += `<option value=${lib}>${libDisplay}</option>`;
+    }
+    selecter += `</select></div>`
+    for (var i = 0; i < options.length; i++) {
+        var lib = options[i].library;
+        const lib_terms = options.filter(l => l.library == lib)
+        var res_html = `<div id="${lib}" style="display:none;"><table id='table-enrichr' class='styled-table table-enrichr'><thead><tr><th></th><th></th></tr><tbody>`
+        for (var j = 0; j < lib_terms.length; j++) {
+            var term = lib_terms[j].term
+            res_html += `<tr><td> ${term} </td><td> <button type="button" class="btn btn-primary btn-group-sm" onclick="show_geneset_modal('${lib}', '${term}')">View Geneset</button> </td></tr>`
+        }
+        res_html += `</tbody></table></div>`
+        selecter += res_html
+    }
+    selecter += `<script>      
+                </script>`
+    
     
 
-    return options
+    $(document).ready(function () {
+        $(`.table-enrichr`).DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', { extend: 'csv', title: `${term}-enrichr-genesets` }
+            ]
+        });
+    });
+    document.getElementById(id).innerHTML = selecter;
+    document.getElementById(options[0].library).style.display = 'block';
+    return; 
 }
 
 
-export async function get_enrichr_geneset(term, library) {
-    const res = await fetch(`https://maayanlab.cloud/Enrichr/geneSetLibrary?term=${term}&libraryName=${library}&mode=json`, {
-        method: 'GET',
-    })
-    const results = await res.json()
-    const vals = Object.entries(results)           
-    if (vals) {
-        const [description, genes] = vals[0]
-        return {description: `${description} (${library})`, genes}
-    }
-}
+
 
 export async function query_rummagene(term) {
 
@@ -101,7 +99,7 @@ export async function query_rummagene(term) {
     const url2 = `https://rummagene.com/term-search?q=${term})`;
 
 
-    document.getElementById(resultid).innerHTML =
+    document.getElementById(id).innerHTML =
         `
         <div class="row">
             Search by querying column names:
