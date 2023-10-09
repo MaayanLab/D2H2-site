@@ -519,21 +519,25 @@ function search_researcher(name) {
         }else{
             document.getElementById('researcher-network-title').innerText = `Researcher Subnetwork for ${name}`;
             document.getElementById('subnetworkOptionsHolder').style.display = 'block';
+            // Get both the tab div and the element holding the content
             var subnetworkTabList = document.getElementById('researcher-subnetwork-nav-tab');
             var subnetworkTabListContent = document.getElementById('nav-subnetworkTabContent');
+            //dictionary will store the node type as the key and the value will be a set holding unique instances of the node type ex:PI-> Name of PI
             const researchernetworkDict = new Object();
             text_content = ``
             
             for (i = 0; i< data.length; i++) {
                 text_content += `<p>${JSON.stringify(data[i]['data'])}</p>`
                 if (data[i]['data']['kind'] !== "Relation" && !(data[i]['data']['kind'] in researchernetworkDict)){
+                    // Type of node
                     var dataKind = data[i]['data']['kind'];
                     console.log('Hereee')
+                    // Ensure the node type doesnt have spcaes in it and this will act as the data-target and id for the content of the nav tabs
                     let htmlId = dataKind.replaceAll(" ", "_");
-                    
+                    // only have this if statement in order to make an active tab.
                     if (Object.keys(researchernetworkDict).length === 0){
                         console.log(htmlId);
-                        console.log('Hereee in if')
+                        console.log('Here in first if and empty dictionary to initialize the tabs')
                         subnetworkTabList.innerHTML += `<button class="nav-link active" id="${htmlId}-tab" data-toggle="tab" data-target="#${htmlId}" type="button" role="tab" aria-controls="nav-home" aria-selected="true">${dataKind}</button>`
                         subnetworkTabListContent.innerHTML += `<div class="tab-pane fade show active" id="${htmlId}" role="tabpanel" aria-labelledby="${htmlId}-tab"></div>`
                         researchernetworkDict[data[i]['data']['kind']] = new Set();
@@ -542,13 +546,15 @@ function search_researcher(name) {
                         subnetworkTabListContent.innerHTML += `<div class="tab-pane fade show" id="${htmlId}" role="tabpanel" aria-labelledby="${htmlId}-tab"></div>`;
                         researchernetworkDict[dataKind] = new Set();
                     }
+                    //Initializing the table information for the content below the tab for each of the node types. 
                     var tableContentElement = document.getElementById(htmlId);
                     var table_id = `${htmlId}-table`;
-                    var tabletext = `<table id='${table_id}' class='styled-table'><thead><tr>`;
+                    var tabletext = `<table id='${table_id}' class='styled-table'>`;
+                    //Looping through the all the data returned by the api call again. 
                     for (j = 0; j< data.length; j++) {
-                        // Principal Investigator Check
+                        // Principal Investigator Check and having initial if statement in order to make the table header titles. 
                         if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Principal') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label']) && researchernetworkDict[data[j]['data']['kind']].size === 0){
-                            tabletext += "<th>Principal Investigator</th><th>Organization</th></tr><tbody>";
+                            tabletext += "<thead><tr><th>Principal Investigator</th><th>Organization</th></tr></thead><tbody>";
                             tabletext += `<tr><td><a href="#researcher-title" onclick="example_researcher(this)">${data[j]['data']['label']}</a></td><td>${data[j]['data']['properties']['organization']}</td></tr>`;
                             researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
                         } else if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Principal') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label'])){
@@ -557,7 +563,7 @@ function search_researcher(name) {
                         }
 
                         if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Gene') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label']) && researchernetworkDict[data[j]['data']['kind']].size === 0){
-                            tabletext += "<th>Gene</th><th>Gene ID</th><th>URL</th></tr><tbody>";
+                            tabletext += "<thead><tr><th>Gene</th><th>Gene ID</th><th>URL</th></tr></thead><tbody>";
                             tabletext += `<tr><td>${data[j]['data']['label']}</td><td>${data[j]['data']['properties']['id']}</td><td><a href="${data[j]['data']['properties']['uri']}" target= _blank >${data[j]['data']['properties']['uri']}</a></td></tr>`;
                             researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
                         } else if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Gene') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label'])){
@@ -566,7 +572,7 @@ function search_researcher(name) {
                         }
 
                         if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Diseases') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label']) && researchernetworkDict[data[j]['data']['kind']].size === 0){
-                            tabletext += "<th>Disease</th><th>Disease ID</th></tr><tbody>";
+                            tabletext += "<thead><tr><th>Disease</th><th>Disease ID</th></tr></thead><tbody>";
                             tabletext += `<tr><td>${data[j]['data']['label']}</td><td>${data[j]['data']['properties']['id']}</td></tr>`;
                             researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
                         } else if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Diseases') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label'])){
@@ -581,8 +587,10 @@ function search_researcher(name) {
                         "ordering": false,
                         buttons: [
                             'copy', { extend: 'csv', title: `${dataKind} Table` }
-                        ]
+                        ],
+                        responsive: true
                     });
+                    
 
                 }        
 
@@ -742,11 +750,11 @@ function search_researcher(name) {
                             }
                             var tableContentElement = document.getElementById(htmlId);
                             var table_id = `${htmlId}-table`;
-                            var tabletext = `<table id='${table_id}' class='styled-table'><thead><tr>`;
+                            var tabletext = `<table id='${table_id}' class='styled-table'>`;
                             for (j = 0; j< data.length; j++) {
                                 // Principal Investigator Check
                                 if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Principal') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label']) && researchernetworkDict[data[j]['data']['kind']].size === 0){
-                                    tabletext += "<th>Principal Investigator</th><th>Organization</th></tr><tbody>";
+                                    tabletext += "<thead><tr><th>Principal Investigator</th><th>Organization</th></tr></thead><tbody>";
                                     tabletext += `<tr><td><a href="#researcher-title" onclick="example_researcher(this)">${data[j]['data']['label']}</a></td><td>${data[j]['data']['properties']['organization']}</td></tr>`;
                                     researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
                                 } else if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Principal') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label'])){
@@ -755,7 +763,7 @@ function search_researcher(name) {
                                 }
         
                                 if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Gene') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label']) && researchernetworkDict[data[j]['data']['kind']].size === 0){
-                                    tabletext += "<th>Gene</th><th>Gene ID</th><th>URL</th></tr><tbody>";
+                                    tabletext += "<thead><tr><th>Gene</th><th>Gene ID</th><th>URL</th></tr></thead><tbody>";
                                     tabletext += `<tr><td>${data[j]['data']['label']}</td><td>${data[j]['data']['properties']['id']}</td><td><a href="${data[j]['data']['properties']['uri']}" target= _blank >${data[j]['data']['properties']['uri']}</a></td></tr>`;
                                     researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
                                 } else if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Gene') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label'])){
@@ -764,7 +772,7 @@ function search_researcher(name) {
                                 }
 
                                 if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Diseases') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label']) && researchernetworkDict[data[j]['data']['kind']].size === 0){
-                                    tabletext += "<th>Disease</th><th>Disease ID</th></tr><tbody>";
+                                    tabletext += "<thead><tr><th>Disease</th><th>Disease ID</th></tr></thead><tbody>";
                                     tabletext += `<tr><td>${data[j]['data']['label']}</td><td>${data[j]['data']['properties']['id']}</td></tr>`;
                                     researchernetworkDict[data[j]['data']['kind']].add(data[j]['data']['label']);
                                 } else if (data[j]['data']['kind'] === dataKind && data[j]['data']['kind'].includes('Diseases') && !researchernetworkDict[data[j]['data']['kind']].has(data[j]['data']['label'])){
@@ -779,7 +787,8 @@ function search_researcher(name) {
                                 "ordering": false,
                                 buttons: [
                                     'copy', { extend: 'csv', title: `${dataKind} Table` }
-                                ]
+                                ],
+                                responsive: true
                             });
         
                         }               
@@ -990,29 +999,6 @@ async function makeUSAMap(){
     .attr('stroke', 'white')
     .style('fill', 'black');
 
-
-    // let tooltip = d3
-    // .select("body")
-    // .append("div")
-    // .attr("class", "tooltip scroll")
-    // .attr("id", "researchertooltiplist")
-    // .style('border-style', 'solid')
-    // .style('background-color', '#ddd')
-    // .style("opacity", 0);
-
-    // d3.selectAll('circle')
-    // .on("click", (event, data) => {
-    //     tooltip.transition().duration(200).style("opacity", 0.9);
-    //     tooltip.style("display", 'block');
-    //     html_string = '<button type="button" class="close sticky-top" onClick="closeResearcherList()" ><span aria-hidden="true">&times;</span></button><br>'
-    //     for (i= 0 ; i < data.names.length; i++) {
-    //         html_string += `<a href=#search_researcher onClick="example_researcher(this)">${data.names[i]}</a><br>`
-    //     }
-    //     tooltip.html(html_string)
-    //     .style("left", event.pageX + "px")
-    //     .style("top", event.pageY - 28 + "px");
-
-    // })
 
     let tooltip = d3
     .select("body")
@@ -1267,6 +1253,7 @@ async function makeUSAMapZoom(){
     d3.select("#zoomOut").on("click", () => {
         svg.transition().call(zooming.scaleBy, 0.5);
     });
+    // Dont need the d3.zoomtranform potentially
     d3.select("#resetZoom").on("click", () => {
         svg.transition().call(zooming.scaleTo, 0);
         svg.transition().call(
