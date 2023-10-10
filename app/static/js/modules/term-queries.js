@@ -52,7 +52,7 @@ export async function query_enrichr_metadata(term, id) {
         var res_html = `<div id="${lib}" style="display:none;"><table id='table-enrichr' class='styled-table table-enrichr'><thead><tr><th></th><th></th></tr><tbody>`
         for (var j = 0; j < lib_terms.length; j++) {
             var t = lib_terms[j].t
-            res_html += `<tr><td> ${t} </td><td> <button type="button" class="btn btn-primary btn-group-sm" onclick="show_geneset_modal('${lib}', '${term}')">View Geneset</button> </td></tr>`
+            res_html += `<tr><td> ${t} </td><td> <button type="button" class="btn btn-primary btn-group-sm" onclick="show_geneset_modal('${lib}', '${t}')">View Geneset</button> </td></tr>`
         }
         res_html += `</tbody></table></div>`
         selecter += res_html
