@@ -468,11 +468,13 @@
                     const options_array = Array.from(document.querySelectorAll('.chat-option'));
                     options_array.forEach((elt) => {
                         document.getElementById(elt.id).addEventListener("click", function () {
-                            make_option(chat_num, elt.innerText);
-                            $(`#chat-${chat_num}`).fadeIn(2000);
-                            chat_num++;
-                            log_chat(query, elt.innerText, userid);
-                            ask_questions(elt.innerText)
+                            if (process_info['geneSymbol'] == '') {
+                                make_option(chat_num, elt.innerText);
+                                $(`#chat-${chat_num}`).fadeIn(2000);
+                                chat_num++;
+                                log_chat(query, elt.innerText, userid);
+                                ask_questions(elt.innerText)
+                            }
                         });
                     }
                     );
