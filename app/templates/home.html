@@ -195,7 +195,7 @@
                                 <p>Find knowledge about a single gene, including in which diabetes-related GEO
                                     studies a chosen gene is most differentially expressed.</p>
                                 <img src="static/img/t2d-thumbnail.png" alt=""
-                                    style="width: 800px; height: fit-content;" class="img-thumbnail mb-2">
+                                    style="width: auto; height: auto;" class="img-thumbnail mb-2">
                                 <div>
                                     <a href="{{ url_for('singlegene_home') }}">
                                         <button class="btn btn-primary">
@@ -224,7 +224,7 @@
                                     agasint
                                     our curated diabetes gene set library.</p>
                                 <img src="static/img/geneset-thumbnail.png" alt=""
-                                    style="width: 800px; height: fit-content;" class="img-thumbnail mb-2">
+                                style="width: auto; height: auto;" class="img-thumbnail mb-2">
                                 <a href="{{ url_for('geneset_home') }}">
                                     <button class="btn btn-primary">
                                         Gene Set Queries
@@ -254,7 +254,7 @@
                                     plots; and users cam compute differential expression for any two conditions with
                                     replicates.</p>
                                 <img src="static/img/dge-features.jpg" alt=""
-                                    style="width: 1000px; height: fit-content;" class="img-thumbnail mb-2">
+                                style="width: auto; height: auto;" class="img-thumbnail mb-2">
                                 <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}">
                                     <button class="btn btn-primary">
                                         Human Bulk RNA-seq/Microarray
@@ -288,7 +288,7 @@
                                     a UMAP, t-SNE and PCA; and users can compute differential expression for each
                                     automatically identified cluster</p>
                                 <img src="static/img/single-features.jpg" alt=""
-                                    style="width: 800px; height: fit-content;" class="img-thumbnail mb-2">
+                                style="width: auto; height: auto;" class="img-thumbnail mb-2">
                                 <a href="{{ url_for('species_or_viewerpg', species_or_gse='human_single') }}">
                                     <button class="btn btn-primary">
                                         Human scRNA-seq
@@ -312,10 +312,10 @@
     {% block footer %}
     <script type="module">
         import { human_list, mouse_list, processes, geneset_entries, geneset_buttons, geneset_buttons_up_down, geneset_up_down_entries } from '../static/js/modules/constants.js';
-        import { gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from '../static/js/modules/single-gene-queries.js';
-        import { geneset_signatures, geneset_enrichment, geneset_kea3, geneset_chea3, geneset_sigcomlincs } from '../static/js/modules/geneset-queries.js';
+        //import { gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from '../static/js/modules/single-gene-queries.js';
+        //import { geneset_signatures, geneset_enrichment, geneset_kea3, geneset_chea3, geneset_sigcomlincs } from '../static/js/modules/geneset-queries.js';
         import { parse_gene, infer_gene, select_option, runFindQuery, run_process_gene, log_chat } from '../static/js/modules/query.js';
-        import { query_enrichr_metadata, query_rummagene } from '../static/js/modules/term-queries.js';
+        //import { query_enrichr_metadata, query_rummagene } from '../static/js/modules/term-queries.js';
 
         //query_enrichr_metadata('diabetes')
 
