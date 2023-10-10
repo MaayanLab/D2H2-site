@@ -273,7 +273,6 @@ function clear_dge_single() {
 function on_change(el) {
 
     for (var i = 0; i < el.options.length; i++) {
-        console.log(document.getElementById(el.options[i].val))
         document.getElementById(el.options[i].value).style.display = 'none';
     }
     document.getElementById(el.options[el.selectedIndex].value).style.display = 'block'; // Show el

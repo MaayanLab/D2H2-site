@@ -21,13 +21,20 @@ export async function query_enrichr_metadata(term, id) {
     const options = []
     var libraries = new Set();
     for (const [library,v] of Object.entries(terms)) {
-        libraries.add(library)
-        for (const term of v)  {
-            options.push({
-                library,
-                term
-            })
+        for (const t of v)  {
+            if (t.toLowerCase().includes(term.toLowerCase())) {
+                libraries.add(library)
+                options.push({
+                    library,
+                    t
+                })
+            }
         }
+    }
+
+    if (options.length < 1) {
+        document.getElementById(id).innerHTML = "No gene sets were found from Enrichr containing your term.";
+        return
     }
 
     libraries = Array.from(libraries)
@@ -44,8 +51,8 @@ export async function query_enrichr_metadata(term, id) {
         const lib_terms = options.filter(l => l.library == lib)
         var res_html = `<div id="${lib}" style="display:none;"><table id='table-enrichr' class='styled-table table-enrichr'><thead><tr><th></th><th></th></tr><tbody>`
         for (var j = 0; j < lib_terms.length; j++) {
-            var term = lib_terms[j].term
-            res_html += `<tr><td> ${term} </td><td> <button type="button" class="btn btn-primary btn-group-sm" onclick="show_geneset_modal('${lib}', '${term}')">View Geneset</button> </td></tr>`
+            var t = lib_terms[j].t
+            res_html += `<tr><td> ${t} </td><td> <button type="button" class="btn btn-primary btn-group-sm" onclick="show_geneset_modal('${lib}', '${term}')">View Geneset</button> </td></tr>`
         }
         res_html += `</tbody></table></div>`
         selecter += res_html
@@ -55,7 +62,7 @@ export async function query_enrichr_metadata(term, id) {
     
     
 
-    $(document).ready(function () {
+     $(document).ready(function () {
         $(`.table-enrichr`).DataTable({
             dom: 'Bfrtip',
             buttons: [
@@ -63,7 +70,10 @@ export async function query_enrichr_metadata(term, id) {
             ]
         });
     });
-    document.getElementById(id).innerHTML = selecter;
+
+    const placeholder = document.createElement("div");
+    placeholder.innerHTML = selecter;
+    document.getElementById(id).appendChild(placeholder);
     document.getElementById(options[0].library).style.display = 'block';
     return; 
 }
