@@ -89,6 +89,7 @@ export async function runFindQuery(q) {
 
 
 export async function run_process_gene(user_query, process_info_copy, chat_num, userid) {
+    document.getElementById('gpt-query').setAttribute("disabled", true) 
     var chat_num = chat_num;
     var process_eval = await processes;
     var process = process_eval[process_info_copy.input][process_info_copy.output];
@@ -102,6 +103,7 @@ export async function run_process_gene(user_query, process_info_copy, chat_num, 
             const placeholder = document.createElement("div");
             placeholder.innerHTML = `<div id='loading${chat_num}'>${loading}</div>`;
             const loadingNode = placeholder.firstElementChild;
+
             document.getElementById("chat-bubbles-section").appendChild(loadingNode)
             document.getElementById("chat-bubbles-section").appendChild(chatNresult('start', chat_num, '#d3d3d3', "result" + chat_num))
             
@@ -119,7 +121,7 @@ export async function run_process_gene(user_query, process_info_copy, chat_num, 
             await eval(process_eval);
             document.getElementById('loading' + chat_num).style.display = 'none';
             await $(`#chat-${chat_num}`).fadeIn(2000);
-        
+            document.getElementById('gpt-query').removeAttribute("disabled") 
             return;
         })
     } else {
@@ -144,7 +146,7 @@ export async function run_process_gene(user_query, process_info_copy, chat_num, 
         await eval(process_eval);
         document.getElementById('loading' + chat_num).style.display = 'none';
         await $(`#chat-${chat_num}`).fadeIn(2000);
-    
+        document.getElementById('gpt-query').removeAttribute("disabled") 
         return;
     }
     
