@@ -518,12 +518,14 @@
                     options_array.forEach((elt) => {
                         console.log(elt)
                         document.getElementById(elt.id).addEventListener("click", function () {
-                            make_option(chat_num, elt.innerText);
-                            $(`#chat-${chat_num}`).fadeIn(2000);
-                            chat_num++;
-                            log_chat(query, elt.innerText, userid);
-                            console.log(elt.innerText)
-                            ask_questions(elt.innerText)
+                            if (curr_arg == qs[i].arg) {
+                                make_option(chat_num, elt.innerText);
+                                $(`#chat-${chat_num}`).fadeIn(2000);
+                                chat_num++;
+                                log_chat(query, elt.innerText, userid);
+                                console.log(elt.innerText)
+                                ask_questions(elt.innerText)
+                            }
                         });
                     }
                     );
