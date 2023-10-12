@@ -8,6 +8,7 @@ from itertools import combinations
 import warnings
 import numpy as np
 import scipy.stats as ss
+from statsmodels.stats.multitest import multipletests
 import s3fs
 import scanpy as sc
 import random
@@ -58,6 +59,23 @@ def log(data):
         data = np.log2(data+1)
 
     return data
+
+
+def get_precomputed_dge(sig, species):
+    sig = [sig] + ['Unnamed: 0']
+    df_fc = pd.read_csv(f'/Users/giacomomarino/D2H2-site/ETL/signatures/v1.1/rna_{species}_fc.csv', index_col=0, usecols=sig)
+    df_fc.columns = ['logFC']
+    df_pval = pd.read_csv(f'/Users/giacomomarino/D2H2-site/ETL/signatures/v1.1/rna_{species}_pval.csv', index_col=0, usecols=sig)
+    df_pval.columns = ['pval']
+    dge_df = pd.merge(left=df_fc, right=df_pval, right_index=True, left_index=True)
+    dge_df['adj.pval'] = multipletests(dge_df['pval'].values)[1]
+    dge_df.sort_values('adj.pval', inplace=True)
+    return dge_df
+
+def get_precomputed_dge_options(gse, species):
+    df = pd.read_feather(f'/Users/giacomomarino/D2H2-site/ETL/signatures/v1.1/rna_{species}_pval.f', columns=['index'])
+    precomputed_sigs = [sig for sig in df['index'].values if sig.split('-')[0] == gse]
+    return precomputed_sigs
 
 
 def get_signatures(classes, dataset, normalization, method, meta_class_column_name, filter_genes):
