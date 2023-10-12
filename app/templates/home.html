@@ -437,12 +437,7 @@
     {% block footer %}
     <script type="module">
         import { human_list, mouse_list, processes, geneset_entries, geneset_buttons, geneset_buttons_up_down, geneset_up_down_entries } from '../static/js/modules/constants.js';
-        //import { gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from '../static/js/modules/single-gene-queries.js';
-        //import { geneset_signatures, geneset_enrichment, geneset_kea3, geneset_chea3, geneset_sigcomlincs } from '../static/js/modules/geneset-queries.js';
         import { parse_gene, infer_gene, select_option, runFindQuery, run_process_gene, log_chat } from '../static/js/modules/query.js';
-        //import { query_enrichr_metadata, query_rummagene } from '../static/js/modules/term-queries.js';
-
-        //query_enrichr_metadata('diabetes')
 
         const process_dict = await processes;
 
@@ -769,6 +764,12 @@
 
                     } else if (response['input'] == '[Term]') {
                         d2h2_response = `I would be happy to help you find gene sets associated with ${response['term']}`;
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
+                        await $(`#chat-${chat_num}`).fadeIn(2000)
+                        chat_num++;
+                        console.log
+                        log_chat(q, d2h2_response, userid);
+                        d2h2_response = process_dict[response['input']][response['output']].text
                         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                         await $(`#chat-${chat_num}`).fadeIn(2000)
                         chat_num++;

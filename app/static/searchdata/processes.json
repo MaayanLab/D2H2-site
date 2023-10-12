@@ -139,7 +139,7 @@
                 "term",
                 "resource"
             ],
-            "text": "",
+            "text": "There are a few options to choose from: Enrichr contains thousands of curated gene sets processed from a variety of databases and sources. You can explore gene sets from different libraries that match your search term.\n Rummagene contains hundreds of thousands of gene sets extracted from the supplemental materials of open source PMC articles.\n Geneshot can create a gene set through literature co-mentions.",
             "questions": [
                 {
                     "q": "Please select a resource to query:\n",
