@@ -520,6 +520,7 @@ $(document).ready(function () {
 
     var $gene_select = $('#gene-select').selectize({
         preload: true,
+        presist: true,
         valueField: 'gene_symbol',
         labelField: 'gene_symbol',
         searchField: 'gene_symbol',
@@ -1068,6 +1069,7 @@ $(document).ready(function () {
     //////////////////////////////////
     $('#condition-select-control').selectize({
         preload: true,
+        presist: true,
         valueField: 'Condition',
         labelField: 'Condition',
         searchField: 'Condition',
@@ -1096,6 +1098,7 @@ $(document).ready(function () {
     //////////////////////////////////
     $('#condition-select-perturb').selectize({
         preload: true,
+        persist: true,
         valueField: 'Condition',
         labelField: 'Condition',
         searchField: 'Condition',

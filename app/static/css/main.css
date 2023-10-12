@@ -35,7 +35,7 @@ tr.spaceSides>td {
 }
 
 
-.selectize-dropdown {
+.selectize-dropdown  {
     position: absolute !important;
     z-index: 10000000000 !important; 
     border: 1px solid #d0d0d0 !important;
@@ -43,6 +43,12 @@ tr.spaceSides>td {
     margin: -1px 0 0 0 !important;
     border-top: 0 none !important;
     font: 'Open Sans', sans-serif !important;
+}
+
+.selectize-input  {
+  border: 1px solid rgb(180, 180, 180) !important;
+  background: #ffffff !important;
+  font: 'Open Sans', sans-serif !important;
 }
 
 .selectize-nav {
