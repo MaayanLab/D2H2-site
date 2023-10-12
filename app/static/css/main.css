@@ -25,6 +25,11 @@ label {
 
 }
 
+tr.spaceSides>td {
+  padding-right: 1em;
+  padding-left: 1em;
+}
+
 .nav-link {
     font-family: 'Open Sans', sans-serif;
 }
