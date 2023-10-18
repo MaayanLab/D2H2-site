@@ -26,40 +26,32 @@ s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
 
 def qnormalization(data):
-
     X_quantile_norm = quantile_normalize(data)
     return X_quantile_norm
 
 
 def CPM(data):
-
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         data = (data/data.sum())*10**6
         data = data.fillna(0)
-
     return data
 
 
 def logCPM(data):
-
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         data = (data/data.sum())*10**6
         data = data.fillna(0)
         data = np.log2(data+1)
-
-    # Return
     return data
 
 
 def log(data):
-
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         data = data.fillna(0)
         data = np.log2(data+1)
-
     return data
 
 
@@ -74,7 +66,6 @@ def get_precomputed_dge_options(gse, species):
 
 
 def get_signatures(classes, dataset, normalization, method, meta_class_column_name, filter_genes):
-
     expr_df = dataset['rawdata']
     if filter_genes == True:
         expr_df = dataset['rawdata+filter_genes']
