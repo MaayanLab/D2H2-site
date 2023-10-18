@@ -89,7 +89,7 @@
             "args": [
                 "geneset"
             ],
-            "text": "I performed enrichement analysis through Enricher with your gene set agasint our curated Diabetes gene set library. Any overlapping gene can be submitted to the Single Gene Queries page and the sets of overlapping genes can be submitted to the Gene Set Queries page.",
+            "text": "I can perform enrichement analysis through Enrichr with your gene set agasint our curated Diabetes gene set library. Any overlapping gene can be submitted to the Single Gene Queries page and the sets of overlapping genes can be submitted to the Gene Set Queries page.",
             "questions": []
         },
         "[Enrichment]": {
@@ -98,7 +98,7 @@
             "args": [
                 "geneset"
             ],
-            "text": "I performed enrichement analysis through Enricher with your gene set. Here is a link to the result:",
+            "text": "I can perform enrichement analysis through Enrichr with your gene set. Once you submit your gene set I will provide a link to the result:",
             "questions": []
         },
         "[TFs]": {
@@ -107,7 +107,7 @@
             "args": [
                 "geneset"
             ],
-            "text": "I queried the ChEA3 (ChIP-X Enrichment Analysis 3) API which predicts transcription factors (TFs) associated with user-input sets of genes. Discrete query gene sets are compared to ChEA3 libraries of TF target gene sets assembled from multiple orthogonal 'omics' datasets.",
+            "text": "I can query the ChEA3 (ChIP-X Enrichment Analysis 3) API which predicts transcription factors (TFs) associated with user-input sets of genes. Discrete query gene sets are compared to ChEA3 libraries of TF target gene sets assembled from multiple orthogonal 'omics' datasets.",
             "questions": []
         },
         "[Kinases]": {
@@ -116,7 +116,7 @@
             "args": [
                 "geneset"
             ],
-            "text": "I queried the kinase Enrichment Analysis 3 (KEA3) which infers upstream kinases whose putative substrates are overrepresented in a user-inputted list of genes or differentially phosphorylated proteins. The KEA3 database contains putative kinase-substrate interactions collected from publicly available datasets.",
+            "text": "I can query the Kinase Enrichment Analysis 3 (KEA3) tool which infers upstream kinases whose putative substrates are overrepresented in a user-inputted list of genes or differentially phosphorylated proteins. The KEA3 database contains putative kinase-substrate interactions collected from publicly available datasets.",
             "questions": []
         },
         "[L1000]": {
@@ -127,8 +127,40 @@
                 "up",
                 "down"
             ],
-            "text": "I sent your gene set(s) to SigCom LINCS which is a web-based search engine that serves over 1.5 million gene expression signatures processed, analyzed, and visualized from LINCS, GTEx, and GEO. SigCom LINCS provides rapid signature similarity search for mimickers and reversers given sets of up and down genes. Here is a link to the result:",
+            "text": "I can send your gene set(s) to SigCom LINCS which is a web-based search engine that serves over 1.5 million gene expression signatures processed, analyzed, and visualized from LINCS, GTEx, and GEO. SigCom LINCS provides rapid signature similarity search for mimickers and reversers given sets of up and down genes. Once you submit your gene set I will provide a link to the result:",
+            "questions": []
+        },
+        "[Rummagene]": {
+            "gpt_desc": "In which gene sets extracted from PubMed Central (PMC) articles is my gene set enriched?",
+            "process": "geneset_sigcomlincs",
+            "args": [
+                "geneset"
+            ],
+            "text": "I can send your gene set to Rummagene which is a web-based search engine that serves over 600,000 gene sets extracted from the supplementary materials of over 100,000 PMC articles. Once you submit your gene set I will provide a link to the result:",
             "questions": []
         }
+    },
+    "[Term]": {
+        "[Search]": {
+            "gpt_desc": "If a user is asking for a list of genes concerning a specific disease condition, cell type, or in general genes related to a specific biomedical term.",
+            "process": "search_for_genesets",
+            "args": [
+                "term",
+                "resource"
+            ],
+            "text": "There are a few options to choose from: Enrichr contains thousands of curated gene sets processed from a variety of databases and sources. You can explore gene sets from different libraries that match your search term.\n Rummagene contains hundreds of thousands of gene sets extracted from the supplemental materials of open source PMC articles.\n Geneshot can create a gene set through literature co-mentions.",
+            "questions": [
+                {
+                    "q": "Please select a resource to query:\n",
+                    "arg": "resource",
+                    "options": [
+                        "Enrichr",
+                        "Rummagene",
+                        "Geneshot"
+                    ]
+                }
+            ]
+        }
+
     }
 }

@@ -48,7 +48,7 @@ export async function geneset_signatures(geneset, resultid) {
 
 
         document.getElementById(resultid).innerHTML = tabletext + clear_button;
-        
+
         $(document).ready(function () {
             $(`#table-enrichr${resultid}`).DataTable({
                 dom: 'Bfrtip',
@@ -58,7 +58,7 @@ export async function geneset_signatures(geneset, resultid) {
             });
 
         });
-       
+
     });
 }
 
@@ -70,7 +70,7 @@ export async function geneset_enrichment(geneset, resultid) {
     await $.ajax({
         url: "enrichrURL",
         type: "POST",
-        data: { genelist: inputvalue}
+        data: { genelist: inputvalue }
     }).done(function (response) {
         const url = response['url']
         document.getElementById(resultid).innerHTML = `
@@ -93,7 +93,7 @@ export async function geneset_kea3(geneset, resultid) {
     await $.ajax({
         url: "getkea3",
         type: "POST",
-        data: { "geneset": inputvalue}
+        data: { "geneset": inputvalue }
     }).done(function (response) {
         const data = response["Integrated--meanRank"];
 
@@ -161,7 +161,7 @@ export async function geneset_chea3(geneset, resultid) {
     await $.ajax({
         url: "getchea3",
         type: "POST",
-        data: { "geneset": inputvalue}
+        data: { "geneset": inputvalue }
     }).done(function (response) {
 
         const data = response["Integrated--meanRank"];
@@ -228,7 +228,7 @@ export async function geneset_chea3(geneset, resultid) {
 // QUERY DIABETES RELATED SIGNATURES FOR GENESET
 // [GeneSet]->[SigComLincs]
 export async function geneset_sigcomlincs(geneset, geneset_up, geneset_down, resultid) {
-    
+
     var genes;
     if (geneset.length > 0) {
         genes = JSON.stringify({ 'genes': [geneset.split(',')] });
@@ -246,13 +246,57 @@ export async function geneset_sigcomlincs(geneset, geneset_up, geneset_down, res
     }).done(function (response) {
 
         const url = response['url'];
-        document.getElementById(resultid).innerHTML =`
+        document.getElementById(resultid).innerHTML = `
         <a href="${url}" target="_blank">
             <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Open in
             <img src="static/img/sigcom_lincs_logo.png" class="img-fluid mr-3"
                 style="width: 60px" alt="SigCom LINCS">
             </button>
         </a>`
-
+        return
     });
 }
+
+
+// QUERY DIABETES RELATED SIGNATURES FOR GENESET
+// [GeneSet]->[Rummagene]
+export async function geneset_rummagene(geneset, resultid) {
+
+    var genes;
+    if (geneset.length > 0) {
+        const query = {
+            "operationName": "AddUserGeneSet",
+            "variables": {
+                "description": '',
+                "genes": geneset.split(',')
+            },
+            "query": "mutation AddUserGeneSet($genes: [String], $description: String = \"\") {\n  addUserGeneSet(input: {genes: $genes, description: $description}) {\n    userGeneSet {\n      id\n      __typename\n    }\n    __typename\n  }\n}\n"
+        }
+        fetch(`https://rummagene.com/graphql`, {
+            method: 'POST',
+            body: JSON.stringify(query),
+            headers: { Accept: 'application/json', "Content-Type": "application/json" }
+        })
+            .then(function (res) {
+                return res.json()
+            })
+            .then(function ({ data, ...rest }) {
+                console.log(data, rest)
+                const userListId = (((data || {}).addUserGeneSet || {}).userGeneSet || {}).id
+                const url = userListId ? `https://rummagene.com/enrich?dataset=${userListId}` : `https://rummagene.com/`
+                document.getElementById(resultid).innerHTML = `
+                <a href="${url}" target="_blank">
+                    <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Open in
+                    <img src="static/img/sigcom_lincs_logo.png" class="img-fluid mr-3"
+                        style="width: 60px" alt="SigCom LINCS">
+                    </button>
+                </a>`
+                return;
+            });
+    } else {
+        document.getElementById(resultid).innerHTML = `<p> No gene set entered </p>`;
+        return;
+    }
+}
+
+

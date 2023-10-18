@@ -1,7 +1,33 @@
 {% extends 'base.html' %}
 
 {% block body %}
-
+<!-- For gene set modal -->
+<dialog data-modal id="geneset-modal" style="margin: auto;">
+    <div class="text-center justify-content-center">
+        <p id="geneset-modal-title"></p>
+        <textarea id="geneset-modal-text" class="text-center"
+            style="height: 20rem; overflow-y: scroll; white-space: pre-wrap;" readonly>
+        </textarea>
+    </div>
+    <div class="row text-center">
+        <button type="button"
+            onclick="navigator.clipboard.writeText(document.getElementById('geneset-modal-text').value)"
+            class="btn btn-primary btn-group-sm m-2 ">
+            Copy to clipboard
+        </button>
+        <a id="geneset-modal-queries" href="{{ url_for('geneset_home') }}" onclick="" target='_blank'
+            style="text-decoration: none">
+            <button type="button" class="btn btn-primary btn-group-sm m-2">
+                Open in Geneset Queries
+            </button>
+        </a>
+        <a id="geneset-modal-download" href="" style="text-decoration: none">
+            <button type="button" class="btn btn-primary btn-group-sm m-2">
+                Download
+            </button>
+        </a>
+    </div>
+</dialog>
 
 <div class="justify-content-center container-fluid p-0 m-0">
     <div class="row text-center justify-content-center" style="display: flexbox;">
@@ -12,12 +38,14 @@
             </h5>
         </div>
     </div>
+    
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 justify-content-center mx-auto p-0 m-0">
         <div class="row flex-wrap justify-content-center mx-auto">
-            
+
             <div id="chat-div" class="col-lg-5 col-md-10 col-sm-10 mt-3 ml-5">
                 <h3 class="pt-2 text-center" style="font-size: 1.50rem;">D2H2 Chatbot <img class="ml-2 mb-3"
-                    src="{{ url_for('static', filename='img/chatbot.png') }}" alt="Chatbot" height="40px" onclick='localStorage.setItem("no_splash", true)'></h3>
+                        src="{{ url_for('static', filename='img/chatbot.png') }}"  height="40px"
+                        onclick='localStorage.setItem("no_splash", true)'></h3>
                 <div class="justify-content-center p-0 m-0 text-center" style="flex-wrap: wrap;">
                     <!-- Main Panel -->
                     <div class="banner">
@@ -59,8 +87,8 @@
                         <div class="vertical">
                             <div class="input-wrapper row mt-3" style="flex-wrap: nowrap;">
                                 <input id="gpt-query" style="right: 0rem; width: 100rem;" type="text"
-                                    placeholder="Ask D2H2 any question to form hypotheses in T2D research..." name="text"
-                                    class="input pr-0 mr-0">
+                                    placeholder="Ask D2H2 any question to form hypotheses in T2D research..."
+                                    name="text" class="input pr-0 mr-0">
                                 <button id="gpt-query-button" class="pl-0 ml-0 query-submit"
                                     style="width: 40px; min-width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
                                     <img src="static/img/doublearrow.png" style="width: 60%" alt="Query">
@@ -171,8 +199,8 @@
                             <div class="card-body text-center">
                                 <p>Find knowledge about a single gene, including in which diabetes-related GEO
                                     studies a chosen gene is most differentially expressed.</p>
-                                <img src="static/img/t2d-thumbnail.png" alt=""
-                                    style="width: 800px; height: fit-content;" class="img-thumbnail mb-2">
+                                <img src="static/img/t2d-thumbnail.png" alt="" style="width: auto; height: auto;"
+                                    class="img-thumbnail mb-2">
                                 <div>
                                     <a href="{{ url_for('singlegene_home') }}">
                                         <button class="btn btn-primary">
@@ -200,8 +228,8 @@
                                 <p>Find knowledge about a gene set, including performing enrichment analysis
                                     agasint
                                     our curated diabetes gene set library.</p>
-                                <img src="static/img/geneset-thumbnail.png" alt=""
-                                    style="width: 800px; height: fit-content;" class="img-thumbnail mb-2">
+                                <img src="static/img/geneset-thumbnail.png" alt="" style="width: auto; height: auto;"
+                                    class="img-thumbnail mb-2">
                                 <a href="{{ url_for('geneset_home') }}">
                                     <button class="btn btn-primary">
                                         Gene Set Queries
@@ -224,10 +252,14 @@
                         <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
                             data-parent="#accordionExample">
                             <div class="card-body text-center">
-                                <p>Explore a collection of curated diabetes related Bulk-RNA-seq and microarray studies manually extracted and processed from NCBI's GEO. The expression level of single genes across conditions is visualized as
-                                   a customized box plot viewer; the samples can be visualized as UMAP, tSNE and PCA plots; and users cam compute differential expression for any two conditions with replicates.</p>
-                                <img src="static/img/dge-features.jpg" alt=""
-                                    style="width: 1000px; height: fit-content;" class="img-thumbnail mb-2">
+                                <p>Explore a collection of curated diabetes related Bulk-RNA-seq and microarray studies
+                                    manually extracted and processed from NCBI's GEO. The expression level of single
+                                    genes across conditions is visualized as
+                                    a customized box plot viewer; the samples can be visualized as UMAP, tSNE and PCA
+                                    plots; and users cam compute differential expression for any two conditions with
+                                    replicates.</p>
+                                <img src="static/img/dge-features.jpg" alt="" style="width: auto; height: auto;"
+                                    class="img-thumbnail mb-2">
                                 <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}">
                                     <button class="btn btn-primary">
                                         Human Bulk RNA-seq/Microarray
@@ -255,9 +287,13 @@
                         <div id="collapseFour" class="collapse" aria-labelledby="headingFour"
                             data-parent="#accordionExample">
                             <div class="card-body text-center">
-                                <p>Explore a collection of curated diabetes related scRNA-seq studies extracted from NCBI's GEO. The expression of single genes across clusters of a chosen profile can be visualized as a customized box plot viewer; the single cells can be visualized in a UMAP, t-SNE and PCA; and users can compute differential expression for each automatically identified cluster</p>
-                                <img src="static/img/single-features.jpg" alt=""
-                                    style="width: 800px; height: fit-content;" class="img-thumbnail mb-2">
+                                <p>Explore a collection of curated diabetes related scRNA-seq studies extracted from
+                                    NCBI's GEO. The expression of single genes across clusters of a chosen profile can
+                                    be visualized as a customized box plot viewer; the single cells can be visualized in
+                                    a UMAP, t-SNE and PCA; and users can compute differential expression for each
+                                    automatically identified cluster</p>
+                                <img src="static/img/single-features.jpg" alt="" style="width: auto; height: auto;"
+                                    class="img-thumbnail mb-2">
                                 <a href="{{ url_for('species_or_viewerpg', species_or_gse='human_single') }}">
                                     <button class="btn btn-primary">
                                         Human scRNA-seq
@@ -281,9 +317,8 @@
     {% block footer %}
     <script type="module">
         import { human_list, mouse_list, processes, geneset_entries, geneset_buttons, geneset_buttons_up_down, geneset_up_down_entries } from '../static/js/modules/constants.js';
-        import { gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from '../static/js/modules/single-gene-queries.js';
-        import { geneset_signatures, geneset_enrichment, geneset_kea3, geneset_chea3, geneset_sigcomlincs } from '../static/js/modules/geneset-queries.js';
         import { parse_gene, infer_gene, select_option, runFindQuery, run_process_gene, log_chat } from '../static/js/modules/query.js';
+
         const process_dict = await processes;
 
         var new_process = true;
@@ -334,6 +369,7 @@
             process_info = {};
             curr_arg = '';
             options = [];
+            document.getElementById('gpt-query').removeAttribute("disabled")
         }
 
         async function reset_chat() {
@@ -349,6 +385,8 @@
             var geneset = '';
             var geneset_up = '';
             var geneset_down = '';
+
+            console.log(chat_num)
 
             if (document.getElementById(`enter-geneset${chat_num}`).style.display == "flex") {
                 var inputvalue = document.getElementById(`text-area${chat_num}`).value;
@@ -387,6 +425,12 @@
                 }
             }
 
+            if (geneset.length == 0 & geneset_up.length == 0 & geneset_down.length == 0) {
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "It appears that you did not enter a gene set. Please enter your gene set or you can reset the chat using the button in the bottom right corner."));
+                await $(`#chat-${chat_num}`).fadeIn(2000);
+                return;
+            }
+
             process_info['geneset'] = geneset;
             process_info['up'] = geneset_up;
             process_info['down'] = geneset_down;
@@ -394,6 +438,7 @@
             chat_num++;
             chat_num++;
             await reset_process();
+            document.getElementById('gpt-query').removeAttribute("disabled")
         }
 
         async function ask_questions(query) {
@@ -423,11 +468,13 @@
                     const options_array = Array.from(document.querySelectorAll('.chat-option'));
                     options_array.forEach((elt) => {
                         document.getElementById(elt.id).addEventListener("click", function () {
-                            make_option(chat_num, elt.innerText);
-                            $(`#chat-${chat_num}`).fadeIn(2000);
-                            chat_num++;
-                            log_chat(query, elt.innerText, userid);
-                            ask_questions(elt.innerText)
+                            if (process_info['geneSymbol'] == '') {
+                                make_option(chat_num, elt.innerText);
+                                $(`#chat-${chat_num}`).fadeIn(2000);
+                                chat_num++;
+                                log_chat(query, elt.innerText, userid);
+                                ask_questions(elt.innerText)
+                            }
                         });
                     }
                     );
@@ -460,10 +507,11 @@
             for (let i = 0; i < qs.length; i++) {
                 if (!(qs[i].arg in process_info)) {
                     var readable_options = qs[i].options.map(x => (x.replace('_', " ")));
+                    readable_options = readable_options.map((x) => `<a class="chat-option" id="option-${x}-${chat_num}" value="${x}">${x}</a>`);
                     readable_options[readable_options.length - 1] = "and " + readable_options[readable_options.length - 1] + ".";
-                    readable_options = readable_options.map((x) => `<a class="chat-option" id="option-${x}-${chat_num}" value="${x}">${x}</a>`).join(", ");
+                    readable_options = readable_options.join(", ");
                     d2h2_response = qs[i].q + ' The options include ' + readable_options + " Please click or enter the option you would like to select.";
-                    
+
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                     await $(`#chat-${chat_num}`).fadeIn(2000);
                     chat_num++;
@@ -472,15 +520,18 @@
                     options_array.forEach((elt) => {
                         console.log(elt)
                         document.getElementById(elt.id).addEventListener("click", function () {
-                            make_option(chat_num, elt.innerText);
-                            $(`#chat-${chat_num}`).fadeIn(2000);
-                            chat_num++;
-                            log_chat(query, elt.innerText, userid);
-                            ask_questions(elt.innerText)
+                            if (curr_arg == qs[i].arg) {
+                                make_option(chat_num, elt.innerText);
+                                $(`#chat-${chat_num}`).fadeIn(2000);
+                                chat_num++;
+                                log_chat(query, elt.innerText, userid);
+                                console.log(elt.innerText)
+                                ask_questions(elt.innerText)
+                            }
                         });
                     }
                     );
-                    
+
                     log_chat(query, d2h2_response, userid);
 
                     curr_arg = qs[i].arg;
@@ -569,6 +620,11 @@
                             ask_questions(q);
                         }
                     } else if (response['input'] == '[GeneSet]') {
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', process_dict[response['input']][response['output']].text))
+                        await $(`#chat-${chat_num}`).fadeIn(2000);
+                        chat_num++;
+                        console.log(chat_num)
+                        log_chat(q, process_dict[response['input']][response['output']].text, userid);
                         if (response['output'] == '[Kinases]') {
                             d2h2_response = "Input a list of proteins:";
                         } else d2h2_response = "Please enter your gene set:";
@@ -582,8 +638,25 @@
                         document.getElementById(`submit_gene_set${chat_num + 1}`).addEventListener("click", function () {
                             submit_gene_set(process_info);
                         });
+                        document.getElementById('gpt-query').setAttribute("disabled", true)
                         await $(`#chat-${chat_num}`).fadeIn(2000);
                         chat_num++;
+
+                    } else if (response['input'] == '[Term]') {
+                        d2h2_response = `I would be happy to help you find gene sets associated with ${response['term']}`;
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
+                        await $(`#chat-${chat_num}`).fadeIn(2000)
+                        chat_num++;
+                        console.log
+                        log_chat(q, d2h2_response, userid);
+                        d2h2_response = process_dict[response['input']][response['output']].text
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
+                        await $(`#chat-${chat_num}`).fadeIn(2000)
+                        chat_num++;
+                        console.log
+                        log_chat(q, d2h2_response, userid);
+                        document.getElementById('gpt-query').value = '';
+                        ask_questions(q);
                     }
                 }, 1000);
             }
@@ -617,9 +690,11 @@
             await $("#chat-section").fadeIn(1000);
             setTimeout(() => $("#chat-intro").fadeIn(), 1500)
             $("#chat-intro").fadeIn(2000)
-            $('html, body').animate({
-                scrollTop: $(`#chat-${chat_num}`).offset().top
-            }, 1000);
+            if ($(`#chat-${chat_num}`).offset()) {
+                $('html, body').animate({
+                    scrollTop: $(`#chat-${chat_num}`).offset().top
+                }, 1000);
+            }
         }
 
         function fillQuery(q) {
@@ -641,11 +716,23 @@
             reset_chat();
             $('#chat-div').removeClass('col-lg-10')
             $('#features-div').removeClass('col-lg-6')
-            
+
         });
 
 
         const countupEls = document.querySelectorAll('.countup');
         countupEls.forEach(animateCountUp);
+        const modal = document.getElementById('geneset-modal');
+        modal.addEventListener("click", e => {
+            const dialogDimensions = modal.getBoundingClientRect()
+            if (
+                e.clientX < dialogDimensions.left ||
+                e.clientX > dialogDimensions.right ||
+                e.clientY < dialogDimensions.top ||
+                e.clientY > dialogDimensions.bottom
+            ) {
+                modal.close()
+            }
+        })
     </script>
     {% endblock %}

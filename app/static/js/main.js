@@ -1,3 +1,36 @@
+async function get_enrichr_geneset(term, library) {
+    const res = await fetch(`https://maayanlab.cloud/Enrichr/geneSetLibrary?term=${term}&libraryName=${library}&mode=json`, {
+        method: 'GET',
+    })
+    const results = await res.json()
+    const vals = Object.entries(results)           
+    if (vals) {
+        const [description, genes] = vals[0]
+        return {description: `${description} (${library})`, genes: genes}
+    }
+}
+
+async function show_geneset_modal(library, term) {
+    const modal = document.getElementById('geneset-modal');
+    const textfield = document.getElementById('geneset-modal-text');
+    const modalTitle = document.getElementById('geneset-modal-title');
+    const queryButton = document.getElementById('geneset-modal-queries');
+    const genesetDownload = document.getElementById('geneset-modal-download');
+    const res = await get_enrichr_geneset(term, library);
+    textfield.value = res.genes.join('\r\n')
+    queryButton.setAttribute('onclick', `setGenes('${res.genes.join('&')}')`)
+    modalTitle.innerText = `${library}: ${term} (${res.genes.length})`
+
+    // Create a blog object with the file content which you want to add to the file
+    const file = new Blob([`${res.description}\t${res.genes.join('\t')}`], { type: 'text/plain' });
+    // Add file content in the object URL
+    genesetDownload.href = URL.createObjectURL(file);
+    genesetDownload.download = `${library}_${term}.txt`;
+
+
+    modal.showModal()
+}
+
 function up_down_toggle(chatnum) {
     if (document.getElementById(`enter-geneset${chatnum}`).style.display == "flex") {
         document.getElementById(`enter-geneset${chatnum}`).style.display = "none";
@@ -466,7 +499,7 @@ $(document).ready(function () {
 
     // BOLD CURRENT PAGE
 
-    $('.nav-link').each(function () {
+    $('.nav-link-text').each(function () {
         var url = window.location.href
         if (url.includes('#')) {
             url = url.split('#')[0]
@@ -476,10 +509,6 @@ $(document).ready(function () {
             $(this).addClass('active');
             $(this).parents('li').addClass('active');
         }
-        // if (url.split('/')[3].startsWith('GSE')) {
-        //     $("#viewer").addClass('active'); 
-        //     $("#viewer").parents('li').addClass('active');
-        // }
     });
 
     var currURL = window.location.href.split("/");
@@ -491,6 +520,7 @@ $(document).ready(function () {
 
     var $gene_select = $('#gene-select').selectize({
         preload: true,
+        presist: true,
         valueField: 'gene_symbol',
         labelField: 'gene_symbol',
         searchField: 'gene_symbol',
@@ -661,8 +691,8 @@ $(document).ready(function () {
             meta = response['meta']
             expression = response['expression']
 
-            meta_data_file = gse + '_Metadata.txt'
-            rnaseq_data_filename = gse + '_Expression.txt'
+            meta_data_file = gse + '_Metadata.tsv'
+            rnaseq_data_filename = gse + '_Expression.tsv'
 
             const blob_meta = new Blob([meta]);
             const blob_rna = new Blob([expression]);
@@ -1039,6 +1069,7 @@ $(document).ready(function () {
     //////////////////////////////////
     $('#condition-select-control').selectize({
         preload: true,
+        presist: true,
         valueField: 'Condition',
         labelField: 'Condition',
         searchField: 'Condition',
@@ -1067,6 +1098,7 @@ $(document).ready(function () {
     //////////////////////////////////
     $('#condition-select-perturb').selectize({
         preload: true,
+        persist: true,
         valueField: 'Condition',
         labelField: 'Condition',
         searchField: 'Condition',

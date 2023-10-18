@@ -444,6 +444,7 @@
       var url = item.getAttribute('data-url')
       var $select = $(item).selectize({
         preload: true,
+        presist: true,
         valueField: 'gene_symbol',
         labelField: 'gene_symbol',
         searchField: 'gene_symbol',

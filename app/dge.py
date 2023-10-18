@@ -1,5 +1,7 @@
 from functools import lru_cache
 import pandas as pd
+from urllib.parse import quote
+import json
 from maayanlab_bioinformatics.normalization.quantile import quantile_normalize
 from maayanlab_bioinformatics.dge.characteristic_direction import characteristic_direction
 from maayanlab_bioinformatics.dge.logfc import logfc_differential_expression
@@ -8,6 +10,7 @@ from itertools import combinations
 import warnings
 import numpy as np
 import scipy.stats as ss
+from statsmodels.stats.multitest import multipletests
 import s3fs
 import scanpy as sc
 import random
@@ -16,52 +19,53 @@ import os
 from pydeseq2.dds import DeseqDataSet
 from pydeseq2.ds import DeseqStats
 
-base_url = os.environ.get('BASE_URL', 'd2h2/data')
-endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
-
+endpoint = os.environ.get('ENDPOINT', 'https://d2h2.s3.amazonaws.com/')
+base_url = os.environ.get('BASE_URL', 'data')
+sigs_version = os.environ.get('SIGS_VERSION', 'v1.1')
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
 
 def qnormalization(data):
-
     X_quantile_norm = quantile_normalize(data)
     return X_quantile_norm
 
 
 def CPM(data):
-
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         data = (data/data.sum())*10**6
         data = data.fillna(0)
-
     return data
 
 
 def logCPM(data):
-
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         data = (data/data.sum())*10**6
         data = data.fillna(0)
         data = np.log2(data+1)
-
-    # Return
     return data
 
 
 def log(data):
-
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         data = data.fillna(0)
         data = np.log2(data+1)
-
     return data
 
 
-def get_signatures(classes, dataset, normalization, method, meta_class_column_name, filter_genes):
+def get_precomputed_dge(sig, species):
+    dge_df = pd.read_csv(s3.open(f't2d-datasets/{species}/{sig}.tsv'), sep='\t', index_col=0, compression='gzip')
+    return dge_df
 
+def get_precomputed_dge_options(gse, species):
+    with open('static/searchdata/all_sigs.json') as f:
+        all_sigs = json.load(f)
+    return [sig for sig in all_sigs[species] if sig.split('-')[0] == gse]
+
+
+def get_signatures(classes, dataset, normalization, method, meta_class_column_name, filter_genes):
     expr_df = dataset['rawdata']
     if filter_genes == True:
         expr_df = dataset['rawdata+filter_genes']
@@ -193,26 +197,17 @@ def compute_dge(rnaseq_data_filename, meta_data_filename, diff_gex_method, contr
 ########## SINGLE CELL DGE METHODS ###########
 def get_signatures_single(classes, expr_file, method, meta_class_column_name, cluster=True, filter_genes=True, aggregate=False):
 
-    # expr_df = dataset.to_df().T
-    # raw_expr_df = dataset.raw.to_adata().to_df().T
-    # meta_df = dataset.obs
     # Getting the same number of samples from each cluster to use for diffrential gene expression.
     f = read_anndata_h5(expr_file)
 
-    # dataset = read_anndata_raw(expr_file)
-
-    # leiden_data = f["var/leiden/categories"][:].astype(str)
     clus_numbers = f["var/leiden/codes"][:]
     leiden_data_vals = list(map(lambda x: "Cluster " + str(x), clus_numbers))
-    # classes = sorted(leiden_data)
-    # classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
-    # Stores the number of of cells correlated to each cluster.
+
     metadata_dict_counts = pd.Series(leiden_data_vals).value_counts()
     genes = np.array(f['obs/gene_symbols'][:].astype(str))
     cells = f['var/column_names'][:].astype(str)
     cluster_list = []
     if cluster == True and aggregate == True:
-
         num_to_sample = min(min(metadata_dict_counts), 15)
         list_of_adata = []
         for cls in metadata_dict_counts.keys():

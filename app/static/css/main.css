@@ -25,12 +25,17 @@ label {
 
 }
 
+tr.spaceSides>td {
+  padding-right: 1em;
+  padding-left: 1em;
+}
+
 .nav-link {
     font-family: 'Open Sans', sans-serif;
 }
 
 
-.selectize-dropdown {
+.selectize-dropdown  {
     position: absolute !important;
     z-index: 10000000000 !important; 
     border: 1px solid #d0d0d0 !important;
@@ -38,6 +43,12 @@ label {
     margin: -1px 0 0 0 !important;
     border-top: 0 none !important;
     font: 'Open Sans', sans-serif !important;
+}
+
+.selectize-input  {
+  border: 1px solid rgb(180, 180, 180) !important;
+  background: #ffffff !important;
+  font: 'Open Sans', sans-serif !important;
 }
 
 .selectize-nav {
@@ -243,8 +254,9 @@ body {
 
 .libpicker {
     background-color: #9a8fc1;
+    padding: 5px 3px 4px 4px;
     color: white;
-    border-radius: 1%;
+    border-radius: 2rem;
     border-style: none;
     font-family: 'Open Sans', sans-serif;
 }
@@ -559,7 +571,7 @@ nav select {
 }
 
   /* small screens */
-  @media (min-width: 768px) and (max-width: 1300px) {
+  @media (min-width: 768px) and (max-width: 1525px) {
     /* override stickyness so that the navigation does not follow scrolling */
     nav ul     { display: none; }
     nav select { display: inline-block; }
@@ -612,7 +624,7 @@ nav select {
    }
    
    button.learn-more {
-    width: 14rem;
+    width: 17rem;
     height: fit-content;
    }
    
@@ -1063,7 +1075,7 @@ nav select {
 }
 
 
-@media (min-width: 1300px){
+@media (min-width: 1525px){
   .navbar-expand-custom {
       flex-direction: row;
       flex-wrap: nowrap;
@@ -1093,7 +1105,7 @@ nav select {
     display: none;
   }
 }
-@media (max-width: 1298.98px){
+@media (max-width: 1525px){
   #expandedNav {
       display: none;
   }

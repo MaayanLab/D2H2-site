@@ -308,6 +308,18 @@ def sigcom_gene_set(gene_set):
 
     return ("https://maayanlab.cloud/sigcom-lincs/#/SignatureSearch/Set/%s"%persistent_id)
 
+### QUERY GENESHOT
+def query_geneshot(term):
+
+    GENESHOT_URL = 'https://maayanlab.cloud/geneshot/api/search'
+    payload = {"rif": "autorif", "term": term}
+    response = requests.post(GENESHOT_URL, json=payload)
+    print(response)
+    data = json.loads(response.text)
+    gene_list = list(data['gene_count'].keys())
+    gene_list_count = data['return_size']
+
+    return (gene_list, gene_list_count)
 
 
 ############## GET RESOURCES TABLE FROM GOOGLE DRIVE ##############
@@ -835,11 +847,6 @@ def bulk_vis(expr_df, meta_df):
     sc.pp.neighbors(leiden_df) 
     sc.tl.leiden(leiden_df, key_added="leiden")
     df_y = meta_df
-    #df_y['leiden'] = list(leiden_df.obs['leiden'].values)
-
-    # Data transformation for 2D visualization
-    # Normalize transformed data to have a better visualization on 3D plot
-    #leiden_df.obsm['X_pca'] = zscore(leiden_df.obsm['X_pca'],axis=0)
 
     pca_data = pd.DataFrame({'x':leiden_df.obsm['X_pca'][:,0],
                         'y':leiden_df.obsm['X_pca'][:,1],
