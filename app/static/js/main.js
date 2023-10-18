@@ -499,7 +499,7 @@ $(document).ready(function () {
 
     // BOLD CURRENT PAGE
 
-    $('.nav-link').each(function () {
+    $('.nav-link-text').each(function () {
         var url = window.location.href
         if (url.includes('#')) {
             url = url.split('#')[0]

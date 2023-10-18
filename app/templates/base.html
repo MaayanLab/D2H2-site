@@ -54,111 +54,128 @@
           aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <!-- <div class="navbar-collapse" id="testid"> -->
         <div class="navbar-collapse" id="expandedNav">
-          <ul class="navbar-nav mr-auto">
-            <li class="navicon nav-item menu">
-            <a class="nav-link hover-underline-animation" href="{{ url_for('home') }}" style="color: black !important;" onclick='localStorage.setItem("no_splash", true)'>
-              <img class="mr-2 ml-2"
-              src="{{ url_for('static', filename='img/chatbot.png') }}" alt="Chatbot" height="40px" onclick='localStorage.setItem("no_splash", true)'>
-            </a>
-              <div class="tooltip">Chatbot</div>
-            </li>
-            
-            <li class="navicon nav-item menu">
-              <a class="nav-link hover-underline-animation"
-                href="{{ url_for('singlegene_home') }}" style="color: black !important;" id="singlegenenav">
-                <img class="mr-4 ml-4"
-              src="{{ url_for('static', filename='img/singlegenequeries.png') }}" alt="Single Gene Queries" height="40px" onclick='localStorage.setItem("no_splash", true)'>
-              </a>
-              <div class="tooltip">Single Gene Queries</div>
-            </li>
+          <div class="row text-center justify-content-center pr-2 pl-2" style="display: flexbox;">
 
-            <li class="navicon nav-item menu">
-              <a class="nav-link hover-underline-animation"
-                href="{{ url_for('geneset_home') }}" id="genesetnav" style="color: black !important;">
-                <img class="mr-4 ml-4"
-              src="{{ url_for('static', filename='img/genesetqueries.png') }}" alt="Gene Set Queries" height="40px" onclick='localStorage.setItem("no_splash", true)'>
-              </a>
-              <div class="tooltip">Gene Set Queries</div>
-            </li>
-            <li class=" nav-item dropdown">
-              <a class="navicon nav-link dropdown-toggle" href="#" id="navbarDropdownSpecies" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false" style="color: black !important;">
-                <img class="mr-4 ml-4"
-                src="{{ url_for('static', filename='img/bulk.png') }}" alt="Bulk RNA-seq and Microarray Studies" height="40px" onclick='localStorage.setItem("no_splash", true)'>
-                <div class="tooltip">Bulk RNA-seq and Microarray Studies</div>
-              </a>
-              
-              <div class="dropdown-menu" aria-labelledby="navbarDropdownSpecies" style="width: 235px; background-color:#ECEFF1;">
-                <a class="dropdown-item nav-link" id ="viewer"
-                  href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}" style="color: black;"> Human ({{ numstudies[0] }})</a>
-                <a class="dropdown-item nav-link" id ="viewer"
-                  href="{{ url_for('species_or_viewerpg', species_or_gse='mouse') }}" style="color: black;""> Mouse ({{ numstudies[1] }})</a>
-              </div>
-            </li>
-
-            <li class=" nav-item dropdown">
-              <a class="navicon nav-link dropdown-toggle" href="#" id="navbarDropdownSpecies" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false" style="color: black !important;">
-                <img class=" mr-4 ml-4"
-                src="{{ url_for('static', filename='img/singlecellthumbnail.png') }}" alt="scRNA-seq Studies" height="40px" onclick='localStorage.setItem("no_splash", true)'>
-                <div class="tooltip">scRNA-seq Studies</div>
-              </a>
-              
-              <div class="dropdown-menu" aria-labelledby="navbarDropdownSpecies" style="width: 235px; background-color:#ECEFF1;">
-                <a class="dropdown-item nav-link" id ="singleviewer"
-                  href="{{ url_for('species_or_viewerpg', species_or_gse='human_single') }}" style="color: black;"> Human ({{ numstudies[2] }})</a>
-                <a class="dropdown-item nav-link" id ="viewer"
-                  href="{{ url_for('species_or_viewerpg', species_or_gse='mouse_single') }}" style="color: black;"> Mouse ({{ numstudies[3] }})</a>
-              </div>
-            </li>
-
-            <li class="navicon nav-item menu">
-              <a class="nav-link hover-underline-animation"
-                href="{{ url_for('resources') }}" style="color: black !important;">
-                <img class="mr-4 ml-4"
-                src="{{ url_for('static', filename='img/resourcesthumbnail.png') }}" alt="Resources" height="40px" onclick='localStorage.setItem("no_splash", true)'>
-              </a>
-              <div class="tooltip">Resources</div>
-            </li>
-
-            <li class="navicon nav-item menu">
-              <a class="nav-link hover-underline-animation"
-                href="{{ url_for('contribute') }}" style="color: black !important;">
-                <img class="mr-4 ml-4"
-                src="{{ url_for('static', filename='img/thumbnail_contribute.png') }}" alt="Community Contribution" height="40px" onclick='localStorage.setItem("no_splash", true)'>
-              </a>
-              <div class="tooltip">Community Contribution</div>
-            </li>
-
-            <li class="navicon nav-item menu">
-              <a class="nav-link hover-underline-animation"
-                href="{{ url_for('downloads') }}" style="color: black !important;"><img class="mr-4 ml-4"
-                src="{{ url_for('static', filename='img/downloading.png') }}" alt="Downloads" height="40px" onclick='localStorage.setItem("no_splash", true)'>
-              </a>
-              <div class="tooltip">Downloads</div>
-            </li>
-
-            <li class="navicon nav-item menu">
-              <a class="nav-link hover-underline-animation"
-                href="{{ url_for('about') }}" style="color: black !important;">
-                <img class="mr-4 ml-4"
-                src="{{ url_for('static', filename='img/help-web-button.png') }}" alt="About" height="40px" onclick='localStorage.setItem("no_splash", true)'>
-              </a>
-              <div class="tooltip">About</div>
-            </li>
-
-            <li class="navicon nav-item menu">
-              <a class="nav-link hover-underline-animation"
-                href="{{ url_for('help') }}" style="color: black !important;">
-                <img class="mr-4 ml-4"
-                src="{{ url_for('static', filename='img/info-512.png') }}" alt="Help" height="40px" onclick='localStorage.setItem("no_splash", true)'>
-              </a>
-              <div class="tooltip">Help</div>
-            </li>
-
-          </ul>
+            <div class="horizontal text-center" style="display: inline-flexbox;">
+                <table>
+                    <tbody>
+                        <tr>
+                            <th class="text-center">
+                                <a href="{{ url_for('home') }}" style="color: black !important;" id="singlegenenav">
+                                    <img src="{{ url_for('static', filename='img/chatbot.png') }}" 
+                                        title="Chatbot" height="30px">
+                                </a>
+                            </th>
+                            <th class="text-center">
+                                <a href="{{ url_for('singlegene_home') }}" style="color: black !important;"
+                                    id="singlegenenav">
+                                    <img src="{{ url_for('static', filename='img/singlegenequeries.png') }}" 
+                                        title="Single Gene Queries" height="30px">
+                                </a>
+                            </th>
+                            <th class="text-center">
+                                <a href="{{ url_for('geneset_home') }}" style="color: black !important;" id="singlegenenav">
+                                    <img src="{{ url_for('static', filename='img/genesetqueries.png') }}" 
+                                        title="Gene set queries" height="30px">
+                                </a>
+                            </th>
+                            <th class="text-center">
+                                <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}"
+                                    style="color: black !important;" id="singlegenenav">
+                                    <img src="{{ url_for('static', filename='img/bulk.png') }}" 
+                                        title="Microarray and Bulk RNA-seq Studies" height="30px">
+                                </a>
+                            </th>
+                            <th class="text-center">
+                                <a href="{{ url_for('species_or_viewerpg', species_or_gse='human_single') }}"
+                                    style="color: black !important;" id="singlegenenav">
+    
+                                    <img src="{{ url_for('static', filename='img/singlecellthumbnail.png') }}" 
+                                        title="scRNA-seq Studies " height="30px">
+                                </a>
+                            </th>
+                        </tr>
+                        <tr class="spaceSides">
+                            <td class="nav-link-text">
+                                <a href="{{ url_for('home') }}"
+                                    style="color: black !important;">
+                                    Chabot
+                                </a>
+                            </td>
+                            <td class="nav-link-text">
+                                <a href="{{ url_for('singlegene_home') }}" style="color: black !important;">
+                                    Single Gene Queries
+                                </a>
+                            </td>
+                            <td class="nav-link-text">
+                                <a href="{{ url_for('geneset_home') }}" style="color: black !important;">
+                                    Gene Set Queries
+                                </a>
+                            </td>
+                            <td class="nav-link-text">
+                                <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}"
+                                    style="color: black !important;">
+                                    Microarray & Bulk RNA-seq Studies
+                                </a>
+                            </td>
+                            <td class="nav-link-text">
+                                <a href="{{ url_for('species_or_viewerpg', species_or_gse='human_single') }}"
+                                    style="color: black !important;" >
+                                    scRNA-seq Studies
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="horizontal text-center" style="display: inline-flexbox;">
+                <table class="text-center">
+                    <tbody>
+                        <tr>
+                            <th class="text-center">
+                                <a href="{{ url_for('resources') }}" style="color: black !important;">
+                                    <img src="{{ url_for('static', filename='img/resourcesthumbnail.png') }}"
+                                        title="Resources" height="30px">
+                                </a>
+                            </th>
+                            <th class="text-center">
+                                <a href="{{ url_for('contribute') }}" style="color: black !important;"">
+                                    <img src="{{ url_for('static', filename='img/thumbnail_contribute.png') }}"
+                                         title="Contribute" height="30px">
+                                </a>
+                            </th>
+                            <th class="text-center">
+                                <a href="{{ url_for('downloads') }}" style="color: black !important;" id="singlegenenav">
+                                    <img src="{{ url_for('static', filename='img/downloading.png') }}" 
+                                        title="Downloads" height="30px">
+                                </a>
+                            </th>
+                            <th class="text-center">
+                                <a href="{{ url_for('about') }}" style="color: black !important;" id="singlegenenav">
+                                    <img src="{{ url_for('static', filename='img/help-web-button.png') }}" 
+                                        title="About" height="30px">
+                                </a>
+                            </th>
+                            <th class="text-center">
+                                <a href="{{ url_for('help') }}" style="color: black !important;" id="singlegenenav">
+                                    <img src="{{ url_for('static', filename='img/info-512.png') }}" 
+                                        title="Help" height="30px">
+                                </a>
+                            </th>
+                        </tr>
+                        <tr class="spaceSides">
+                            <td><a href="{{ url_for('resources') }}" style="color: black !important;">Resources</a></td>
+                            <td><a href="{{ url_for('contribute') }}" style="color: black !important;">Community Contribution</a></td>
+                            <td> <a href="{{ url_for('downloads') }}" style="color: black !important;">Downloads</a></td>
+                            <td><a href="{{ url_for('about') }}" style="color: black !important;">About</a></td>
+                            <td><a href="{{ url_for('help') }}" style="color: black !important;">Help</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+    
+            </div>
+        </div>
         </div>
       </nav>
       <!-- Specifically used for when the screen collapses for the hamburger icon -->
