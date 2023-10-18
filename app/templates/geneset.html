@@ -694,7 +694,33 @@
         }
 
 
-        geneset_rummagene(inputvalue, '')
+        if (inputvalue.length > 0) {
+        const query = {
+            "operationName": "AddUserGeneSet",
+            "variables": {
+                "description": '',
+                "genes": inputvalue.split(',')
+            },
+            "query": "mutation AddUserGeneSet($genes: [String], $description: String = \"\") {\n  addUserGeneSet(input: {genes: $genes, description: $description}) {\n    userGeneSet {\n      id\n      __typename\n    }\n    __typename\n  }\n}\n"
+        }
+        fetch(`https://rummagene.com/graphql`, {
+            method: 'POST',
+            body: JSON.stringify(query),
+            headers: { Accept: 'application/json', "Content-Type": "application/json" }
+        })
+            .then(function (res) {
+                return res.json()
+            })
+            .then(function ({ data, ...rest }) {
+                console.log(data, rest)
+                const userListId = (((data || {}).addUserGeneSet || {}).userGeneSet || {}).id
+                const url = userListId ? `https://rummagene.com/enrich?dataset=${userListId}` : `https://rummagene.com/`
+                window.open(url, '_blank');
+            });
+    }
+    else {
+        window.open("https://rummagene.com/", '_blank');
+    }
     });
 
 </script>

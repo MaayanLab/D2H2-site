@@ -129,6 +129,15 @@
             ],
             "text": "I can send your gene set(s) to SigCom LINCS which is a web-based search engine that serves over 1.5 million gene expression signatures processed, analyzed, and visualized from LINCS, GTEx, and GEO. SigCom LINCS provides rapid signature similarity search for mimickers and reversers given sets of up and down genes. Once you submit your gene set I will provide a link to the result:",
             "questions": []
+        },
+        "[Rummagene]": {
+            "gpt_desc": "In which gene sets extracted from PubMed Central (PMC) articles is my gene set enriched?",
+            "process": "geneset_sigcomlincs",
+            "args": [
+                "geneset"
+            ],
+            "text": "I can send your gene set to Rummagene which is a web-based search engine that serves over 600,000 gene sets extracted from the supplementary materials of over 100,000 PMC articles. Once you submit your gene set I will provide a link to the result:",
+            "questions": []
         }
     },
     "[Term]": {
