@@ -34,6 +34,16 @@ tr.spaceSides>td {
     font-family: 'Open Sans', sans-serif;
 }
 
+.nav-link-text.active {
+  border-bottom: #050a2f;
+  border-bottom-style: solid;
+  background-color: rgb(248, 248, 248);
+  border-radius: .5rem;
+  padding: 5px;
+  margin: 0;
+}
+
+
 
 .selectize-dropdown  {
     position: absolute !important;
@@ -397,13 +407,9 @@ nav[data-toggle="toc"] {
     background-color: rgb(192, 186, 186);
 }
 
-.nav-link-text {
-  padding-left: .7rem;
-  padding-right: .7rem;
-}
   
 
-  /* Current Menu Item */
+/* Current Menu Item */
   
 
 .active{
