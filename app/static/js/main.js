@@ -504,11 +504,8 @@ $(document).ready(function () {
         if (url.includes('#')) {
             url = url.split('#')[0]
         }
-        console.log(url)
-        console.log($(this).prop('href'))
         if ($(this.children[0]).prop('href') == url) {
             $(this).addClass('active')
-            console.log(this)
         }
     });
 
