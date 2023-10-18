@@ -76,13 +76,13 @@
                     </a>
                   </th>
                   <th class="text-center">
-                    <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}"
+                    <a href="{{ url_for('species_or_viewerpg', studies_or_gse='human') }}"
                       style="color: black !important;" id="singlegenenav">
                       
                     </a>
                   </th>
                   <th class="text-center">
-                    <a href="{{ url_for('species_or_viewerpg', species_or_gse='human_single') }}"
+                    <a href="{{ url_for('species_or_viewerpg', studies_or_gse='human_single') }}"
                       style="color: black !important;" id="singlegenenav">
                     </a>
                   </th>
@@ -140,7 +140,7 @@
                     </a>
                   </td>
                   <td class="nav-link-text">
-                    <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}"
+                    <a href="{{ url_for('species_or_viewerpg', studies_or_gse='bulkrna') }}"
                       style="color: black !important;">
                       <div class="nav-link-div">
                         <img src="{{ url_for('static', filename='img/bulk.png') }}"
@@ -150,7 +150,7 @@
                     </a>
                   </td>
                   <td class="nav-link-text">
-                    <a href="{{ url_for('species_or_viewerpg', species_or_gse='human_single') }}"
+                    <a href="{{ url_for('species_or_viewerpg', studies_or_gse='scrna') }}"
                       style="color: black !important;">
                       <div class="nav-link-div">
                         <img src="{{ url_for('static', filename='img/singlecellthumbnail.png') }}"
@@ -243,9 +243,9 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdownSpecies" style="width: 235px; background-color:#ECEFF1;">
               <a class="dropdown-item nav-link" id ="viewer"
-                href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}" style="color: black;"> Human ({{ numstudies[0] }})</a>
+                href="{{ url_for('species_or_viewerpg', studies_or_gse='human') }}" style="color: black;"> Human ({{ numstudies[0] }})</a>
               <a class="dropdown-item nav-link" id ="viewer"
-                href="{{ url_for('species_or_viewerpg', species_or_gse='mouse') }}" style="color: black;""> Mouse ({{ numstudies[1] }})</a>
+                href="{{ url_for('species_or_viewerpg', studies_or_gse='mouse') }}" style="color: black;""> Mouse ({{ numstudies[1] }})</a>
             </div>
           </li>
           <li class=" nav-item dropdown">
@@ -258,10 +258,10 @@
               <div class="dropdown-menu" aria-labelledby="navbarDropdownSpecies"
                 style="width: 235px; background-color:#ECEFF1;">
                 <a class="dropdown-item nav-link" id="singleviewer"
-                  href="{{ url_for('species_or_viewerpg', species_or_gse='human_single') }}" style="color: black;">
+                  href="{{ url_for('species_or_viewerpg', studies_or_gse='human_single') }}" style="color: black;">
                   Human ({{ numstudies[2] }})</a>
                 <a class="dropdown-item nav-link" id="viewer"
-                  href="{{ url_for('species_or_viewerpg', species_or_gse='mouse_single') }}" style="color: black;">
+                  href="{{ url_for('species_or_viewerpg', studies_or_gse='mouse_single') }}" style="color: black;">
                   Mouse ({{ numstudies[3] }})</a>
               </div>
         </li>

@@ -51,10 +51,10 @@
                     <div class="banner">
 
                         <div hidden>
-                            <div id="human-bulk-num">{{ numstudies[0] }}</div>
-                            <div id="mouse-bulk-num">{{ numstudies[1] }}</div>
-                            <div id="human-sc-num">{{ numstudies[2] }}</div>
-                            <div id="mouse-sc-num">{{ numstudies[3] }}</div>
+                            <div id="human-bulk-num">{{ numstudies['human'] }}</div>
+                            <div id="mouse-bulk-num">{{ numstudies['mouse'] }}</div>
+                            <div id="human-sc-num">{{ numstudies['mouse_single'] }}</div>
+                            <div id="mouse-sc-num">{{ numstudies['human_single'] }}</div>
                         </div>
                     </div>
 
@@ -145,21 +145,21 @@
                             <div class="row">
                                 <div class="col text-center mb-3">
                                     <h6>Human</h6>
-                                    <div class="countup num-style" style="font-size: 30px;">{{ numstudies[0] +
-                                        numstudies[2]
+                                    <div class="countup num-style" style="font-size: 30px;">{{ numstudies['human'] +
+                                        numstudies['human_single']
                                         }}</div>
                                 </div>
                                 <div class="col text-center mb-3">
                                     <h6>Mouse</h6>
-                                    <div class="countup num-style" style="font-size: 30px;">{{ numstudies[1] +
-                                        numstudies[3]
+                                    <div class="countup num-style" style="font-size: 30px;">{{ numstudies['mouse'] +
+                                        numstudies['mouse_single']
                                         }}</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="vertical ml-5 mb-4 col-lg-5 col-sm-6" style="margin-top: 6%">
-                        <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}">
+                        <a href="{{ url_for('species_or_viewerpg', studies_or_gse='bulkrna') }}">
                             <button class="learn-more">
                                 <span class="circle" aria-hidden="true">
                                     <span class="icon arrow"></span>
@@ -260,12 +260,12 @@
                                     replicates.</p>
                                 <img src="static/img/dge-features.jpg" alt="" style="width: auto; height: auto;"
                                     class="img-thumbnail mb-2">
-                                <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}">
+                                <a href="{{ url_for('species_or_viewerpg', studies_or_gse='bulkrna') }}">
                                     <button class="btn btn-primary">
                                         Human Bulk RNA-seq/Microarray
                                     </button>
                                 </a>
-                                <a href="{{ url_for('species_or_viewerpg', species_or_gse='mouse') }}">
+                                <a href="{{ url_for('species_or_viewerpg', studies_or_gse='bulkrna') }}">
                                     <button class="btn btn-primary">
                                         Mouse Bulk RNA-seq/Microarray
                                     </button>
@@ -294,12 +294,12 @@
                                     automatically identified cluster</p>
                                 <img src="static/img/single-features.jpg" alt="" style="width: auto; height: auto;"
                                     class="img-thumbnail mb-2">
-                                <a href="{{ url_for('species_or_viewerpg', species_or_gse='human_single') }}">
+                                <a href="{{ url_for('species_or_viewerpg', studies_or_gse='scrna') }}">
                                     <button class="btn btn-primary">
                                         Human scRNA-seq
                                     </button>
                                 </a>
-                                <a href="{{ url_for('species_or_viewerpg', species_or_gse='mouse_single') }}">
+                                <a href="{{ url_for('species_or_viewerpg', studies_or_gse='scrna') }}">
                                     <button class="btn btn-primary">
                                         Mouse scRNA-seq
                                     </button>

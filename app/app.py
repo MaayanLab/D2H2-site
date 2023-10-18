@@ -468,8 +468,7 @@ species_mapping_single = {'human_single': gse_metadata_single['human_single'], '
 
 #Single cell studies from study to the species name
 study_to_species_single = {study:species_name for species_name, studies_metadata in gse_metadata_single.items() for study in studies_metadata.keys()}
-numstudies_single= [len(gse_metadata_single['human_single'].keys()), len(gse_metadata_single['mouse_single'].keys())]
-numstudies = [len(gse_metadata['human']), len(gse_metadata['mouse']), len(gse_metadata_single['human_single']), len(gse_metadata_single['mouse_single'])]
+numstudies = {'human': len(gse_metadata['human']), 'mouse': len(gse_metadata['mouse']), 'human_single': len(gse_metadata_single['human_single']), 'mouse_single': len(gse_metadata_single['mouse_single'])}
 def load_new_studies():
 	#Need to use account and pass in order to update the files.
 	s3 = s3fs.S3FileSystem(key = os.environ.get('AWS_ACCESS_KEY_ID'), secret = os.environ.get('AWS_SECRET_ACCESS_KEY'))
@@ -478,7 +477,7 @@ def load_new_studies():
 	mouse_gses = list(s3.walk(f'{base_url}/mouse', maxdepth=1))[0][1]
 	human_gses = list(s3.walk(f'{base_url}/human', maxdepth=1))[0][1]
 	#Bulk and microarray study to species name dictionary
-	if numstudies[0] != len(human_gses) or numstudies[1] != len(mouse_gses):
+	if numstudies['human'] != len(human_gses) or numstudies['mouse'] != len(mouse_gses):
 		print("Change in bulk studies")
 		for species, geo_accession_ids in species_mapping.items():
 			if species not in gse_metadata:
@@ -498,7 +497,7 @@ def load_new_studies():
 	
 	mouse_singlegses = list(s3.walk(f'{base_url}/mouse_single', maxdepth=1))[0][1]
 	human_singlegses = list(s3.walk(f'{base_url}/human_single', maxdepth=1))[0][1]
-	if numstudies_single[0] != len(human_singlegses) or numstudies_single[1] != len(mouse_singlegses):
+	if numstudies['human_single'] != len(human_singlegses) or numstudies['mouse_single'] != len(mouse_singlegses):
 		print("Change in single cell studies")
 		for species, geo_accession_ids in species_mapping_single.items():
 			if species =='human_single':
@@ -553,20 +552,21 @@ def load_new_studies():
 			pickle.dump(gse_metadata_single, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-@app.route(f'{ROOT_PATH}/<species_or_gse>', methods=['GET', 'POST'])
-def species_or_viewerpg(species_or_gse):
+@app.route(f'{ROOT_PATH}/<studies_or_gse>', methods=['GET', 'POST'])
+def species_or_viewerpg(studies_or_gse):
 	# test if species
-	if species_or_gse in gse_metadata:
-		num_samples = sum(map(lambda x: x.get('numsamples'), gse_metadata[species_or_gse].values()))
-		return render_template('species.html', species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, numstudies=numstudies,  month_dict=month_dict)
+	if studies_or_gse == 'bulkrna':
+		num_samples = {'human': sum(map(lambda x: x.get('numsamples'), gse_metadata['human'].values())),'mouse': sum(map(lambda x: x.get('numsamples'), gse_metadata['mouse'].values()))}
+		return render_template('species.html', species='human', gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, numstudies=numstudies, month_dict=month_dict)
 	#Checking for the single cell studies and loading that summary page
-	elif species_or_gse in gse_metadata_single:
-		num_samples = sum(map(lambda x: x.get('numsamples'), gse_metadata_single[species_or_gse].values()))
-		num_cells = sum(map(lambda x: x.get('cell_count').get('Total'), gse_metadata_single[species_or_gse].values()))
-		return render_template('single_species.html', species=species_or_gse, gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, gse_metadata=gse_metadata, num_samples=num_samples, numstudies=numstudies,  month_dict=month_dict, num_cells=num_cells)
-	# test if gsea
-	elif species_or_gse in study_to_species:
-		geo_accession = species_or_gse
+	elif studies_or_gse == 'scrna':
+		num_samples = {'human_single': sum(map(lambda x: x.get('numsamples'), gse_metadata_single['human_single'].values())), 'mouse_single': sum(map(lambda x: x.get('numsamples'), gse_metadata_single['mouse_single'].values()))}
+		num_cells = {'human_single': sum(map(lambda x: x.get('cell_count').get('Total'), gse_metadata_single['human_single'].values())), 'mouse_single': sum(map(lambda x: x.get('cell_count').get('Total'), gse_metadata_single['mouse_single'].values()))}
+		return render_template('single_species.html', species='human_single', gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, gse_metadata=gse_metadata, num_samples=num_samples, numstudies=numstudies,  month_dict=month_dict, num_cells=num_cells)
+	
+	# test if gse
+	elif studies_or_gse in study_to_species:
+		geo_accession = studies_or_gse
 		species = study_to_species[geo_accession]
 		species_folder = url_to_folder[species]
 		metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.tsv'
@@ -583,8 +583,8 @@ def species_or_viewerpg(species_or_gse):
 		return render_template('viewer.html', metadata_dict=metadata_dict, metadata_dict_samples=sample_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping, numstudies=numstudies,  month_dict=month_dict, dge_precomputed=dge_precomputed)
 	
 	#Check for the single study individual viewer page
-	elif species_or_gse in study_to_species_single:
-		geo_accession = species_or_gse
+	elif studies_or_gse in study_to_species_single:
+		geo_accession = studies_or_gse
 		#Will be human_single or mouse_single not just species name
 		species = study_to_species_single[geo_accession]
 		species_folder = url_to_folder_single[species]

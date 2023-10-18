@@ -32,11 +32,11 @@
             </div>
             <div class="text-center mr-5">
                 Total Samples
-                <div class="countup num-style">{{ num_samples }}</div>
+                <div class="countup num-style">{{ num_samples[species] }}</div>
             </div>
             <div class="text-center mr-5">
                 Total Single Cells
-                <div class="countup num-style">{{ num_cells }}</div>
+                <div class="countup num-style">{{ num_cells[species] }}</div>
             </div>
         </div>
     </div>
@@ -61,7 +61,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for gse_id, geo_metadata in gse_metadata_single[species].items() %}
+            {% for gse_id, geo_metadata in gse_metadata_single['human_single'].items() %}
             <tr>
                 <td>{{ geo_metadata.get('title', ['No Title'])[0].replace('RTN1 IS A NOVEL MEDIATOR FOR PROGRESSION OF
                     KIDNEY DISEASE', 'RTN1 Is A Novel Mediator For Progression of Kidney Disease')|safe}}</td>
@@ -123,7 +123,72 @@
                     <p>N/A</p>
                     {% endif %}
                 </td>
-                <td><a href="{{ url_for('species_or_viewerpg', species_or_gse=gse_id) }}"><button class="btn btn-primary btn-group-sm singleviewerclass">{{ gse_id }} Analysis Viewer</button></a></td>
+                <td><a href="{{ url_for('species_or_viewerpg', studies_or_gse=gse_id) }}"><button class="btn btn-primary btn-group-sm singleviewerclass">{{ gse_id }} Analysis Viewer</button></a></td>
+            </tr>
+            {% endfor %}
+            {% for gse_id, geo_metadata in gse_metadata_single['mouse_single'].items() %}
+            <tr>
+                <td>{{ geo_metadata.get('title', ['No Title'])[0].replace('RTN1 IS A NOVEL MEDIATOR FOR PROGRESSION OF
+                    KIDNEY DISEASE', 'RTN1 Is A Novel Mediator For Progression of Kidney Disease')|safe}}</td>
+                <th scope="row"><a class="text-br-red" href="{{ geo_metadata.get('gse_link', ['#'])[0]|safe }}"
+                        target="_blank" rel="noopener noreferrer">{{ gse_id }}</a></th>
+                
+                <td>
+                    {% if geo_metadata.get('cur_gpl', ['Single GPL'])[0] != 'Single GPL' %}
+                    {% for gpl_metadata in geo_metadata['all_gpls'] %}
+                    {% if gpl_metadata['geo_accession'][0] == geo_metadata.get('cur_gpl')[0] %}
+                    {{ gpl_metadata['organism'][0]|safe }}
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    {{ geo_metadata['all_gpls'][0].get('organism', ['No Organism'])[0]|safe }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if geo_metadata.get('type', ['No Assay'])|length > 1 %}
+                    {% for assay in geo_metadata.get('type', ['No Assay']) %}
+                    {{ assay|safe }}
+                    {% endfor %}
+                    {% else %}
+                    {{ geo_metadata.get('type', ['No Assay'])[0]|safe }}
+                    {% endif %}
+                </td>
+                <td>
+                {{ geo_metadata.get('numsamples') }}
+
+                </td>
+
+                <td>
+                    {% for key, value in geo_metadata.get('cell_count').items() %}
+                    <span style="white-space: nowrap;">{{ key }}: {{ value }}</span>
+                    {% endfor %}
+                </td>
+
+
+                <td data-order="{{geo_metadata.get('submission_date')[0][-5:] + month_dict[geo_metadata.get('submission_date')[0][:3]] + geo_metadata.get('submission_date')[0][4:6]}}" >
+                    {{month_dict[geo_metadata.get('submission_date')[0][:3]] + '/' + geo_metadata.get('submission_date')[0][4:6] + '/' + geo_metadata.get('submission_date')[0][-4:]}}
+                </td>
+                <td>
+                    <button class="btn-custom btn-group-sm btn-collapse collapsed"
+                        data-toggle="collapse" data-target="#studyDesignCollapse-{{gse_id}}" aria-expanded="false"
+                        aria-controls="studyDesignCollapse-{{gse_id}}">
+                        <div class="text">Show Study Design</div>
+                    </button>
+                    <div class="collapse" id="studyDesignCollapse-{{gse_id}}">
+                        {{ geo_metadata.get('overall_design', ['No Study Design'])[0]|safe }}
+                    </div>
+                </td>
+                <td>
+                    {% if geo_metadata.get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed ID' %}
+                    <a class="text-br-red" href="{{ geo_metadata.get('pubmed_link', ['#'])[0]|safe }}" target="_blank"
+                        rel="noopener noreferrer">
+                        {{ geo_metadata.get('pubmed_id', ['No Pubmed ID'])[0]|safe }}
+                    </a>
+                    {% else %}
+                    <p>N/A</p>
+                    {% endif %}
+                </td>
+                <td><a href="{{ url_for('species_or_viewerpg', studies_or_gse=gse_id) }}"><button class="btn btn-primary btn-group-sm singleviewerclass">{{ gse_id }} Analysis Viewer</button></a></td>
             </tr>
             {% endfor %}
         </tbody>
