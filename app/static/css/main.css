@@ -30,6 +30,10 @@ tr.spaceSides>td {
   padding-left: 1em;
 }
 
+tr.spaceSides>td>a {
+  text-decoration: none;
+}
+
 .nav-link {
     font-family: 'Open Sans', sans-serif;
 }
