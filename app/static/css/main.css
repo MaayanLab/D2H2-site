@@ -254,8 +254,9 @@ body {
 
 .libpicker {
     background-color: #9a8fc1;
+    padding: 5px 3px 4px 4px;
     color: white;
-    border-radius: 1%;
+    border-radius: 2rem;
     border-style: none;
     font-family: 'Open Sans', sans-serif;
 }

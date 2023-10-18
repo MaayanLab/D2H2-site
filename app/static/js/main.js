@@ -691,8 +691,8 @@ $(document).ready(function () {
             meta = response['meta']
             expression = response['expression']
 
-            meta_data_file = gse + '_Metadata.txt'
-            rnaseq_data_filename = gse + '_Expression.txt'
+            meta_data_file = gse + '_Metadata.tsv'
+            rnaseq_data_filename = gse + '_Expression.tsv'
 
             const blob_meta = new Blob([meta]);
             const blob_rna = new Blob([expression]);

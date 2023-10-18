@@ -1,5 +1,7 @@
 from functools import lru_cache
 import pandas as pd
+from urllib.parse import quote
+import json
 from maayanlab_bioinformatics.normalization.quantile import quantile_normalize
 from maayanlab_bioinformatics.dge.characteristic_direction import characteristic_direction
 from maayanlab_bioinformatics.dge.logfc import logfc_differential_expression
@@ -17,9 +19,9 @@ import os
 from pydeseq2.dds import DeseqDataSet
 from pydeseq2.ds import DeseqStats
 
-base_url = os.environ.get('BASE_URL', 'd2h2/data')
-endpoint = os.environ.get('ENDPOINT', 'https://minio.dev.maayanlab.cloud/')
-
+endpoint = os.environ.get('ENDPOINT', 'https://d2h2.s3.amazonaws.com/')
+base_url = os.environ.get('BASE_URL', 'data')
+sigs_version = os.environ.get('SIGS_VERSION', 'v1.1')
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
 
@@ -62,20 +64,13 @@ def log(data):
 
 
 def get_precomputed_dge(sig, species):
-    sig = [sig] + ['Unnamed: 0']
-    df_fc = pd.read_csv(f'/Users/giacomomarino/D2H2-site/ETL/signatures/v1.1/rna_{species}_fc.csv', index_col=0, usecols=sig)
-    df_fc.columns = ['logFC']
-    df_pval = pd.read_csv(f'/Users/giacomomarino/D2H2-site/ETL/signatures/v1.1/rna_{species}_pval.csv', index_col=0, usecols=sig)
-    df_pval.columns = ['pval']
-    dge_df = pd.merge(left=df_fc, right=df_pval, right_index=True, left_index=True)
-    dge_df['adj.pval'] = multipletests(dge_df['pval'].values)[1]
-    dge_df.sort_values('adj.pval', inplace=True)
+    dge_df = pd.read_csv(s3.open(f't2d-datasets/{species}/{sig}.tsv'), sep='\t', index_col=0, compression='gzip')
     return dge_df
 
 def get_precomputed_dge_options(gse, species):
-    df = pd.read_feather(f'/Users/giacomomarino/D2H2-site/ETL/signatures/v1.1/rna_{species}_pval.f', columns=['index'])
-    precomputed_sigs = [sig for sig in df['index'].values if sig.split('-')[0] == gse]
-    return precomputed_sigs
+    with open('static/searchdata/all_sigs.json') as f:
+        all_sigs = json.load(f)
+    return [sig for sig in all_sigs[species] if sig.split('-')[0] == gse]
 
 
 def get_signatures(classes, dataset, normalization, method, meta_class_column_name, filter_genes):

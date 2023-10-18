@@ -244,8 +244,8 @@ def dge():
 	gse = response_json['gse']
 	species = response_json['species']
 	norms = response_json['norms']
-	expr_file = '{base_url}/{species}/{gse}/{gse}_Expression.txt'.format(species=species, gse=gse, base_url=base_url)
-	meta_file = '{base_url}/{species}/{gse}/{gse}_Metadata.txt'.format(species=species, gse=gse, base_url=base_url)
+	expr_file = '{base_url}/{species}/{gse}/{gse}_Expression.tsv'.format(species=species, gse=gse, base_url=base_url)
+	meta_file = '{base_url}/{species}/{gse}/{gse}_Metadata.tsv'.format(species=species, gse=gse, base_url=base_url)
 
 	data, title = compute_dge(expr_file, meta_file, method, control, perturb, norms['logCPM'], norms['log'], norms['z'], norms['q'])
 
@@ -282,6 +282,14 @@ def dgesingle():
 		break
 
 	return json.dumps({'table': string_data, 'plot': jsonplot, 'description':description})
+
+@app.route('/api/precomputed_dge',  methods=['GET','POST'])
+def fetch_precomputed_dge():
+	response_json = request.get_json()
+	sig = response_json['sig']
+	species = response_json['species']
+	dge_tab = get_precomputed_dge(sig, species)
+	return dge_tab.to_json(orient='index')
 
 
 #This function makes the umap tsne and pca plots for the single cell data based off the precomputed coordinates for these plots. 
@@ -427,7 +435,7 @@ def get_metadata(geo_accession, species_folder):
 	if 'pubmed_id' in gse.metadata and (len(gse.metadata.get('pubmed_id', [])) != 0):
 		gse.metadata['pubmed_link'] = ["https://pubmed.ncbi.nlm.nih.gov/" + gse.metadata['pubmed_id'][0]]
 	
-	metadata_file = f'{base_url}/{species_folder}/{geo_accession}/{geo_accession}_Metadata.txt'
+	metadata_file = f'{base_url}/{species_folder}/{geo_accession}/{geo_accession}_Metadata.tsv'
 	
 	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 	gse.metadata['numsamples'] = metadata_dataframe.shape[0]
@@ -561,7 +569,7 @@ def species_or_viewerpg(species_or_gse):
 		geo_accession = species_or_gse
 		species = study_to_species[geo_accession]
 		species_folder = url_to_folder[species]
-		metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+		metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.tsv'
 		metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 		gses = list(metadata_dataframe['Sample_geo_accession'])
 		metadata_dict = metadata_dataframe.groupby('Group')['Condition'].apply(set).to_dict()
@@ -639,7 +647,7 @@ def genes_api(geo_accession):
 		species_folder = url_to_folder[species]
 
 		# Get genes json
-		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
+		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.tsv'
 		expression_dataframe = pd.read_csv(s3.open(expression_file), index_col = 0, sep='\t')
 
 		genes_json = json.dumps([{'gene_symbol': x} for x in expression_dataframe.index])
@@ -740,8 +748,8 @@ def plot_api(geo_accession):
 
 	assay = gse_metadata[species][geo_accession].get('type')[0]
 
-	expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
-	metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.tsv'
+	metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.tsv'
 	expression_dataframe = pd.read_csv(s3.open(expression_file), index_col = 0, sep='\t')
 	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 	
@@ -819,7 +827,7 @@ def plot_volcano_api():
 def conditions_api(geo_accession):
 	species = study_to_species[geo_accession]
 	species_folder = url_to_folder[species]
-	metadata_file = base_url+ '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	metadata_file = base_url+ '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.tsv'
 	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 	if len(set(metadata_dataframe['Group'])) == 1:
 		conditions = set(metadata_dataframe['Condition'])
@@ -845,7 +853,7 @@ def samples_api(geo_accession):
 	species = study_to_species[geo_accession]
 	species_folder = url_to_folder[species]
 
-	metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.tsv'
 	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 
 	conditions_mapping = metadata_dataframe.groupby('Condition')['Sample_geo_accession'].apply(list).to_dict()
@@ -862,8 +870,8 @@ def get_study_data():
 	perturb = response_json['perturb']
 	species = response_json['species']
 
-	metadata_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
-	expression_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
+	metadata_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.tsv'
+	expression_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.tsv'
 
 	with s3.open(metadata_file, 'r') as f:
 		meta_data = f.read()
@@ -896,20 +904,18 @@ def visualize_samps():
 	response_json = request.get_json()
 	geo_accession = response_json['gse']
 	species = response_json['species']
-	meta_df = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
-	expr_df = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
+	meta_df = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.tsv'
+	
+	meta_df = pd.read_csv(s3.open(meta_df), sep='\t', index_col=0)
 
-	pca_df, tsne_df, umap_df = bulk_vis(expr_df, meta_df)
-
-	pca_plot = interactive_circle_plot(pca_df, "PC-1", "PC-2", pca_df.columns[0], 'pca')
-
-	tsne_plot = interactive_circle_plot(tsne_df, "t-SNE-1", "t-SNE-2", tsne_df.columns[0], 'tsne')
-
-	umap_plot = interactive_circle_plot(umap_df, "UMAP-1", "UMAP-2", umap_df.columns[0], 'umap')
-
+	if len(meta_df.columns) > 2:
+		pca_plot = interactive_circle_plot(meta_df.rename(columns={'pca_x': 'x', 'pca_y': 'y'}), "PC-1", "PC-2", 'Condition', 'pca')
+		tsne_plot = interactive_circle_plot(meta_df.rename(columns={'tsne_x': 'x', 'tsne_y': 'y'}), "t-SNE-1", "t-SNE-2", 'Condition', 'tsne')
+		umap_plot = interactive_circle_plot(meta_df.rename(columns={'umap_x': 'x', 'umap_y': 'y'}), "UMAP-1", "UMAP-2", 'Condition', 'umap')
+	else:
+		pca_plot, tsne_plot, umap_plot = 'None', 'None', 'None'
 
 	return json.dumps({'pcaplot': pca_plot, 'tsneplot': tsne_plot, 'umapplot': umap_plot})
-
 
 @app.route(f'{ROOT_PATH}/api/query_gpt',  methods=['GET', 'POST'])
 def query_gpt():
