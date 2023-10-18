@@ -397,7 +397,10 @@ nav[data-toggle="toc"] {
     background-color: rgb(192, 186, 186);
 }
 
-
+.nav-link-text {
+  padding-left: .7rem;
+  padding-right: .7rem;
+}
   
 
   /* Current Menu Item */
