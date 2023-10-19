@@ -629,32 +629,7 @@ $(document).ready(function () {
         boxplot();
     })
 
-    // MAKE STUIDIES TABLE A DataTable
-
-    $('#studies-table').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', { extend: 'csv', title: `D2H2-studies-table` }
-        ],
-        responsive: true
-    });
-
-
-    // OPEN CUSTOMIZED WORKFLOW DEPENDING ON SELECTION IN SCG
-
-    $('#scg-link').on('click', function () {
-
-        var workflow = document.getElementById("workflow").value;
-
-
-        if (workflow) {
-
-            $('#scg-link').prop('href', workflow);
-            return;
-        }
-        $('#scg-link').prop('href', "https://scg.maayanlab.cloud/");
-    });
-
+   
     // OPEN TO DEG IN BULK RNA SEQ ANALYSIS
     $('#dgea-button').on('click', async function () {
         var control_condition = $('#condition-select-control').val();
@@ -1119,43 +1094,6 @@ $(document).ready(function () {
             });
         }
     });
-
-    $('#species-val').on('change', function () {
-        if ($(this).is(':checked')) {
-            switchStatus = $(this).is(':checked');
-            $gene_select[0].selectize.clearOptions();
-            $gene_select[0].selectize.load(function (callback) {
-                $.ajax({
-                    url: 'api/genes/mouse',
-                    dataType: 'json',
-                    error: function () {
-                        callback();
-                    },
-                    success: function (res) {
-
-                        callback(res);
-                    }
-                });
-            });
-        }
-        else {
-            switchStatus = $(this).is(':checked');
-            $gene_select[0].selectize.clearOptions();
-            $gene_select[0].selectize.load(function (callback) {
-                $.ajax({
-                    url: 'api/genes/human',
-                    dataType: 'json',
-                    error: function () {
-                        callback();
-                    },
-                    success: function (res) {
-
-                        callback(res);
-                    }
-                });
-            });
-        }
-    })
 
 
     //This listener is for when we click on a different group of sample individuals to look at for a study within the single cell viewer on the dropdown select menu. 
