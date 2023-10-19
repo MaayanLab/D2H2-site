@@ -962,7 +962,7 @@ def run_geneshot():
 		term = request.get_json()['term']
 		try:
 			res = query_geneshot(term) 
-			return {'search_term':term, 'genes': str(res[0]), 'count': str(res[1])}
+			return {'search_term':term, 'genes': '\t'.join(res[0]), 'count': str(res[1])}
 		except:
 			return {'search_term':term, 'error': True}
 

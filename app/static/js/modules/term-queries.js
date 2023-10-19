@@ -125,7 +125,7 @@ export async function query_geneshot(term, id) {
         return;
     }
 
-    const file = new Blob([`${res.description}\t${res['genes'].join('\t')}`], { type: 'text/plain' });
+    const file = new Blob([`${res['search_term']}\t\t${res['genes']}`], { type: 'text/plain' });
     // Add file content in the object URL
     const href = URL.createObjectURL(file);
     const download = `${term}_Geneshot.txt`;
@@ -135,14 +135,14 @@ export async function query_geneshot(term, id) {
         <div class="text-center justify-content-center">
             <p id="geneshot-title">Geneshot produced a gene set based on literature comentions with following term ${term} (${res['count']})</p>
             <textarea id="geneshot-text" class="text-center" style="height: 20rem; overflow-y: scroll; white-space: pre-wrap;" readonly>
-            ${res['genes'].join('\r\n')}
+            ${res['genes'].split('\t').join('\r\n')}
             </textarea>
         </div>
         <div class="row">
             <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('geneshot-text').value)" class="btn btn-primary btn-group-sm m-2 ">
                 Copy to clipboard
             </button>
-            <a id="geneshot-queries" href="{{ url_for('geneset_home') }}" onclick="setGenes('${res['genes'].join('&')}')" target='_blank' style="text-decoration: none">
+            <a id="geneshot-queries" href="{{ url_for('geneset_home') }}" onclick="setGenes('${res['genes'].split('\t').join('&')}')" target='_blank' style="text-decoration: none">
                 <button type="button" class="btn btn-primary btn-group-sm m-2">
                     Open in Geneset Queries
                 </button>
