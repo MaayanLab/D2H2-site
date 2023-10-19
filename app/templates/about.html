@@ -104,16 +104,16 @@
 
     <div class="row justify-content-center mt-3 mb-3 text-center">
       <div class="flex-column">
-        <canvas id="platform-pie-chart" style="min-height:400px;width:100%;min-width:400px;max-width:800px;"></canvas>
+        <canvas id="disease-pie-chart" style="min-height:400px;width:100%;min-width:400px;max-width:800px;"></canvas>
       </div>
       <div class="flex-column">
         <canvas id="tissue-pie-chart" style="min-height:400px;width:100%;min-width:400px;max-width:800px;"></canvas>
       </div>
       <div class="flex-column">
-        <canvas id="disease-pie-chart" style="min-height:400px;width:100%;min-width:400px;max-width:800px;"></canvas>
+        <canvas id="cell-types-pie-chart" style="min-height:400px;width:100%;min-width:400px;max-width:800px;"></canvas>
       </div>
       <div class="flex-column">
-        <canvas id="cell-types-pie-chart" style="min-height:400px;width:100%;min-width:400px;max-width:800px;"></canvas>
+        <canvas id="platform-pie-chart" style="min-height:400px;width:100%;min-width:400px;max-width:800px;"></canvas>
       </div>
     </div>
     
@@ -174,16 +174,13 @@
   });
 
   fetch("static/metadata_counts.json").then(response =>  response.json() ).then(json_data => {
-    console.log(typeof(json_data['tissue']['labels']))
-    console.log((json_data['tissue']['labels']))
-
 
     new Chart("platform-pie-chart", {
     type: "doughnut",
     data: {
       labels: json_data['platform']['labels'],
       datasets: [{
-        backgroundColor: ["#2e3093","#2e30938f","#4f8c9d", "#6ce9d3", "#194f46", "#ade64f", "#31a46c", "#0df38f", "#374475", "#e28de2", "#2282f5", "#dfccfa", "#453cc5", "#f642d0", "#860967", "#967b95", "#9620fc", "#efd453", "#754819", "#ef972d", "#8e1023", "#f73931", "#89975b", "#65f112", "#4f8c9d", "#6ce9d3", "#194f46", "#ade64f", "#31a46c", "#0df38f", "#374475", "#e28de2", "#2282f5", "#dfccfa"],
+        backgroundColor: ["#2e3093","#2e30938f","#4f8c9d", "#6ce9d3", "#194f46", "#ade64f", "#31a46c", "#0df38f", "#374475", "#e28de2", "#2282f5", "#dfccfa", "#453cc5", "#f642d0", "#860967", "#967b95", "#9620fc", "#efd453", "#754819", "#ef972d", "#8e1023", "#f73931", "#89975b", "#65f112", "#4f8c9d", "#6ce9d3", "#194f46", "#ade64f", "#31a46c"],
         data: json_data['platform']['counts']
       }]
     },
@@ -200,7 +197,7 @@
     data: {
       labels: json_data['tissue']['labels'],
       datasets: [{
-        backgroundColor: ["#2e3093","#2e30938f","#4f8c9d", "#6ce9d3", "#194f46", "#ade64f", "#31a46c", "#0df38f", "#374475", "#e28de2", "#2282f5", "#dfccfa", "#453cc5", "#f642d0", "#860967", "#967b95", "#9620fc", "#efd453", "#754819", "#ef972d", "#8e1023", "#f73931", "#89975b", "#65f112", "#4f8c9d", "#6ce9d3", "#194f46", "#ade64f", "#31a46c", "#0df38f", "#374475", "#e28de2", "#2282f5", "#dfccfa"],
+        backgroundColor: ["#2e3093","#2e30938f","#4f8c9d", "#6ce9d3", "#194f46", "#ade64f", "#31a46c", "#0df38f", "#374475", "#e28de2", "#2282f5", "#dfccfa", "#453cc5", "#f642d0", "#860967", "#967b95", "#9620fc", "#efd453", "#754819", "#ef972d", "#8e1023", "#f73931", "#89975b", "#65f112", "#4f8c9d", "#6ce9d3", "#194f46", "#ade64f", "#31a46c", "#0df38f", "#374475"],
         data: json_data['tissue']['counts']
       }]
     },
@@ -217,7 +214,7 @@
     data: {
       labels: json_data['disease']['labels'],
       datasets: [{
-        backgroundColor: ["#2e3093","#2e30938f","#4f8c9d", "#6ce9d3", "#194f46", "#ade64f", "#31a46c", "#0df38f", "#374475", "#e28de2", "#2282f5", "#dfccfa", "#453cc5", "#f642d0", "#860967", "#967b95", "#9620fc", "#efd453", "#754819", "#ef972d", "#8e1023", "#f73931", "#89975b", "#65f112", "#4f8c9d", "#6ce9d3", "#194f46", "#ade64f", "#31a46c", "#0df38f", "#374475", "#e28de2", "#2282f5", "#dfccfa"],
+        backgroundColor: ["#2e3093","#2e30938f","#4f8c9d", "#6ce9d3", "#194f46", "#ade64f", "#31a46c", "#0df38f", "#374475", "#e28de2", "#2282f5", "#dfccfa", "#453cc5", "#f642d0", "#860967", "#967b95", "#9620fc", "#efd453", "#754819", "#ef972d", "#8e1023", "#f73931", "#89975b", "#65f112", "#4f8c9d", "#6ce9d3", "#194f46", "#ade64f", "#31a46c"],
         data: json_data['disease']['counts']
       }]
     },
@@ -234,7 +231,7 @@
     data: {
       labels: json_data['cell type']['labels'],
       datasets: [{
-        backgroundColor: ["#2e3093","#2e30938f","#4f8c9d", "#6ce9d3", "#194f46", "#ade64f", "#31a46c", "#0df38f", "#374475", "#e28de2", "#2282f5", "#dfccfa", "#453cc5", "#f642d0", "#860967", "#967b95", "#9620fc", "#efd453", "#754819", "#ef972d", "#8e1023", "#f73931", "#89975b", "#65f112", "#4f8c9d", "#6ce9d3", "#194f46", "#ade64f", "#31a46c", "#0df38f", "#374475", "#e28de2", "#2282f5", "#dfccfa"],
+        backgroundColor: ["#2e3093","#2e30938f","#4f8c9d", "#6ce9d3", "#194f46", "#ade64f", "#31a46c", "#0df38f", "#374475", "#e28de2", "#2282f5", "#dfccfa", "#453cc5", "#f642d0", "#860967", "#967b95", "#9620fc", "#efd453"],
         data: json_data['cell type']['counts']
       }]
     },
