@@ -631,13 +631,58 @@ $(document).ready(function () {
 
     // MAKE STUIDIES TABLE A DataTable
 
-    $('#studies-table').DataTable({
+    var studiesTable = $('#studies-table').DataTable({
         dom: 'Bfrtip',
         buttons: [
             'copy', { extend: 'csv', title: `D2H2-studies-table` }
         ],
-        responsive: true
+        responsive: true,
+        search: {
+            "smart": false
+          }
     });
+    // Filling up the select field within the table viewer pages
+    studiesTable.columns().flatten().each( function ( colIdx ) {
+        // console.log(studiesTable.column(colIdx).header())
+        let data  = studiesTable.column(colIdx).header()
+        console.log($(data).html() ==='Assay')
+        if ($(data).html() ==='Tissue'){
+            studiesTable
+            .column( colIdx )
+            .cache( 'search' )
+            .sort()
+            .unique()
+            .each( function ( d ) {
+                if (d !== 'Not Specified'){
+                    $('#tissue-filtering').append( $('<option value="'+d+'">'+d+'</option>') );
+                }
+                
+            } );
+            $('#tissue-filtering').on('change', function (event) {
+                        studiesTable
+                            .search( $(this).val() )
+                            .draw();
+                    } );
+
+        }
+        if ($(data).html() ==='Disease'){
+            studiesTable
+            .column( colIdx )
+            .cache( 'search' )
+            .sort()
+            .unique()
+            .each( function ( d ) {
+                $('#disease-filtering').append( $('<option value="'+d+'">'+d+'</option>') );
+            } );
+
+            $('#disease-filtering').on('change', function (event) {
+                studiesTable
+                    .search( $(this).val() )
+                    .draw();
+            } );
+
+        }
+    } );
 
 
     // OPEN CUSTOMIZED WORKFLOW DEPENDING ON SELECTION IN SCG
