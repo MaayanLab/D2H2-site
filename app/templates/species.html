@@ -211,7 +211,7 @@ DataTable.ext.search.push(function (settings, data, dataIndex) {
     if ($('#species-val').is(':checked')) {
         species = 'Mus musculus'
     }
-    if ((species_data) == species) return true;
+    if (species_data.includes(species)) return true;
  
     return false;
 });
