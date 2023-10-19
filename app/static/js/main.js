@@ -629,6 +629,7 @@ $(document).ready(function () {
         boxplot();
     })
 
+
     // MAKE STUIDIES TABLE A DataTable
 
     var studiesTable = $('#studies-table').DataTable({
@@ -699,6 +700,7 @@ $(document).ready(function () {
         }
         $('#scg-link').prop('href', "https://scg.maayanlab.cloud/");
     });
+
 
     // OPEN TO DEG IN BULK RNA SEQ ANALYSIS
     $('#dgea-button').on('click', async function () {
@@ -1164,43 +1166,6 @@ $(document).ready(function () {
             });
         }
     });
-
-    $('#species-val').on('change', function () {
-        if ($(this).is(':checked')) {
-            switchStatus = $(this).is(':checked');
-            $gene_select[0].selectize.clearOptions();
-            $gene_select[0].selectize.load(function (callback) {
-                $.ajax({
-                    url: 'api/genes/mouse',
-                    dataType: 'json',
-                    error: function () {
-                        callback();
-                    },
-                    success: function (res) {
-
-                        callback(res);
-                    }
-                });
-            });
-        }
-        else {
-            switchStatus = $(this).is(':checked');
-            $gene_select[0].selectize.clearOptions();
-            $gene_select[0].selectize.load(function (callback) {
-                $.ajax({
-                    url: 'api/genes/human',
-                    dataType: 'json',
-                    error: function () {
-                        callback();
-                    },
-                    success: function (res) {
-
-                        callback(res);
-                    }
-                });
-            });
-        }
-    })
 
 
     //This listener is for when we click on a different group of sample individuals to look at for a study within the single cell viewer on the dropdown select menu. 

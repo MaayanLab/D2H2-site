@@ -30,19 +30,27 @@
         <div class="row justify-content-center">
             <div class="text-center mr-5">
                     Total Studies
-            <div class="countup num-style">{{ gse_metadata[species]|length }}</div>
+            <div class="countup num-style human-counts">{{ gse_metadata['human']|length }}</div>
+            <div class="countup num-style mouse-counts" style="display: none;">{{ gse_metadata['mouse']|length }}</div>
             </div>
             <div class="text-center mr-5">
                 Total Samples
-                <div class="countup num-style">{{ num_samples[species] }}</div>
+                <div class="countup num-style human-counts">{{ num_samples['human'] }}</div>
+                <div class="countup num-style mouse-counts" style="display: none;">{{ num_samples['mouse'] }}</div>
             </div>
         </div>
     </div>
 </div>
 
 <div class="container">
-    <button class="">
-
+    <div class="row justify-content-center mb-2 mr-3">
+        <label class="mt-2 mr-1" for="species-toggle"></label>
+        <label class="toggle" id="species-toggle">
+          <input type="checkbox" id="species-val">
+          <span class="slider"></span>
+          <span class="labels" data-on="Mouse" data-off="Human"></span>
+        </label>
+      </div>
 </div>
 
 <div class="mb-4 p-3 align-items-center justify-content-center ml-auto mr-auto" style='width:80%'>
@@ -242,6 +250,45 @@
 
 const countupEls = document.querySelectorAll( '.countup' );
 countupEls.forEach( animateCountUp );
+
+DataTable.ext.search.push(function (settings, data, dataIndex) {
+    var species = 'Homo sapiens'
+    let species_data = data[2]
+
+    if ($('#species-val').is(':checked')) {
+        species = 'Mus musculus'
+    }
+    if ((species_data) == species) return true;
+ 
+    return false;
+});
+
+table = $('#studies-table').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', { extend: 'csv', title: `D2H2-bulkrna-microarray-studies` }
+        ],
+        responsive: true
+});
+
+
+$('#species-val').on('change', function () {
+    table.draw()
+    const mouseCounts = $('.mouse-counts')
+    const humanCounts = $('.human-counts')
+    if ($('#species-val').is(':checked')) {
+        mouseCounts.each((i) => {
+            mouseCounts[i].style.display = 'block';
+            humanCounts[i].style.display = 'none';
+        })
+    } else {
+        mouseCounts.each((i) => {
+            mouseCounts[i].style.display = 'none';
+            humanCounts[i].style.display = 'block';
+        })
+    }
+} );
+
 
 </script>
 

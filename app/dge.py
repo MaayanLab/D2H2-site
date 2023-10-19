@@ -1,6 +1,5 @@
 from functools import lru_cache
 import pandas as pd
-from urllib.parse import quote
 import json
 from maayanlab_bioinformatics.normalization.quantile import quantile_normalize
 from maayanlab_bioinformatics.dge.characteristic_direction import characteristic_direction
