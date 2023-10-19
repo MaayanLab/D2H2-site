@@ -630,23 +630,6 @@ $(document).ready(function () {
     })
 
 
-
-    // OPEN CUSTOMIZED WORKFLOW DEPENDING ON SELECTION IN SCG
-
-    $('#scg-link').on('click', function () {
-
-        var workflow = document.getElementById("workflow").value;
-
-
-        if (workflow) {
-
-            $('#scg-link').prop('href', workflow);
-            return;
-        }
-        $('#scg-link').prop('href', "https://scg.maayanlab.cloud/");
-    });
-
-
     // OPEN TO DEG IN BULK RNA SEQ ANALYSIS
     $('#dgea-button').on('click', async function () {
         var control_condition = $('#condition-select-control').val();
