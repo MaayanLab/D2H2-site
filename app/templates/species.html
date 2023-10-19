@@ -43,28 +43,32 @@
 </div>
 
 <div class="container">
-    <div class="row justify-content-center mb-2 mr-3">
-        <label class="mt-2 mr-1" for="species-toggle"></label>
-        <label class="toggle" id="species-toggle">
-          <input type="checkbox" id="species-val">
-          <span class="slider"></span>
-          <span class="labels" data-on="Mouse" data-off="Human"></span>
-        </label>
-      </div>
+    
 </div>
 
-<div class="mb-4 p-3 align-items-center justify-content-center ml-auto mr-auto" style='width:80%'>
+<div class="mb-4 p-3 align-items-center justify-content-center ml-auto mr-auto" style='width:80%; overflow-x: scroll;'>
 
-    <div class="row mx-auto" id="table-filtering">
-        <p class="mr-1">Filter by Tissue</p><select name="Select Method" class="form-select form-select-lg mb-3 mr-1" id="tissue-filtering" class="libpicker">
+    <div class="row justify-content-center text-center" id="table-filtering">
+        
+
+        <p class="mr-3"></p><select name="Select Method" class="form-select form-select-lg mb-3 mr-1 text-center libpicker" id="tissue-filtering">
             <option selected disabled hidden value="">Filter Tissue</option>
             <option value="">All Tissues</option>
         </select>
     
-        <p class="mr-1">Filter by Disease</p> <select name="Select Size" class="form-select form-select-lg mb-3" id="disease-filtering" class="libpicker">
+        <p class="mr-3"></p> <select name="Select Size" class="form-select form-select-lg mb-3 text-center libpicker" id="disease-filtering">
             <option selected disabled hidden value="">Filter Disease</option>
             <option value="">All Diseases</option>
         </select>
+
+        <div class="row justify-content-center mb-2 mr-5 ml-3">
+            <label class="mt-2 mr-1" for="species-toggle"></label>
+            <label class="toggle" id="species-toggle">
+              <input type="checkbox" id="species-val">
+              <span class="slider"></span>
+              <span class="labels" data-on="Mouse" data-off="Human"></span>
+            </label>
+          </div>
     </div>
 
     <table class="table table-bordered table-hover styled-table" id="studies-table">
@@ -293,9 +297,30 @@ table = $('#studies-table').DataTable({
         buttons: [
             'copy', { extend: 'csv', title: `D2H2-bulkrna-microarray-studies` }
         ],
-        responsive: true
+        responsive: true,
+        columnDefs: [
+        {
+            target: 2,
+            searchable: true,
+            visible: false
+        },
+        {
+            target: 3,
+            searchable: true,
+            visible: false
+        },
+        {
+            target: 9,
+            searchable: true,
+            visible: false
+        },
+        {
+            target: 10,
+            searchable: true,
+            visible: false
+        }
+    ]
 });
-
 
 $('#species-val').on('change', function () {
     table.draw()
@@ -355,6 +380,8 @@ table.columns().flatten().each( function ( colIdx ) {
 
         }
     } );
+
+    table.column(2).hide()
 
 </script>
 
