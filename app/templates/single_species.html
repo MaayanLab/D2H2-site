@@ -303,6 +303,48 @@ $('#species-val').on('change', function () {
     }
 } );
 
+table.columns().flatten().each( function ( colIdx ) {
+        // console.log(studiesTable.column(colIdx).header())
+        let data  = table.column(colIdx).header()
+        console.log($(data).html() ==='Assay')
+        if ($(data).html() ==='Tissue'){
+            table
+            .column( colIdx )
+            .cache( 'search' )
+            .sort()
+            .unique()
+            .each( function ( d ) {
+                if (d !== 'Not Specified'){
+                    $('#tissue-filtering').append( $('<option value="'+d+'">'+d+'</option>') );
+                }
+                
+            } );
+            $('#tissue-filtering').on('change', function (event) {
+                table
+                            .search( $(this).val() )
+                            .draw();
+                    } );
+
+        }
+        if ($(data).html() ==='Disease'){
+            table
+            .column( colIdx )
+            .cache( 'search' )
+            .sort()
+            .unique()
+            .each( function ( d ) {
+                $('#disease-filtering').append( $('<option value="'+d+'">'+d+'</option>') );
+            } );
+
+            $('#disease-filtering').on('change', function (event) {
+                table
+                    .search( $(this).val() )
+                    .draw();
+            } );
+
+        }
+    } );
+
 </script>
 
 
