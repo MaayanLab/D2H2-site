@@ -58,7 +58,19 @@
 
 
 
-<div class="container custom-col table-responsive-lg mb-4 p-3">
+<div class="p-3 align-items-center justify-content-center ml-auto mr-auto" style='width:90%'>
+    <div class="row mx-auto" id="table-filtering">
+        <p class="mr-1">Filter by Tissue</p><select name="Select Method" class="form-select form-select-lg mb-3 mr-1" id="tissue-filtering" class="libpicker">
+            <option selected disabled hidden value="">Filter Tissue</option>
+            <option value="">All Tissues</option>
+        </select>
+    
+        <p class="mr-1">Filter by Disease</p> <select name="Select Size" class="form-select form-select-lg mb-3" id="disease-filtering" class="libpicker">
+            <option selected disabled hidden value="">Filter Disease</option>
+            <option value="">All Diseases</option>
+        </select>
+    </div>
+
     <table class="table table-bordered table-hover styled-table" id="studies-table">
         <thead class="thead-light">
             <tr>
@@ -66,7 +78,11 @@
                 <th scope="col">GSE</th>
                 <th scope="col">Organism</th>
                 <th scope="col">Assay</th>
+                <th scope="col">Tissue</th>
+                <th scope="col">Cell Type of Interest</th>
+                <th scope="col">Disease</th>
                 <th scope="col">Num Samples</th>
+                <th scope="col">Perturbations</th>
                 <th scope="col">Single Cells</th>
                 <th scope="col">Submission Date</th>
                 <th scope="col">Study Design</th>
@@ -102,9 +118,19 @@
                     {{ geo_metadata.get('type', ['No Assay'])[0]|safe }}
                     {% endif %}
                 </td>
+                <td>{{ geo_metadata.get('tissue_type_identifier') }}</td>
+                <td>{{ geo_metadata.get('cell type') }}</td>
+                <td>{{ geo_metadata.get('disease_type_identifier') }}</td>
                 <td>
                 {{ geo_metadata.get('numsamples') }}
 
+                </td>
+                <td>
+                    <ul>
+                    {% for pert in geo_metadata.get('perturbations') %}
+                    <li><span>{{ pert }}</span></li>
+                    {% endfor %}
+                </ul>
                 </td>
 
                 <td>
@@ -125,6 +151,8 @@
                     </button>
                     <div class="collapse" id="studyDesignCollapse-{{gse_id}}">
                         {{ geo_metadata.get('overall_design', ['No Study Design'])[0]|safe }}
+                        <br>
+                        Platform: {{ geo_metadata.get('platform') }}
                     </div>
                 </td>
                 <td>
@@ -140,6 +168,9 @@
                 <td><a href="{{ url_for('species_or_viewerpg', studies_or_gse=gse_id) }}"><button class="btn btn-primary btn-group-sm singleviewerclass">{{ gse_id }} Analysis Viewer</button></a></td>
             </tr>
             {% endfor %}
+
+
+
             {% for gse_id, geo_metadata in gse_metadata_single['mouse_single'].items() %}
             <tr>
                 <td>{{ geo_metadata.get('title', ['No Title'])[0].replace('RTN1 IS A NOVEL MEDIATOR FOR PROGRESSION OF
@@ -167,10 +198,19 @@
                     {{ geo_metadata.get('type', ['No Assay'])[0]|safe }}
                     {% endif %}
                 </td>
+                <td>{{ geo_metadata.get('tissue_type_identifier') }}</td>
+                <td>{{ geo_metadata.get('cell type') }}</td>
+                <td>{{ geo_metadata.get('disease_type_identifier') }}</td>
                 <td>
                 {{ geo_metadata.get('numsamples') }}
 
                 </td>
+                <td>
+                    <ul>
+                    {% for pert in geo_metadata.get('perturbations') %}
+                    <li><span>{{ pert }}</span></li>
+                    {% endfor %}
+                </ul>
 
                 <td>
                     {% for key, value in geo_metadata.get('cell_count').items() %}
@@ -238,7 +278,30 @@ DataTable.ext.search.push(function (settings, data, dataIndex) {
  
     return false;
 });
-
+DataTable.ext.search.push(function (settings, data, dataIndex) {
+    console.log($('#tissue-filtering').val())
+    var tissue = $('#tissue-filtering').val()
+    let tissue_data_inrow = data[4]
+    if (tissue === null || tissue === ""){
+        return true;
+    }
+    if (tissue_data_inrow === tissue) {
+        return true;
+    }
+ 
+    return false;
+});
+DataTable.ext.search.push(function (settings, data, dataIndex) {
+    var disease = $('#disease-filtering').val()
+    let disease_data_inrow = data[6]
+    if (disease === null || disease === ""){
+        return true;
+    }
+    if (disease_data_inrow === disease) {
+        return true;
+    }
+    return false;
+});
 table = $('#studies-table').DataTable({
         dom: 'Bfrtip',
         buttons: [
@@ -264,6 +327,44 @@ $('#species-val').on('change', function () {
         })
     }
 } );
+
+table.columns().flatten().each( function ( colIdx ) {
+        // console.log(studiesTable.column(colIdx).header())
+        let data  = table.column(colIdx).header()
+        console.log($(data).html() ==='Assay')
+        if ($(data).html() ==='Tissue'){
+            table
+            .column( colIdx )
+            .cache( 'search' )
+            .sort()
+            .unique()
+            .each( function ( d ) {
+                if (d !== 'Not Specified'){
+                    $('#tissue-filtering').append( $('<option value="'+d+'">'+d+'</option>') );
+                }
+                
+            } );
+            $('#tissue-filtering').on('change', function (event) {
+                table.draw();
+            } );
+
+        }
+        if ($(data).html() ==='Disease'){
+            table
+            .column( colIdx )
+            .cache( 'search' )
+            .sort()
+            .unique()
+            .each( function ( d ) {
+                $('#disease-filtering').append( $('<option value="'+d+'">'+d+'</option>') );
+            } );
+
+            $('#disease-filtering').on('change', function (event) {
+                table.draw();
+            } );
+
+        }
+    } );
 
 </script>
 

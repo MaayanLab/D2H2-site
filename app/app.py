@@ -446,7 +446,7 @@ def get_metadata(geo_accession, species_folder):
 
 #### CHECK IF METADATA IS COMPLETE/ IF NEW STUDIES WERE ADDED, ADD THEM TO METADATA
 
-with open(f'static/searchdata/metadata-v1.pickle', 'rb') as f:	
+with open(f'static/searchdata/metadata-v2.pickle', 'rb') as f:	
 		gse_metadata = pickle.load(f)
 
 
@@ -457,7 +457,7 @@ numstudies= [len(gse_metadata['human'].keys()), len(gse_metadata['mouse'].keys()
 study_to_species = {study:species_name for species_name, studies_metadata in gse_metadata.items() for study in studies_metadata.keys()}
 species_mapping = {'human': gse_metadata['human'], 'mouse': gse_metadata['mouse']}
 
-with open('static/searchdata/metadatasingle-v1.pickle', 'rb') as f:	
+with open('static/searchdata/metadatasingle-v2.pickle', 'rb') as f:	
 	gse_metadata_single = pickle.load(f)
 
 #For single cell studies
@@ -491,7 +491,7 @@ def load_new_studies():
 				for geo_accession in mouse_gses:
 					if geo_accession not in geo_accession_ids:
 						gse_metadata[species][geo_accession] = get_metadata(geo_accession, url_to_folder[species])
-		with open('static/searchdata/metadata-v1.pickle', 'wb') as f:
+		with open('static/searchdata/metadata-v2.pickle', 'wb') as f:
 			pickle.dump(gse_metadata, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 	
@@ -548,7 +548,7 @@ def load_new_studies():
 						print("Mouse Single Cell Study")
 						print(geo_accession)
 						print(dict_to_store_cell_numbers)
-		with open('static/searchdata/metadatasingle-v1.pickle', 'wb') as f:
+		with open('static/searchdata/metadatasingle-v2.pickle', 'wb') as f:
 			pickle.dump(gse_metadata_single, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 
@@ -967,6 +967,7 @@ def run_geneshot():
 			return {'search_term':term, 'error': True}
 
 
+	
 #######################################################
 #######################################################
 ########## 3. Run App
@@ -975,5 +976,6 @@ def run_geneshot():
 if __name__ == "__main__":
 	if UPDATE_STUDIES:
 		load_new_studies()
+	
 	app.run(debug=DEBUG, host="0.0.0.0", port=5000)
 

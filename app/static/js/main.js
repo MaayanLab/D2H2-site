@@ -629,7 +629,7 @@ $(document).ready(function () {
         boxplot();
     })
 
-   
+
     // OPEN TO DEG IN BULK RNA SEQ ANALYSIS
     $('#dgea-button').on('click', async function () {
         var control_condition = $('#condition-select-control').val();
