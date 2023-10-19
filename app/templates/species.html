@@ -58,10 +58,12 @@
     <div class="row mx-auto" id="table-filtering">
         <p class="mr-1">Filter by Tissue</p><select name="Select Method" class="form-select form-select-lg mb-3 mr-1" id="tissue-filtering" class="libpicker">
             <option selected disabled hidden value="">Filter Tissue</option>
+            <option value="">All Tissues</option>
         </select>
     
         <p class="mr-1">Filter by Disease</p> <select name="Select Size" class="form-select form-select-lg mb-3" id="disease-filtering" class="libpicker">
             <option selected disabled hidden value="">Filter Disease</option>
+            <option value="">All Diseases</option>
         </select>
     </div>
 
@@ -262,7 +264,30 @@ DataTable.ext.search.push(function (settings, data, dataIndex) {
  
     return false;
 });
-
+DataTable.ext.search.push(function (settings, data, dataIndex) {
+    var tissue = $('#tissue-filtering').val()
+    let tissue_data_inrow = data[4]
+    if (tissue === null || tissue === ""){
+        return true;
+    }
+    if (tissue_data_inrow === tissue) {
+        return true;
+    }
+ 
+    return false;
+});
+DataTable.ext.search.push(function (settings, data, dataIndex) {
+    var disease = $('#disease-filtering').val()
+    let disease_data_inrow = data[5]
+    if (disease === null || disease === ""){
+        return true;
+    }
+    if (disease_data_inrow === disease) {
+        return true;
+    }
+ 
+    return false;
+});
 table = $('#studies-table').DataTable({
         dom: 'Bfrtip',
         buttons: [
@@ -307,7 +332,7 @@ table.columns().flatten().each( function ( colIdx ) {
             } );
             $('#tissue-filtering').on('change', function (event) {
                 table
-                            .search( $(this).val() )
+                            // .search( $(this).val() )
                             .draw();
                     } );
 
@@ -324,7 +349,7 @@ table.columns().flatten().each( function ( colIdx ) {
 
             $('#disease-filtering').on('change', function (event) {
                 table
-                    .search( $(this).val() )
+                    // .search( $(this).val() )
                     .draw();
             } );
 
