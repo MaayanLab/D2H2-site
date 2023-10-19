@@ -132,7 +132,7 @@
         },
         "[Rummagene]": {
             "gpt_desc": "In which gene sets extracted from PubMed Central (PMC) articles is my gene set enriched?",
-            "process": "geneset_sigcomlincs",
+            "process": "geneset_rummagene",
             "args": [
                 "geneset"
             ],

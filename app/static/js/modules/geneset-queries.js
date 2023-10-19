@@ -287,7 +287,7 @@ export async function geneset_rummagene(geneset, resultid) {
                 document.getElementById(resultid).innerHTML = `
                 <a href="${url}" target="_blank">
                     <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Open in
-                    <img src="static/img/sigcom_lincs_logo.png" class="img-fluid mr-3"
+                    <img src="static/img/rummagene_logo.png" class="img-fluid mr-3"
                         style="width: 60px" alt="SigCom LINCS">
                     </button>
                 </a>`
