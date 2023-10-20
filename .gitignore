@@ -10,3 +10,5 @@ ETL/human
 ETL/mouse
 ETL/signatures
 app/static/output_images/
+__pycache__*
+ETL/metadata_analysis/studies/
