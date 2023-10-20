@@ -49,6 +49,11 @@
             <img src="{{ url_for('static', filename='img/gtexlogo.png') }}" alt="GTEx" style="width: 150px;" />
           </a>
         </div>
+        <div class="column m-2 mt-2">
+          <a href="https://maayanlab.cloud/geneshot/" target="_blank">
+            <img src="{{ url_for('static', filename='img/geneshot_txt_logo.png') }}" alt="GeneShot" style="width: 170px;" />
+          </a>
+        </div>
       </div>
 
       <div class="row justify-content-center mb-3">
@@ -86,33 +91,38 @@
               style="width: 80px;" />
           </a>
         </div>
+        <div class="column m-2">
+          <a href="https://rummagene.com/" target="_blank">
+            <img src="{{ url_for('static', filename='img/rummagene_logo.png') }}" alt="Rummagene" style="width: 80px;" />
+          </a>
+        </div>
       </div>
     </div>
     <div class="row justify-content-center mt-3 mb-3 text-center">
       Curated transcriptomics datasets from various Type 2 Diabetes studies are made available for download,
       visualization, and enrichment analysis.
     </div>
-    <div class="row justify-content-center mt-3 mb-3 text-center">
-      <div class="flex-column">
+    <div class="row justify-content-center mt-3 mb-3 text-center ">
+      <div class="flex-column border">
         <canvas id="human-pie-chart" style="width:100%;min-width:400px;max-width:400px;"></canvas>
       </div>
-      <div class="flex-column">
+      <div class="flex-column border">
         <canvas id="mouse-pie-chart" style="width:100%;min-width:400px;max-width:400px;"></canvas>
       </div>
     </div>
 
 
     <div class="row justify-content-center mt-3 mb-3 text-center">
-      <div class="flex-column">
+      <div class="flex-column border">
         <canvas id="disease-pie-chart" style="min-height:400px;width:100%;min-width:400px;max-width:800px;"></canvas>
       </div>
-      <div class="flex-column">
+      <div class="flex-column border">
         <canvas id="tissue-pie-chart" style="min-height:400px;width:100%;min-width:400px;max-width:800px;"></canvas>
       </div>
-      <div class="flex-column">
+      <div class="flex-column border">
         <canvas id="cell-types-pie-chart" style="min-height:400px;width:100%;min-width:400px;max-width:800px;"></canvas>
       </div>
-      <div class="flex-column">
+      <div class="flex-column border">
         <canvas id="platform-pie-chart" style="min-height:400px;width:100%;min-width:400px;max-width:800px;"></canvas>
       </div>
     </div>
