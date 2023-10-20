@@ -29,20 +29,20 @@ def determine_valid(query):
     A GeneSet is a collection of mulitple genes.
     If the user is asking for associated or upregulated genes or a gene set as an output, you should respond with [Term]. 
     Also select [Term] if the user appears to be asking a general question about a disease, or in general any biomedical term.
-    If the user provides a term and a gene, then you should respond with [Term].
+    If the user includes a gene symbol in their query, then the input is likely [Gene].
     If the the user's query is not relevant to any type in the list, or in general the question is not relevant in a biomedical context, then please respond with [Other].
-    Respond in this format including only 1 type:
+    Take a deep breath, and respond in this format including only one type and no other reasoning:
     [Type]
     """
     try:
         tag_line = openai.ChatCompletion.create(
         model="gpt-4",
         messages=[
-        {"role": "system", "content": "You are an assitant meant to process a user query and decide what type of input and output the user is specifiying"},
+        {"role": "system", "content": "You are an assitant meant to process a user query and decide what type of input the user is specifiying"},
         {"role": "user", "content": prompt}
             ],
         max_tokens =20,
-        temperature=.1,
+        temperature=.3,
         )
 
         response = tag_line['choices'][0]['message']['content']
@@ -58,11 +58,10 @@ def determine_valid(query):
         else: 
             return (False, '[None]')
     except:
-        return (False, '[None]')
+        return (True, 'busy')
     
 
 
-@lru_cache()
 def find_process(query):
     valid, input_type = determine_valid(query)
     if not valid:
@@ -80,6 +79,8 @@ def find_process(query):
         res = identify_search_term(query)
         if 'term' in res:
             return {"response": 0, "input": '[Study Metadata]', "output": '[Search]', "term": res['term']}
+        return {"response": 1, "error": "busy"}
+    else:
         return {"response": 1, "error": "busy"}
 
     
