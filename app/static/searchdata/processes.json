@@ -1,7 +1,7 @@
 {
     "[Gene]": {
         "[Signatures]": {
-            "gpt_desc": "In what diabetes related GEO signatures up or down regulate the expression of my gene?",
+            "gpt_desc": "Which diabetes-related GEO signatures up- or down-regulate the expression of my gene?",
             "process": "gene_signatures",
             "args": [
                 "geneSymbol",
@@ -64,7 +64,7 @@
             "questions": []
         },
         "[Correlation]": {
-            "gpt_desc": "Is my gene correlated with other genes?",
+            "gpt_desc": "Which other genes are most correlated with my gene?",
             "process": "loadCorrelation",
             "args": [
                 "geneSymbol"
@@ -84,7 +84,7 @@
     },
     "[GeneSet]": {
         "[Signatures]": {
-            "gpt_desc": "In what diabetes signatures is my gene set enriched/overlaps with?",
+            "gpt_desc": "Which diabetes signatures significantly overlap with my gene set?",
             "process": "geneset_signatures",
             "args": [
                 "geneset"
@@ -131,7 +131,7 @@
             "questions": []
         },
         "[Rummagene]": {
-            "gpt_desc": "In which gene sets extracted from PubMed Central (PMC) articles is my gene set enriched?",
+            "gpt_desc": "Are there published gene sets extracted from PubMed Central (PMC) articles that significantly overlap with my gene set?",
             "process": "geneset_rummagene",
             "args": [
                 "geneset"
