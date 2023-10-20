@@ -1,5 +1,5 @@
 export const human_list = fetch(
-    "static/searchdata/allgenes-comb.json"
+    "static/data/allgenes-comb.json"
 ).then(data => data.json());
 
 

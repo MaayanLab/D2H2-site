@@ -59,7 +59,7 @@ def get_precomputed_dge(sig, species):
     return dge_df
 
 def get_precomputed_dge_options(gse, species):
-    with open('static/searchdata/all_sigs.json') as f:
+    with open('static/data/all_sigs.json') as f:
         all_sigs = json.load(f)
     return [sig for sig in all_sigs[species] if sig.split('-')[0] == gse]
 

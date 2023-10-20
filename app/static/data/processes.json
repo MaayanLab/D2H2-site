@@ -161,6 +161,37 @@
                 }
             ]
         }
-
+    },
+    "[Study Metadata]": {
+        "[Search]": {
+            "gpt_desc": "If the user asks about studies and their associated metadata on the site.",
+            "process": "search_for_studies",
+            "args": [
+                "searchterms",
+                "assay",
+                "species"
+            ],
+            "text": "There are a few options to choose from: Enrichr contains thousands of curated gene sets processed from a variety of databases and sources. You can explore gene sets from different libraries that match your search term.\n Rummagene contains hundreds of thousands of gene sets extracted from the supplemental materials of open source PMC articles.\n Geneshot can create a gene set through literature co-mentions.",
+            "questions": [
+                {
+                    "q": "Would you like to search for Bulk RNA-seq/Microarray studies or single cell RNA-seq studies?:\n",
+                    "arg": "assay",
+                    "options": [
+                        "Bulk RNA-seq and Microarray",
+                        "scRNA-seq",
+                        "both"
+                    ]
+                },
+                {
+                    "q": "Which organism are you interested in?:\n",
+                    "arg": "species",
+                    "options": [
+                        "human",
+                        "mouse",
+                        "both"
+                    ]
+                }
+            ]
+        }
     }
 }

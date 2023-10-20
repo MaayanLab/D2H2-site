@@ -1,7 +1,7 @@
 import { human_list, mouse_list, processes, chatNresult, loading, geneset_entries} from "./constants.js";
 import { gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from './single-gene-queries.js';
 import { geneset_signatures, geneset_enrichment, geneset_kea3, geneset_chea3, geneset_sigcomlincs, geneset_rummagene } from './geneset-queries.js';
-import { search_for_genesets } from './term-queries.js';
+import { search_for_genesets, search_for_studies } from './term-queries.js';
 
 
 export async function select_option(q, options) {

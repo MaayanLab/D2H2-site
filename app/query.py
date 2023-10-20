@@ -7,7 +7,7 @@ import json
 
 load_dotenv()
 
-with open('static/searchdata/processes.json') as f:
+with open('static/data/processes.json') as f:
     processes = json.load(f)
 
 validation = {"[Gene]": list(processes["[Gene]"].keys()),

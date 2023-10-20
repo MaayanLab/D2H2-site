@@ -2,7 +2,7 @@
 app/__pycache__/
 d2h2env
 env
-app/static/searchdata/t2d-files/
+app/static/data/t2d-files/
 extras
 env
 *.env

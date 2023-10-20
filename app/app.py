@@ -219,7 +219,7 @@ def workflows_api():
 @app.route(f'{ROOT_PATH}/getexample',  methods=['GET','POST'])
 def getexample():
 
-	with open('static/searchdata/example_list.txt') as f:
+	with open('static/data/example_list.txt') as f:
 		text = f.read()
 
 	return {'genes': text, 'description': "My gene set"}
@@ -227,7 +227,7 @@ def getexample():
 @app.route(f'{ROOT_PATH}/getexample2',  methods=['GET','POST'])
 def getexample2():
 
-	with open('static/searchdata/example_list2.txt') as f:
+	with open('static/data/example_list2.txt') as f:
 		text = f.read()
 
 	return {'genes': text, 'description': "My gene set"}
@@ -446,7 +446,7 @@ def get_metadata(geo_accession, species_folder):
 
 #### CHECK IF METADATA IS COMPLETE/ IF NEW STUDIES WERE ADDED, ADD THEM TO METADATA
 
-with open(f'static/searchdata/metadata-v2.pickle', 'rb') as f:	
+with open(f'static/data/metadata-v2.pickle', 'rb') as f:	
 		gse_metadata = pickle.load(f)
 
 
@@ -457,7 +457,7 @@ numstudies= [len(gse_metadata['human'].keys()), len(gse_metadata['mouse'].keys()
 study_to_species = {study:species_name for species_name, studies_metadata in gse_metadata.items() for study in studies_metadata.keys()}
 species_mapping = {'human': gse_metadata['human'], 'mouse': gse_metadata['mouse']}
 
-with open('static/searchdata/metadatasingle-v2.pickle', 'rb') as f:	
+with open('static/data/metadatasingle-v2.pickle', 'rb') as f:	
 	gse_metadata_single = pickle.load(f)
 
 #For single cell studies
@@ -491,7 +491,7 @@ def load_new_studies():
 				for geo_accession in mouse_gses:
 					if geo_accession not in geo_accession_ids:
 						gse_metadata[species][geo_accession] = get_metadata(geo_accession, url_to_folder[species])
-		with open('static/searchdata/metadata-v2.pickle', 'wb') as f:
+		with open('static/data/metadata-v2.pickle', 'wb') as f:
 			pickle.dump(gse_metadata, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 	
@@ -548,7 +548,7 @@ def load_new_studies():
 						print("Mouse Single Cell Study")
 						print(geo_accession)
 						print(dict_to_store_cell_numbers)
-		with open('static/searchdata/metadatasingle-v2.pickle', 'wb') as f:
+		with open('static/data/metadatasingle-v2.pickle', 'wb') as f:
 			pickle.dump(gse_metadata_single, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 
@@ -621,11 +621,11 @@ def species_or_viewerpg(studies_or_gse):
 @lru_cache(maxsize=None)
 def genes_api(geo_accession):
 	if geo_accession == 'human':
-		with open('static/searchdata/t2d-human.json', 'r') as f:
+		with open('static/data/t2d-human.json', 'r') as f:
 			human_genes = json.load(f)
 		genes_json = json.dumps([{'gene_symbol': x} for x in human_genes['human_genes']])
 	elif geo_accession == 'mouse':
-		with open('static/searchdata/t2d-mouse.json', 'r') as f:
+		with open('static/data/t2d-mouse.json', 'r') as f:
 			mouse_genes = json.load(f)
 		genes_json = json.dumps([{'gene_symbol': x} for x in mouse_genes['mouse_genes']])
 	elif geo_accession in study_to_species_single:
@@ -636,9 +636,9 @@ def genes_api(geo_accession):
 		genes_json = json.dumps([{'gene_symbol': x} for x in adata_df.index])
 		#go into anndata and get the genes for each human single
 	elif geo_accession == 'combined':
-		with open('static/searchdata/allgenes-comb.json', 'r') as f:
+		with open('static/data/allgenes-comb.json', 'r') as f:
 			human_genes = json.load(f)
-		with open('static/searchdata/t2d-mouse.json', 'r') as f:
+		with open('static/data/t2d-mouse.json', 'r') as f:
 			mouse_genes = json.load(f)
 		all_genes = human_genes + mouse_genes['mouse_genes']	
 		genes_json = json.dumps([{'gene_symbol': x} for x in all_genes])
@@ -965,9 +965,38 @@ def run_geneshot():
 			return {'search_term':term, 'genes': '\t'.join(res[0]), 'count': str(res[1])}
 		except:
 			return {'search_term':term, 'error': True}
+		
+@app.route('/api/metadata_search', methods=['GET', 'POST'])
+def metadata_search():
+	if request.method == "POST":
+		term = request.get_json()['searchterms']
+		assay = request.get_json()['assay']
+		species = request.get_json()['species']
 
+		gses_identified = {'bulkrna': {'human': {}, 'mouse': {}}, 'scrna': {'human_single': {}, 'mouse_single': {}}}
+		if assay == 'Bulk RNA-seq and Microarray':
+			metadata = gse_metadata
+		elif assay == 'scRNA-seq':
+			metadata = gse_metadata_single
+		else:
+			metadata = gse_metadata.copy()
+			metadata.update(gse_metadata_single)
+		for cat in metadata:
+			if species == 'both' or species in cat:
+				for gse in metadata[cat]:
+					search_string = ""
+					for entry in ['title', 'geo_accession', 'assay', 'platform', 'disease', 'disease_type_identifier', 'tissue_type', 'tissue_type_identifier', 'perturbations']:
+						if entry in metadata[cat][gse]: search_string += f"{str(metadata[cat][gse][entry]).lower()} "
+					if gse == 'GSE137060':
+						print(search_string)
+					if term.lower() in search_string:
+						if cat == 'human' or cat == 'mouse':
+							gses_identified['bulkrna'][cat][gse] = metadata[cat][gse]
+						else:
+							gses_identified['scrna'][cat][gse] = metadata[cat][gse]
 
-	
+		return gses_identified
+
 #######################################################
 #######################################################
 ########## 3. Run App
