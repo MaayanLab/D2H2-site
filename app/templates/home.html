@@ -653,7 +653,14 @@
                         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                         await $(`#chat-${chat_num}`).fadeIn(2000)
                         chat_num++;
-                        console.log
+                        log_chat(q, d2h2_response, userid);
+                        document.getElementById('gpt-query').value = '';
+                        ask_questions(q);
+                    } else if (response['input'] == '[Study Metadata]') {
+                        d2h2_response = `I would be happy to help you find studies on D2H2 associated with ${response['term']}`;
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
+                        await $(`#chat-${chat_num}`).fadeIn(2000)
+                        chat_num++;
                         log_chat(q, d2h2_response, userid);
                         document.getElementById('gpt-query').value = '';
                         ask_questions(q);

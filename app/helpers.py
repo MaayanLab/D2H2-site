@@ -328,7 +328,7 @@ def query_geneshot(term):
 @lru_cache()
 def get_resources():
 
-    table = pd.read_csv('./static/searchdata/resources.csv', index_col=0)
+    table = pd.read_csv('./static/data/resources.csv', index_col=0)
     table.fillna('', inplace=True)
     resources_list = table.values.tolist()
     table_list = [list(table.columns.values)] + resources_list
@@ -342,14 +342,14 @@ def update_resources():
     sheet_url = "https://docs.google.com/spreadsheets/d/1uKuDw8eN3si7QmukL7n4dQsOdn3qN8xUiu-rRapC1Cs/edit#gid=0"
     url_1 = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
     table = pd.read_csv(url_1)
-    table.to_csv('static/searchdata/resources.csv')
+    table.to_csv('static/data/resources.csv')
 
 #update_resources()
 
 @lru_cache()
 def get_downloads():
 
-    table = pd.read_csv('./static/searchdata/downloads.csv', index_col=0)
+    table = pd.read_csv('./static/data/downloads.csv', index_col=0)
     table.fillna('', inplace=True)
     resources_list = table.values.tolist()
     table_list = [list(table.columns.values)] + resources_list
@@ -362,21 +362,21 @@ def update_downloads():
     sheet_url = "https://docs.google.com/spreadsheets/d/17if2nhNAOQMESA6EyO_eicqinMmT-P5Ly3TxbkSZZRQ/edit#gid=0"
     url_1 = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
     table = pd.read_csv(url_1)
-    table.to_csv('static/searchdata/downloads.csv')
+    table.to_csv('static/data/downloads.csv')
 
 
 #update_downloads()
 
 def get_workflows():
 
-    table = pd.read_csv('./static/searchdata/workflows.csv')
+    table = pd.read_csv('./static/data/workflows.csv')
     resources_list = table.values.tolist()
     table_list = [list(table.columns.values)] + resources_list
     return table_list
 
 def get_tweets():
 
-    table = pd.read_csv('./static/searchdata/tweets.csv', index_col=None)
+    table = pd.read_csv('./static/data/tweets.csv', index_col=None)
     resources_list = table.values.tolist()
     table_list = [list(table.columns.values)] + resources_list
     return table_list
@@ -565,7 +565,7 @@ def send_plot(species, gene):
         plot = make_plot(comb_df_input, species, gene, micro=True, micro_df=micro_df_input)
     else:
         plot = make_plot(comb_df_input, species, gene)
-    fname='static/searchdata/t2d-files/'
+    fname='static/data/t2d-files/'
     up_comb_df_input, up_comb_df_input_values = download_link(make_tables(comb_df_input, species, gene, is_upreg=True, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-upreg.tsv', isRNA=True)
     dn_comb_df_input, dn_comb_df_input_values = download_link(make_tables(comb_df_input, species, gene, is_upreg=False, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-dnreg.tsv', isRNA=True)
     if micro_exists and not(micro_df_input.empty):

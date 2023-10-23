@@ -268,7 +268,6 @@ countupEls.forEach( animateCountUp );
 DataTable.ext.search.push(function (settings, data, dataIndex) {
     var species = 'Homo sapiens'
     let species_data = data[2]
-    console.log(species_data)
 
     if ($('#species-val').is(':checked')) {
         species = 'Mus musculus'
@@ -278,7 +277,6 @@ DataTable.ext.search.push(function (settings, data, dataIndex) {
     return false;
 });
 DataTable.ext.search.push(function (settings, data, dataIndex) {
-    console.log($('#tissue-filtering').val())
     var tissue = $('#tissue-filtering').val()
     let tissue_data_inrow = data[4]
     if (tissue === null || tissue === ""){
@@ -350,7 +348,6 @@ $('#species-val').on('change', function () {
 } );
 
 table.columns().flatten().each( function ( colIdx ) {
-        // console.log(studiesTable.column(colIdx).header())
         let data  = table.column(colIdx).header()
         if ($(data).html() ==='Tissue'){
             table

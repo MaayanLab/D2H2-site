@@ -161,6 +161,37 @@
                 }
             ]
         }
-
+    },
+    "[Study Metadata]": {
+        "[Search]": {
+            "gpt_desc": "If the user asks about studies and their associated metadata on the site.",
+            "process": "search_for_studies",
+            "args": [
+                "term",
+                "assay",
+                "species"
+            ],
+            "text": "",
+            "questions": [
+                {
+                    "q": "Would you like to search for Bulk RNA-seq/Microarray studies or single cell RNA-seq studies?:\n",
+                    "arg": "assay",
+                    "options": [
+                        "Bulk RNA-seq and Microarray",
+                        "scRNA-seq",
+                        "both"
+                    ]
+                },
+                {
+                    "q": "Which organism are you interested in?:\n",
+                    "arg": "species",
+                    "options": [
+                        "human",
+                        "mouse",
+                        "both"
+                    ]
+                }
+            ]
+        }
     }
 }

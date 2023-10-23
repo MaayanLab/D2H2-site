@@ -82,4 +82,4 @@ def update_tweets_table(day):
         tweets_table.append(tweet_list)
 
     df = pd.DataFrame(tweets_table, columns=["Gene","Title","Author(s)", "Journal" ,"Article", "Analyze"])
-    df.to_csv('static/searchdata/tweets.csv', index=False)
+    df.to_csv('static/data/tweets.csv', index=False)
