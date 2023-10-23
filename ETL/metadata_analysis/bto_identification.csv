@@ -1,0 +1,32 @@
+Tissue,Identifier
+Pancreas,BTO:0000988
+Adipose Tissue,BTO:0001487
+Liver,BTO:0000759
+Blood,BTO:0000089
+Kidney,BTO:0000671
+Brain,BTO:0000142
+Skeletal Muscle,BTO:0001103
+Heart,BTO:0000562
+Muscle,BTO:0000887
+Skin,BTO:0001253
+Bone,BTO:0000140
+Retina,BTO:0001175
+Small Intestine,BTO:0000651
+PBMC,BTO:0001025
+Breast,BTO:0000149
+T cells,BTO:0000782
+Thyroid,BTO:0001379
+Macrophage,BTO:0000801
+Fibroblast,BTO:0000452
+Foot,BTO:0000476
+Esophagus,BTO:0000959
+Lung,BTO:0000763
+Uterus,BTO:0001424
+Bladder,BTO:0000123
+Umbilical vein endothelial cells,BTO:0004296
+Ovary,BTO:0000975
+Embryonic fibroblast,BTO:0004725
+Umbilical Cord,BTO:0001415
+Placenta,BTO:0001078
+Gingiva,BTO:0000519
+Spleen,BTO:0001281

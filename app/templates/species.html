@@ -99,7 +99,7 @@
                 <td>
                     {% if geo_metadata.get('cur_gpl', ['Single GPL'])[0] != 'Single GPL' %}
                     {% for gpl_metadata in geo_metadata['all_gpls'] %}
-                    {% if gpl_metadata['geo_accession'][0] == geo_metadata.get('cur_gpl')[0] %}
+                    {% if 'Homo sapiens' in gpl_metadata['organism'] %}
                     {{ gpl_metadata['organism'][0]|safe }}
                     {% endif %}
                     {% endfor %}
@@ -171,7 +171,7 @@
                 <td>
                     {% if geo_metadata.get('cur_gpl', ['Single GPL'])[0] != 'Single GPL' %}
                     {% for gpl_metadata in geo_metadata['all_gpls'] %}
-                    {% if gpl_metadata['geo_accession'][0] == geo_metadata.get('cur_gpl')[0] %}
+                    {% if 'Homo sapiens' not in gpl_metadata['organism'] %}
                     {{ gpl_metadata['organism'][0]|safe }}
                     {% endif %}
                     {% endfor %}
