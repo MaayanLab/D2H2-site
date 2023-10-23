@@ -168,3 +168,5 @@ export function geneset_buttons_up_down(chatnum){
     <button class='btn btn-primary btn-group-sm text-center' id="submit_gene_set${chatnum}">Submit</button>
 </div>`
 }
+
+
