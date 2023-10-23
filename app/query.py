@@ -185,7 +185,7 @@ def identify_search_term(query):
     prompt = f"""
     Based on text from the user: "{query}"
     Respond with the biomedical term(s) the user included in their question. Only include the term which should be used to serach with and no other text or reasoning. Genes or geneset are general terms and should not be included.
-    d2h2 or D2H2 is on a functional term and should not be included."""
+    d2h2 or D2H2 is on a functional term and should not be included. Do not include the species such as mouse/mice, or human/humans."""
     try:
         tag_line = openai.ChatCompletion.create(
         model="gpt-4",
