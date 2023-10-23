@@ -901,12 +901,12 @@ def interactive_circle_plot(input_df, x_lab, y_lab, feature, name):
     lab_max = max(map(lambda x: len(x), list(input_df['legend'].unique())))
     
 
-    p = figure(height=1600+height_add, width=1800+(15*lab_max), tooltips=TOOLTIPS,x_axis_label=x_lab, y_axis_label=y_lab,sizing_mode="scale_width")
+    p = figure(height=1600+height_add+(5*lab_max), width=1800, tooltips=TOOLTIPS,x_axis_label=x_lab, y_axis_label=y_lab,sizing_mode="scale_width")
 
 
     color = generate_colors(input_df, 'legend')
     p1 = p.circle('x', 'y', size=point_size, source=source, legend_field=feature,fill_color= color, line_color=color)
-    p.add_layout(p.legend[0], 'right')
+    p.add_layout(p.legend[0], 'below')
 
     p.xgrid.visible = False
     p.ygrid.visible = False
