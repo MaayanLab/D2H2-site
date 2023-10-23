@@ -83,6 +83,8 @@ export async function runFindQuery(q) {
 
     } else if (response['input'] == '[Term]') {
         return response
+    } else if (response['input'] == '[Study Metadata]') {
+        return response
     }
     else document.getElementById('loading').innerHTML = "";
 }

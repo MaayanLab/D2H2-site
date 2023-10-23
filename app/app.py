@@ -972,7 +972,7 @@ def metadata_search():
 		term = request.get_json()['searchterms']
 		assay = request.get_json()['assay']
 		species = request.get_json()['species']
-
+		species_dict = {'human': 'Homo sapiens', 'mouse': 'Mus musculus'}
 		gses_identified = {'bulkrna': {'human': {}, 'mouse': {}}, 'scrna': {'human_single': {}, 'mouse_single': {}}}
 		if assay == 'Bulk RNA-seq and Microarray':
 			metadata = gse_metadata
@@ -987,13 +987,23 @@ def metadata_search():
 					search_string = ""
 					for entry in ['title', 'geo_accession', 'assay', 'platform', 'disease', 'disease_type_identifier', 'tissue_type', 'tissue_type_identifier', 'perturbations']:
 						if entry in metadata[cat][gse]: search_string += f"{str(metadata[cat][gse][entry]).lower()} "
-					if gse == 'GSE137060':
-						print(search_string)
-					if term.lower() in search_string:
-						if cat == 'human' or cat == 'mouse':
-							gses_identified['bulkrna'][cat][gse] = metadata[cat][gse]
-						else:
-							gses_identified['scrna'][cat][gse] = metadata[cat][gse]
+					if ',' in term:
+						terms = term.split(', ')
+						if all([t.lower() in search_string for t in terms]):
+							if cat == 'human' or cat == 'mouse':
+								gses_identified['bulkrna'][cat][gse] = metadata[cat][gse]
+								gses_identified['bulkrna'][cat][gse]['species'] = species_dict[cat]
+							else:
+								gses_identified['scrna'][cat][gse] = metadata[cat][gse]
+								gses_identified['scrna'][cat][gse]['species'] = species_dict[cat.split('_')[0]]
+					else:
+						if term.lower() in search_string:
+							if cat == 'human' or cat == 'mouse':
+								gses_identified['bulkrna'][cat][gse] = metadata[cat][gse]
+								gses_identified['bulkrna'][cat][gse]['species'] = species_dict[cat]
+							else:
+								gses_identified['scrna'][cat][gse] = metadata[cat][gse]
+								gses_identified['scrna'][cat][gse]['species'] = species_dict[cat.split('_')[0]]
 
 		return gses_identified
 
