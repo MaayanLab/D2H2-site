@@ -859,12 +859,7 @@ $(document).ready(function () {
         var gse = document.getElementById("gse").innerText
         var species = document.getElementById("species").innerText
         var method = document.getElementById("method").value
-
-        var logCPM = document.getElementById("logCPM").checked
-        var log = document.getElementById("log").checked
-        var q = document.getElementById("q").checked
-        var z = document.getElementById("z").checked
-        var norms = { 'logCPM': logCPM, 'log': log, 'q': q, 'z': z }
+        var norms = { 'logCPM': false, 'log': false, 'q': false, 'z': false}
 
 
         var gsedata = JSON.stringify({ 'gse': gse, 'control': control_condition, 'perturb': perturb_condition, 'method': method, 'species': species, 'norms': norms });
