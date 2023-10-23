@@ -807,72 +807,8 @@ def make_single_visialization_plot(plot_df, values_dict,type, option_list,sample
     
     return json_item(plot, plot_name)
 
-
-
-
 def log2_normalize(x, offset=1.):
     return np.log2(x + offset)
-
-
-@lru_cache()
-def bulk_vis(expr_df, meta_df):
-
-    meta_df = pd.read_csv(s3.open(meta_df), header=0, index_col=0, sep='\t')
-    expr_df = pd.read_csv(s3.open(expr_df), header=0, index_col=0, sep='\t')
-
-    expr_df.replace([np.inf, -np.inf],np.nan, inplace=True)
-
-   
-    expr_df = expr_df.transpose()
-    expr_df = expr_df.dropna(axis=1)
-
-
-    df_data_norm = log2_normalize(expr_df, offset=1)
-
-    df_data_norm = quantile_normalize(df_data_norm, axis=0)
-
-    var = df_data_norm.var(axis = 0, numeric_only = True)
-    var.sort_values(ascending=False, inplace=True)
-    idx = var.index.values[:250]
-
-    df_data_norm = df_data_norm[idx]
-    #expr_df = pd.DataFrame(zscore(df_data_norm, axis=1), index=df_data_norm.index, columns=df_data_norm.columns)
-    expr_df = pd.DataFrame(df_data_norm, index=df_data_norm.index, columns=df_data_norm.columns)
-    expr_df = expr_df.dropna(axis=1)
-
-
-    # Compute label and pca based on Leiden Algorithm 
-    leiden_df = sc.AnnData(expr_df,dtype=np.float32)
-    sc.pp.pca(leiden_df)
-    sc.pp.neighbors(leiden_df) 
-    sc.tl.leiden(leiden_df, key_added="leiden")
-    df_y = meta_df
-
-    pca_data = pd.DataFrame({'x':leiden_df.obsm['X_pca'][:,0],
-                        'y':leiden_df.obsm['X_pca'][:,1],
-                        'z':leiden_df.obsm['X_pca'][:,2]})
-    pca_df = df_y.reset_index().join(pca_data).set_index('Sample_geo_accession')
-
-    n_samps = leiden_df.obsm['X_pca'].shape[0]
-    perp = 5
-    if n_samps <= 5:
-        perp = n_samps - 1
-
-    tsne = TSNE(perplexity=perp, learning_rate='auto', init='pca')
-    leiden_df.obsm['X_tsne'] = tsne.fit_transform(leiden_df.obsm['X_pca'])
-    leiden_df.obsm['X_tsne'] = zscore(leiden_df.obsm['X_tsne'],axis=0)
-    tsne_data = pd.DataFrame({'x':leiden_df.obsm['X_tsne'][:,0],
-                        'y':leiden_df.obsm['X_tsne'][:,1]})
-                        #'z':leiden_df.obsm['X_tsne'][:,2]
-    tsne_df = df_y.reset_index().join(tsne_data).set_index('Sample_geo_accession')
-    sc.tl.umap(leiden_df, n_components=2)
-    leiden_df.obsm['X_umap'] = zscore(leiden_df.obsm['X_umap'],axis=0)
-    umap_data = pd.DataFrame({'x':leiden_df.obsm['X_umap'][:,0],
-                        'y':leiden_df.obsm['X_umap'][:,1]})
-                        #'z':leiden_df.obsm['X_umap'][:,2]
-    umap_df = df_y.reset_index().join(umap_data).set_index('Sample_geo_accession')
-
-    return pca_df, tsne_df, umap_df
 
 def generate_colors(input_df, feature):
     pal = sns.color_palette(n_colors = len(input_df['legend'].unique()))
