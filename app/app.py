@@ -707,8 +707,10 @@ def plot_api_single(geo_accession, condition):
 	clus_numbers = f["var/leiden/codes"][:]
 
 	leiden_values = list(map(lambda x: "Cluster " + str(x), clus_numbers))
-
-	idx = np.where(genes == gene_symbol)[0][0]
+	try:
+		idx = np.where(genes == gene_symbol)[0][0]
+	except:
+		return
 
 	vals = f['raw/X'][idx,:]
 
