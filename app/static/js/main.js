@@ -24,7 +24,9 @@ async function explore_dge(gse, species) {
                 ${options.map(sig => `<option value="${sig}">${sig}</option>`)}
             </select>
         </div>
-        <div id="precomputed-dge-res-${gse}" class="m-3"></div></div>`
+        <div id="precomputed-dge-res-${gse}" class="m-3"></div>
+        <div id="precomputed-dge-res-buttons-${gse}" class="m-3"></div>
+        </div>`
 
         document.getElementById("chat-bubbles-section").appendChild(chatN('start', gse, '#d3d3d3', selecter));
         await $(`#chat-${gse}`).fadeIn(2000)
@@ -79,12 +81,59 @@ async function fill_precomputed_dge_table(sig, species, id) {
         tabletext += "</tbody></table>";
         precomputed_res.innerHTML = tabletext
 
-        $(`#table-precomputed-dge-${id}`).DataTable({
+        var table = $(`#table-precomputed-dge-${id}`).DataTable({
+            order: [[5, 'asc']],
             dom: 'Bfrtip',
             buttons: [
                 'copy', { extend: 'csv', title: sig }
             ]
         })
+
+        var adjpvals = table.column(5).data()
+        var pvals = table.column(4).data()
+        var logfc = table.column(1).data()
+        var genes_list = table.column(0).data()
+
+
+        genes_list = genes_list.map(x => x.replace(/<\/?[^>]+(>|$)/g, ""))
+
+        var genelist_buttons =
+        `<div class="row justify-content-center mx-auto text-center">
+            <div class="h7">Submit the top</div>
+            <input class="" id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2'
+                style='width: 50px; height: 30px; margin-left: 10px; margin-right: 10px;' />
+            <select id='dir' style='margin-left: 10px; margin-right: 10px; height: fit-content;'>
+                <option value='up'>upregulated</option>
+                <option value='down'>downregulated</option>
+            </select>
+            <div class="h7"> differentially expressed genes with a
+                <select id='col-to-use' style='margin-left: 10px; margin-right: 10px; height: fit-content;'>
+                    <option value='pval'>p-value</option>
+                    <option value='adjpval'>adjusted p-value</option>
+                </select>
+            </div>
+            <div class=" h7"> less than </div>
+            <input class='' id='signifigance' type='number' step='.01' value='.05' max='1'
+                style='width: 50px; height: 30px; margin-left: 10px; margin-right: 10px;"' />
+            <div class="h7"> to</div>
+        </div>
+        <div class="row justify-content-center mx-auto text-center">
+            <button class="btn btn-primary btn-group-sm m-2"
+                onclick="submit_geneset('${genes_list.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', '${logfc.join(',')}')">Gene Set Queries</button>
+        </div>
+        <div class="row justify-content-center mx-auto text-center">
+            <button type="button" class="btn btn-primary btn-group-sm m-2"
+                onclick="filter_and_submit_to_enrichr('${genes_list.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', '${logfc.join(',')}', '${sig}')">
+                Enrichr
+                <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
+            </button>
+            <button type="button" class="btn btn-primary btn-group-sm m-2"
+                onclick="filter_and_submit_to_kg('${genes_list.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', '${logfc.join(',')}', '${sig}')">
+                Enrichr-KG
+                <img src="/static/img/enrichr-kg.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
+            </button>
+        </div>`
+        document.getElementById(`precomputed-dge-res-buttons-${sig.split('-')[0]}`).innerHTML = genelist_buttons;
         return
     })
 }

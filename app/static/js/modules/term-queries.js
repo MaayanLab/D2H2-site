@@ -261,7 +261,6 @@ export async function search_for_studies(searchterms, assay, species, id) {
     if (bulk_gses > 0) {
         $(document).ready(function () {
             $(`#bulkrna-studies-table-${id}`).DataTable({
-                order: [[2, 'asc']],
                 dom: 'Bfrtip',
                 buttons: [
                     'copy', { extend: 'csv', title: `D2H2-${searchterms}-bulk-RNA-seq` }
@@ -274,15 +273,12 @@ export async function search_for_studies(searchterms, assay, species, id) {
     if (sc_gses > 0) {
         $(document).ready(function () {
             $(`#scrna-studies-table-${id}`).DataTable({
-                order: [[2, 'asc']],
                 dom: 'Bfrtip',
                 buttons: [
                     'copy', { extend: 'csv', title: `D2H2-${searchterms}-scRNA-seq`}
                 ]
             });
         })
-
-        
     }
     return;
 }
