@@ -9,8 +9,6 @@ async function explore_dge(gse, species) {
         data: data
     })
 
-    console.log(options)
-
     var selecter = `
     <div><h5 class="text-center mt-3">${gse} Precomputed Differential Gene Expression </h5>
         <p class="text-br-red text-center font-weight-bold">Signatures:</p>
