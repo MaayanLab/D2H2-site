@@ -291,6 +291,13 @@ def fetch_precomputed_dge():
 	dge_tab = get_precomputed_dge(sig, species)
 	return dge_tab.to_json(orient='index')
 
+@app.route('/api/precomputed_dge_options',  methods=['GET','POST'])
+def fetch_precomputed_dge_options():
+	response_json = request.get_json()
+	gse = response_json['gse']
+	species = response_json['species']
+	return get_precomputed_dge_options(gse, species)
+
 
 #This function makes the umap tsne and pca plots for the single cell data based off the precomputed coordinates for these plots. 
 #It is called in the generate_single_plots within the main.js file. 

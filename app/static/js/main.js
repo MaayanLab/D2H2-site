@@ -1,3 +1,95 @@
+
+async function explore_dge(gse, species) {
+    var data = JSON.stringify({'gse': gse, 'species': species})
+    const options = await $.ajax({
+        url: "api/precomputed_dge_options",
+        contentType: 'application/json',
+        type: "POST",
+        dataType: 'json',
+        data: data
+    })
+
+    console.log(options)
+
+    var selecter = `
+    <div><h5 class="text-center mt-3">${gse} Precomputed Differential Gene Expression </h5>
+        <p class="text-br-red text-center font-weight-bold">Signatures:</p>
+        <div class="row justify-content-center mt-4">`
+
+    if (options.length > 0) {
+        selecter += `
+            <select id="precomputed-dge-conditions-${gse}" class="mt-2 mb-2 mr-2 libpicker text-center"
+                    style="text-overflow: ellipsis; width: 60%;">
+                    <option value="">Select a signature to view limma differential expression</option>
+                ${options.map(sig => `<option value="${sig}">${sig}</option>`)}
+            </select>
+        </div>
+        <div id="precomputed-dge-res-${gse}" class="m-3"></div></div>`
+
+        document.getElementById("chat-bubbles-section").appendChild(chatN('start', gse, '#d3d3d3', selecter));
+        await $(`#chat-${gse}`).fadeIn(2000)
+
+        precomputed_sig = document.getElementById(`precomputed-dge-conditions-${gse}`)
+        precomputed_sig.addEventListener("change", (event) => {
+            if (precomputed_sig.value != '') {
+                fill_precomputed_dge_table(precomputed_sig.value, species,`precomputed-dge-res-${gse}`)
+            } else {
+                document.getElementById(`precomputed-dge-res-${gse}`).innerHTML = "";
+            }
+        });
+    } else {
+        selecter =  `
+            <p>No precomputed signatures are currently available for this study. You can compute differential gene
+            expression on the gene viewer page.
+            </p>
+        </div>`
+        document.getElementById("chat-bubbles-section").appendChild(chatN('start', parseInt(gse), '#d3d3d3', selecter));
+        await $(`#chat-${parseInt(gse)}`).fadeIn(2000)
+    }
+}
+
+async function fill_precomputed_dge_table(sig, species, id) {
+    const precomputed_res = document.getElementById(id)
+    var gsedata = JSON.stringify({'sig': sig, 'species': species});
+    $.ajax({
+        url: "api/precomputed_dge",
+        contentType: 'application/json',
+        type: "POST",
+        dataType: 'json',
+        data: gsedata,
+    }).done(function (data) {
+        var tabletext = `<table id='table-precomputed-dge-${id}' class='styled-table' style:'width=100%; vertical-align:top;'><thead><tr><th>Gene</th>`
+        const genes = Object.keys(data)
+        const columns = Object.keys(data[genes[0]])
+        columns.forEach(cname => {
+            tabletext += `<th>${cname}</th>`
+        })
+        tabletext += `</tr><tbody>`;
+
+        const currURL = window.location.href.split('/')
+
+        var url = currURL.join('/') + 'singlegene'
+        for (var k = 0; k < genes.length; k++) {
+            tabletext += `<tr><td><a href='${url}' onclick="setGene('${genes[k]}')" target='_blank'>${genes[k]}<a/></td>`
+            columns.forEach(cname => {
+                tabletext += "<td>" + data[genes[k]][cname] + "</td>"
+            })
+            tabletext += "</tr>"
+        }
+        tabletext += "</tbody></table>";
+        precomputed_res.innerHTML = tabletext
+
+        $(`#table-precomputed-dge-${id}`).DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', { extend: 'csv', title: sig }
+            ]
+        })
+        return
+    })
+}
+
+
 async function get_enrichr_geneset(term, library) {
     const res = await fetch(`https://maayanlab.cloud/Enrichr/geneSetLibrary?term=${term}&libraryName=${library}&mode=json`, {
         method: 'GET',

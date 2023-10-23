@@ -156,3 +156,133 @@ export async function query_geneshot(term, id) {
     </div>`
     document.getElementById(id).innerHTML = result;
 }
+
+
+export async function search_for_studies(searchterms, assay, species, id) {
+    var data = JSON.stringify({'searchterms': searchterms, 'assay': assay, 'species': species})
+    const res = await $.ajax({
+        url: "api/metadata_search",
+        contentType: 'application/json',
+        type: "POST",
+        dataType: 'json',
+        data: data
+    })
+
+    var result = ""
+    const bulkStudies = {...res['bulkrna']['human'], ...res['bulkrna']['mouse']}
+    const scStudies = {...res['scrna']['human_single'], ...res['scrna']['mouse_single']}
+
+    const bulk_gses = Object.keys(bulkStudies).length 
+    const sc_gses = Object.keys(scStudies).length 
+
+    if ((bulk_gses + sc_gses) == 0) {
+        document.getElementById(id).innerHTML = "<p>No studies were found using your search parameters. Please try broadening your search.</p>";
+        return;
+    }
+
+    var currURL =  window.location.href
+    if (currURL.includes('#')) {
+        currURL = currURL.split('#')[0]
+    }
+   
+
+    if (bulk_gses > 0) {
+        result += "<h5>Bulk and Microarray Studies</h5>"
+
+        var tableText = 
+        `<table class="table table-bordered table-hover styled-table" id="bulkrna-studies-table-${id}">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">GSE Accession ID</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Organism</th>
+                    <th scope="col">Tissue</th>
+                    <th scope="col">Disease</th>
+                    <th scope="col">Perturbations</th>
+                    <th scope="col">Precomputed DGE</th>
+                    <th scope="col">Gene Viewer Link</th>
+                </tr>
+            </thead>
+            <tbody>`
+
+        Object.keys(bulkStudies).forEach((gse) => {
+            var species_var
+            if (bulkStudies[gse].species == 'Homo sapiens') {
+                species_var  = 'human';
+            } else species_var = 'mouse';
+            tableText += `<tr><th scope="row"><a class="text-br-red" href="${bulkStudies[gse].gse_link}" target="_blank" rel="noopener noreferrer">${gse}</a></th>`
+            tableText += `<td>${bulkStudies[gse].title}</td><td>${bulkStudies[gse].species}</td><td>${bulkStudies[gse].tissue_type_identifier}</td>`
+            tableText += `<td>${bulkStudies[gse].disease_type_identifier}</td><td>${bulkStudies[gse].perturbations}</td>`
+            tableText += `<td><button class='btn-group-sm' onclick="explore_dge('${gse}','${species_var}')">Precomputed DGE</button></td>`
+            tableText += `<td><a href='${currURL + gse}' target='_blank'><button class='btn btn-primary btn-group-sm'>${gse} Gene Viewer</button></a></td></tr>`
+        })
+        tableText += "</tbody></table>"
+
+        result += tableText;
+    } else {
+        if (assay == 'both' || assay == 'bulkrna') {
+            result += "<p>No Bulk RNA-seq or Microarray studies were identified from your search.</p>"
+        }
+    }
+
+    if (sc_gses > 0) {
+        result += "<h5>scRNA-seq Studies</h5>"
+        var tableText2 = 
+        `<table class="table table-bordered table-hover styled-table" id="scrna-studies-table-${id}">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">GSE Accession ID</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Organism</th>
+                    <th scope="col">Tissue</th>
+                    <th scope="col">Cell Type of Interest</th>
+                    <th scope="col">Disease</th>
+                    <th scope="col">Perturbations</th>
+                    <th scope="col">Gene Viewer Link</th>
+                </tr>
+            </thead>
+            <tbody>`
+
+        Object.keys(scStudies).forEach((gse) => {
+            tableText2 += `<tr><th scope="row"><a class="text-br-red" href="${scStudies[gse].gse_link}" target="_blank" rel="noopener noreferrer">${gse}</a></th>`
+            tableText2 += `<td>${scStudies[gse].title}</td><td>${scStudies[gse].species}</td><td>${scStudies[gse].tissue_type_identifier}</td>`
+            tableText2 += `<td>${scStudies[gse]["cell type"]}</td><td>${scStudies[gse].disease_type_identifier}</td><td>${scStudies[gse].perturbations}</td>`
+            tableText2 += `<td><a href='${currURL + gse}' target='_blank'><button class='btn btn-primary btn-group-sm'> ${gse} Gene Viewer</button></a></td></tr>`
+        })
+        tableText2 += "</tbody></table>"
+        result += tableText2;
+    } else {
+        if (assay == 'both' || assay == 'scrna') {
+            result += "<p>No scRNA-seq studies were identified from your search.</p>"
+        }
+    }
+    document.getElementById(id).innerHTML = result;
+
+    if (bulk_gses > 0) {
+        $(document).ready(function () {
+            $(`#bulkrna-studies-table-${id}`).DataTable({
+                order: [[2, 'asc']],
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', { extend: 'csv', title: `D2H2-${searchterms}-bulk-RNA-seq` }
+                ]
+            });
+        })
+
+       
+    }
+    if (sc_gses > 0) {
+        $(document).ready(function () {
+            $(`#scrna-studies-table-${id}`).DataTable({
+                order: [[2, 'asc']],
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', { extend: 'csv', title: `D2H2-${searchterms}-scRNA-seq`}
+                ]
+            });
+        })
+
+        
+    }
+    return;
+}

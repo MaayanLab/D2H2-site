@@ -151,6 +151,4 @@ export async function run_process_gene(user_query, process_info_copy, chat_num, 
         document.getElementById('gpt-query').removeAttribute("disabled") 
         return;
     }
-    
-    
 }

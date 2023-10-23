@@ -174,7 +174,7 @@
             "text": "",
             "questions": [
                 {
-                    "q": "Would you like to search for Bulk RNA-seq/Microarray studies or single cell RNA-seq studies?:\n",
+                    "q": "Would you like to search for Bulk RNA-seq/Microarray studies or single cell RNA-seq studies?",
                     "arg": "assay",
                     "options": [
                         "Bulk RNA-seq and Microarray",
@@ -183,7 +183,7 @@
                     ]
                 },
                 {
-                    "q": "Which organism are you interested in?:\n",
+                    "q": "Which organism are you interested in?",
                     "arg": "species",
                     "options": [
                         "human",

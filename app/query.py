@@ -29,7 +29,7 @@ def determine_valid(query):
     A GeneSet is a collection of mulitple genes.
     If the user is asking for associated or upregulated genes or a gene set as an output, you should respond with [Term]. 
     Also select [Term] if the user appears to be asking a general question about a disease, or in general any biomedical term.
-    If the user mentions studies contained on the site or in general asks about study metadata on d2h2 the output should be [Study Metadata].
+    If the user mentions "studies" contained on the site or in general asks about study metadata on d2h2 the output should be [Study Metadata].
     If the user includes a gene symbol in their query, then the input is likely [Gene].
     If the the user's query is not relevant to any type in the list, or in general the question is not relevant in a biomedical context, then please respond with [Other].
     Take a deep breath, and respond in this format including only one type and no other reasoning:

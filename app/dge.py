@@ -61,7 +61,11 @@ def get_precomputed_dge(sig, species):
 def get_precomputed_dge_options(gse, species):
     with open('static/data/all_sigs.json') as f:
         all_sigs = json.load(f)
-    return [sig for sig in all_sigs[species] if sig.split('-')[0] == gse]
+    sigs = []
+    for sig in all_sigs[species]:
+        if sig.split('-')[0] == gse:
+            sigs.append(sig)
+    return sigs
 
 
 def get_signatures(classes, dataset, normalization, method, meta_class_column_name, filter_genes):
