@@ -1024,6 +1024,5 @@ def metadata_search():
 if __name__ == "__main__":
 	if UPDATE_STUDIES:
 		load_new_studies()
-	
 	app.run(debug=DEBUG, host="0.0.0.0", port=5000)
 
