@@ -79,7 +79,16 @@ def find_process(query):
     elif input_type == '[Study Metadata]':
         res = identify_search_term(query)
         if 'term' in res:
-            return {"response": 0, "input": '[Study Metadata]', "output": '[Search]', "term": res['term']}
+            response_dict = {"response": 0, "input": '[Study Metadata]', "output": '[Search]', "term": res['term']}
+            human_in_query = any([w in query.lower() for w in ['human','humans','homo sapiens']])
+            mouse_in_query = any([w in query.lower() for w in ['mice','mouse','mus musculus']])
+            if human_in_query and mouse_in_query:
+                response_dict['species'] = 'both'
+            elif human_in_query:
+                response_dict['species'] = 'human'
+            elif mouse_in_query:
+                response_dict['species'] = 'mouse'
+            return response_dict
         return {"response": 1, "error": "busy"}
     else:
         return {"response": 1, "error": "busy"}
