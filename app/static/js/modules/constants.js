@@ -156,8 +156,9 @@ export function geneset_up_down_entries(chatnum) {
 
 export function geneset_buttons(chatnum){
     return `
-<div class="text-center justify-content-center row mb-5">
+<div class="text-center justify-content-center col mb-5 mt-2">
     <button class='btn btn-primary btn-group-sm text-center' id="submit_gene_set${chatnum}">Submit</button>
+    <button class='btn btn-primary btn-group-sm text-center' id="cancel${chatnum}">Cancel</button>
 </div>`
 }
 

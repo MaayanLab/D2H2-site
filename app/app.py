@@ -649,6 +649,11 @@ def genes_api(geo_accession):
 			mouse_genes = json.load(f)
 		all_genes = human_genes + mouse_genes['mouse_genes']	
 		genes_json = json.dumps([{'gene_symbol': x} for x in all_genes])
+	elif geo_accession == 'signatures':
+		with open('../ETL/signature_idx.json', 'r') as f:
+			genes = json.load(f)
+		all_genes = list(set(genes['human_rna'] + genes['mouse_rna'] + genes['human_micro'] + genes['mouse_micro']))	
+		genes_json = json.dumps([{'gene_symbol': x} for x in all_genes])
 	else:
 		species = study_to_species[geo_accession]
 		species_folder = url_to_folder[species]
@@ -825,8 +830,12 @@ def plot_volcano_api():
 	request.form
 	gene = request.form["gene"]
 	species = request.form["species"]
-	json_item_plot = send_plot(species, gene)
-	# Return
+	try:
+		json_item_plot = send_plot(species, gene)
+	except Exception as e:
+		print(e)
+		return {'error': "Gene not found"}
+	
 	return json.dumps(json_item_plot)
 
 

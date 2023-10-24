@@ -631,6 +631,12 @@
                     document.getElementById(`submit_gene_set${chat_num + 1}`).addEventListener("click", function () {
                         submit_gene_set(process_info);
                     });
+                    document.getElementById(`cancel${chat_num + 1}`).addEventListener("click", async function () {
+                        reset_process();
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "Is there a different process I can help you with?"));
+                        await $(`#chat-${chat_num}`).fadeIn(2000);
+                        chat_num++;
+                    });
                     document.getElementById('gpt-query').setAttribute("disabled", true)
                     await $(`#chat-${chat_num}`).fadeIn(2000);
                     chat_num++;

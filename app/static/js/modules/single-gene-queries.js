@@ -46,6 +46,10 @@ export async function gene_signatures(gene, species, resultid) {
         type: "POST",
         data: jsonData,
     }).then(function (res) {
+        if (res?.error) {
+            document.getElementById(resultid).innerHTML = "<p>Gene symbol not found</p>";
+            return;
+        }
         var jdata = JSON.parse(res)
         var plot = jdata['plot']
         var tables = jdata['tables']
