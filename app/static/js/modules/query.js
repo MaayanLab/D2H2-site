@@ -97,7 +97,7 @@ export async function run_process_gene(user_query, process_info_copy, chat_num, 
     var process = process_eval[process_info_copy.input][process_info_copy.output];
     var args = process.args.map((x) => x);
     args.push("result");
-    if (process_eval[process_info_copy.input] == '[Gene]') {
+    if (process_info_copy.input == '[Gene]') {
         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', process.text))
         log_chat(user_query, process.text, userid);
         $(`#chat-${chat_num}`).fadeIn(2000, async () => {
