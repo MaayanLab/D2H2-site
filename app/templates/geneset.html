@@ -617,6 +617,7 @@
 
             if (inputvalue.length == 0) {
                 alert('Please enter a gene set')
+                return;
             }
 
             var genes = JSON.stringify({ 'genes': [inputvalue] });
@@ -660,6 +661,7 @@
 
             if (inputvalueUp.length == 0 || inputvalueDown.length == 0) {
                 alert('Please enter an up and down gene set')
+                return;
             }
 
             var genes = JSON.stringify({ 'genes': [inputvalueUp, inputvalueDown] });

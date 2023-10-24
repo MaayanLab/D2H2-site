@@ -1,7 +1,13 @@
 // QUERY DIABETES RELATED SIGNATURES FOR GENESET
 // [GeneSet]->[Signatures]
 export async function geneset_signatures(geneset, resultid) {
+    if (!geneset) {
+        alert("Please enter a gene set")
+        return;
+    }
     var inputvalue = geneset.split(',').join('\n');
+    console.log(inputvalue)
+    
     var desc = ''
     await $.ajax({
         url: "getdiabetesenrich",
