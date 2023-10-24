@@ -650,7 +650,7 @@ def genes_api(geo_accession):
 		all_genes = human_genes + mouse_genes['mouse_genes']	
 		genes_json = json.dumps([{'gene_symbol': x} for x in all_genes])
 	elif geo_accession == 'signatures':
-		with open('../ETL/signature_idx.json', 'r') as f:
+		with open('static/data/signature_idx.json', 'r') as f:
 			genes = json.load(f)
 		all_genes = list(set(genes['human_rna'] + genes['mouse_rna'] + genes['human_micro'] + genes['mouse_micro']))	
 		genes_json = json.dumps([{'gene_symbol': x} for x in all_genes])
