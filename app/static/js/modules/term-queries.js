@@ -213,7 +213,7 @@ export async function search_for_studies(searchterms, assay, species, id) {
             tableText += `<tr><th scope="row"><a class="text-br-red" href="${bulkStudies[gse].gse_link}" target="_blank" rel="noopener noreferrer">${gse}</a></th>`
             tableText += `<td>${bulkStudies[gse].title}</td><td>${bulkStudies[gse].species}</td><td>${bulkStudies[gse].tissue_type_identifier}</td>`
             tableText += `<td>${bulkStudies[gse].disease_type_identifier}</td><td>${bulkStudies[gse].perturbations}</td>`
-            tableText += `<td><button class='btn-group-sm' onclick="explore_dge('${gse}','${species_var}')">Precomputed DGE</button></td>`
+            tableText += `<td><button class='btn-custom btn-group-sm' onclick="explore_dge('${gse}','${species_var}')">Precomputed DGE</button></td>`
             tableText += `<td><a href='${currURL + gse}' target='_blank'><button class='btn btn-primary btn-group-sm'>${gse} Gene Viewer</button></a></td></tr>`
         })
         tableText += "</tbody></table>"

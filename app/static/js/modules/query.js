@@ -95,7 +95,7 @@ export async function run_process_gene(user_query, process_info_copy, chat_num, 
     var chat_num = chat_num;
     var process_eval = await processes;
     var process = process_eval[process_info_copy.input][process_info_copy.output];
-    var args = process.args.map((x) => x);
+    var args = process.args.map((x) => x.replace("'", ""));
     args.push("result");
     if (process_info_copy.input == '[Gene]') {
         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', process.text))
@@ -115,8 +115,8 @@ export async function run_process_gene(user_query, process_info_copy, chat_num, 
             }
             var args_string = "";
             for (let i = 0; i < args.length; i++) {
-                if (i == 0) args_string += `'${args[i]}'`;
-                else args_string += `,'${args[i]}'`;
+                if (i == 0) args_string += `"${args[i]}"`;
+                else args_string += `,"${args[i]}"`;
             }
             var process_eval = `${process.process}(${args_string})`;
             console.log(process_eval)
@@ -140,8 +140,8 @@ export async function run_process_gene(user_query, process_info_copy, chat_num, 
         }
         var args_string = "";
         for (let i = 0; i < args.length; i++) {
-            if (i == 0) args_string += `'${args[i]}'`;
-            else args_string += `,'${args[i]}'`;
+            if (i == 0) args_string += `"${args[i]}"`;
+            else args_string += `,"${args[i]}"`;
         }
         var process_eval = `${process.process}(${args_string})`;
         console.log(process_eval)
