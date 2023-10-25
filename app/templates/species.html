@@ -373,15 +373,22 @@ table.columns().flatten().each( function ( colIdx ) {
             } );
 
             $('#disease-filtering').on('change', function (event) {
-                table
-                    // .search( $(this).val() )
-                    .draw();
+                table.draw();
             } );
-
         }
     } );
 
-    table.column(2).hide()
+
+    window.addEventListener( "pageshow", function ( event ) {
+        var historyTraversal = event.persisted || 
+                                ( typeof window.performance != "undefined" && 
+                                    window.performance.navigation.type === 2 );
+        console.log(historyTraversal)
+        if ( historyTraversal ) {
+            // Handle page restore.
+            table.draw()
+        }
+    });
 
 </script>
 

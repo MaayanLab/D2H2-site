@@ -43,9 +43,16 @@
         <div class="row flex-wrap justify-content-center mx-auto">
 
             <div id="chat-div" class="col-lg-5 col-md-10 col-sm-10 mt-3 ml-5">
-                <h3 class="pt-2 text-center" style="font-size: 1.50rem;">D2H2 Chatbot <img class="ml-2 mb-3"
-                        src="{{ url_for('static', filename='img/chatbot.png') }}" height="40px"
-                        onclick='localStorage.setItem("no_splash", true)'></h3>
+                <div class="row justify-content-center justify-items-center">
+                    <div id="chat-icons" class="row text-center">
+                        <img class="rounded"
+                            src="{{ url_for('static', filename='img/gpt-calculator.png') }}" height="80px"
+                            onclick='localStorage.setItem("no_splash", true)'/>
+                        <h3 id="chatbot-title" class="mt-3 ml-2 text-center" style="font-size: 1.50rem;">D2H2 Chatbot <img class="ml-2 mb-3"
+                                src="{{ url_for('static', filename='img/chatbot.png') }}" height="40px"
+                                onclick='localStorage.setItem("no_splash", true)'></h3>
+                    </div>
+                </div>
                 <div class="justify-content-center p-0 m-0 text-center" style="flex-wrap: wrap;">
                     <!-- Main Panel -->
                     <div class="banner">
@@ -103,7 +110,7 @@
                                 </div>
                                 <div class="card">
                                     <div class="q-example" id="q-example2">
-                                        Which transcription factors regulate my gene set?
+                                        Which D2H2 studies were conducted in mice and focuses on islets?
                                     </div>
                                 </div>
                                 <div class="card">
@@ -128,8 +135,22 @@
                                         Which genes are most correlated with NFATC1?
                                     </div>
                                 </div>
+                                <div class="card">
+                                    <div class="q-example" id="q-example7">
+                                        Which published gene sets extracted from PubMed Central (PMC) articles significantly overlap with my gene set?
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="q-example" id="q-example8">
+                                        Which D2H2 studies focus on type 2 diabetes?
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="q-example" id="q-example9">
+                                        Which transcription factors regulate my gene set?
+                                    </div>
+                                </div>
                             </div>
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -692,6 +713,9 @@
     async function fadeChatIn() {
         $('#chat-div').addClass('col-lg-10')
         $('#features-div').addClass('col-lg-6')
+        $('#chat-icons').removeClass('row')
+        $('#chat-icons').addClass('block')
+        $('#chatbot-title').removeClass('mt-3')
         await $("#chat-section").fadeIn(1000);
         setTimeout(() => $("#chat-intro").fadeIn(), 1500)
         $("#chat-intro").fadeIn(2000)
@@ -721,7 +745,9 @@
         reset_chat();
         $('#chat-div').removeClass('col-lg-10')
         $('#features-div').removeClass('col-lg-6')
-
+        $('#chat-icons').removeClass('block')
+        $('#chat-icons').addClass('row')
+        $('#chatbot-title').addClass('mt-3')
     });
 
     const countupEls = document.querySelectorAll('.countup');
