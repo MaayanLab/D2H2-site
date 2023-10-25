@@ -3,12 +3,12 @@ services:
   app:
     platform: linux/x86_64
     build: .
-    image: maayanlab/d2h2:1.2.54
+    image: maayanlab/d2h2:1.2.64
     environment:
       - ROOT_PATH=/
-      - BASE_PATH=https://maayanalab.cloud
-      - ENDPOINT=https://minio.dev.maayanlab.cloud/
+      - BASE_PATH=data
+      - ENDPOINT=https://d2h2.s3.amazonaws.com/
       - DEBUG=False
-      - BASE_URL=d2h2/data
+      - BASE_URL=data
     ports:
       - 5000:5000

@@ -1,9 +1,6 @@
 {% extends 'base.html' %}
 
-{% block html %}class='h-100' {% endblock %}
-
-
-{% block content %}
+{% block body %}
 <div class="viewer-title">
     <div class="container viewer-title d-flex align-items-center justify-content-center text-center mt-4">
         <h4>
@@ -23,25 +20,49 @@
     <div class="row mt-4">
 
         <div class="col-12">
-            <div class="h4 pl-2 mb-4">
+            <div class="h4 pl-2 mb-4 row">
                 {% if gse_metadata[species][geo_accession].get('type') == ['Expression profiling by array'] %}
                 Microarray Data Explorer
+                <div class="tooltip ml-2">
+                    <img src="../static/img/more_info.png" alt="Info" style="visibility: visible !important; opacity: 1 !important; width: 20px;"/>
+                    <span class="tooltiptext">
+                        Raw gene Expression data is sourced from GEO, and the appropriate db package for mapping probes to gene symbols was sourced from the <a href="https://www.bioconductor.org/packages/release/data/annotation/" target="_blank" rel="noopener noreferrer">Bioconductor AnnotationData packages</a>. 
+                        You can read more about microarray data <a href="https://pubmed.ncbi.nlm.nih.gov/17660860/" target="_blank" rel="noopener noreferrer">here</a>.
+                    </span>
+                </div>
                 {% elif gse_metadata[species][geo_accession].get('type') == ['Expression profiling by high throughput
                 sequencing'] %}
                 RNA-Seq Data Explorer
+                <div class="tooltip ml-2">
+                    <img src="../static/img/more_info.png" alt="Info" style="visibility: visible !important; opacity: 1 !important; width: 20px;"/>
+                    <span class="tooltiptext">
+                        Gene counts are sourced from ARCHS4, which provides uniform alignment of GEO samples. 
+                        You can learn more about ARCHS4 and its pipeline <a href="https://maayanlab.cloud/archs4/" target="_blank" rel="noopener noreferrer">here</a>.
+                    </span>
+                </div>
                 {% else %}
                 Gene Expression Data Explorer
+                <div class="tooltip ml-2">
+                    <img src="../static/img/more_info.png" alt="Info" style="visibility: visible !important; opacity: 1 !important; width: 20px;"/>
+                    <span class="tooltiptext">
+                        Gene counts are sourced from ARCHS4, which provides uniform alignment of GEO samples. 
+                        You can learn more about ARCHS4 and its pipeline <a href="https://maayanlab.cloud/archs4/" target="_blank" rel="noopener noreferrer">here</a>.
+                    </span>
+                </div>
                 {% endif %}
             </div>
         </div>
     </div>
 
+    
+
     <!-- Gene Expression Explorer -->
     <div class="row justify-content-center">
+        
 
         <!-- Boxplots -->
         <div class="col-lg-8 col-xl-9 mb-4 justify-content-center">
-
+            
             <!-- Selector and plot -->
             <div class="custom-col justify-content-center text-center">
                 Enter gene symbol:
@@ -97,8 +118,7 @@
         <!-- Table -->
         <div class="col-lg-4 col-xl-3 p-2">
             <p class="m-3" style="font-size: 0.97rem;">Select conditions below to toggle them from the plot:</p>
-
-            <table id="condition-table" class="text-center">
+            <table id="condition-table" class="text-center" >
                 <thead>
                     <tr>
                         <th>GROUP</th>
@@ -123,7 +143,6 @@
                                 data-toggle="button" aria-pressed="{{ grouploop.first|lower }}" autocomplete="off"
                                 data-group_label="{{ condition  + ' ' + group }}">{{ condition|safe }} </button>
                         </td>
-
                         <td class="border" style="padding: 0px 18px">
                             <button
                                 class="btn-custom btn-group-sm btn-collapse collapsed d-flex align-items-center text-center"
@@ -136,10 +155,7 @@
                             <div class="collapse" id="samples-{{ gse_id }}">
                                 {{ " ".join(metadata_dict_samples[group + ' ' + condition]['samples']) }}
                             </div>
-
                         </td>
-
-
                     </tr>
                     {% endfor %}
                     {% endfor %}
@@ -196,8 +212,19 @@
 
 <div class="row justify-content-center mb-5 mt-2">
     <div class="col-7">
-        <div class="custom-col justify-content-center" style="overflow: visible">
-            <div class="h4 pl-2 mt-4 mb-4 text-center">Visualize Samples</div>
+        <div class="custom-col justify-content-center text-center" style="overflow: visible">
+
+                <div class="pl-2 mt-4 mb-4" style="display: inline-flex;"><h4>Visualize Samples</h4> 
+                    <div class="tooltip ml-2">
+                        <img src="../static/img/more_info.png" alt="Info" style="visibility: visible !important; opacity: 1 !important; width: 20px;"/>
+                        <span class="tooltiptext">
+                            Visualizations are precomputed using the Python package <a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-017-1382-0" target="_blank" rel="noopener noreferrer">scanpy</a> on the top 5000 most variable genes.
+                        </span>
+                    </div>
+                </div>
+                
+
+            
 
             <div class="row justify-content-center mt-4 singleplotclass centered">
                 <ul class="nav nav-tabs">
@@ -234,6 +261,41 @@
 </div>
 
 
+<div class="row justify-content-center mb-3 mt-2">
+    <div class="col-7">
+        <div class="custom-col justify-content-center" style="overflow: visible">
+            <div class="pl-2 mt-4 mb-4 justify-content-center" style="display: flex;">
+                <h4>Precomputed Differential Gene Expression</h4> 
+                <div class="tooltip ml-2">
+                    <img src="../static/img/more_info.png" alt="Info" style="width: 20px;"/>
+                    <span class="tooltiptext">
+                        Differential expression signatures are automatically computed using the <a href="https://pubmed.ncbi.nlm.nih.gov/25605792/" target="_blank" rel="noopener noreferrer">limma R package</a>.
+                        More options for differential expression are available to compute below.
+                    </span>
+                </div>
+            </div>
+            <p class="text-br-red text-center font-weight-bold">Signatures:</p>
+            <div class="row justify-content-center mt-4">
+                {% if dge_precomputed|length > 0 %}
+                <select id="precomputed-dge-conditions" class="mt-2 mb-2 mr-2 libpicker text-center"
+                    style="text-overflow: ellipsis; width: 60%;">
+                    <option value="">Select a signature to view limma differential expression</option>
+                    {% for sig in dge_precomputed %}
+                    <option value="{{ sig }}">{{ sig }}</option>
+                    {% endfor %}
+                </select>
+                {% else %}
+                <p>No precomputed signatures are currently available for this study. You can compute differential gene
+                    expression on the fly below: </p>
+                {% endif %}
+            </div>
+            <div id="precomputed-dge-res" class="m-3"></div>
+            <div id="precomputed-dge-res-buttons" class="m-3"></div>
+        </div>
+    </div>
+</div>
+
+
 
 <div class="row justify-content-center mb-3 mt-2">
     <div class="col-7">
@@ -257,10 +319,15 @@
                 <p class="mx-auto"> Only conditions with at least 1 replicate are available to select</p>
             </div>
 
-
-
-
-            <div class="h4 pl-2 mt-4 mb-4 text-center">Differential Gene Expression Analysis</div>
+            <div class="h4 pl-2 mt-4 mb-4 justify-content-center" style="display: flex;">
+                Differential Gene Expression Analysis
+                <div class="tooltip ml-2">
+                    <img src="../static/img/more_info.png" alt="Info" style="width: 20px;"/>
+                    <span class="tooltiptext">
+                        Differential expression signatures can be computed using <a href="https://pubmed.ncbi.nlm.nih.gov/24650281/" target="_blank" rel="noopener noreferrer">DESeq2</a> or <a href="https://pubmed.ncbi.nlm.nih.gov/24650281/" target="_blank" rel="noopener noreferrer">characteristic direction</a>.
+                    </span>
+                </div>
+            </div>
 
 
             <div class="h6 text-center mt-3"> Select differential expression analysis method:</div>
@@ -272,31 +339,6 @@
                     <option value="DESeq2">DESeq2</option>
                     {% endif %}
                 </select>
-            </div>
-            <div id="normalization" style="display: none;">
-                <div class="h6 text-center mb-2"> Select Normalization Methods:</div>
-                <div class="row justify-items-center justify-content-center">
-                    <div class="h9 m-2">logCPM normalization:</div>
-                    <label class="switch" for="logCPM">
-                        <input type="checkbox" id="logCPM" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <div class="h9 m-2">log normalization:</div>
-                    <label class="switch" for="log">
-                        <input type="checkbox" id="log">
-                        <span class="slider round"></span>
-                    </label>
-                    <div class="h9 m-2">Z normalization:</div>
-                    <label class="switch" for="z">
-                        <input type="checkbox" id="z" checked>
-                        <span class="slider round"></span>
-                    </label>
-                    <div class="h9 m-2">Quantile normalization:</div>
-                    <label class="switch" for="q">
-                        <input type="checkbox" id="q">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
             </div>
 
             <div class="row justify-content-center">
@@ -360,28 +402,119 @@
 
 {% block footer %}
 <script>
+
     const el = document.getElementById('method');
-
     const box = document.getElementById('normalization');
+    const gse = document.getElementById("gse").innerText
+    const species = document.getElementById("species").innerText
+    const loading = "<div class='loadingspinner'><div id='square1'></div><div id='square2'></div><div id='square3'></div><div id='square4'></div><div id='square5'></div></div>";
 
-    /* el.addEventListener('change', function handleChange(event) {
-      if (event.target.value === 'DESeq2') {
-        box.style.display = 'block';
-      } else {
-        box.style.display = 'none';
-      }
-    */
+    const precomputed_sig = document.getElementById('precomputed-dge-conditions');
+    if (precomputed_sig) {
+        precomputed_sig.addEventListener("change", (event) => {
+            document.getElementById('precomputed-dge-res').innerHTML = "<div class='text-center'>Retrieving results...</di>";
+            if (precomputed_sig.value != '') {
+                fill_precomputed_dge_table()
+            } else {
+                document.getElementById('precomputed-dge-res').innerHTML = "";
+            }
+        });
+    }
+
+    function fill_precomputed_dge_table() {
+        const precomputed_res = document.getElementById('precomputed-dge-res')
+        var gsedata = JSON.stringify({ 'sig': precomputed_sig.value, 'species': species });
+        $.ajax({
+            url: "api/precomputed_dge",
+            contentType: 'application/json',
+            type: "POST",
+            dataType: 'json',
+            data: gsedata,
+        }).done(function (data) {
+
+            var tabletext = `<table id='table-precomputed-dge' class='styled-table' style:'width=100%; vertical-align:top;'><thead><tr><th>Gene</th>`
+            const genes = Object.keys(data)
+            const columns = Object.keys(data[genes[0]])
+            columns.forEach(cname => {
+                tabletext += `<th>${cname}</th>`
+            })
+            tabletext += `</tr><tbody>`;
+
+            const currURL = window.location.href.split('/')
+
+            var url = currURL.join('/') + 'singlegene'
+            for (var k = 0; k < genes.length; k++) {
+                tabletext += `<tr><td><a href='${url}' onclick="setGene('${genes[k]}')" target='_blank'>${genes[k]}<a/></td>`
+                columns.forEach(cname => {
+                    tabletext += "<td>" + data[genes[k]][cname] + "</td>"
+                })
+                tabletext += "</tr>"
+            }
+            tabletext += "</tbody></table>";
+            precomputed_res.innerHTML = tabletext
+
+            var table = $(`#table-precomputed-dge`).DataTable({
+                order: [[5, 'asc']],
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', { extend: 'csv', title: precomputed_sig.value }
+                ]
+            })
+
+            var adjpvals = table.column(5).data()
+            var pvals = table.column(4).data()
+            var logfc = table.column(1).data()
+            var genes_list = table.column(0).data()
+
+
+            genes_list = genes_list.map(x => x.replace(/<\/?[^>]+(>|$)/g, ""))
+
+            var genelist_buttons =
+            `<div class="row justify-content-center mx-auto text-center">
+                <div class="h7">Submit the top</div>
+                <input class="" id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2'
+                    style='width: 50px; height: 30px; margin-left: 10px; margin-right: 10px;' />
+                <select id='dir' style='margin-left: 10px; margin-right: 10px; height: fit-content;'>
+                    <option value='up'>upregulated</option>
+                    <option value='down'>downregulated</option>
+                </select>
+                <div class="h7"> differentially expressed genes with a
+                    <select id='col-to-use' style='margin-left: 10px; margin-right: 10px; height: fit-content;'>
+                        <option value='pval'>p-value</option>
+                        <option value='adjpval'>adjusted p-value</option>
+                    </select>
+                </div>
+                <div class=" h7"> less than </div>
+                <input class='' id='signifigance' type='number' step='.01' value='.05' max='1'
+                    style='width: 50px; height: 30px; margin-left: 10px; margin-right: 10px;"' />
+                <div class="h7"> to</div>
+            </div>
+            <div class="row justify-content-center mx-auto text-center">
+                <button class="btn btn-primary btn-group-sm m-2"
+                    onclick="submit_geneset('${genes_list.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', '${logfc.join(',')}')">Gene Set Queries</button>
+            </div>
+            <div class="row justify-content-center mx-auto text-center">
+                <button type="button" class="btn btn-primary btn-group-sm m-2"
+                    onclick="filter_and_submit_to_enrichr('${genes_list.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', '${logfc.join(',')}', '${precomputed_sig.value}')">
+                    Enrichr
+                    <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
+                </button>
+                <button type="button" class="btn btn-primary btn-group-sm m-2"
+                    onclick="filter_and_submit_to_kg('${genes_list.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', '${logfc.join(',')}', '${precomputed_sig.value}')">
+                    Enrichr-KG
+                    <img src="/static/img/enrichr-kg.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
+                </button>
+            </div>`
+            document.getElementById('precomputed-dge-res-buttons').innerHTML = genelist_buttons;
+            
+            return
+        })
+    }
 
     function generate_plots() {
         document.getElementById("umap-plot").innerHTML = "";
         document.getElementById("tsne-plot").innerHTML = "";
         document.getElementById("pca-plot").innerHTML = "";
-        document.getElementById("plots-loading").innerHTML = "<p>PCA, t-SNE, UMAP plots may take a minute to load</p>";
-        document.getElementById("singleplots-loading").innerHTML = "<div class='loader justify-content-center'></div>";
-        // $('#singleplots-loading').addClass('loader justify-content-center');
-        var gse = document.getElementById("gse").innerText
-        var species = document.getElementById("species").innerText
-
 
         var gsedata = JSON.stringify({ 'gse': gse, 'species': species });
         $.ajax({
@@ -391,17 +524,19 @@
             dataType: 'json',
             data: gsedata,
         }).done(function (response) {
-
-            document.getElementById("singleplots-loading").innerHTML = "";
-            document.getElementById("plots-loading").innerHTML = "";
-            // $('#singleplots-loading').removeClass('loader justify-content-center');
             var umap_plot = response['umapplot']
             var pca_plot = response['pcaplot']
             var tsne_plot = response['tsneplot']
 
-            window.Bokeh.embed.embed_item(umap_plot)
-            window.Bokeh.embed.embed_item(pca_plot)
-            window.Bokeh.embed.embed_item(tsne_plot)
+            if (pca_plot == 'None') {
+                document.getElementById('umap').innerText = 'No visualization avaiable'
+                document.getElementById('tsne').innerText = 'No visualization avaiable'
+                document.getElementById('pca').innerText = 'No visualization avaiable'
+            } else {
+                window.Bokeh.embed.embed_item(umap_plot)
+                window.Bokeh.embed.embed_item(pca_plot)
+                window.Bokeh.embed.embed_item(tsne_plot)
+            }
         });
     }
 
@@ -412,7 +547,4 @@
     $("#viewer").parents('li').addClass('active');
 
 </script>
-
-
-
 {% endblock %}

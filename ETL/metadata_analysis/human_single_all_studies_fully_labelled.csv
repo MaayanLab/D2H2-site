@@ -1,0 +1,18 @@
+,GSE,Link to Study,Disease Label,Cell Type,Cell line,Tissue,Published Status
+0,GSE135356,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE135356,Diabetes,Endothelial Cells,HUVEC Cell Line,Umbilical Cord,Published
+1,GSE138857,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE138857,Diabetes,Pluripotent Stem Cells,HUES8 Cell Line,Not Specified,Published
+2,GSE139535,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE139535,Diabetes,Beta Cells,HUES8 Cell Line,Pancreas,Published
+3,GSE151889,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE151889,Obesity,Macrophages,N/A,Adipose,Published
+4,GSE153834,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE153834,Diabetes,Pancreatic Islets,N/A,Pancreas,Not Published
+5,GSE156341,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE156341,Type 2 Diabetes,Endothelial Cells,N/A,Blood,Published
+6,GSE159556,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE159556,Covid 19,Pancreatic Islets,N/A,Pancreas,Published
+7,GSE163947,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE163947,Diabetes,Pancreatic Islets,N/A,Pancreas,Not Published
+8,GSE168071,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE168071,Diabetes,Beta Cells,N/A,Pancreas,Published
+9,GSE173193,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE173193,Diabetes,Placental Cells,N/A,Placenta,Published
+10,GSE185036,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE185036,Diabetes,Fibroblasts,N/A,Adipose,Published
+11,GSE190726,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE190726,Type 1 Diabetes,Pancreatic Islets,hiPSC Cell Line,Not Specified,Published
+12,GSE212256,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE212256,Wolfram Syndrome,Pancreatic Islets,hiPSC Cell Line,Not Specified,Published
+13,GSE213290,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE213290,Diabetes,Pancreatic Islets,hiPSC Cell Line,Not Specified,Published
+14,GSE215376,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE215376,Healthy,Pancreatic Islets,N.A,Pancreas,Not Published
+15,GSE218316,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE218316,Diabetes,Pancreatic Islets,N/A,Pancreas,Not Published
+16,GSE220939,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE220939,Type 2 Diabetes,Renal Cells,N/A,Kidney,Published

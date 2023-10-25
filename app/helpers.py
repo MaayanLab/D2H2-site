@@ -308,6 +308,18 @@ def sigcom_gene_set(gene_set):
 
     return ("https://maayanlab.cloud/sigcom-lincs/#/SignatureSearch/Set/%s"%persistent_id)
 
+### QUERY GENESHOT
+def query_geneshot(term):
+
+    GENESHOT_URL = 'https://maayanlab.cloud/geneshot/api/search'
+    payload = {"rif": "autorif", "term": term}
+    response = requests.post(GENESHOT_URL, json=payload)
+    print(response)
+    data = json.loads(response.text)
+    gene_list = list(data['gene_count'].keys())
+    gene_list_count = data['return_size']
+
+    return (gene_list, gene_list_count)
 
 
 ############## GET RESOURCES TABLE FROM GOOGLE DRIVE ##############
@@ -316,7 +328,7 @@ def sigcom_gene_set(gene_set):
 @lru_cache()
 def get_resources():
 
-    table = pd.read_csv('./static/searchdata/resources.csv', index_col=0)
+    table = pd.read_csv('./static/data/resources.csv', index_col=0)
     table.fillna('', inplace=True)
     resources_list = table.values.tolist()
     table_list = [list(table.columns.values)] + resources_list
@@ -330,14 +342,14 @@ def update_resources():
     sheet_url = "https://docs.google.com/spreadsheets/d/1uKuDw8eN3si7QmukL7n4dQsOdn3qN8xUiu-rRapC1Cs/edit#gid=0"
     url_1 = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
     table = pd.read_csv(url_1)
-    table.to_csv('static/searchdata/resources.csv')
+    table.to_csv('static/data/resources.csv')
 
 #update_resources()
 
 @lru_cache()
 def get_downloads():
 
-    table = pd.read_csv('./static/searchdata/downloads.csv', index_col=0)
+    table = pd.read_csv('./static/data/downloads.csv', index_col=0)
     table.fillna('', inplace=True)
     resources_list = table.values.tolist()
     table_list = [list(table.columns.values)] + resources_list
@@ -350,21 +362,21 @@ def update_downloads():
     sheet_url = "https://docs.google.com/spreadsheets/d/17if2nhNAOQMESA6EyO_eicqinMmT-P5Ly3TxbkSZZRQ/edit#gid=0"
     url_1 = sheet_url.replace('/edit#gid=', '/export?format=csv&gid=')
     table = pd.read_csv(url_1)
-    table.to_csv('static/searchdata/downloads.csv')
+    table.to_csv('static/data/downloads.csv')
 
 
 #update_downloads()
 
 def get_workflows():
 
-    table = pd.read_csv('./static/searchdata/workflows.csv')
+    table = pd.read_csv('./static/data/workflows.csv')
     resources_list = table.values.tolist()
     table_list = [list(table.columns.values)] + resources_list
     return table_list
 
 def get_tweets():
 
-    table = pd.read_csv('./static/searchdata/tweets.csv', index_col=None)
+    table = pd.read_csv('./static/data/tweets.csv', index_col=None)
     resources_list = table.values.tolist()
     table_list = [list(table.columns.values)] + resources_list
     return table_list
@@ -553,7 +565,7 @@ def send_plot(species, gene):
         plot = make_plot(comb_df_input, species, gene, micro=True, micro_df=micro_df_input)
     else:
         plot = make_plot(comb_df_input, species, gene)
-    fname='static/searchdata/t2d-files/'
+    fname='static/data/t2d-files/'
     up_comb_df_input, up_comb_df_input_values = download_link(make_tables(comb_df_input, species, gene, is_upreg=True, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-upreg.tsv', isRNA=True)
     dn_comb_df_input, dn_comb_df_input_values = download_link(make_tables(comb_df_input, species, gene, is_upreg=False, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-dnreg.tsv', isRNA=True)
     if micro_exists and not(micro_df_input.empty):
@@ -795,77 +807,8 @@ def make_single_visialization_plot(plot_df, values_dict,type, option_list,sample
     
     return json_item(plot, plot_name)
 
-
-
-
 def log2_normalize(x, offset=1.):
     return np.log2(x + offset)
-
-
-@lru_cache()
-def bulk_vis(expr_df, meta_df):
-
-    meta_df = pd.read_csv(s3.open(meta_df), header=0, index_col=0, sep='\t')
-    expr_df = pd.read_csv(s3.open(expr_df), header=0, index_col=0, sep='\t')
-
-    expr_df.replace([np.inf, -np.inf],np.nan, inplace=True)
-
-   
-    expr_df = expr_df.transpose()
-    expr_df = expr_df.dropna(axis=1)
-
-
-    df_data_norm = log2_normalize(expr_df, offset=1)
-
-    df_data_norm = quantile_normalize(df_data_norm, axis=0)
-
-    var = df_data_norm.var(axis = 0, numeric_only = True)
-    var.sort_values(ascending=False, inplace=True)
-    idx = var.index.values[:250]
-
-    df_data_norm = df_data_norm[idx]
-    #expr_df = pd.DataFrame(zscore(df_data_norm, axis=1), index=df_data_norm.index, columns=df_data_norm.columns)
-    expr_df = pd.DataFrame(df_data_norm, index=df_data_norm.index, columns=df_data_norm.columns)
-    expr_df = expr_df.dropna(axis=1)
-
-
-    # Compute label and pca based on Leiden Algorithm 
-    leiden_df = sc.AnnData(expr_df,dtype=np.float32)
-    sc.pp.pca(leiden_df)
-    sc.pp.neighbors(leiden_df) 
-    sc.tl.leiden(leiden_df, key_added="leiden")
-    df_y = meta_df
-    #df_y['leiden'] = list(leiden_df.obs['leiden'].values)
-
-    # Data transformation for 2D visualization
-    # Normalize transformed data to have a better visualization on 3D plot
-    #leiden_df.obsm['X_pca'] = zscore(leiden_df.obsm['X_pca'],axis=0)
-
-    pca_data = pd.DataFrame({'x':leiden_df.obsm['X_pca'][:,0],
-                        'y':leiden_df.obsm['X_pca'][:,1],
-                        'z':leiden_df.obsm['X_pca'][:,2]})
-    pca_df = df_y.reset_index().join(pca_data).set_index('Sample_geo_accession')
-
-    n_samps = leiden_df.obsm['X_pca'].shape[0]
-    perp = 5
-    if n_samps <= 5:
-        perp = n_samps - 1
-
-    tsne = TSNE(perplexity=perp, learning_rate='auto', init='pca')
-    leiden_df.obsm['X_tsne'] = tsne.fit_transform(leiden_df.obsm['X_pca'])
-    leiden_df.obsm['X_tsne'] = zscore(leiden_df.obsm['X_tsne'],axis=0)
-    tsne_data = pd.DataFrame({'x':leiden_df.obsm['X_tsne'][:,0],
-                        'y':leiden_df.obsm['X_tsne'][:,1]})
-                        #'z':leiden_df.obsm['X_tsne'][:,2]
-    tsne_df = df_y.reset_index().join(tsne_data).set_index('Sample_geo_accession')
-    sc.tl.umap(leiden_df, n_components=2)
-    leiden_df.obsm['X_umap'] = zscore(leiden_df.obsm['X_umap'],axis=0)
-    umap_data = pd.DataFrame({'x':leiden_df.obsm['X_umap'][:,0],
-                        'y':leiden_df.obsm['X_umap'][:,1]})
-                        #'z':leiden_df.obsm['X_umap'][:,2]
-    umap_df = df_y.reset_index().join(umap_data).set_index('Sample_geo_accession')
-
-    return pca_df, tsne_df, umap_df
 
 def generate_colors(input_df, feature):
     pal = sns.color_palette(n_colors = len(input_df['legend'].unique()))
@@ -894,12 +837,12 @@ def interactive_circle_plot(input_df, x_lab, y_lab, feature, name):
     lab_max = max(map(lambda x: len(x), list(input_df['legend'].unique())))
     
 
-    p = figure(height=1600+height_add, width=1800+(15*lab_max), tooltips=TOOLTIPS,x_axis_label=x_lab, y_axis_label=y_lab,sizing_mode="scale_width")
+    p = figure(height=1600+height_add+(5*lab_max), width=1800, tooltips=TOOLTIPS,x_axis_label=x_lab, y_axis_label=y_lab,sizing_mode="scale_width")
 
 
     color = generate_colors(input_df, 'legend')
     p1 = p.circle('x', 'y', size=point_size, source=source, legend_field=feature,fill_color= color, line_color=color)
-    p.add_layout(p.legend[0], 'right')
+    p.add_layout(p.legend[0], 'below')
 
     p.xgrid.visible = False
     p.ygrid.visible = False

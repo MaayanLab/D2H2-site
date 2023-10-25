@@ -1,7 +1,33 @@
 {% extends 'base.html' %}
 
 {% block body %}
-
+<!-- For gene set modal -->
+<dialog data-modal id="geneset-modal" style="margin: auto;">
+    <div class="text-center justify-content-center">
+        <p id="geneset-modal-title"></p>
+        <textarea id="geneset-modal-text" class="text-center"
+            style="height: 20rem; overflow-y: scroll; white-space: pre-wrap;" readonly>
+        </textarea>
+    </div>
+    <div class="row text-center">
+        <button type="button"
+            onclick="navigator.clipboard.writeText(document.getElementById('geneset-modal-text').value)"
+            class="btn btn-primary btn-group-sm m-2 ">
+            Copy to clipboard
+        </button>
+        <a id="geneset-modal-queries" href="{{ url_for('geneset_home') }}" onclick="" target='_blank'
+            style="text-decoration: none">
+            <button type="button" class="btn btn-primary btn-group-sm m-2">
+                Open in Geneset Queries
+            </button>
+        </a>
+        <a id="geneset-modal-download" href="" style="text-decoration: none">
+            <button type="button" class="btn btn-primary btn-group-sm m-2">
+                Download
+            </button>
+        </a>
+    </div>
+</dialog>
 
 <div class="justify-content-center container-fluid p-0 m-0">
     <div class="row text-center justify-content-center" style="display: flexbox;">
@@ -12,21 +38,23 @@
             </h5>
         </div>
     </div>
+
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 justify-content-center mx-auto p-0 m-0">
         <div class="row flex-wrap justify-content-center mx-auto">
-            
+
             <div id="chat-div" class="col-lg-5 col-md-10 col-sm-10 mt-3 ml-5">
                 <h3 class="pt-2 text-center" style="font-size: 1.50rem;">D2H2 Chatbot <img class="ml-2 mb-3"
-                    src="{{ url_for('static', filename='img/chatbot.png') }}" alt="Chatbot" height="40px" onclick='localStorage.setItem("no_splash", true)'></h3>
+                        src="{{ url_for('static', filename='img/chatbot.png') }}" height="40px"
+                        onclick='localStorage.setItem("no_splash", true)'></h3>
                 <div class="justify-content-center p-0 m-0 text-center" style="flex-wrap: wrap;">
                     <!-- Main Panel -->
                     <div class="banner">
 
                         <div hidden>
-                            <div id="human-bulk-num">{{ numstudies[0] }}</div>
-                            <div id="mouse-bulk-num">{{ numstudies[1] }}</div>
-                            <div id="human-sc-num">{{ numstudies[2] }}</div>
-                            <div id="mouse-sc-num">{{ numstudies[3] }}</div>
+                            <div id="human-bulk-num">{{ numstudies['human'] }}</div>
+                            <div id="mouse-bulk-num">{{ numstudies['mouse'] }}</div>
+                            <div id="human-sc-num">{{ numstudies['mouse_single'] }}</div>
+                            <div id="mouse-sc-num">{{ numstudies['human_single'] }}</div>
                         </div>
                     </div>
 
@@ -59,8 +87,8 @@
                         <div class="vertical">
                             <div class="input-wrapper row mt-3" style="flex-wrap: nowrap;">
                                 <input id="gpt-query" style="right: 0rem; width: 100rem;" type="text"
-                                    placeholder="Ask D2H2 any question to form hypotheses in T2D research..." name="text"
-                                    class="input pr-0 mr-0">
+                                    placeholder="Ask D2H2 any question to form hypotheses in T2D research..."
+                                    name="text" class="input pr-0 mr-0">
                                 <button id="gpt-query-button" class="pl-0 ml-0 query-submit"
                                     style="width: 40px; min-width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
                                     <img src="static/img/doublearrow.png" style="width: 60%" alt="Query">
@@ -117,21 +145,21 @@
                             <div class="row">
                                 <div class="col text-center mb-3">
                                     <h6>Human</h6>
-                                    <div class="countup num-style" style="font-size: 30px;">{{ numstudies[0] +
-                                        numstudies[2]
+                                    <div class="countup num-style" style="font-size: 30px;">{{ numstudies['human'] +
+                                        numstudies['human_single']
                                         }}</div>
                                 </div>
                                 <div class="col text-center mb-3">
                                     <h6>Mouse</h6>
-                                    <div class="countup num-style" style="font-size: 30px;">{{ numstudies[1] +
-                                        numstudies[3]
+                                    <div class="countup num-style" style="font-size: 30px;">{{ numstudies['mouse'] +
+                                        numstudies['mouse_single']
                                         }}</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="vertical ml-5 mb-4 col-lg-5 col-sm-6" style="margin-top: 6%">
-                        <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}">
+                        <a href="{{ url_for('species_or_viewerpg', studies_or_gse='bulkrna') }}">
                             <button class="learn-more">
                                 <span class="circle" aria-hidden="true">
                                     <span class="icon arrow"></span>
@@ -171,8 +199,8 @@
                             <div class="card-body text-center">
                                 <p>Find knowledge about a single gene, including in which diabetes-related GEO
                                     studies a chosen gene is most differentially expressed.</p>
-                                <img src="static/img/t2d-thumbnail.png" alt=""
-                                    style="width: 800px; height: fit-content;" class="img-thumbnail mb-2">
+                                <img src="static/img/t2d-thumbnail.png" alt="" style="width: auto; height: auto;"
+                                    class="img-thumbnail mb-2">
                                 <div>
                                     <a href="{{ url_for('singlegene_home') }}">
                                         <button class="btn btn-primary">
@@ -200,8 +228,8 @@
                                 <p>Find knowledge about a gene set, including performing enrichment analysis
                                     agasint
                                     our curated diabetes gene set library.</p>
-                                <img src="static/img/geneset-thumbnail.png" alt=""
-                                    style="width: 800px; height: fit-content;" class="img-thumbnail mb-2">
+                                <img src="static/img/geneset-thumbnail.png" alt="" style="width: auto; height: auto;"
+                                    class="img-thumbnail mb-2">
                                 <a href="{{ url_for('geneset_home') }}">
                                     <button class="btn btn-primary">
                                         Gene Set Queries
@@ -224,16 +252,20 @@
                         <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
                             data-parent="#accordionExample">
                             <div class="card-body text-center">
-                                <p>Explore a collection of curated diabetes related Bulk-RNA-seq and microarray studies manually extracted and processed from NCBI's GEO. The expression level of single genes across conditions is visualized as
-                                   a customized box plot viewer; the samples can be visualized as UMAP, tSNE and PCA plots; and users cam compute differential expression for any two conditions with replicates.</p>
-                                <img src="static/img/dge-features.jpg" alt=""
-                                    style="width: 1000px; height: fit-content;" class="img-thumbnail mb-2">
-                                <a href="{{ url_for('species_or_viewerpg', species_or_gse='human') }}">
+                                <p>Explore a collection of curated diabetes related Bulk-RNA-seq and microarray studies
+                                    manually extracted and processed from NCBI's GEO. The expression level of single
+                                    genes across conditions is visualized as
+                                    a customized box plot viewer; the samples can be visualized as UMAP, tSNE and PCA
+                                    plots; and users cam compute differential expression for any two conditions with
+                                    replicates.</p>
+                                <img src="static/img/dge-features.jpg" alt="" style="width: auto; height: auto;"
+                                    class="img-thumbnail mb-2">
+                                <a href="{{ url_for('species_or_viewerpg', studies_or_gse='bulkrna') }}">
                                     <button class="btn btn-primary">
                                         Human Bulk RNA-seq/Microarray
                                     </button>
                                 </a>
-                                <a href="{{ url_for('species_or_viewerpg', species_or_gse='mouse') }}">
+                                <a href="{{ url_for('species_or_viewerpg', studies_or_gse='bulkrna') }}">
                                     <button class="btn btn-primary">
                                         Mouse Bulk RNA-seq/Microarray
                                     </button>
@@ -255,15 +287,19 @@
                         <div id="collapseFour" class="collapse" aria-labelledby="headingFour"
                             data-parent="#accordionExample">
                             <div class="card-body text-center">
-                                <p>Explore a collection of curated diabetes related scRNA-seq studies extracted from NCBI's GEO. The expression of single genes across clusters of a chosen profile can be visualized as a customized box plot viewer; the single cells can be visualized in a UMAP, t-SNE and PCA; and users can compute differential expression for each automatically identified cluster</p>
-                                <img src="static/img/single-features.jpg" alt=""
-                                    style="width: 800px; height: fit-content;" class="img-thumbnail mb-2">
-                                <a href="{{ url_for('species_or_viewerpg', species_or_gse='human_single') }}">
+                                <p>Explore a collection of curated diabetes related scRNA-seq studies extracted from
+                                    NCBI's GEO. The expression of single genes across clusters of a chosen profile can
+                                    be visualized as a customized box plot viewer; the single cells can be visualized in
+                                    a UMAP, t-SNE and PCA; and users can compute differential expression for each
+                                    automatically identified cluster</p>
+                                <img src="static/img/single-features.jpg" alt="" style="width: auto; height: auto;"
+                                    class="img-thumbnail mb-2">
+                                <a href="{{ url_for('species_or_viewerpg', studies_or_gse='scrna') }}">
                                     <button class="btn btn-primary">
                                         Human scRNA-seq
                                     </button>
                                 </a>
-                                <a href="{{ url_for('species_or_viewerpg', species_or_gse='mouse_single') }}">
+                                <a href="{{ url_for('species_or_viewerpg', studies_or_gse='scrna') }}">
                                     <button class="btn btn-primary">
                                         Mouse scRNA-seq
                                     </button>
@@ -275,377 +311,432 @@
             </div>
         </div>
     </div>
-    {% endblock %}
+</div>
+{% endblock %}
 
 
-    {% block footer %}
-    <script type="module">
-        import { human_list, mouse_list, processes, geneset_entries, geneset_buttons, geneset_buttons_up_down, geneset_up_down_entries } from '../static/js/modules/constants.js';
-        import { gen_table, gene_signatures, generanger_plot, geo_reverse, single_gene_perturbations, l1000_reverse, query_gwas, query_enrichr_tfs, loadCorrelation, query_komp } from '../static/js/modules/single-gene-queries.js';
-        import { geneset_signatures, geneset_enrichment, geneset_kea3, geneset_chea3, geneset_sigcomlincs } from '../static/js/modules/geneset-queries.js';
-        import { parse_gene, infer_gene, select_option, runFindQuery, run_process_gene, log_chat } from '../static/js/modules/query.js';
-        const process_dict = await processes;
+{% block footer %}
+<script type="module">
+    import { human_list, mouse_list, processes, geneset_entries, geneset_buttons, geneset_buttons_up_down, geneset_up_down_entries } from '../static/js/modules/constants.js';
+    import { parse_gene, infer_gene, select_option, runFindQuery, run_process_gene, log_chat } from '../static/js/modules/query.js';
 
-        var new_process = true;
-        var process_number = false;
-        var chat_num = 0;
-        var process_info = {};
-        var curr_arg = '';
-        var options = [];
+    const process_dict = await processes;
 
-        var options_str = "<br>";
-        const options_dict = {}
-        var outputs = Object.keys(process_dict['[Gene]']);
-        var process_numbers = []
-        let i = 0;
-        for (i; i < outputs.length; i++) {
-            options_str += `${(i + 1).toString()}. ${process_dict['[Gene]'][outputs[i]].gpt_desc}<br>`;
-            options_dict[(i + 1).toString()] = { "response": 0, "input": '[Gene]', "output": outputs[i] };
-            process_numbers.push((i + 1).toString())
+    var new_process = true;
+    var process_number = false;
+    var chat_num = 0;
+    var process_info = {};
+    var curr_arg = '';
+    var options = [];
+
+    var options_str = "<br>";
+    const options_dict = {}
+    var outputs = Object.keys(process_dict['[Gene]']);
+    var process_numbers = []
+    let i = 0;
+    for (i; i < outputs.length; i++) {
+        options_str += `${(i + 1).toString()}. ${process_dict['[Gene]'][outputs[i]].gpt_desc}<br>`;
+        options_dict[(i + 1).toString()] = { "response": 0, "input": '[Gene]', "output": outputs[i] };
+        process_numbers.push((i + 1).toString())
+    }
+    outputs = Object.keys(process_dict['[GeneSet]']);
+    for (let j = 0; j < outputs.length; j++) {
+        options_str += `${(i + j + 1).toString()}. ${process_dict['[GeneSet]'][outputs[j]].gpt_desc}<br>`;
+        options_dict[(i + j + 1).toString()] = { "response": 0, "input": '[GeneSet]', "output": outputs[j], 'geneset': '' };
+        process_numbers.push((i + j + 1).toString())
+    }
+
+    var userid;
+    if (localStorage.getItem('userid') == null) {
+        userid = "id" + Math.random().toString(16).slice(2);
+        localStorage.setItem('userid', userid)
+    } else {
+        userid = localStorage.getItem('userid')
+    }
+
+
+
+    function find_number(q) {
+        var r = /\d+/g;
+        var m;
+        while ((m = r.exec(q)) != null) {
+            return m[0];
         }
-        outputs = Object.keys(process_dict['[GeneSet]']);
-        for (let j = 0; j < outputs.length; j++) {
-            options_str += `${(i + j + 1).toString()}. ${process_dict['[GeneSet]'][outputs[j]].gpt_desc}<br>`;
-            options_dict[(i + j + 1).toString()] = { "response": 0, "input": '[GeneSet]', "output": outputs[j], 'geneset': '' };
-            process_numbers.push((i + j + 1).toString())
-        }
+        return ''
+    }
 
-        var userid;
-        if (localStorage.getItem('userid') == null) {
-            userid = "id" + Math.random().toString(16).slice(2);
-            localStorage.setItem('userid', userid)
+    async function reset_process() {
+        new_process = true;
+        process_info = {};
+        curr_arg = '';
+        options = [];
+        document.getElementById('gpt-query').removeAttribute("disabled")
+    }
+
+    async function reset_chat() {
+        await reset_process();
+        document.getElementById('chat-bubbles-section').innerHTML = "";
+        const message = `I am an AI-powered chat interface designed to help answer gene and gene set related queries. Please start by entering a question.`;
+        document.getElementById("chat-bubbles-section").appendChild(chatN('start', 'intro', '#d3d3d3', message));
+        $(`#chat-intro`).fadeIn(1000)
+    }
+
+
+    async function submit_gene_set() {
+        var geneset = '';
+        var geneset_up = '';
+        var geneset_down = '';
+
+        if (document.getElementById(`enter-geneset${chat_num}`).style.display == "flex") {
+            var inputvalue = document.getElementById(`text-area${chat_num}`).value;
+            var file = document.getElementById(`gene-file${chat_num}`).value;
+            var section = `gene-file${chat_num}`;
+            geneset;
+
+            if (inputvalue) {
+                geneset = inputvalue.split("\n").join(',')
+            }
+
+            if (file) {
+                geneset = await loadFileAsText(section, ",");
+            }
         } else {
-            userid = localStorage.getItem('userid')
-        }
+            var inputvalue_up = document.getElementById(`text-area-up${chat_num}`).value;
+            var inputvalue_down = document.getElementById(`text-area-down${chat_num}`).value;
+            var file_up = document.getElementById(`gene-file-up${chat_num}`).value;
+            var file_down = document.getElementById(`gene-file-down${chat_num}`).value;
+            var section_up = `gene-file-up${chat_num}`;
+            var section_down = `gene-file-down${chat_num}`;
 
-
-
-        function find_number(q) {
-            var r = /\d+/g;
-            var m;
-            while ((m = r.exec(q)) != null) {
-                return m[0];
+            if (inputvalue_up) {
+                geneset_up = inputvalue_up.split("\n").join(',')
             }
-            return ''
-        }
-
-        async function reset_process() {
-            new_process = true;
-            process_info = {};
-            curr_arg = '';
-            options = [];
-        }
-
-        async function reset_chat() {
-            await reset_process();
-            document.getElementById('chat-bubbles-section').innerHTML = "";
-            const message = `I am an AI-powered chat interface designed to help answer gene and gene set related queries. Please start by entering a question.`;
-            document.getElementById("chat-bubbles-section").appendChild(chatN('start', 'intro', '#d3d3d3', message));
-            $(`#chat-intro`).fadeIn(1000)
-        }
-
-
-        async function submit_gene_set() {
-            var geneset = '';
-            var geneset_up = '';
-            var geneset_down = '';
-
-            if (document.getElementById(`enter-geneset${chat_num}`).style.display == "flex") {
-                var inputvalue = document.getElementById(`text-area${chat_num}`).value;
-                var file = document.getElementById(`gene-file${chat_num}`).value;
-                var section = `gene-file${chat_num}`;
-                geneset;
-
-                if (inputvalue) {
-                    geneset = inputvalue.split("\n").join(',')
-                }
-
-                if (file) {
-                    geneset = await loadFileAsText(section, ",");
-                }
-            } else {
-                var inputvalue_up = document.getElementById(`text-area-up${chat_num}`).value;
-                var inputvalue_down = document.getElementById(`text-area-down${chat_num}`).value;
-                var file_up = document.getElementById(`gene-file-up${chat_num}`).value;
-                var file_down = document.getElementById(`gene-file-down${chat_num}`).value;
-                var section_up = `gene-file-up${chat_num}`;
-                var section_down = `gene-file-down${chat_num}`;
-
-                if (inputvalue_up) {
-                    geneset_up = inputvalue_up.split("\n").join(',')
-                }
-                if (file_up) {
-                    geneset_up = await loadFileAsText(section_up, ",");
-                }
-
-                if (inputvalue_down) {
-                    geneset_down = inputvalue_down.split("\n").join(',')
-                }
-
-                if (file_down) {
-                    geneset_down = await loadFileAsText(section_down, ",");
-                }
+            if (file_up) {
+                geneset_up = await loadFileAsText(section_up, ",");
             }
 
-            process_info['geneset'] = geneset;
-            process_info['up'] = geneset_up;
-            process_info['down'] = geneset_down;
-            await run_process_gene('[USER ENTERED GENESET]', process_info, chat_num, userid);
-            chat_num++;
-            chat_num++;
-            await reset_process();
+            if (inputvalue_down) {
+                geneset_down = inputvalue_down.split("\n").join(',')
+            }
+
+            if (file_down) {
+                geneset_down = await loadFileAsText(section_down, ",");
+            }
         }
 
-        async function ask_questions(query) {
-            var d2h2_response = '';
-            var response = document.getElementById('gpt-query').value.trim();
-            if (response != '' && query == null) {
-                document.getElementById("chat-bubbles-section").appendChild(chatN('end', chat_num, '#d3d3d3', response));
-                await $(`#chat-${chat_num}`).fadeIn(1000);
+        if (geneset.length == 0 & geneset_up.length == 0 & geneset_down.length == 0) {
+            document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "It appears that you did not enter a gene set. Please enter your gene set or you can reset the chat using the button in the bottom right corner."));
+            await $(`#chat-${chat_num}`).fadeIn(2000);
+            return;
+        }
+
+        process_info['geneset'] = geneset;
+        process_info['up'] = geneset_up;
+        process_info['down'] = geneset_down;
+        await run_process_gene('[USER ENTERED GENESET]', process_info, chat_num, userid);
+        chat_num++;
+        chat_num++;
+        await reset_process();
+        document.getElementById('gpt-query').removeAttribute("disabled")
+    }
+
+    async function ask_questions(query) {
+        var d2h2_response = '';
+        var response = document.getElementById('gpt-query').value.trim();
+        if (response != '' && query == null) {
+            document.getElementById("chat-bubbles-section").appendChild(chatN('end', chat_num, '#d3d3d3', response));
+            await $(`#chat-${chat_num}`).fadeIn(1000);
+            chat_num++;
+            query = response;
+        }
+        if (process_info['geneSymbol'] == '') {
+            const [gene, species] = await parse_gene(query);
+            if (gene == '') {
+                d2h2_response = "I did not recognize that gene symbol, please try again.";
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
+                await $(`#chat-${chat_num}`).fadeIn(2000);
                 chat_num++;
-                query = response;
-            }
-            if (process_info['geneSymbol'] == '') {
-                const [gene, species] = await parse_gene(query);
-                if (gene == '') {
-                    d2h2_response = "I did not recognize that gene symbol, please try again.";
-                    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
-                    await $(`#chat-${chat_num}`).fadeIn(2000);
-                    chat_num++;
-                    log_chat(query, d2h2_response, userid);
+                log_chat(query, d2h2_response, userid);
 
-                    var gs = await infer_gene(query)
-                    gs = gs.map((x) => `<a class="chat-option" id="option-${x}-${chat_num}" value="${x}">${x}</a>`).join(", ");
-                    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "Did you mean to enter one of these genes: " + gs + ". You can click a gene to enter it or type in an alternative gene symbol."));
-                    await $(`#chat-${chat_num}`).fadeIn(2000);
-                    chat_num++;
+                var gs = await infer_gene(query)
+                gs = gs.map((x) => `<a class="chat-option" id="option-${x}-${chat_num}" value="${x}">${x}</a>`).join(", ");
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "Did you mean to enter one of these genes: " + gs + ". You can click a gene to enter it or type in an alternative gene symbol."));
+                await $(`#chat-${chat_num}`).fadeIn(2000);
+                chat_num++;
 
-                    const options_array = Array.from(document.querySelectorAll('.chat-option'));
-                    options_array.forEach((elt) => {
-                        document.getElementById(elt.id).addEventListener("click", function () {
+                const options_array = Array.from(document.querySelectorAll('.chat-option'));
+                options_array.forEach((elt) => {
+                    document.getElementById(elt.id).addEventListener("click", function () {
+                        if (process_info['geneSymbol'] == '') {
                             make_option(chat_num, elt.innerText);
                             $(`#chat-${chat_num}`).fadeIn(2000);
                             chat_num++;
                             log_chat(query, elt.innerText, userid);
                             ask_questions(elt.innerText)
-                        });
-                    }
-                    );
-
-                    return;
-                } else {
-                    process_info['geneSymbol'] = gene;
-                    process_info['species'] = species;
+                        }
+                    });
                 }
-            }
-            const qs = process_dict[process_info.input][process_info.output].questions
-            if (curr_arg != '') {
-                const res = await select_option(query, options);
-                if (res == 'error') {
-                    d2h2_response = "I did not recognize that option. Please try again.";
-                    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
-                    await $(`#chat-${chat_num}`).fadeIn(2000);
-                    chat_num++;
-                    log_chat(query, d2h2_response, userid);
-                    return;
-                } else if (res == 'busy') {
-                    d2h2_response = "I'm sorry, the OpenAPI endpoint is currently overloaded. Please try again in a few seconds.";
-                    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
-                    await $(`#chat-${chat_num}`).fadeIn(2000);
-                    chat_num++;
-                    log_chat(query, d2h2_response, userid);
-                    return;
-                } else process_info[curr_arg] = res;
-            }
-            for (let i = 0; i < qs.length; i++) {
-                if (!(qs[i].arg in process_info)) {
-                    var readable_options = qs[i].options.map(x => (x.replace('_', " ")));
-                    readable_options[readable_options.length - 1] = "and " + readable_options[readable_options.length - 1] + ".";
-                    readable_options = readable_options.map((x) => `<a class="chat-option" id="option-${x}-${chat_num}" value="${x}">${x}</a>`).join(", ");
-                    d2h2_response = qs[i].q + ' The options include ' + readable_options + " Please click or enter the option you would like to select.";
-                    
-                    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
-                    await $(`#chat-${chat_num}`).fadeIn(2000);
-                    chat_num++;
+                );
 
-                    const options_array = Array.from(document.querySelectorAll('.chat-option'));
-                    options_array.forEach((elt) => {
-                        console.log(elt)
-                        document.getElementById(elt.id).addEventListener("click", function () {
-                            make_option(chat_num, elt.innerText);
-                            $(`#chat-${chat_num}`).fadeIn(2000);
-                            chat_num++;
-                            log_chat(query, elt.innerText, userid);
-                            ask_questions(elt.innerText)
-                        });
-                    }
-                    );
-                    
-                    log_chat(query, d2h2_response, userid);
-
-                    curr_arg = qs[i].arg;
-                    options = qs[i].options;
-                    return;
-                }
+                return;
+            } else {
+                process_info['geneSymbol'] = gene;
+                process_info['species'] = species;
             }
-            let process_info_copy = { ...process_info };
-            let chat_num_copy = chat_num.valueOf()
-            await run_process_gene(query, process_info_copy, chat_num, userid);
-            chat_num++;
-            chat_num++;
-            await reset_process();
         }
+        const qs = process_dict[process_info.input][process_info.output].questions
+        if (curr_arg != '') {
+            const res = await select_option(query, options);
+            if (res == 'error') {
+                d2h2_response = "I did not recognize that option. Please try again.";
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
+                await $(`#chat-${chat_num}`).fadeIn(2000);
+                chat_num++;
+                log_chat(query, d2h2_response, userid);
+                return;
+            } else if (res == 'busy') {
+                d2h2_response = "I'm sorry, the OpenAPI endpoint is currently overloaded. Please try again in a few seconds.";
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
+                await $(`#chat-${chat_num}`).fadeIn(2000);
+                chat_num++;
+                log_chat(query, d2h2_response, userid);
+                return;
+            } else process_info[curr_arg] = res;
+        }
+        for (let i = 0; i < qs.length; i++) {
+            if (!(qs[i].arg in process_info)) {
+                var readable_options = qs[i].options.map(x => (x.replace('_', " ")));
+                readable_options = readable_options.map((x) => `<a class="chat-option" id="option-${x}-${chat_num}" value="${x}">${x}</a>`);
+                readable_options[readable_options.length - 1] = "and " + readable_options[readable_options.length - 1] + ".";
+                readable_options = readable_options.join(", ");
+                d2h2_response = qs[i].q + ' The options include ' + readable_options + " Please click or enter the option you would like to select.";
 
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
+                await $(`#chat-${chat_num}`).fadeIn(2000);
+                chat_num++;
 
-        async function run_chat() {
-            var d2h2_response = '';
-            var q = document.getElementById('gpt-query').value.trim();
-            if (q != '') {
-                document.getElementById("chat-bubbles-section").appendChild(chatN('end', chat_num, '#d3d3d3', q))
-                $(`#chat-${chat_num}`).fadeIn(2000)
-
-                setTimeout(async () => {
-                    chat_num++;
-                    var response;
-                    console.log(find_number(q))
-                    if (process_number && process_numbers.includes(find_number(q))) {
-                        response = options_dict[find_number(q)];
-                        process_number = false;
-                        if (response['input'] == '[Gene]') {
-                            const res = await parse_gene(q);
-                            response['geneSymbol'] = res[0]
-                            response['species'] = res[1]
+                const options_array = Array.from(document.querySelectorAll('.chat-option'));
+                options_array.forEach((elt) => {
+                    document.getElementById(elt.id).addEventListener("click", function () {
+                        if (curr_arg == qs[i].arg) {
+                            make_option(chat_num, elt.innerText);
+                            $(`#chat-${chat_num}`).fadeIn(2000);
+                            chat_num++;
+                            log_chat(query, elt.innerText, userid);
+                            ask_questions(elt.innerText)
                         }
-                    } else response = await runFindQuery(q);
+                    });
+                }
+                );
 
-                    if (response['response'] == 1) {
-                        if (response['error'] == 'busy') {
-                            d2h2_response = "I'm sorry, the OpenAPI endpoint is currently overloaded. Please try again in a few seconds.";
-                            document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
-                            await $(`#chat-${chat_num}`).fadeIn(2000);
-                            chat_num++;
-                            log_chat(q, d2h2_response, userid);
-                            return;
-                        } else if (response['error'] == 'input') {
-                            var options_str = "<br>";
-                            var outputs = Object.keys(process_dict['[Gene]']);
-                            let i = 0;
-                            for (i; i < outputs.length; i++) {
-                                console.log(process_dict['[Gene]'])
-                                console.log(outputs[i])
-                                options_str += `${(i + 1).toString()}. ${process_dict['[Gene]'][outputs[i]].gpt_desc}<br>`
-                            }
-                            outputs = Object.keys(process_dict['[GeneSet]']);
-                            for (let j = 0; j < outputs.length; j++) {
-                                options_str += `${(i + j + 1).toString()}. ${process_dict['[GeneSet]'][outputs[j]].gpt_desc}<br>`
-                            }
-                            d2h2_response = `D2H2 can only answer specific questions by invoking APIs from a set of selected tools. Below are some examples of questions D2H2 can answer: ${options_str}You can type the number to select a desired process.`;
-                            document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
-                            await $(`#chat-${chat_num}`).fadeIn(2000);
-                            chat_num++;
-                            log_chat(q, d2h2_response, userid);
-                            process_number = true;
-                            return;
-                        } else {
-                            d2h2_response = "I'm sorry, I don't understand the your question. Please try again.";
-                            document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
-                            await $(`#chat-${chat_num}`).fadeIn(2000);
-                            chat_num++;
-                            log_chat(q, d2h2_response, userid);
-                            return;
-                        }
-                    }
-                    new_process = false;
-                    process_info = response;
+                log_chat(query, d2h2_response, userid);
+
+                curr_arg = qs[i].arg;
+                options = qs[i].options;
+                return;
+            }
+        }
+        let process_info_copy = { ...process_info };
+        let chat_num_copy = chat_num.valueOf()
+        await run_process_gene(query, process_info_copy, chat_num, userid);
+        chat_num++;
+        chat_num++;
+        await reset_process();
+    }
+
+
+    async function run_chat() {
+        var d2h2_response = '';
+        var q = document.getElementById('gpt-query').value.trim();
+        if (q != '') {
+            document.getElementById("chat-bubbles-section").appendChild(chatN('end', chat_num, '#d3d3d3', q))
+            $(`#chat-${chat_num}`).fadeIn(2000)
+
+            setTimeout(async () => {
+                chat_num++;
+                var response;
+                if (process_number && process_numbers.includes(find_number(q))) {
+                    response = options_dict[find_number(q)];
+                    process_number = false;
                     if (response['input'] == '[Gene]') {
-                        if (response['geneSymbol'] == '') {
-                            d2h2_response = 'Please provide a gene symbol.'
-                            document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
-                            await $(`#chat-${chat_num}`).fadeIn(2000);
-                            chat_num++;
-                            log_chat(q, d2h2_response, userid);
-                        } else {
-                            document.getElementById('gpt-query').value = '';
-                            ask_questions(q);
-                        }
-                    } else if (response['input'] == '[GeneSet]') {
-                        if (response['output'] == '[Kinases]') {
-                            d2h2_response = "Input a list of proteins:";
-                        } else d2h2_response = "Please enter your gene set:";
-                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
-                        await $(`#chat-${chat_num}`).fadeIn(2000)
-                        chat_num++;
-                        log_chat(q, d2h2_response, userid);
-                        if (process_dict[response.input][response.output].args.includes('up')) {
-                            document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_up_down_entries(chat_num + 1) + geneset_buttons_up_down(chat_num + 1)))
-                        } else document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries(chat_num + 1) + geneset_buttons(chat_num + 1)))
-                        document.getElementById(`submit_gene_set${chat_num + 1}`).addEventListener("click", function () {
-                            submit_gene_set(process_info);
-                        });
+                        const res = await parse_gene(q);
+                        response['geneSymbol'] = res[0]
+                        response['species'] = res[1]
+                    }
+                } else response = await runFindQuery(q);
+
+                if (response['response'] == 1) {
+                    if (response['error'] == 'busy') {
+                        d2h2_response = "I'm sorry, the OpenAPI endpoint is currently overloaded. Please try again in a few seconds.";
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                         await $(`#chat-${chat_num}`).fadeIn(2000);
                         chat_num++;
+                        log_chat(q, d2h2_response, userid);
+                        return;
+                    } else if (response['error'] == 'input') {
+                        var options_str = "<br>";
+                        var outputs = Object.keys(process_dict['[Gene]']);
+                        let i = 0;
+                        for (i; i < outputs.length; i++) {
+                            options_str += `${(i + 1).toString()}. ${process_dict['[Gene]'][outputs[i]].gpt_desc}<br>`
+                        }
+                        outputs = Object.keys(process_dict['[GeneSet]']);
+                        for (let j = 0; j < outputs.length; j++) {
+                            options_str += `${(i + j + 1).toString()}. ${process_dict['[GeneSet]'][outputs[j]].gpt_desc}<br>`
+                        }
+                        d2h2_response = `D2H2 can only answer specific questions by invoking APIs from a set of selected tools. Below are some examples of questions D2H2 can answer: ${options_str}You can type the number to select a desired process.`;
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
+                        await $(`#chat-${chat_num}`).fadeIn(2000);
+                        chat_num++;
+                        log_chat(q, d2h2_response, userid);
+                        process_number = true;
+                        return;
+                    } else {
+                        d2h2_response = "I'm sorry, I don't understand the your question. Please try again.";
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
+                        await $(`#chat-${chat_num}`).fadeIn(2000);
+                        chat_num++;
+                        log_chat(q, d2h2_response, userid);
+                        return;
                     }
-                }, 1000);
-            }
+                }
+                new_process = false;
+                process_info = response;
+                if (response['input'] == '[Gene]') {
+                    if (response['geneSymbol'] == '') {
+                        d2h2_response = 'Please provide a gene symbol.'
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
+                        await $(`#chat-${chat_num}`).fadeIn(2000);
+                        chat_num++;
+                        log_chat(q, d2h2_response, userid);
+                    } else {
+                        document.getElementById('gpt-query').value = '';
+                        ask_questions(q);
+                    }
+                } else if (response['input'] == '[GeneSet]') {
+                    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', process_dict[response['input']][response['output']].text))
+                    await $(`#chat-${chat_num}`).fadeIn(2000);
+                    chat_num++;
+                    log_chat(q, process_dict[response['input']][response['output']].text, userid);
+                    if (response['output'] == '[Kinases]') {
+                        d2h2_response = "Input a list of proteins:";
+                    } else d2h2_response = "Please enter your gene set:";
+                    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
+                    await $(`#chat-${chat_num}`).fadeIn(2000)
+                    chat_num++;
+                    log_chat(q, d2h2_response, userid);
+                    if (process_dict[response.input][response.output].args.includes('up')) {
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_up_down_entries(chat_num + 1) + geneset_buttons_up_down(chat_num + 1)))
+                    } else document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries(chat_num + 1) + geneset_buttons(chat_num + 1)))
+                    document.getElementById(`submit_gene_set${chat_num + 1}`).addEventListener("click", function () {
+                        submit_gene_set(process_info);
+                    });
+                    document.getElementById(`cancel${chat_num + 1}`).addEventListener("click", async function () {
+                        reset_process();
+                        document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "Is there a different process I can help you with?"));
+                        await $(`#chat-${chat_num}`).fadeIn(2000);
+                        chat_num++;
+                    });
+                    document.getElementById('gpt-query').setAttribute("disabled", true)
+                    await $(`#chat-${chat_num}`).fadeIn(2000);
+                    chat_num++;
+
+                } else if (response['input'] == '[Term]') {
+                    d2h2_response = `I would be happy to help you find gene sets associated with ${response['term']}`;
+                    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
+                    await $(`#chat-${chat_num}`).fadeIn(2000)
+                    chat_num++;
+                    log_chat(q, d2h2_response, userid);
+                    d2h2_response = process_dict[response['input']][response['output']].text
+                    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
+                    await $(`#chat-${chat_num}`).fadeIn(2000)
+                    chat_num++;
+                    log_chat(q, d2h2_response, userid);
+                    document.getElementById('gpt-query').value = '';
+                    ask_questions(q);
+                } else if (response['input'] == '[Study Metadata]') {
+                    d2h2_response = `I would be happy to help you find studies on D2H2 associated with ${response['term']}`;
+                    document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
+                    await $(`#chat-${chat_num}`).fadeIn(2000)
+                    chat_num++;
+                    log_chat(q, d2h2_response, userid);
+                    document.getElementById('gpt-query').value = '';
+                    ask_questions(q);
+                }
+            }, 1000);
         }
+    }
 
-        function run() {
-            if (new_process) {
-                run_chat();
-            } else {
-                ask_questions();
-            }
-            document.getElementById('gpt-query').value = '';
+    function run() {
+        if (new_process) {
+            run_chat();
+        } else {
+            ask_questions();
         }
+        document.getElementById('gpt-query').value = '';
+    }
 
-        $("#gpt-query").on('keyup', function (e) {
-            if (e.key === 'Enter') {
-                run()
-            }
-        })
+    $("#gpt-query").on('keyup', function (e) {
+        if (e.key === 'Enter') {
+            run()
+        }
+    })
 
-        $("#gpt-query-button").on('click', function (e) {
-            run_chat()
-        })
+    $("#gpt-query-button").on('click', function (e) {
+        run_chat()
+    })
 
 
-        document.getElementById("gpt-query").onfocus = function () { fadeChatIn() };
+    document.getElementById("gpt-query").onfocus = function () { fadeChatIn() };
 
-        async function fadeChatIn() {
-            $('#chat-div').addClass('col-lg-10')
-            $('#features-div').addClass('col-lg-6')
-            await $("#chat-section").fadeIn(1000);
-            setTimeout(() => $("#chat-intro").fadeIn(), 1500)
-            $("#chat-intro").fadeIn(2000)
+    async function fadeChatIn() {
+        $('#chat-div').addClass('col-lg-10')
+        $('#features-div').addClass('col-lg-6')
+        await $("#chat-section").fadeIn(1000);
+        setTimeout(() => $("#chat-intro").fadeIn(), 1500)
+        $("#chat-intro").fadeIn(2000)
+        if ($(`#chat-${chat_num}`).offset()) {
             $('html, body').animate({
                 scrollTop: $(`#chat-${chat_num}`).offset().top
             }, 1000);
         }
+    }
 
-        function fillQuery(q) {
-            document.getElementById('gpt-query').value = q;
-            fadeChatIn();
-            run();
-            document.getElementById('gpt-query').value = '';
-        }
+    function fillQuery(q) {
+        document.getElementById('gpt-query').value = q;
+        fadeChatIn();
+        run();
+        document.getElementById('gpt-query').value = '';
+    }
 
-        const exampleArray = Array.from(document.querySelectorAll('.q-example'));
-        exampleArray.forEach((elt) => {
-            document.getElementById(elt.id).addEventListener("click", function () {
-                fillQuery(elt.innerText);
-            });
-        }
-        );
-
-        document.getElementById('reset').addEventListener("click", function () {
-            reset_chat();
-            $('#chat-div').removeClass('col-lg-10')
-            $('#features-div').removeClass('col-lg-6')
-            
+    const exampleArray = Array.from(document.querySelectorAll('.q-example'));
+    exampleArray.forEach((elt) => {
+        document.getElementById(elt.id).addEventListener("click", function () {
+            fillQuery(elt.innerText);
         });
+    }
+    );
 
+    document.getElementById('reset').addEventListener("click", function () {
+        reset_chat();
+        $('#chat-div').removeClass('col-lg-10')
+        $('#features-div').removeClass('col-lg-6')
 
-        const countupEls = document.querySelectorAll('.countup');
-        countupEls.forEach(animateCountUp);
-    </script>
-    {% endblock %}
+    });
+
+    const countupEls = document.querySelectorAll('.countup');
+    countupEls.forEach(animateCountUp);
+    const modal = document.getElementById('geneset-modal');
+    modal.addEventListener("click", e => {
+        const dialogDimensions = modal.getBoundingClientRect()
+        if (
+            e.clientX < dialogDimensions.left ||
+            e.clientX > dialogDimensions.right ||
+            e.clientY < dialogDimensions.top ||
+            e.clientY > dialogDimensions.bottom
+        ) {
+            modal.close()
+        }
+    })
+</script>
+{% endblock %}

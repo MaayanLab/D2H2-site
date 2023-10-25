@@ -319,6 +319,55 @@
         </div>
       </div>
 
+      <div class="container mt-2" id="Rummagene-analysis">
+        <div class="row justify-content-center justify-items-center" id="[Rummagene]">
+          <div class="custom-col">
+            <div class="question mt-3 p-2 justify-content-center row text-center">
+              <h4>In which extacted gene sets from PubMed Central is my gene set enriched? </h4>
+            </div>
+
+            <div class="row mt-4 justify-content-center" style="flex-wrap: wrap;">
+              <div class="col-md-5 col-sm-7 col-lg-4 text-center mr-5 mt-4">
+                <textarea class="input-form" name="list" rows="8" id="text-area4"
+                  placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
+                  onkeyup="geneCount($(this).val(), 4)" onchange="geneCount($(this).val(), 4)"
+                  onfocus="geneCount($(this).val(), 4)"></textarea>
+                <div class="mt-1">
+                  <span id="gene-count4"> 0 </span> gene(s) entered
+                </div>
+                <div class="text-center">
+                  <a id="examplefill4" style="color: rgb(10, 13, 149)">Try an example gene set</a>
+                </div>
+
+              </div>
+              <div class="col-md-7 col-sm-7 col-lg-6 text-center mr-3" style="overflow-y: visible !important;">
+                <p>
+                  File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
+                </p>
+                <form action="/action_page.php" style="flex-wrap: wrap;">
+                  <input type="file" id="gene-file4" name="filename">
+                </form>
+                <label class="mt-1 mr-1" for="desc1">Enter gene set description (optional): </label>
+                <input class="form-control-md" id="desc1" type="text">
+                <p class="mt-2">Perform enrichment analysis on hundreds of thousands gene sets
+                  extracted from supporting tables of over one hundred thousand articles
+                  to find the most similar gene sets that match your query.
+                  </p>
+              </div>
+            </div>
+
+            <div class="justify-content-center row text-center mt-1">
+              <a id="Rummagene">
+                <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Submit to Rummagene
+                  <img src="{{ url_for('static', filename='img/rummagene_logo.png') }}" class="img-fluid mr-3"
+                    style="width: 45px" alt="Enrichr">
+                </button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
 
     </div>
   </div>
@@ -331,7 +380,7 @@
 
 <script type="module">
 
-  import { geneset_signatures, geneset_enrichment, geneset_kea3, geneset_chea3, geneset_sigcomlincs } from '../static/js/modules/geneset-queries.js';
+  import { geneset_signatures, geneset_enrichment, geneset_kea3, geneset_chea3, geneset_sigcomlincs, geneset_rummagene} from '../static/js/modules/geneset-queries.js';
   import { loading } from '../static/js/modules/constants.js';
   $(document).ready(function () {
     if (localStorage.hasOwnProperty("geneset")) {
@@ -451,6 +500,10 @@
     $('#examplefill3').click(function () {
         fillSet('text-area3', '', 3)
     });
+    $('#examplefill4').click(function () {
+        fillSet('text-area4', '', 4)
+    });
+
 
 
     // PRODUCE INPUT HTML FOR SINGLE GENE SET
@@ -564,6 +617,7 @@
 
             if (inputvalue.length == 0) {
                 alert('Please enter a gene set')
+                return;
             }
 
             var genes = JSON.stringify({ 'genes': [inputvalue] });
@@ -607,6 +661,7 @@
 
             if (inputvalueUp.length == 0 || inputvalueDown.length == 0) {
                 alert('Please enter an up and down gene set')
+                return;
             }
 
             var genes = JSON.stringify({ 'genes': [inputvalueUp, inputvalueDown] });
@@ -625,6 +680,51 @@
 
         }
     });
+
+
+    $('#Rummagene').click(async function () {
+        var inputvalue = document.getElementById("text-area4").value;
+        var file = document.getElementById("gene-file4").value;
+        var section = "gene-file4";
+
+        if (inputvalue) {
+            inputvalue = inputvalue.split('\n').join(',')
+        }
+
+        if (file) {
+            inputvalue = await loadFileAsText(section, "%0A");
+        }
+
+
+        if (inputvalue.length > 0) {
+        const query = {
+            "operationName": "AddUserGeneSet",
+            "variables": {
+                "description": '',
+                "genes": inputvalue.split(',')
+            },
+            "query": "mutation AddUserGeneSet($genes: [String], $description: String = \"\") {\n  addUserGeneSet(input: {genes: $genes, description: $description}) {\n    userGeneSet {\n      id\n      __typename\n    }\n    __typename\n  }\n}\n"
+        }
+        fetch(`https://rummagene.com/graphql`, {
+            method: 'POST',
+            body: JSON.stringify(query),
+            headers: { Accept: 'application/json', "Content-Type": "application/json" }
+        })
+            .then(function (res) {
+                return res.json()
+            })
+            .then(function ({ data, ...rest }) {
+                console.log(data, rest)
+                const userListId = (((data || {}).addUserGeneSet || {}).userGeneSet || {}).id
+                const url = userListId ? `https://rummagene.com/enrich?dataset=${userListId}` : `https://rummagene.com/`
+                window.open(url, '_blank');
+            });
+    }
+    else {
+        window.open("https://rummagene.com/", '_blank');
+    }
+    });
+
 </script>
 
 {% endblock %}

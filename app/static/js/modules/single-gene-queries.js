@@ -1,5 +1,5 @@
 export const human_list = fetch(
-    "static/searchdata/allgenes-comb.json"
+    "static/data/allgenes-comb.json"
 ).then(data => data.json());
 
 
@@ -46,6 +46,10 @@ export async function gene_signatures(gene, species, resultid) {
         type: "POST",
         data: jsonData,
     }).then(function (res) {
+        if (res?.error) {
+            document.getElementById(resultid).innerHTML = "<p>Gene symbol not found</p>";
+            return;
+        }
         var jdata = JSON.parse(res)
         var plot = jdata['plot']
         var tables = jdata['tables']
@@ -234,7 +238,7 @@ export async function query_gwas(gene, id) {
     }).done(function (response) {
         const data = response['GWAS_Catalog'];
         if (data.length === 0) {
-            $(`#${id}`).html("<p class='text-center'> No data found </p>");
+            document.getElementById(id).innerHTML = "<p class='text-center'> No data found </p>";
             return;
         }
         var clear_button;
@@ -244,20 +248,20 @@ export async function query_gwas(gene, id) {
             clear_button = "";
         }
         
-        var tabletext = `<table id='table-gwas${id}' class='styled-table'><thead><tr><th></th><th>Gene</th><th>Trait</th><th>Count</th></tr><tbody>`;
+        var tabletext = `<table id='table-gwas' class='styled-table'><thead><tr><th></th><th>Gene</th><th>Trait</th><th>Count</th></tr><tbody>`;
         for (var k = 0; k < data.length; k++) {
             tabletext += "<tr><td>" + (k + 1) + "</td><td><a href='https://www.ebi.ac.uk/gwas/genes/" + data[k]['gene'] + "' target='_blank'>" + data[k]['gene'] + "</a></td><td><a href='" + data[k]['mapped_trait_link'] + "' target='_blank'>" + data[k]['trait'] + "</a></td><td>" + data[k]['count'] + "</td></tr>";
         }
         tabletext += "</tbody></table>";
-        $(document).ready(function () {
-            $(`#table-gwas${id}`).DataTable({
-                dom: 'Bfrtip',
-                buttons: [
-                    'copy', { extend: 'csv', title: `${inputvalue}-gwas-res` }
-                ]
-            });
+       
+        document.getElementById(id).innerHTML = `<div class='mx-auto text-center' style='display: inline-block'>${tabletext} ${clear_button}</div>`;
+        
+        $(`#table-gwas`).DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', { extend: 'csv', title: `${inputvalue}-gwas-res` }
+            ]
         });
-        document.getElementById(id).innerHTML = tabletext + clear_button;
     });
 }
 
@@ -338,9 +342,10 @@ export async function loadCorrelation(gene, id) {
             var correlation = data["values"];
 
             if (!(genesym)) {
-                $(`#${id}`).html("<p class='text-center'> No data found </p>");
+                document.getElementById(id).innerHTML = `<p>No correlation data for ${gene} found.</>`;
                 return;
             }
+            
             var clear_button;
             if (id.includes('[')) {
                 clear_button = "<a> <button type='button' class='btn btn-dark btn-group-sm mt-3 mb-3' onclick='clear_home();'> Clear Results </button> </a>";
@@ -368,6 +373,8 @@ export async function loadCorrelation(gene, id) {
 
         },
         error: function (xhr, textStatus, errorThrown) {
+            document.getElementById(id).innerHTML = `<p>No correlation data for ${gene} found.</>`
+            return
         }
     });
 }
@@ -383,7 +390,7 @@ export async function query_komp(gene, id) {
     }).done(function (response) {
         const data = response['data'];
         if (data.length === 0) {
-            $(`#${id}`).html("<p class='text-center'> No data found </p>");
+            document.getElementById(id).innerHTML = "<p class='text-center'> No data found </p>";
             return;
         }
         

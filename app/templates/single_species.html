@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 
-{% block content %}
+{% block body %}
 <div class="container px-4 pb-4" style="min-height: 100%;">
 
     <!-- Title -->
@@ -28,31 +28,59 @@
         <div class="row justify-content-center">
             <div class="text-center mr-5">
                     Total Studies
-            <div class="countup num-style">{{ gse_metadata_single[species]|length }}</div>
+                <div class="countup num-style human-counts">{{ gse_metadata_single['human_single']|length }}</div>
+                <div class="countup num-style mouse-counts" style="display: none;">{{ gse_metadata_single['mouse_single']|length }}</div>
             </div>
             <div class="text-center mr-5">
                 Total Samples
-                <div class="countup num-style">{{ num_samples }}</div>
+                <div class="countup num-style human-counts">{{ num_samples['human_single'] }}</div>
+                <div class="countup num-style mouse-counts" style="display: none;">{{ num_samples['mouse_single'] }}</div>
             </div>
             <div class="text-center mr-5">
                 Total Single Cells
-                <div class="countup num-style">{{ num_cells }}</div>
+                <div class="countup num-style human-counts">{{ num_cells['human_single'] }}</div>
+                <div class="countup num-style mouse-counts" style="display: none;">{{ num_samples['mouse_single'] }}</div>
             </div>
         </div>
     </div>
 </div>
 
 
+<div class="p-3 align-items-center justify-content-center ml-auto mr-auto" style='width:90%'>
+    <div class="row justify-content-center" id="table-filtering">
 
-<div class="container custom-col table-responsive-lg mb-4 p-3">
+        <p class="mr-3"></p><select name="Select Method" class="form-select form-select-lg mb-3 mr-1 libpicker text-center" id="tissue-filtering">
+            <option selected disabled hidden value="">Filter Tissue</option>
+            <option value="">All Tissues</option>
+        </select>
+    
+        <p class="mr-3"></p> <select name="Select Size" class="form-select form-select-lg mb-3 libpicker text-center" id="disease-filtering">
+            <option selected disabled hidden value="">Filter Disease</option>
+            <option value="">All Diseases</option>
+        </select>
+
+        <div class="row justify-content-center mb-2 ml-3 mr-5">
+            <label class="mt-2 mr-1" for="species-toggle"></label>
+            <label class="toggle" id="species-toggle">
+              <input type="checkbox" id="species-val">
+              <span class="slider"></span>
+              <span class="labels" data-on="Mouse" data-off="Human"></span>
+            </label>
+          </div>
+    </div>
+
     <table class="table table-bordered table-hover styled-table" id="studies-table">
         <thead class="thead-light">
             <tr>
-                <th scope="col">Title</th>
                 <th scope="col">GSE</th>
+                <th scope="col">Title</th>
                 <th scope="col">Organism</th>
                 <th scope="col">Assay</th>
+                <th scope="col">Tissue</th>
+                <th scope="col">Cell Type of Interest</th>
+                <th scope="col">Disease</th>
                 <th scope="col">Num Samples</th>
+                <th scope="col">Perturbations</th>
                 <th scope="col">Single Cells</th>
                 <th scope="col">Submission Date</th>
                 <th scope="col">Study Design</th>
@@ -61,12 +89,13 @@
             </tr>
         </thead>
         <tbody>
-            {% for gse_id, geo_metadata in gse_metadata_single[species].items() %}
+            {% for gse_id, geo_metadata in gse_metadata_single['human_single'].items() %}
             <tr>
-                <td>{{ geo_metadata.get('title', ['No Title'])[0].replace('RTN1 IS A NOVEL MEDIATOR FOR PROGRESSION OF
-                    KIDNEY DISEASE', 'RTN1 Is A Novel Mediator For Progression of Kidney Disease')|safe}}</td>
+                
                 <th scope="row"><a class="text-br-red" href="{{ geo_metadata.get('gse_link', ['#'])[0]|safe }}"
                         target="_blank" rel="noopener noreferrer">{{ gse_id }}</a></th>
+                <td>{{ geo_metadata.get('title', ['No Title'])[0].replace('RTN1 IS A NOVEL MEDIATOR FOR PROGRESSION OF
+                    KIDNEY DISEASE', 'RTN1 Is A Novel Mediator For Progression of Kidney Disease')|safe}}</td>
                 
                 <td>
                     {% if geo_metadata.get('cur_gpl', ['Single GPL'])[0] != 'Single GPL' %}
@@ -88,10 +117,98 @@
                     {{ geo_metadata.get('type', ['No Assay'])[0]|safe }}
                     {% endif %}
                 </td>
+                <td>{{ geo_metadata.get('tissue_type_identifier') }}</td>
+                <td>{{ geo_metadata.get('cell type') }}</td>
+                <td>{{ geo_metadata.get('disease_type_identifier') }}</td>
                 <td>
                 {{ geo_metadata.get('numsamples') }}
 
                 </td>
+                <td>
+                    <ul>
+                    {% for pert in geo_metadata.get('perturbations') %}
+                    <li><span>{{ pert }}</span></li>
+                    {% endfor %}
+                </ul>
+                </td>
+
+                <td>
+                    {% for key, value in geo_metadata.get('cell_count').items() %}
+                    <span style="white-space: nowrap;">{{ key }}: {{ value }}</span>
+                    {% endfor %}
+                </td>
+
+
+                <td data-order="{{geo_metadata.get('submission_date')[0][-5:] + month_dict[geo_metadata.get('submission_date')[0][:3]] + geo_metadata.get('submission_date')[0][4:6]}}" >
+                    {{month_dict[geo_metadata.get('submission_date')[0][:3]] + '/' + geo_metadata.get('submission_date')[0][4:6] + '/' + geo_metadata.get('submission_date')[0][-4:]}}
+                </td>
+                <td>
+                    <button class="btn-custom btn-group-sm btn-collapse collapsed"
+                        data-toggle="collapse" data-target="#studyDesignCollapse-{{gse_id}}" aria-expanded="false"
+                        aria-controls="studyDesignCollapse-{{gse_id}}">
+                        <div class="text">Show Study Design</div>
+                    </button>
+                    <div class="collapse" id="studyDesignCollapse-{{gse_id}}">
+                        {{ geo_metadata.get('overall_design', ['No Study Design'])[0]|safe }}
+                        <br>
+                        Platform: {{ geo_metadata.get('platform') }}
+                    </div>
+                </td>
+                <td>
+                    {% if geo_metadata.get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No Pubmed ID' %}
+                    <a class="text-br-red" href="{{ geo_metadata.get('pubmed_link', ['#'])[0]|safe }}" target="_blank"
+                        rel="noopener noreferrer">
+                        {{ geo_metadata.get('pubmed_id', ['No Pubmed ID'])[0]|safe }}
+                    </a>
+                    {% else %}
+                    <p>N/A</p>
+                    {% endif %}
+                </td>
+                <td><a href="{{ url_for('species_or_viewerpg', studies_or_gse=gse_id) }}"><button class="btn btn-primary btn-group-sm singleviewerclass">{{ gse_id }} Analysis Viewer</button></a></td>
+            </tr>
+            {% endfor %}
+
+
+
+            {% for gse_id, geo_metadata in gse_metadata_single['mouse_single'].items() %}
+            <tr>
+                <th scope="row"><a class="text-br-red" href="{{ geo_metadata.get('gse_link', ['#'])[0]|safe }}"
+                    target="_blank" rel="noopener noreferrer">{{ gse_id }}</a></th>
+                    <td>{{ geo_metadata.get('title', ['No Title'])[0].replace('RTN1 IS A NOVEL MEDIATOR FOR PROGRESSION OF
+                        KIDNEY DISEASE', 'RTN1 Is A Novel Mediator For Progression of Kidney Disease')|safe}}</td>
+                <td>
+                    {% if geo_metadata.get('cur_gpl', ['Single GPL'])[0] != 'Single GPL' %}
+                    {% for gpl_metadata in geo_metadata['all_gpls'] %}
+                    {% if 'Homo sapiens' not in gpl_metadata['organism'] %}
+                    {{ gpl_metadata['organism'][0]|safe }}
+                    {% endif %}
+                    {% endfor %}
+                    {% else %}
+                    {{ geo_metadata['all_gpls'][0].get('organism', ['No Organism'])[0]|safe }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if geo_metadata.get('type', ['No Assay'])|length > 1 %}
+                    {% for assay in geo_metadata.get('type', ['No Assay']) %}
+                    {{ assay|safe }}
+                    {% endfor %}
+                    {% else %}
+                    {{ geo_metadata.get('type', ['No Assay'])[0]|safe }}
+                    {% endif %}
+                </td>
+                <td>{{ geo_metadata.get('tissue_type_identifier') }}</td>
+                <td>{{ geo_metadata.get('cell type') }}</td>
+                <td>{{ geo_metadata.get('disease_type_identifier') }}</td>
+                <td>
+                {{ geo_metadata.get('numsamples') }}
+
+                </td>
+                <td>
+                    <ul>
+                    {% for pert in geo_metadata.get('perturbations') %}
+                    <li><span>{{ pert }}</span></li>
+                    {% endfor %}
+                </ul>
 
                 <td>
                     {% for key, value in geo_metadata.get('cell_count').items() %}
@@ -123,7 +240,7 @@
                     <p>N/A</p>
                     {% endif %}
                 </td>
-                <td><a href="{{ url_for('species_or_viewerpg', species_or_gse=gse_id) }}"><button class="btn btn-primary btn-group-sm singleviewerclass">{{ gse_id }} Analysis Viewer</button></a></td>
+                <td><a href="{{ url_for('species_or_viewerpg', studies_or_gse=gse_id) }}"><button class="btn btn-primary btn-group-sm singleviewerclass">{{ gse_id }} Analysis Viewer</button></a></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -147,6 +264,124 @@
 
 const countupEls = document.querySelectorAll( '.countup' );
 countupEls.forEach( animateCountUp );
+
+DataTable.ext.search.push(function (settings, data, dataIndex) {
+    var species = 'Homo sapiens'
+    let species_data = data[2]
+
+    if ($('#species-val').is(':checked')) {
+        species = 'Mus musculus'
+    }
+    if  (species_data.includes(species)) return true;
+ 
+    return false;
+});
+DataTable.ext.search.push(function (settings, data, dataIndex) {
+    var tissue = $('#tissue-filtering').val()
+    let tissue_data_inrow = data[4]
+    if (tissue === null || tissue === ""){
+        return true;
+    }
+    if (tissue_data_inrow === tissue) {
+        return true;
+    }
+ 
+    return false;
+});
+DataTable.ext.search.push(function (settings, data, dataIndex) {
+    var disease = $('#disease-filtering').val()
+    let disease_data_inrow = data[6]
+    if (disease === null || disease === ""){
+        return true;
+    }
+    if (disease_data_inrow === disease) {
+        return true;
+    }
+    return false;
+});
+table = $('#studies-table').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', { extend: 'csv', title: `D2H2-bulkrna-microarray-studies` }
+        ],
+        responsive: true,
+         columnDefs: [
+        {
+            target: 2,
+            searchable: true,
+            visible: false
+        },
+        {
+            target: 3,
+            searchable: true,
+            visible: false
+        },
+        {
+            target: 7,
+            searchable: true,
+            visible: false
+        },
+        {
+            target: 11,
+            searchable: true,
+            visible: false
+        } 
+    ]
+});
+
+
+$('#species-val').on('change', function () {
+    table.draw()
+    const mouseCounts = $('.mouse-counts')
+    const humanCounts = $('.human-counts')
+    if ($('#species-val').is(':checked')) {
+        mouseCounts.each((i) => {
+            mouseCounts[i].style.display = 'block';
+            humanCounts[i].style.display = 'none';
+        })
+    } else {
+        mouseCounts.each((i) => {
+            mouseCounts[i].style.display = 'none';
+            humanCounts[i].style.display = 'block';
+        })
+    }
+} );
+
+table.columns().flatten().each( function ( colIdx ) {
+        let data  = table.column(colIdx).header()
+        if ($(data).html() ==='Tissue'){
+            table
+            .column( colIdx )
+            .cache( 'search' )
+            .sort()
+            .unique()
+            .each( function ( d ) {
+                if (d !== 'Not Specified'){
+                    $('#tissue-filtering').append( $('<option value="'+d+'">'+d+'</option>') );
+                }
+                
+            } );
+            $('#tissue-filtering').on('change', function (event) {
+                table.draw();
+            } );
+
+        }
+        if ($(data).html() ==='Disease'){
+            table
+            .column( colIdx )
+            .cache( 'search' )
+            .sort()
+            .unique()
+            .each( function ( d ) {
+                $('#disease-filtering').append( $('<option value="'+d+'">'+d+'</option>') );
+            } );
+
+            $('#disease-filtering').on('change', function (event) {
+                table.draw();
+            } );
+
+        }
+    } );
 
 </script>
 

@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 import os
+import ast
 import json
 import s3fs
 import plotly
@@ -259,7 +260,7 @@ def workflows_api():
 @app.route(f'{ROOT_PATH}/getexample',  methods=['GET','POST'])
 def getexample():
 
-	with open('static/searchdata/example_list.txt') as f:
+	with open('static/data/example_list.txt') as f:
 		text = f.read()
 
 	return {'genes': text, 'description': "My gene set"}
@@ -267,7 +268,7 @@ def getexample():
 @app.route(f'{ROOT_PATH}/getexample2',  methods=['GET','POST'])
 def getexample2():
 
-	with open('static/searchdata/example_list2.txt') as f:
+	with open('static/data/example_list2.txt') as f:
 		text = f.read()
 
 	return {'genes': text, 'description': "My gene set"}
@@ -284,8 +285,8 @@ def dge():
 	gse = response_json['gse']
 	species = response_json['species']
 	norms = response_json['norms']
-	expr_file = '{base_url}/{species}/{gse}/{gse}_Expression.txt'.format(species=species, gse=gse, base_url=base_url)
-	meta_file = '{base_url}/{species}/{gse}/{gse}_Metadata.txt'.format(species=species, gse=gse, base_url=base_url)
+	expr_file = '{base_url}/{species}/{gse}/{gse}_Expression.tsv'.format(species=species, gse=gse, base_url=base_url)
+	meta_file = '{base_url}/{species}/{gse}/{gse}_Metadata.tsv'.format(species=species, gse=gse, base_url=base_url)
 
 	data, title = compute_dge(expr_file, meta_file, method, control, perturb, norms['logCPM'], norms['log'], norms['z'], norms['q'])
 
@@ -322,6 +323,21 @@ def dgesingle():
 		break
 
 	return json.dumps({'table': string_data, 'plot': jsonplot, 'description':description})
+
+@app.route('/api/precomputed_dge',  methods=['GET','POST'])
+def fetch_precomputed_dge():
+	response_json = request.get_json()
+	sig = response_json['sig']
+	species = response_json['species']
+	dge_tab = get_precomputed_dge(sig, species)
+	return dge_tab.to_json(orient='index')
+
+@app.route('/api/precomputed_dge_options',  methods=['GET','POST'])
+def fetch_precomputed_dge_options():
+	response_json = request.get_json()
+	gse = response_json['gse']
+	species = response_json['species']
+	return get_precomputed_dge_options(gse, species)
 
 
 #This function makes the umap tsne and pca plots for the single cell data based off the precomputed coordinates for these plots. 
@@ -413,7 +429,7 @@ def submit_contribution_form():
 
 #############################################
 ########## 2. Data
-#############################################ow toow
+#############################################
 ##### 1. Files #####
 
 
@@ -467,7 +483,7 @@ def get_metadata(geo_accession, species_folder):
 	if 'pubmed_id' in gse.metadata and (len(gse.metadata.get('pubmed_id', [])) != 0):
 		gse.metadata['pubmed_link'] = ["https://pubmed.ncbi.nlm.nih.gov/" + gse.metadata['pubmed_id'][0]]
 	
-	metadata_file = f'{base_url}/{species_folder}/{geo_accession}/{geo_accession}_Metadata.txt'
+	metadata_file = f'{base_url}/{species_folder}/{geo_accession}/{geo_accession}_Metadata.tsv'
 	
 	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 	gse.metadata['numsamples'] = metadata_dataframe.shape[0]
@@ -478,7 +494,7 @@ def get_metadata(geo_accession, species_folder):
 
 #### CHECK IF METADATA IS COMPLETE/ IF NEW STUDIES WERE ADDED, ADD THEM TO METADATA
 
-with open(f'static/searchdata/metadata-v1.pickle', 'rb') as f:	
+with open(f'static/data/metadata-v2.pickle', 'rb') as f:	
 		gse_metadata = pickle.load(f)
 
 
@@ -489,7 +505,7 @@ numstudies= [len(gse_metadata['human'].keys()), len(gse_metadata['mouse'].keys()
 study_to_species = {study:species_name for species_name, studies_metadata in gse_metadata.items() for study in studies_metadata.keys()}
 species_mapping = {'human': gse_metadata['human'], 'mouse': gse_metadata['mouse']}
 
-with open('static/searchdata/metadatasingle-v1.pickle', 'rb') as f:	
+with open('static/data/metadatasingle-v2.pickle', 'rb') as f:	
 	gse_metadata_single = pickle.load(f)
 
 #For single cell studies
@@ -500,8 +516,7 @@ species_mapping_single = {'human_single': gse_metadata_single['human_single'], '
 
 #Single cell studies from study to the species name
 study_to_species_single = {study:species_name for species_name, studies_metadata in gse_metadata_single.items() for study in studies_metadata.keys()}
-numstudies_single= [len(gse_metadata_single['human_single'].keys()), len(gse_metadata_single['mouse_single'].keys())]
-numstudies = [len(gse_metadata['human']), len(gse_metadata['mouse']), len(gse_metadata_single['human_single']), len(gse_metadata_single['mouse_single'])]
+numstudies = {'human': len(gse_metadata['human']), 'mouse': len(gse_metadata['mouse']), 'human_single': len(gse_metadata_single['human_single']), 'mouse_single': len(gse_metadata_single['mouse_single'])}
 def load_new_studies():
 	#Need to use account and pass in order to update the files.
 	s3 = s3fs.S3FileSystem(key = os.environ.get('AWS_ACCESS_KEY_ID'), secret = os.environ.get('AWS_SECRET_ACCESS_KEY'))
@@ -510,7 +525,7 @@ def load_new_studies():
 	mouse_gses = list(s3.walk(f'{base_url}/mouse', maxdepth=1))[0][1]
 	human_gses = list(s3.walk(f'{base_url}/human', maxdepth=1))[0][1]
 	#Bulk and microarray study to species name dictionary
-	if numstudies[0] != len(human_gses) or numstudies[1] != len(mouse_gses):
+	if numstudies['human'] != len(human_gses) or numstudies['mouse'] != len(mouse_gses):
 		print("Change in bulk studies")
 		for species, geo_accession_ids in species_mapping.items():
 			if species not in gse_metadata:
@@ -524,13 +539,13 @@ def load_new_studies():
 				for geo_accession in mouse_gses:
 					if geo_accession not in geo_accession_ids:
 						gse_metadata[species][geo_accession] = get_metadata(geo_accession, url_to_folder[species])
-		with open('static/searchdata/metadata-v1.pickle', 'wb') as f:
+		with open('static/data/metadata-v2.pickle', 'wb') as f:
 			pickle.dump(gse_metadata, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 	
 	mouse_singlegses = list(s3.walk(f'{base_url}/mouse_single', maxdepth=1))[0][1]
 	human_singlegses = list(s3.walk(f'{base_url}/human_single', maxdepth=1))[0][1]
-	if numstudies_single[0] != len(human_singlegses) or numstudies_single[1] != len(mouse_singlegses):
+	if numstudies['human_single'] != len(human_singlegses) or numstudies['mouse_single'] != len(mouse_singlegses):
 		print("Change in single cell studies")
 		for species, geo_accession_ids in species_mapping_single.items():
 			if species =='human_single':
@@ -581,27 +596,28 @@ def load_new_studies():
 						print("Mouse Single Cell Study")
 						print(geo_accession)
 						print(dict_to_store_cell_numbers)
-		with open('static/searchdata/metadatasingle-v1.pickle', 'wb') as f:
+		with open('static/data/metadatasingle-v2.pickle', 'wb') as f:
 			pickle.dump(gse_metadata_single, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-@app.route(f'{ROOT_PATH}/<species_or_gse>', methods=['GET', 'POST'])
-def species_or_viewerpg(species_or_gse):
+@app.route(f'{ROOT_PATH}/<studies_or_gse>', methods=['GET', 'POST'])
+def species_or_viewerpg(studies_or_gse):
 	# test if species
-	if species_or_gse in gse_metadata:
-		num_samples = sum(map(lambda x: x.get('numsamples'), gse_metadata[species_or_gse].values()))
-		return render_template('species.html', species=species_or_gse, gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, numstudies=numstudies,  month_dict=month_dict)
+	if studies_or_gse == 'bulkrna':
+		num_samples = {'human': sum(map(lambda x: x.get('numsamples'), gse_metadata['human'].values())),'mouse': sum(map(lambda x: x.get('numsamples'), gse_metadata['mouse'].values()))}
+		return render_template('species.html', species='human', gse_metadata=gse_metadata, species_mapping=species_mapping, num_samples=num_samples, numstudies=numstudies, month_dict=month_dict)
 	#Checking for the single cell studies and loading that summary page
-	elif species_or_gse in gse_metadata_single:
-		num_samples = sum(map(lambda x: x.get('numsamples'), gse_metadata_single[species_or_gse].values()))
-		num_cells = sum(map(lambda x: x.get('cell_count').get('Total'), gse_metadata_single[species_or_gse].values()))
-		return render_template('single_species.html', species=species_or_gse, gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, gse_metadata=gse_metadata, num_samples=num_samples, numstudies=numstudies,  month_dict=month_dict, num_cells=num_cells)
-	# test if gsea
-	elif species_or_gse in study_to_species:
-		geo_accession = species_or_gse
+	elif studies_or_gse == 'scrna':
+		num_samples = {'human_single': sum(map(lambda x: x.get('numsamples'), gse_metadata_single['human_single'].values())), 'mouse_single': sum(map(lambda x: x.get('numsamples'), gse_metadata_single['mouse_single'].values()))}
+		num_cells = {'human_single': sum(map(lambda x: x.get('cell_count').get('Total'), gse_metadata_single['human_single'].values())), 'mouse_single': sum(map(lambda x: x.get('cell_count').get('Total'), gse_metadata_single['mouse_single'].values()))}
+		return render_template('single_species.html', species='human_single', gse_metadata_single=gse_metadata_single, species_mapping=species_mapping, gse_metadata=gse_metadata, num_samples=num_samples, numstudies=numstudies,  month_dict=month_dict, num_cells=num_cells)
+	
+	# test if gse
+	elif studies_or_gse in study_to_species:
+		geo_accession = studies_or_gse
 		species = study_to_species[geo_accession]
 		species_folder = url_to_folder[species]
-		metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+		metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.tsv'
 		metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 		gses = list(metadata_dataframe['Sample_geo_accession'])
 		metadata_dict = metadata_dataframe.groupby('Group')['Condition'].apply(set).to_dict()
@@ -611,10 +627,12 @@ def species_or_viewerpg(species_or_gse):
 		for key in metadata_dict_samples.keys():
 			filtered_samps = list(filter(lambda x: x in gses, metadata_dict_samples[key]))
 			sample_dict[key] = {'samples': filtered_samps, 'count': len(filtered_samps)}
-		return render_template('viewer.html', metadata_dict=metadata_dict, metadata_dict_samples=sample_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping, numstudies=numstudies,  month_dict=month_dict)
+		dge_precomputed = get_precomputed_dge_options(geo_accession, species)
+		return render_template('viewer.html', metadata_dict=metadata_dict, metadata_dict_samples=sample_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping, numstudies=numstudies,  month_dict=month_dict, dge_precomputed=dge_precomputed)
+	
 	#Check for the single study individual viewer page
-	elif species_or_gse in study_to_species_single:
-		geo_accession = species_or_gse
+	elif studies_or_gse in study_to_species_single:
+		geo_accession = studies_or_gse
 		#Will be human_single or mouse_single not just species name
 		species = study_to_species_single[geo_accession]
 		species_folder = url_to_folder_single[species]
@@ -647,20 +665,15 @@ def species_or_viewerpg(species_or_gse):
 ########## 1. Genes
 #############################################
 
-
-# this will likely stay the same.
-
 @app.route(f'{ROOT_PATH}/api/genes/<geo_accession>')
-
-# this will likely stay the same.
 @lru_cache(maxsize=None)
 def genes_api(geo_accession):
 	if geo_accession == 'human':
-		with open('static/searchdata/t2d-human.json', 'r') as f:
+		with open('static/data/t2d-human.json', 'r') as f:
 			human_genes = json.load(f)
 		genes_json = json.dumps([{'gene_symbol': x} for x in human_genes['human_genes']])
 	elif geo_accession == 'mouse':
-		with open('static/searchdata/t2d-mouse.json', 'r') as f:
+		with open('static/data/t2d-mouse.json', 'r') as f:
 			mouse_genes = json.load(f)
 		genes_json = json.dumps([{'gene_symbol': x} for x in mouse_genes['mouse_genes']])
 	elif geo_accession in study_to_species_single:
@@ -671,18 +684,23 @@ def genes_api(geo_accession):
 		genes_json = json.dumps([{'gene_symbol': x} for x in adata_df.index])
 		#go into anndata and get the genes for each human single
 	elif geo_accession == 'combined':
-		with open('static/searchdata/allgenes-comb.json', 'r') as f:
+		with open('static/data/allgenes-comb.json', 'r') as f:
 			human_genes = json.load(f)
-		with open('static/searchdata/t2d-mouse.json', 'r') as f:
+		with open('static/data/t2d-mouse.json', 'r') as f:
 			mouse_genes = json.load(f)
 		all_genes = human_genes + mouse_genes['mouse_genes']	
+		genes_json = json.dumps([{'gene_symbol': x} for x in all_genes])
+	elif geo_accession == 'signatures':
+		with open('static/data/signature_idx.json', 'r') as f:
+			genes = json.load(f)
+		all_genes = list(set(genes['human_rna'] + genes['mouse_rna'] + genes['human_micro'] + genes['mouse_micro']))	
 		genes_json = json.dumps([{'gene_symbol': x} for x in all_genes])
 	else:
 		species = study_to_species[geo_accession]
 		species_folder = url_to_folder[species]
 
 		# Get genes json
-		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
+		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.tsv'
 		expression_dataframe = pd.read_csv(s3.open(expression_file), index_col = 0, sep='\t')
 
 		genes_json = json.dumps([{'gene_symbol': x} for x in expression_dataframe.index])
@@ -735,8 +753,10 @@ def plot_api_single(geo_accession, condition):
 	clus_numbers = f["var/leiden/codes"][:]
 
 	leiden_values = list(map(lambda x: "Cluster " + str(x), clus_numbers))
-
-	idx = np.where(genes == gene_symbol)[0][0]
+	try:
+		idx = np.where(genes == gene_symbol)[0][0]
+	except:
+		return
 
 	vals = f['raw/X'][idx,:]
 
@@ -783,8 +803,8 @@ def plot_api(geo_accession):
 
 	assay = gse_metadata[species][geo_accession].get('type')[0]
 
-	expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
-	metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Expression.tsv'
+	metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.tsv'
 	expression_dataframe = pd.read_csv(s3.open(expression_file), index_col = 0, sep='\t')
 	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 	
@@ -851,8 +871,12 @@ def plot_volcano_api():
 	request.form
 	gene = request.form["gene"]
 	species = request.form["species"]
-	json_item_plot = send_plot(species, gene)
-	# Return
+	try:
+		json_item_plot = send_plot(species, gene)
+	except Exception as e:
+		print(e)
+		return {'error': "Gene not found"}
+	
 	return json.dumps(json_item_plot)
 
 
@@ -862,7 +886,7 @@ def plot_volcano_api():
 def conditions_api(geo_accession):
 	species = study_to_species[geo_accession]
 	species_folder = url_to_folder[species]
-	metadata_file = base_url+ '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	metadata_file = base_url+ '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.tsv'
 	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 	if len(set(metadata_dataframe['Group'])) == 1:
 		conditions = set(metadata_dataframe['Condition'])
@@ -888,7 +912,7 @@ def samples_api(geo_accession):
 	species = study_to_species[geo_accession]
 	species_folder = url_to_folder[species]
 
-	metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
+	metadata_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + geo_accession + '_Metadata.tsv'
 	metadata_dataframe = pd.read_csv(s3.open(metadata_file), sep='\t')
 
 	conditions_mapping = metadata_dataframe.groupby('Condition')['Sample_geo_accession'].apply(list).to_dict()
@@ -905,8 +929,8 @@ def get_study_data():
 	perturb = response_json['perturb']
 	species = response_json['species']
 
-	metadata_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
-	expression_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
+	metadata_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.tsv'
+	expression_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.tsv'
 
 	with s3.open(metadata_file, 'r') as f:
 		meta_data = f.read()
@@ -939,20 +963,18 @@ def visualize_samps():
 	response_json = request.get_json()
 	geo_accession = response_json['gse']
 	species = response_json['species']
-	meta_df = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.txt'
-	expr_df = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.txt'
+	meta_df = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.tsv'
+	
+	meta_df = pd.read_csv(s3.open(meta_df), sep='\t', index_col=0)
 
-	pca_df, tsne_df, umap_df = bulk_vis(expr_df, meta_df)
-
-	pca_plot = interactive_circle_plot(pca_df, "PC-1", "PC-2", pca_df.columns[0], 'pca')
-
-	tsne_plot = interactive_circle_plot(tsne_df, "t-SNE-1", "t-SNE-2", tsne_df.columns[0], 'tsne')
-
-	umap_plot = interactive_circle_plot(umap_df, "UMAP-1", "UMAP-2", umap_df.columns[0], 'umap')
-
+	if len(meta_df.columns) > 2:
+		pca_plot = interactive_circle_plot(meta_df.rename(columns={'pca_x': 'x', 'pca_y': 'y'}), "PC-1", "PC-2", 'Condition', 'pca')
+		tsne_plot = interactive_circle_plot(meta_df.rename(columns={'tsne_x': 'x', 'tsne_y': 'y'}), "t-SNE-1", "t-SNE-2", 'Condition', 'tsne')
+		umap_plot = interactive_circle_plot(meta_df.rename(columns={'umap_x': 'x', 'umap_y': 'y'}), "UMAP-1", "UMAP-2", 'Condition', 'umap')
+	else:
+		pca_plot, tsne_plot, umap_plot = 'None', 'None', 'None'
 
 	return json.dumps({'pcaplot': pca_plot, 'tsneplot': tsne_plot, 'umapplot': umap_plot})
-
 
 @app.route(f'{ROOT_PATH}/api/query_gpt',  methods=['GET', 'POST'])
 def query_gpt():
@@ -979,13 +1001,70 @@ def query_genes():
 
 @app.route(f'{ROOT_PATH}/api/record_chat',  methods=['GET', 'POST'])
 def record_chat():
-	response_json = request.get_json()
-	user_chat = response_json['user_chat']
-	response = response_json['response']
-	userid = response_json['user_id']
+	try:
+		response_json = request.get_json()
+		user_chat = response_json['user_chat']
+		response = response_json['response']
+		userid = response_json['user_id']
+	except:
+		print('Error logging chat:')
+		print('User chat:', 'user_chat' in response_json)
+		print('D2H2 response:', 'response' in response_json)
+		print('User id:', 'user_id' in response_json)
 	if not DEBUG:
 		log_chat(user_chat, response, userid)
 	return {}
+
+@app.route('/api/run_geneshot', methods=['GET', 'POST'])
+def run_geneshot():
+	if request.method == "POST":
+		term = request.get_json()['term']
+		try:
+			res = query_geneshot(term) 
+			return {'search_term':term, 'genes': '\t'.join(res[0]), 'count': str(res[1])}
+		except:
+			return {'search_term':term, 'error': True}
+		
+@app.route('/api/metadata_search', methods=['GET', 'POST'])
+def metadata_search():
+	if request.method == "POST":
+		term = request.get_json()['searchterms']
+		assay = request.get_json()['assay']
+		species = request.get_json()['species']
+		species_dict = {'human': 'Homo sapiens', 'mouse': 'Mus musculus'}
+		gses_identified = {'bulkrna': {'human': {}, 'mouse': {}}, 'scrna': {'human_single': {}, 'mouse_single': {}}}
+		if assay == 'Bulk RNA-seq and Microarray':
+			metadata = gse_metadata
+		elif assay == 'scRNA-seq':
+			metadata = gse_metadata_single
+		else:
+			metadata = gse_metadata.copy()
+			metadata.update(gse_metadata_single)
+		for cat in metadata:
+			if species == 'both' or species in cat:
+				for gse in metadata[cat]:
+					search_string = ""
+					for entry in ['title', 'geo_accession', 'assay', 'platform', 'disease', 'disease_type_identifier', 'tissue_type', 'tissue_type_identifier', 'perturbations']:
+						if entry in metadata[cat][gse]: search_string += f"{str(metadata[cat][gse][entry]).lower()} "
+					if ',' in term:
+						terms = term.split(', ')
+						if all([t.lower() in search_string for t in terms]):
+							if cat == 'human' or cat == 'mouse':
+								gses_identified['bulkrna'][cat][gse] = metadata[cat][gse]
+								gses_identified['bulkrna'][cat][gse]['species'] = species_dict[cat]
+							else:
+								gses_identified['scrna'][cat][gse] = metadata[cat][gse]
+								gses_identified['scrna'][cat][gse]['species'] = species_dict[cat.split('_')[0]]
+					else:
+						if term.lower() in search_string:
+							if cat == 'human' or cat == 'mouse':
+								gses_identified['bulkrna'][cat][gse] = metadata[cat][gse]
+								gses_identified['bulkrna'][cat][gse]['species'] = species_dict[cat]
+							else:
+								gses_identified['scrna'][cat][gse] = metadata[cat][gse]
+								gses_identified['scrna'][cat][gse]['species'] = species_dict[cat.split('_')[0]]
+
+		return gses_identified
 
 #######################################################
 #######################################################

@@ -1,3 +1,175 @@
+
+async function explore_dge(gse, species) {
+    var data = JSON.stringify({'gse': gse, 'species': species})
+    const options = await $.ajax({
+        url: "api/precomputed_dge_options",
+        contentType: 'application/json',
+        type: "POST",
+        dataType: 'json',
+        data: data
+    })
+
+    var selecter = `
+    <div><h5 class="text-center mt-3">${gse} Precomputed Differential Gene Expression </h5>
+        <p class="text-br-red text-center font-weight-bold">Signatures:</p>
+        <div class="row justify-content-center mt-4">`
+
+    if (options.length > 0) {
+        selecter += `
+            <select id="precomputed-dge-conditions-${gse}" class="mt-2 mb-2 mr-2 libpicker text-center"
+                    style="text-overflow: ellipsis; width: 60%;">
+                    <option value="">Select a signature to view limma differential expression</option>
+                ${options.map(sig => `<option value="${sig}">${sig}</option>`)}
+            </select>
+        </div>
+        <div id="precomputed-dge-res-${gse}" class="m-3"></div>
+        <div id="precomputed-dge-res-buttons-${gse}" class="m-3"></div>
+        </div>`
+
+        document.getElementById("chat-bubbles-section").appendChild(chatN('start', gse, '#d3d3d3', selecter));
+        await $(`#chat-${gse}`).fadeIn(2000)
+
+        precomputed_sig = document.getElementById(`precomputed-dge-conditions-${gse}`)
+        precomputed_sig.addEventListener("change", (event) => {
+            if (precomputed_sig.value != '') {
+                fill_precomputed_dge_table(precomputed_sig.value, species,`precomputed-dge-res-${gse}`)
+            } else {
+                document.getElementById(`precomputed-dge-res-${gse}`).innerHTML = "";
+            }
+        });
+    } else {
+        selecter =  `
+            <p>No precomputed signatures are currently available for this study. You can compute differential gene
+            expression on the gene viewer page.
+            </p>
+        </div>`
+        document.getElementById("chat-bubbles-section").appendChild(chatN('start', parseInt(gse), '#d3d3d3', selecter));
+        await $(`#chat-${parseInt(gse)}`).fadeIn(2000)
+    }
+}
+
+async function fill_precomputed_dge_table(sig, species, id) {
+    const precomputed_res = document.getElementById(id)
+    var gsedata = JSON.stringify({'sig': sig, 'species': species});
+    $.ajax({
+        url: "api/precomputed_dge",
+        contentType: 'application/json',
+        type: "POST",
+        dataType: 'json',
+        data: gsedata,
+    }).done(function (data) {
+        var tabletext = `<table id='table-precomputed-dge-${id}' class='styled-table' style:'width=100%; vertical-align:top;'><thead><tr><th>Gene</th>`
+        const genes = Object.keys(data)
+        const columns = Object.keys(data[genes[0]])
+        columns.forEach(cname => {
+            tabletext += `<th>${cname}</th>`
+        })
+        tabletext += `</tr><tbody>`;
+
+        const currURL = window.location.href.split('/')
+
+        var url = currURL.join('/') + 'singlegene'
+        for (var k = 0; k < genes.length; k++) {
+            tabletext += `<tr><td><a href='${url}' onclick="setGene('${genes[k]}')" target='_blank'>${genes[k]}<a/></td>`
+            columns.forEach(cname => {
+                tabletext += "<td>" + data[genes[k]][cname] + "</td>"
+            })
+            tabletext += "</tr>"
+        }
+        tabletext += "</tbody></table>";
+        precomputed_res.innerHTML = tabletext
+
+        var table = $(`#table-precomputed-dge-${id}`).DataTable({
+            order: [[5, 'asc']],
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', { extend: 'csv', title: sig }
+            ]
+        })
+
+        var adjpvals = table.column(5).data()
+        var pvals = table.column(4).data()
+        var logfc = table.column(1).data()
+        var genes_list = table.column(0).data()
+
+
+        genes_list = genes_list.map(x => x.replace(/<\/?[^>]+(>|$)/g, ""))
+
+        var genelist_buttons =
+        `<div class="row justify-content-center mx-auto text-center">
+            <div class="h7">Submit the top</div>
+            <input class="" id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2'
+                style='width: 50px; height: 30px; margin-left: 10px; margin-right: 10px;' />
+            <select id='dir' style='margin-left: 10px; margin-right: 10px; height: fit-content;'>
+                <option value='up'>upregulated</option>
+                <option value='down'>downregulated</option>
+            </select>
+            <div class="h7"> differentially expressed genes with a
+                <select id='col-to-use' style='margin-left: 10px; margin-right: 10px; height: fit-content;'>
+                    <option value='pval'>p-value</option>
+                    <option value='adjpval'>adjusted p-value</option>
+                </select>
+            </div>
+            <div class=" h7"> less than </div>
+            <input class='' id='signifigance' type='number' step='.01' value='.05' max='1'
+                style='width: 50px; height: 30px; margin-left: 10px; margin-right: 10px;"' />
+            <div class="h7"> to</div>
+        </div>
+        <div class="row justify-content-center mx-auto text-center">
+            <button class="btn btn-primary btn-group-sm m-2"
+                onclick="submit_geneset('${genes_list.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', '${logfc.join(',')}')">Gene Set Queries</button>
+        </div>
+        <div class="row justify-content-center mx-auto text-center">
+            <button type="button" class="btn btn-primary btn-group-sm m-2"
+                onclick="filter_and_submit_to_enrichr('${genes_list.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', '${logfc.join(',')}', '${sig}')">
+                Enrichr
+                <img src="/static/img/enrichrlogo.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
+            </button>
+            <button type="button" class="btn btn-primary btn-group-sm m-2"
+                onclick="filter_and_submit_to_kg('${genes_list.join(',')}', '${adjpvals.join(',')}', '${pvals.join(',')}', '${logfc.join(',')}', '${sig}')">
+                Enrichr-KG
+                <img src="/static/img/enrichr-kg.png" class="img-fluid mr-3" style="width: 45px" alt="Enrichr">
+            </button>
+        </div>`
+        document.getElementById(`precomputed-dge-res-buttons-${sig.split('-')[0]}`).innerHTML = genelist_buttons;
+        return
+    })
+}
+
+
+async function get_enrichr_geneset(term, library) {
+    const res = await fetch(`https://maayanlab.cloud/Enrichr/geneSetLibrary?term=${term}&libraryName=${library}&mode=json`, {
+        method: 'GET',
+    })
+    const results = await res.json()
+    const vals = Object.entries(results)           
+    if (vals) {
+        const [description, genes] = vals[0]
+        return {description: `${description} (${library})`, genes: genes}
+    }
+}
+
+async function show_geneset_modal(library, term) {
+    const modal = document.getElementById('geneset-modal');
+    const textfield = document.getElementById('geneset-modal-text');
+    const modalTitle = document.getElementById('geneset-modal-title');
+    const queryButton = document.getElementById('geneset-modal-queries');
+    const genesetDownload = document.getElementById('geneset-modal-download');
+    const res = await get_enrichr_geneset(term, library);
+    textfield.value = res.genes.join('\r\n')
+    queryButton.setAttribute('onclick', `setGenes('${res.genes.join('&')}')`)
+    modalTitle.innerText = `${library}: ${term} (${res.genes.length})`
+
+    // Create a blog object with the file content which you want to add to the file
+    const file = new Blob([`${res.description}\t${res.genes.join('\t')}`], { type: 'text/plain' });
+    // Add file content in the object URL
+    genesetDownload.href = URL.createObjectURL(file);
+    genesetDownload.download = `${library}_${term}.txt`;
+
+
+    modal.showModal()
+}
+
 function up_down_toggle(chatnum) {
     if (document.getElementById(`enter-geneset${chatnum}`).style.display == "flex") {
         document.getElementById(`enter-geneset${chatnum}`).style.display = "none";
@@ -1306,20 +1478,14 @@ $(document).ready(function () {
 
     // BOLD CURRENT PAGE
 
-    $('.nav-link').each(function () {
+    $('.nav-link-text').each(function () {
         var url = window.location.href
         if (url.includes('#')) {
             url = url.split('#')[0]
         }
-
-        if ($(this).prop('href') == url) {
-            $(this).addClass('active');
-            $(this).parents('li').addClass('active');
+        if ($(this.children[0]).prop('href') == url) {
+            $(this).addClass('active')
         }
-        // if (url.split('/')[3].startsWith('GSE')) {
-        //     $("#viewer").addClass('active'); 
-        //     $("#viewer").parents('li').addClass('active');
-        // }
     });
 
     var currURL = window.location.href.split("/");
@@ -1331,6 +1497,7 @@ $(document).ready(function () {
 
     var $gene_select = $('#gene-select').selectize({
         preload: true,
+        presist: true,
         valueField: 'gene_symbol',
         labelField: 'gene_symbol',
         searchField: 'gene_symbol',
@@ -1441,31 +1608,6 @@ $(document).ready(function () {
         boxplot();
     })
 
-    // MAKE STUIDIES TABLE A DataTable
-
-    $('#studies-table').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', { extend: 'csv', title: `D2H2-studies-table` }
-        ],
-        responsive: true
-    });
-
-
-    // OPEN CUSTOMIZED WORKFLOW DEPENDING ON SELECTION IN SCG
-
-    $('#scg-link').on('click', function () {
-
-        var workflow = document.getElementById("workflow").value;
-
-
-        if (workflow) {
-
-            $('#scg-link').prop('href', workflow);
-            return;
-        }
-        $('#scg-link').prop('href', "https://scg.maayanlab.cloud/");
-    });
 
     // OPEN TO DEG IN BULK RNA SEQ ANALYSIS
     $('#dgea-button').on('click', async function () {
@@ -1501,8 +1643,8 @@ $(document).ready(function () {
             meta = response['meta']
             expression = response['expression']
 
-            meta_data_file = gse + '_Metadata.txt'
-            rnaseq_data_filename = gse + '_Expression.txt'
+            meta_data_file = gse + '_Metadata.tsv'
+            rnaseq_data_filename = gse + '_Expression.tsv'
 
             const blob_meta = new Blob([meta]);
             const blob_rna = new Blob([expression]);
@@ -1557,12 +1699,7 @@ $(document).ready(function () {
         var gse = document.getElementById("gse").innerText
         var species = document.getElementById("species").innerText
         var method = document.getElementById("method").value
-
-        var logCPM = document.getElementById("logCPM").checked
-        var log = document.getElementById("log").checked
-        var q = document.getElementById("q").checked
-        var z = document.getElementById("z").checked
-        var norms = { 'logCPM': logCPM, 'log': log, 'q': q, 'z': z }
+        var norms = { 'logCPM': false, 'log': false, 'q': false, 'z': false}
 
 
         var gsedata = JSON.stringify({ 'gse': gse, 'control': control_condition, 'perturb': perturb_condition, 'method': method, 'species': species, 'norms': norms });
@@ -1879,6 +2016,7 @@ $(document).ready(function () {
     //////////////////////////////////
     $('#condition-select-control').selectize({
         preload: true,
+        presist: true,
         valueField: 'Condition',
         labelField: 'Condition',
         searchField: 'Condition',
@@ -1907,6 +2045,7 @@ $(document).ready(function () {
     //////////////////////////////////
     $('#condition-select-perturb').selectize({
         preload: true,
+        persist: true,
         valueField: 'Condition',
         labelField: 'Condition',
         searchField: 'Condition',
@@ -1929,43 +2068,6 @@ $(document).ready(function () {
             });
         }
     });
-
-    $('#species-val').on('change', function () {
-        if ($(this).is(':checked')) {
-            switchStatus = $(this).is(':checked');
-            $gene_select[0].selectize.clearOptions();
-            $gene_select[0].selectize.load(function (callback) {
-                $.ajax({
-                    url: 'api/genes/mouse',
-                    dataType: 'json',
-                    error: function () {
-                        callback();
-                    },
-                    success: function (res) {
-
-                        callback(res);
-                    }
-                });
-            });
-        }
-        else {
-            switchStatus = $(this).is(':checked');
-            $gene_select[0].selectize.clearOptions();
-            $gene_select[0].selectize.load(function (callback) {
-                $.ajax({
-                    url: 'api/genes/human',
-                    dataType: 'json',
-                    error: function () {
-                        callback();
-                    },
-                    success: function (res) {
-
-                        callback(res);
-                    }
-                });
-            });
-        }
-    })
 
 
     //This listener is for when we click on a different group of sample individuals to look at for a study within the single cell viewer on the dropdown select menu. 

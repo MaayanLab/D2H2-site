@@ -1,0 +1,21 @@
+,GSE,Link to Study,Tissue Type,Cell type,Cell Line,Manual Label
+0,GSE101722,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE101722,Pancreas Cell Type Focused,islet cells,N/A,Diabetes
+1,GSE109285,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE109285,Pancreas Cell Type Focused,beta cells,N/A,Diabetes related
+2,GSE112002,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE112002,Pancreas Cell Type Focused,islet macrophage cells,N/A,Diabetes
+3,GSE124394,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE124394,Skeletal Muscle,N/A,N/A,Diabetes
+4,GSE124774,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE124774,Blood,bone marrow macrophages,N/A,Diabetes
+5,GSE124944,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE124944,Pancreas,Pancreatic progenitor cells,N/A,Diabetes
+6,GSE125682,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE125682,Blood Cell Type Focused,bone marrow stem cell,N/A,Diabetes
+7,GSE128945,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE128945,Pancreas Cell Type Focused,beta cells,N/A,Diabetes
+8,GSE149662,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE149662,Skeletal muscle,N/A,N/A,Diabetes
+9,GSE155612,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE155612,Pancreas Cell Type Focused,pancreatic islets,N/A,Diabetes
+10,GSE159882,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE159882,Kidney,N/A,N/A,Diabetes related
+11,GSE16048,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE16048,Pancreas,N/A,N/A,Diabetes
+12,GSE26978,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE26978,Pancreas Cell Type Focused,pancreatic islets,N/A,Diabetes
+13,GSE29048,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE29048,Small inestine,N/A,N/A,Not Diabetes Related
+14,GSE43106,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE43106,Liver,N/A,N/A,Not Diabetes Related
+15,GSE47504,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE47504,Pancreas Cell Type Focused,pancreatic islets,N/A,Diabetes related
+16,GSE73131,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE73131,Pancreas Cell Type Focused,pancreatic islets,N/A,Diabetes
+17,GSE77652,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE77652,Pancreas Cell Type Focused,beta cells,N/A,Diabetes
+18,GSE84759,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE84759,Pancreas Cell Type Focused,beta cells,N/A,Not Diabetes Related
+19,GSE95029,https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE95029,Adipose Tissue Cell Line Focused,N/A,3T3-L1 preadipocyte cell line,Diabetes

@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 
-{% block html %}class='h-100' {% endblock %}
 
-
-{% block content %}
+{% block body %}
 <div class="viewer-title">
     <div class="container viewer-title d-flex align-items-center justify-content-center text-center mt-4">
         <h4>
@@ -28,9 +26,24 @@
     <div class="col-10">
 
         <!-- Abstract large -->
-        <div class="d-block ">
-            <div class="h4 pl-2 mt-5 mb-2">Description (from GEO)</div>
+        <div class="d-block">
+            <div class="h4 mt-3 justify-content-center" style="display: flex;">
+                scRNA-seq Viewer
+                <div class="tooltip ml-2">
+                    <img src="../static/img/more_info.png" alt="Info" style="width: 20px;"/>
+                    <span class="tooltiptext">
+                        Studies were incorporated in a barcode, matrix, feature format. This format can be found on the 
+                        <a href="https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/matrices" target="_blank" rel="noopener noreferrer">
+                        10x Genomics website
+                        </a> 
+                        for processing of single cell studies to obtain the gene expression matrices. 
+                        For each study, the metadata incorporated in GEO were manually curated into profiles and the samples were separated based on applicable groups and conditions. 
+                        The expression data from the cells for the samples within the same profile and condition were aggregated into an expression matrix with the cell barcodes having the sample name appended to it to ensure unique cell names.
+                    </span>
+                </div>
+            </div>
             <div class="custom-col p-2">
+                <h4 class="mb-2">Description (from GEO)</h4>
                 <p class="text-br-red font-weight-bold">Submission Date: <span class="font-weight-normal"
                         style="color:#212529">{{
                         (gse_metadata_single[species][geo_accession].get('submission_date')[0][:-5]
@@ -73,7 +86,19 @@
 <div class="row justify-content-center mb-3 mt-2">
     <div class="col-10">
         <div class="custom-col justify-content-center" style="overflow: visible">
-            <div class="h4 pl-2 mt-4 mb-4 text-center"> Select Condition to compute Visualization and Analysis:</div>
+            <div class="h4 mt-3 justify-content-center" style="display: flex;">
+                Select Condition to compute Visualization and Analysis
+                <div class="tooltip ml-2">
+                    <img src="../static/img/more_info.png" alt="Info" style="width: 20px;"/>
+                    <span class="tooltiptext">
+                        Preprocessing and downstream analysis were computed using the <a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-017-1382-0" target="_blank" rel="noopener noreferrer">scanpy</a> Python library and the
+                        steps of processing followed the <a href="https://satijalab.org/seurat/articles/pbmc3k_tutorial" target="_blank" rel="noopener noreferrer">Seurat vignette</a>. Cells and genes with no expression or very low expression were 
+                        removed from the dataset based on a predefined threshold. The data was then normalized across the expression within the cells and log normalized. The top 2000 highly variable genes were extracted to be used for downstream analysis. 
+                        For each of these aggregated data matrices, the clusters were computed using the <a href="https://www.nature.com/articles/s41598-019-41695-z" target="_blank" rel="noopener noreferrer">leiden algorithm</a>. Scanpy was then used to compute the PCA, t-SNE, and UMAPs.
+                    </span>
+                </div>
+            </div>
+
             <div class="row justify-items-center justify-content-center mb-3 mt-3 text-center">
                 <select name="Select Method" id="methodsingle" class="libpicker">
                     {% for cond in study_conditions %}
@@ -215,7 +240,17 @@
 
 
 
-            <div class="h4 pl-2 mt-4 mb-4 text-center">Differential Gene Expression Analysis</div>
+            <div class="h4 mt-3 justify-content-center" style="display: flex;">
+                Differential Gene Expression Analysis
+                <div class="tooltip ml-2">
+                    <img src="../static/img/more_info.png" alt="Info" style="width: 20px;"/>
+                    <span class="tooltiptext">
+                        Differential gene expression can be computed for a single leiden cluster versus the rest using three different methods. 
+                        These include <a href="https://www.sciencedirect.com/topics/medicine-and-dentistry/wilcoxon-signed-ranks-test" target="_blank" rel="noopener noreferrer">wilcoxon</a>,
+                        <a href="https://pubmed.ncbi.nlm.nih.gov/24650281/" target="_blank" rel="noopener noreferrer">DESeq2,</a> or <a href="https://pubmed.ncbi.nlm.nih.gov/24650281/" target="_blank" rel="noopener noreferrer">characteristic direction</a>.
+                    </span>
+                </div>
+            </div>
 
             <div class="h6 text-center mt-3"> Select Cluster for differential gene expression analysis:</div>
             <div class="row justify-items-center justify-content-center mb-3 mt-3 text-center">
