@@ -1,6 +1,16 @@
+import anndata
+import h5py
+import hashlib
+import re
+import os
+import s3fs
+import scanpy as sc
+from scipy.stats import zscore
 from functools import lru_cache
 import json
+from itertools import chain
 import requests
+import xml.etree.ElementTree as ET
 from intermine.webservice import Service
 import pandas as pd
 from maayanlab_bioinformatics.normalization.quantile import quantile_normalize
@@ -18,16 +28,15 @@ import matplotlib.colors as colors
 import numpy as np
 # Sklearn
 from sklearn.manifold import TSNE
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.metrics.pairwise import cosine_similarity
 
-from scipy.stats import zscore
-import scanpy as sc
-import s3fs
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+nltk.download('punkt')
 
-import os
-import re
-import hashlib
-import h5py
-import anndata
 
 endpoint = os.environ.get('ENDPOINT', 'https://d2h2.s3.amazonaws.com/')
 base_url = os.environ.get('BASE_URL', 'data')
@@ -35,6 +44,8 @@ sigs_version = os.environ.get('SIGS_VERSION', 'v1.1')
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
 ########################## QUERY ENRICHER ###############################
+
+
 @lru_cache()
 def query_generanger(gene):
     payload = {
@@ -50,9 +61,11 @@ def query_generanger(gene):
             "CCLE_proteomics"
         ]
     }
-    res = requests.post("https://generanger.maayanlab.cloud/api/data", json=payload)
+    res = requests.post(
+        "https://generanger.maayanlab.cloud/api/data", json=payload)
     stats = res.json()
     return stats
+
 
 @lru_cache()
 def enrichr_id(genes, desc=''):
@@ -113,7 +126,6 @@ def query_enricher_diabetes(genelist, description):
     data = json.loads(response.text)
     listid = data["userListId"]
 
-
     ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/enrich'
     query_string = '?userListId=%s&backgroundType=%s'
     user_list_id = listid
@@ -126,7 +138,6 @@ def query_enricher_diabetes(genelist, description):
 
     data = json.loads(response.text)
 
-
     return data
 
 
@@ -136,14 +147,13 @@ def query_enricher_diabetes(genelist, description):
 @lru_cache()
 def query_komp(gene: str):
 
-    gene =  gene[0].upper() + (gene[1:]).lower()
+    gene = gene[0].upper() + (gene[1:]).lower()
     KOMP_URL = "https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_symbol:" + gene
     response = requests.get(KOMP_URL)
     if not response.ok:
         raise Exception('Error analyzing retrieving information')
     data = json.loads(response.text)
     return data
-
 
 
 ######## QUERY MGI ##############
@@ -157,20 +167,20 @@ def query_mgi(gene: str):
 
     template = service.get_template('_Feature_Phenotype')
 
-
     rows = template.rows(
-    B = {"op": "LOOKUP", "value": gene}
+        B={"op": "LOOKUP", "value": gene}
     )
     dict_data = {'data': [dict(row) for row in rows]}
 
     seen = set()
     res = []
     for d in dict_data['data']:
-        t = (d['OntologyAnnotation.ontologyTerm.name'], d['OntologyAnnotation.evidence.publications.pubMedId'])
+        t = (d['OntologyAnnotation.ontologyTerm.name'],
+             d['OntologyAnnotation.evidence.publications.pubMedId'])
         if t not in seen:
             seen.add(t)
             res.append(d)
-    
+
     return {'data': res}
 
 
@@ -179,30 +189,34 @@ def query_mgi(gene: str):
 @lru_cache()
 def query_gwas(gene: str):
     gene = gene.upper()
-    url = "https://www.ebi.ac.uk/gwas/api/search/downloads?q=ensemblMappedGenes:" + gene + "&pvalfilter=&orfilter=&betafilter=&datefilter=&genomicfilter=&genotypingfilter[]=&traitfilter[]=&dateaddedfilter=&facet=association&efo=true"
+    url = "https://www.ebi.ac.uk/gwas/api/search/downloads?q=ensemblMappedGenes:" + gene + \
+        "&pvalfilter=&orfilter=&betafilter=&datefilter=&genomicfilter=&genotypingfilter[]=&traitfilter[]=&dateaddedfilter=&facet=association&efo=true"
 
     df = pd.read_csv(url, sep='\t')
 
-    summerized_data = pd.DataFrame(columns=['gene', 'trait', 'mapped_trait_link', 'count'])
+    summerized_data = pd.DataFrame(
+        columns=['gene', 'trait', 'mapped_trait_link', 'count'])
     i = 0
     seen_traits = set()
     for index, row in df.iterrows():
         trait = row['MAPPED_TRAIT'].strip()
         if not trait in seen_traits:
-            
+
             if "," in row['MAPPED_TRAIT_URI']:
                 uri = row['MAPPED_TRAIT_URI'].split(",")[0]
             else:
                 uri = row['MAPPED_TRAIT_URI']
-            summerized_data.loc[i] = {'gene': gene, 'trait': trait, 'mapped_trait_link': uri, 'count': 1}
+            summerized_data.loc[i] = {
+                'gene': gene, 'trait': trait, 'mapped_trait_link': uri, 'count': 1}
             seen_traits.add(trait)
-            i+=1
+            i += 1
         else:
-            idx = summerized_data.index[summerized_data['trait'] == trait].values[0]
-            summerized_data.at[idx,'count'] +=1
+            idx = summerized_data.index[summerized_data['trait']
+                                        == trait].values[0]
+            summerized_data.at[idx, 'count'] += 1
 
-
-    summerized_data = summerized_data.sort_values(by=['count'],ascending=False)
+    summerized_data = summerized_data.sort_values(
+        by=['count'], ascending=False)
     trait_list = list(summerized_data.T.to_dict().values())
 
     return {'GWAS_Catalog': trait_list}
@@ -217,7 +231,7 @@ def sigcom_up_down_genes(up_list, down_list):
 
     input_gene_set = {
         "up_genes": up_list,
-        "down_genes": down_list 
+        "down_genes": down_list
     }
 
     all_genes = input_gene_set["up_genes"] + input_gene_set["down_genes"]
@@ -246,19 +260,18 @@ def sigcom_up_down_genes(up_list, down_list):
             for_enrichment["up_entities"].append(e["id"])
         elif symbol in input_gene_set["down_genes"]:
             for_enrichment["down_entities"].append(e["id"])
-    
 
     payload = {
-    "meta": {
-        "$validator": "/dcic/signature-commons-schema/v6/meta/user_input/user_input.json",
-        **for_enrichment
-    },
-    "type": "signature"
+        "meta": {
+            "$validator": "/dcic/signature-commons-schema/v6/meta/user_input/user_input.json",
+            **for_enrichment
+        },
+        "type": "signature"
     }
     res = requests.post(METADATA_API + "user_input", json=payload)
     persistent_id = res.json()["id"]
 
-    return ("https://maayanlab.cloud/sigcom-lincs#/SignatureSearch/Rank/%s"%persistent_id)
+    return ("https://maayanlab.cloud/sigcom-lincs#/SignatureSearch/Rank/%s" % persistent_id)
 
 
 def sigcom_gene_set(gene_set):
@@ -284,37 +297,36 @@ def sigcom_gene_set(gene_set):
     entities = res.json()
 
     for_enrichment = {
-    "entities": [],
-    "signatures": [],
-    "offset": 0,
-    "limit": 0
+        "entities": [],
+        "signatures": [],
+        "offset": 0,
+        "limit": 0
     }
-
 
     for e in entities:
         for_enrichment["entities"].append(e["id"])
-    
 
     payload = {
-    "meta": {
-        "$validator": "/dcic/signature-commons-schema/v6/meta/user_input/user_input.json",
-        **for_enrichment
-    },
-    "type": "signature"
+        "meta": {
+            "$validator": "/dcic/signature-commons-schema/v6/meta/user_input/user_input.json",
+            **for_enrichment
+        },
+        "type": "signature"
     }
     res = requests.post(METADATA_API + "user_input", json=payload)
 
     persistent_id = res.json()["id"]
 
-    return ("https://maayanlab.cloud/sigcom-lincs/#/SignatureSearch/Set/%s"%persistent_id)
+    return ("https://maayanlab.cloud/sigcom-lincs/#/SignatureSearch/Set/%s" % persistent_id)
 
-### QUERY GENESHOT
+# QUERY GENESHOT
+
+
 def query_geneshot(term):
 
     GENESHOT_URL = 'https://maayanlab.cloud/geneshot/api/search'
     payload = {"rif": "autorif", "term": term}
     response = requests.post(GENESHOT_URL, json=payload)
-    print(response)
     data = json.loads(response.text)
     gene_list = list(data['gene_count'].keys())
     gene_list_count = data['return_size']
@@ -333,7 +345,7 @@ def get_resources():
     resources_list = table.values.tolist()
     table_list = [list(table.columns.values)] + resources_list
     return table_list
-    
+
 
 #### UPDATE RESOURCES TABALE ####
 
@@ -344,7 +356,8 @@ def update_resources():
     table = pd.read_csv(url_1)
     table.to_csv('static/data/resources.csv')
 
-#update_resources()
+# update_resources()
+
 
 @lru_cache()
 def get_downloads():
@@ -354,7 +367,7 @@ def get_downloads():
     resources_list = table.values.tolist()
     table_list = [list(table.columns.values)] + resources_list
     return table_list
-    
+
 
 #### UPDATE RESOURCES TABALE ####
 
@@ -365,7 +378,7 @@ def update_downloads():
     table.to_csv('static/data/downloads.csv')
 
 
-#update_downloads()
+# update_downloads()
 
 def get_workflows():
 
@@ -373,6 +386,7 @@ def get_workflows():
     resources_list = table.values.tolist()
     table_list = [list(table.columns.values)] + resources_list
     return table_list
+
 
 def get_tweets():
 
@@ -382,30 +396,35 @@ def get_tweets():
     return table_list
 
 
-
 red_map = cm.get_cmap('Reds_r')
 red_norm = colors.Normalize(vmin=-0.25, vmax=1)
 blue_map = cm.get_cmap('Blues_r')
 blue_norm = colors.Normalize(vmin=-0.25, vmax=1)
 
+
 def load_files(species, gene):
     root_path = f'{endpoint}t2d-datasets/{sigs_version}/'
-    pval_rna_df = pd.read_feather(f'{root_path}rna_{species}_pval.f', columns=['index', gene]).set_index('index')
+    pval_rna_df = pd.read_feather(f'{root_path}rna_{species}_pval.f', columns=[
+                                  'index', gene]).set_index('index')
     # RNA-seq fold change
-    fc_rna_df = pd.read_feather(f'{root_path}rna_{species}_fc.f', columns=['index', gene]).set_index('index')
+    fc_rna_df = pd.read_feather(f'{root_path}rna_{species}_fc.f', columns=[
+                                'index', gene]).set_index('index')
 
     # microarray data
     try:
-        has_micro = True 
-        pval_micro_df = pd.read_feather(f"{root_path}micro_{species}_pval.f", columns=['index', gene]).set_index('index')
-        fc_micro_df = pd.read_feather(f"{root_path}micro_{species}_fc.f", columns=['index', gene]).set_index('index')
+        has_micro = True
+        pval_micro_df = pd.read_feather(f"{root_path}micro_{species}_pval.f", columns=[
+                                        'index', gene]).set_index('index')
+        fc_micro_df = pd.read_feather(f"{root_path}micro_{species}_fc.f", columns=[
+                                      'index', gene]).set_index('index')
     except:
         print('no micro data')
-        has_micro = False 
+        has_micro = False
         pval_micro_df = pd.DataFrame()
         fc_micro_df = pd.DataFrame()
 
-    return  pval_rna_df, fc_rna_df, pval_micro_df, fc_micro_df, has_micro
+    return pval_rna_df, fc_rna_df, pval_micro_df, fc_micro_df, has_micro
+
 
 def combine_data(pval_df, fc_df, gene):
     # extract and combine data for each gene
@@ -418,7 +437,7 @@ def combine_data(pval_df, fc_df, gene):
 
 
 def map_color(fc, pv):
-    if pv >= .05: 
+    if pv >= .05:
         return '#808080'
     if fc < 0:
 
@@ -427,6 +446,7 @@ def map_color(fc, pv):
         return '#808080'
     else:
         return colors.to_hex(blue_map(blue_norm(pv)))
+
 
 def make_plot(comb_df, species, gene, micro=False, micro_df=None):
     # create links from Bulk RNA-seq Appyter instance session IDs
@@ -437,19 +457,20 @@ def make_plot(comb_df, species, gene, micro=False, micro_df=None):
 
     if micro:
         micro_colors = [map_color(r.fc, r.pval) for r in micro_df.itertuples()]
-        micro_sizes = [12 if r.pval < 0.05 else 6 for r in micro_df.itertuples()]
+        micro_sizes = [12 if r.pval <
+                       0.05 else 6 for r in micro_df.itertuples()]
 
     # generate data source
     data_source = ColumnDataSource(
         data=dict(
-            x = comb_df['fc'],
-            y = comb_df['logpv'],
-            sig = comb_df['sig'],
-            pval = comb_df['pval'], 
-            fc = comb_df['fc'], 
-            colors = rna_colors, 
-            sizes = rna_sizes,
-            label = ['RNA-seq']*comb_df.shape[0]
+            x=comb_df['fc'],
+            y=comb_df['logpv'],
+            sig=comb_df['sig'],
+            pval=comb_df['pval'],
+            fc=comb_df['fc'],
+            colors=rna_colors,
+            sizes=rna_sizes,
+            label=['RNA-seq']*comb_df.shape[0]
         )
     )
 
@@ -457,14 +478,14 @@ def make_plot(comb_df, species, gene, micro=False, micro_df=None):
     if micro:
         micro_data_source = ColumnDataSource(
             data=dict(
-                x = micro_df['fc'],
-                y = micro_df['logpv'], 
-                sig = micro_df['sig'],
-                pval = micro_df['pval'], 
-                fc = micro_df['fc'],
-                colors = micro_colors,
-                sizes = micro_sizes,
-                label = ['Microarray']*micro_df.shape[0]
+                x=micro_df['fc'],
+                y=micro_df['logpv'],
+                sig=micro_df['sig'],
+                pval=micro_df['pval'],
+                fc=micro_df['fc'],
+                colors=micro_colors,
+                sizes=micro_sizes,
+                label=['Microarray']*micro_df.shape[0]
             )
         )
     # create hover tooltip
@@ -480,13 +501,13 @@ def make_plot(comb_df, species, gene, micro=False, micro_df=None):
         tooltips=tools
     )
     plot.circle(
-        'x', 'y', 
+        'x', 'y',
         size='sizes',
-        alpha=0.7, 
+        alpha=0.7,
         line_alpha=0,
-        line_width=0.01, 
+        line_width=0.01,
         source=data_source,
-        fill_color='colors', 
+        fill_color='colors',
         name=f'{gene}_t2d_expression_volcano_plot',
         legend_group='label'
     )
@@ -513,6 +534,8 @@ def make_plot(comb_df, species, gene, micro=False, micro_df=None):
     return plot
 
 # create download link for table results
+
+
 def download_link(df, fname, isRNA=False):
 
     df['Link to GEO Study'] = df['Link to GEO Study'].apply(
@@ -522,7 +545,9 @@ def download_link(df, fname, isRNA=False):
     df['Signature'] = df['Signature'].apply(lambda x: x.replace('* ', ''))
     return fname, df.dropna().values.tolist()
 
-# get GEO links 
+# get GEO links
+
+
 @lru_cache()
 def geo_link(sig_name, clickable):
     gse_id = sig_name.split('-')[0].replace('* ', '')
@@ -532,69 +557,91 @@ def geo_link(sig_name, clickable):
     else:
         return f'{geo_path}{gse_id}'
 
+
 @lru_cache()
 def appyter_link(sig_name, inst=''):
     text = f'Analysis of {sig_name}'
     return f'<a target="_blank" href="{inst}">{text}</a>'
 
-# create tables of significant results with links to GEO 
+# create tables of significant results with links to GEO
+
+
 def make_tables(comb_df, species, gene, is_upreg, isRNA=False):
     root_path = f'{endpoint}t2d-datasets/{sigs_version}/'
     if isRNA:
-        sigranks = pd.read_feather(f"{root_path}{species}_rna_fc_sigrank.f", columns=['index', gene]).set_index('index')
+        sigranks = pd.read_feather(f"{root_path}{species}_rna_fc_sigrank.f", columns=[
+                                   'index', gene]).set_index('index')
     else:
-        sigranks = pd.read_feather(f"{root_path}{species}_micro_fc_sigrank.f", columns=['index', gene]).set_index('index')
-    dir_df = comb_df[comb_df['fc'] > 0] if is_upreg else comb_df[comb_df['fc'] < 0]
-    dir_df = dir_df.drop(columns='logpv').sort_values(by='pval', ascending=True)
+        sigranks = pd.read_feather(f"{root_path}{species}_micro_fc_sigrank.f", columns=[
+                                   'index', gene]).set_index('index')
+    dir_df = comb_df[comb_df['fc'] >
+                     0] if is_upreg else comb_df[comb_df['fc'] < 0]
+    dir_df = dir_df.drop(columns='logpv').sort_values(
+        by='pval', ascending=True)
 
     dir_df['rank'] = [sigranks.loc[sig, gene] for sig in dir_df['sig']]
     if dir_df.shape[0] != 0:
-        dir_df['sig'] = dir_df.apply(lambda row: f"* {row.sig}" if row.pval < 0.05 else row.sig, axis=1)
+        dir_df['sig'] = dir_df.apply(
+            lambda row: f"* {row.sig}" if row.pval < 0.05 else row.sig, axis=1)
         dir_df['pval'] = dir_df['pval'].apply(lambda x: f'{x:.3e}')
         dir_df['fc'] = dir_df['fc'].apply(lambda x: f'{x:.4f}')
 
-    dir_df = dir_df.rename(columns={'sig': 'Signature', 'pval': 'P-value', 'fc': 'Log2 Fold Change', 'rank': 'Gene Rank in Signature'})
-    dir_df['Link to GEO Study'] = dir_df['Signature'].apply(geo_link, clickable=True)
+    dir_df = dir_df.rename(columns={'sig': 'Signature', 'pval': 'P-value',
+                           'fc': 'Log2 Fold Change', 'rank': 'Gene Rank in Signature'})
+    dir_df['Link to GEO Study'] = dir_df['Signature'].apply(
+        geo_link, clickable=True)
     return dir_df
 
+
 def send_plot(species, gene):
-    pval_rna_df, fc_rna_df, pval_micro_df, fc_micro_df, micro_exists = load_files(species, gene)
+    pval_rna_df, fc_rna_df, pval_micro_df, fc_micro_df, micro_exists = load_files(
+        species, gene)
     comb_df_input = combine_data(pval_rna_df, fc_rna_df, gene)
     if micro_exists:
         micro_df_input = combine_data(pval_micro_df, fc_micro_df, gene)
-        plot = make_plot(comb_df_input, species, gene, micro=True, micro_df=micro_df_input)
+        plot = make_plot(comb_df_input, species, gene,
+                         micro=True, micro_df=micro_df_input)
     else:
         plot = make_plot(comb_df_input, species, gene)
-    fname='static/data/t2d-files/'
-    up_comb_df_input, up_comb_df_input_values = download_link(make_tables(comb_df_input, species, gene, is_upreg=True, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-upreg.tsv', isRNA=True)
-    dn_comb_df_input, dn_comb_df_input_values = download_link(make_tables(comb_df_input, species, gene, is_upreg=False, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-dnreg.tsv', isRNA=True)
-    if micro_exists and not(micro_df_input.empty):
+    fname = 'static/data/t2d-files/'
+    up_comb_df_input, up_comb_df_input_values = download_link(make_tables(
+        comb_df_input, species, gene, is_upreg=True, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-upreg.tsv', isRNA=True)
+    dn_comb_df_input, dn_comb_df_input_values = download_link(make_tables(
+        comb_df_input, species, gene, is_upreg=False, isRNA=True), fname + gene + '_' + species + '_' + 'RNA-dnreg.tsv', isRNA=True)
+    if micro_exists and not (micro_df_input.empty):
         micro_df_input.dropna(inplace=True)
         up_micro_df = make_tables(micro_df_input, species, gene, is_upreg=True)
-        up_micro_df_input, up_micro_df_input_values = download_link(up_micro_df, fname + gene + '_' + species + '_' + 'micro-upreg.tsv')
-        dn_micro_df = make_tables(micro_df_input, species, gene, is_upreg=False)
-        dn_micro_df_input, dn_micro_df_input_values = download_link(dn_micro_df, fname + gene + '_' + species + '_' + 'micro-dnreg.tsv')
+        up_micro_df_input, up_micro_df_input_values = download_link(
+            up_micro_df, fname + gene + '_' + species + '_' + 'micro-upreg.tsv')
+        dn_micro_df = make_tables(
+            micro_df_input, species, gene, is_upreg=False)
+        dn_micro_df_input, dn_micro_df_input_values = download_link(
+            dn_micro_df, fname + gene + '_' + species + '_' + 'micro-dnreg.tsv')
     else:
         micro_exists = False
         up_micro_df_input = ''
         dn_micro_df_input = ''
     return {'plot': json_item(plot, 'volcano-plot'), 'micro': micro_exists, 'tables': [up_comb_df_input, dn_comb_df_input, up_micro_df_input, dn_micro_df_input], 'table_values': [up_comb_df_input_values, dn_comb_df_input_values, up_micro_df_input_values, dn_micro_df_input_values]}
 
+
 def make_dge_plot(data, title, method, id_plot='dge-plot'):
 
     # set color and size for each point on plot
     if method == 'DESeq2':
-        colors = [map_color(r[1]['log2FoldChange'], r[1]['pvalue']) for r in data.iterrows()]
+        colors = [map_color(r[1]['log2FoldChange'], r[1]['pvalue'])
+                  for r in data.iterrows()]
         sizes = [12 if r[1]['pvalue'] < 0.05 else 6 for r in data.iterrows()]
         data['logp'] = data['pvalue'].apply(lambda x: -np.log10(x))
         data['gene'] = data.index.values
     elif method == 'wilcoxon':
-        colors = [map_color(r[1]['logfoldchanges'], r[1]['pvals']) for r in data.iterrows()]
+        colors = [map_color(r[1]['logfoldchanges'], r[1]['pvals'])
+                  for r in data.iterrows()]
         sizes = [12 if r[1]['pvals'] < 0.05 else 6 for r in data.iterrows()]
         data['logp'] = data['pvals'].apply(lambda x: -np.log10(x))
         data['gene'] = data.index.values
     elif method == 'characteristic_direction':
-        colors = [map_color(r[1]['LogFC'], r[1]['P-value']) for r in data.iterrows()]
+        colors = [map_color(r[1]['LogFC'], r[1]['P-value'])
+                  for r in data.iterrows()]
         sizes = [12 if r[1]['P-value'] < 0.05 else 6 for r in data.iterrows()]
         data['logp'] = data['P-value'].apply(lambda x: -np.log10(x))
         data['gene'] = data.index.values
@@ -602,92 +649,90 @@ def make_dge_plot(data, title, method, id_plot='dge-plot'):
     if method == 'DESeq2':
         data_source = ColumnDataSource(
             data=dict(
-                x = data['log2FoldChange'],
-                y = data['logp'],
-                gene =  data['gene'],
-                pval = data['pvalue'], 
-                adjpval = data['padj'], 
-                stat = data['stat'],
-                lfcSE = data['lfcSE'],
-                baseMean = data['baseMean'],
-                colors = colors, 
-                sizes = sizes,
+                x=data['log2FoldChange'],
+                y=data['logp'],
+                gene=data['gene'],
+                pval=data['pvalue'],
+                adjpval=data['padj'],
+                stat=data['stat'],
+                lfcSE=data['lfcSE'],
+                baseMean=data['baseMean'],
+                colors=colors,
+                sizes=sizes,
             )
         )
         tools = [
-        ("Gene", "@gene"),
-        ("P-value", "@pval"),
-        ("log2 Fold Change", "@x"),
-        ("-log10(p)", "@y"),
-        ("adj. P-value", "@adjpval"),
-        ("stat", "@stat"),
-        ("base Mean", "@baseMean"),
-        ("lfcSE", "@lfcSE")
+            ("Gene", "@gene"),
+            ("P-value", "@pval"),
+            ("log2 Fold Change", "@x"),
+            ("-log10(p)", "@y"),
+            ("adj. P-value", "@adjpval"),
+            ("stat", "@stat"),
+            ("base Mean", "@baseMean"),
+            ("lfcSE", "@lfcSE")
         ]
     if method == 'wilcoxon':
         data_source = ColumnDataSource(
             data=dict(
-                x = data['logfoldchanges'],
-                y = data['logp'],
-                gene =  data['gene'],
-                pval = data['pvals'], 
-                adjpval = data['pvals_adj'], 
-                scores = data['scores'],
-                colors = colors, 
-                sizes = sizes,
+                x=data['logfoldchanges'],
+                y=data['logp'],
+                gene=data['gene'],
+                pval=data['pvals'],
+                adjpval=data['pvals_adj'],
+                scores=data['scores'],
+                colors=colors,
+                sizes=sizes,
             )
         )
         tools = [
-        ("Gene", "@gene"),
-        ("P-value", "@pval"),
-        ("log2 Fold Change", "@x"),
-        ("-log10(p)", "@y"),
-        ("adj. P-value", "@adjpval"),
-        ("scores", "@scores")
+            ("Gene", "@gene"),
+            ("P-value", "@pval"),
+            ("log2 Fold Change", "@x"),
+            ("-log10(p)", "@y"),
+            ("adj. P-value", "@adjpval"),
+            ("scores", "@scores")
         ]
 
     if method == 'characteristic_direction':
         data_source = ColumnDataSource(
             data=dict(
-                x = data['LogFC'],
-                y = data['logp'],
-                gene =  data['gene'],
-                pval = data['P-value'],
-                cd = data['CD-coefficient'],
-                colors = colors, 
-                sizes = sizes,
+                x=data['LogFC'],
+                y=data['logp'],
+                gene=data['gene'],
+                pval=data['P-value'],
+                cd=data['CD-coefficient'],
+                colors=colors,
+                sizes=sizes,
             )
         )
         tools = [
-        ("Gene", "@gene"),
-        ("P-value", "@pval"),
-        ("LogFC", "@x"),
-        ("CD-coefficient", "@cd"),
-        ("-log10(p)", "@y"),
+            ("Gene", "@gene"),
+            ("P-value", "@pval"),
+            ("LogFC", "@x"),
+            ("CD-coefficient", "@cd"),
+            ("-log10(p)", "@y"),
         ]
-    
-    
 
     # create hover tooltip
-    
+
     plot = figure(
         plot_width=700,
         plot_height=500,
         tooltips=tools
     )
     plot.circle(
-        'x', 'y', 
+        'x', 'y',
         size='sizes',
-        alpha=0.7, 
+        alpha=0.7,
         line_alpha=0,
-        line_width=0.01, 
+        line_width=0.01,
         source=data_source,
-        fill_color='colors', 
+        fill_color='colors',
         name=None,
     )
 
     plot.xaxis.axis_label = 'log2(Fold Change)'
-    
+
     plot.yaxis.axis_label = '-log10(P-value)'
     plot.title.text = f"DGE of {title}"
     plot.title.align = 'center'
@@ -696,39 +741,40 @@ def make_dge_plot(data, title, method, id_plot='dge-plot'):
     return json_item(plot, id_plot)
 
 
-
 def str_to_int(string, mod):
     string = re.sub(r"\([^()]*\)", "", string).strip()
     byte_string = bytearray(string, "utf8")
-    return int(hashlib.sha256(byte_string).hexdigest(), base=16)%mod
+    return int(hashlib.sha256(byte_string).hexdigest(), base=16) % mod
 
 
-def make_single_visialization_plot(plot_df, values_dict,type, option_list,sample_names, caption_text, category_list_dict=None, location='right', category=True, dropdown=False, additional_info=None):
+def make_single_visialization_plot(plot_df, values_dict, type, option_list, sample_names, caption_text, category_list_dict=None, location='right', category=True, dropdown=False, additional_info=None):
 
-    # init plot 
+    # init plot
     if additional_info is not None:
-        source = ColumnDataSource(data=dict(x=plot_df["x"], y=plot_df["y"], values=values_dict[option_list[0]], 
-                                        names=sample_names, info=additional_info[option_list[0]]))
+        source = ColumnDataSource(data=dict(x=plot_df["x"], y=plot_df["y"], values=values_dict[option_list[0]],
+                                            names=sample_names, info=additional_info[option_list[0]]))
     else:
-        source = ColumnDataSource(data=dict(x=plot_df["x"], y=plot_df["y"], values=values_dict[option_list[0]], 
-                                        names=sample_names))
+        source = ColumnDataSource(data=dict(x=plot_df["x"], y=plot_df["y"], values=values_dict[option_list[0]],
+                                            names=sample_names))
     # node size
     if plot_df.shape[0] > 1000:
         node_size = 2
     else:
         node_size = 6
-        
+
     if location == 'right':
-        plot = figure(plot_width=700, plot_height=600)   
+        plot = figure(plot_width=700, plot_height=600)
     else:
-        plot = figure(plot_width=1000, plot_height=1000+20*len(category_list_dict[option_list[0]]))   
+        plot = figure(plot_width=1000, plot_height=1000+20 *
+                      len(category_list_dict[option_list[0]]))
     if category == True:
         unique_category_dict = dict()
         for option in option_list:
-            unique_category_dict[option] = sorted(list(set(values_dict[option])))
-        
+            unique_category_dict[option] = sorted(
+                list(set(values_dict[option])))
+
         # map category to color
-        # color is mapped by its category name 
+        # color is mapped by its category name
         # if a color is used by other categories, use another color
         factors_dict = dict()
         colors_dict = dict()
@@ -737,25 +783,28 @@ def make_single_visialization_plot(plot_df, values_dict,type, option_list,sample
             factors_dict[key] = category_list_dict[key]
             colors_dict[key] = list()
             for category_name in factors_dict[key]:
-                color_for_category = Category20[20][str_to_int(category_name, 20)]
-                
+                color_for_category = Category20[20][str_to_int(
+                    category_name, 20)]
+
                 if color_for_category not in unused_color:
                     if len(unused_color) > 0:
-                        color_for_category = unused_color[0]                        
+                        color_for_category = unused_color[0]
                     else:
                         color_for_category = Category20[20][19]
-                
+
                 colors_dict[key].append(color_for_category)
                 if color_for_category in unused_color:
                     unused_color.remove(color_for_category)
-                    
-        color_mapper = CategoricalColorMapper(factors=factors_dict[option_list[0]], palette=colors_dict[option_list[0]])
+
+        color_mapper = CategoricalColorMapper(
+            factors=factors_dict[option_list[0]], palette=colors_dict[option_list[0]])
         legend = Legend()
-        
+
         plot.add_layout(legend, location)
-        scatter = plot.scatter('x', 'y', size=node_size, source=source, color={'field': 'values', 'transform': color_mapper}, legend_field="values")
+        scatter = plot.scatter('x', 'y', size=node_size, source=source, color={
+                               'field': 'values', 'transform': color_mapper}, legend_field="values")
         plot.legend.label_width = 30
-        plot.legend.click_policy='hide'
+        plot.legend.click_policy = 'hide'
         plot.legend.spacing = 1
         if location == 'below':
             location = 'bottom_left'
@@ -766,9 +815,9 @@ def make_single_visialization_plot(plot_df, values_dict,type, option_list,sample
     #     color_bar = ColorBar(color_mapper=color_mapper, label_standoff=12)
     #     plot.add_layout(color_bar, 'right')
     #     plot.scatter('x', 'y', size=node_size,  source=source, color={'field': 'values', 'transform': color_mapper})
-    
+
     if additional_info is not None:
-            tooltips = [
+        tooltips = [
             ("Sample", "@names"),
             ("Value", "@values"),
             ("p-value", "@info")
@@ -795,25 +844,31 @@ def make_single_visialization_plot(plot_df, values_dict,type, option_list,sample
         plot.yaxis.axis_label = "PCA_2"
         plot_name = 'pca-plot'
     plot.xaxis.axis_label_text_font_size = "12pt"
-    
+
     plot.yaxis.axis_label_text_font_size = "12pt"
-    
+
     plot.xaxis.major_tick_line_color = None  # turn off x-axis major ticks
     plot.xaxis.minor_tick_line_color = None  # turn off x-axis minor ticks
     plot.yaxis.major_tick_line_color = None  # turn off y-axis major ticks
     plot.yaxis.minor_tick_line_color = None  # turn off y-axis minor ticks
-    plot.xaxis.major_label_text_font_size = '0pt'  # preferred method for removing tick labels
-    plot.yaxis.major_label_text_font_size = '0pt'  # preferred method for removing tick labels
-    
+    # preferred method for removing tick labels
+    plot.xaxis.major_label_text_font_size = '0pt'
+    # preferred method for removing tick labels
+    plot.yaxis.major_label_text_font_size = '0pt'
+
     return json_item(plot, plot_name)
+
 
 def log2_normalize(x, offset=1.):
     return np.log2(x + offset)
 
+
 def generate_colors(input_df, feature):
-    pal = sns.color_palette(n_colors = len(input_df['legend'].unique()))
-    color = factor_cmap(feature, palette=pal.as_hex(), factors=np.array(input_df['legend'].unique()))
-    return color 
+    pal = sns.color_palette(n_colors=len(input_df['legend'].unique()))
+    color = factor_cmap(feature, palette=pal.as_hex(),
+                        factors=np.array(input_df['legend'].unique()))
+    return color
+
 
 def interactive_circle_plot(input_df, x_lab, y_lab, feature, name):
     if len(input_df['Group'].unique()) > 1:
@@ -835,33 +890,170 @@ def interactive_circle_plot(input_df, x_lab, y_lab, feature, name):
         height_add = (n - 10) * 75
     point_size = 10 if input_df.shape[0] < 100 else 5
     lab_max = max(map(lambda x: len(x), list(input_df['legend'].unique())))
-    
 
-    p = figure(height=1600+height_add+(5*lab_max), width=1800, tooltips=TOOLTIPS,x_axis_label=x_lab, y_axis_label=y_lab,sizing_mode="scale_width")
-
+    p = figure(height=1600+height_add+(5*lab_max), width=1800, tooltips=TOOLTIPS,
+               x_axis_label=x_lab, y_axis_label=y_lab, sizing_mode="scale_width")
 
     color = generate_colors(input_df, 'legend')
-    p1 = p.circle('x', 'y', size=point_size, source=source, legend_field=feature,fill_color= color, line_color=color)
+    p1 = p.circle('x', 'y', size=point_size, source=source,
+                  legend_field=feature, fill_color=color, line_color=color)
     p.add_layout(p.legend[0], 'below')
 
     p.xgrid.visible = False
     p.ygrid.visible = False
-    p.xaxis.minor_tick_line_color = None 
-    p.yaxis.minor_tick_line_color = None 
+    p.xaxis.minor_tick_line_color = None
+    p.yaxis.minor_tick_line_color = None
     p.xaxis.axis_label_text_font_size = '12pt'
     p.yaxis.axis_label_text_font_size = '12pt'
     p.xaxis[0].formatter = NumeralTickFormatter(format="0.0")
     p.yaxis[0].formatter = NumeralTickFormatter(format="0.0")
     p.legend.label_text_font_size = "12px"
     return json_item(p, name)
-    
 
- 
 
 def read_anndata_raw(path_to_data):
     return anndata.read_h5ad(s3.open(path_to_data))
 
 
-
 def read_anndata_h5(path_to_data):
     return h5py.File(s3.open(path_to_data))
+
+
+def compute_tf_idf_vecs(abstract_dict):
+
+    abstracts = pd.Series(index=abstract_dict.keys(),
+                          data=abstract_dict.values())
+    pmc_list = list(abstract_dict.keys())
+    abstracts = abstracts.apply(lambda abstract: word_tokenize(
+        re.sub("[^A-Za-z']+", ' ', abstract)))
+
+    stopwords_en = set(stopwords.words('english'))
+    stopwords_en.update({'Result', 'study', 'p', 'P', 'level',
+                        'change', 'effect', 'Results', 'using', 'used'})
+    abstracts = abstracts.apply(lambda abstract: [w for w in abstract if w.lower(
+    ) not in stopwords_en and len(w.lower().strip()) > 1])
+    lemmatizer = WordNetLemmatizer()
+    abstracts = abstracts.apply(
+        lambda abstract: [lemmatizer.lemmatize(w) for w in abstract])
+
+    count_vectorizer = CountVectorizer()
+    counts = count_vectorizer.fit_transform(
+        abstracts.apply(lambda wl: ' '.join(wl)))
+    tfidf_vectorizer = TfidfTransformer().fit(counts)
+    tfidf_abstracts = tfidf_vectorizer.transform(counts)
+    cosine_sim = cosine_similarity(
+        tfidf_abstracts[0], tfidf_abstracts).flatten()
+
+    cosine_sim_dict = {}
+    for i in range(1, len(pmc_list)):
+        cosine_sim_dict[pmc_list[i]] = cosine_sim[i]
+    return cosine_sim_dict
+
+
+def get_rummagene_res(geneset):
+    url = "https://rummagene.com/graphql"
+
+    query = {
+        "operationName": "EnrichmentQuery",
+        "variables": {
+            "filterTerm": "",
+            "offset": 0,
+            "first": 100,
+            "genes": geneset
+        },
+        "query": "query EnrichmentQuery($genes: [String]!, $filterTerm: String = \"\", $offset: Int = 0, $first: Int = 10) {\n  currentBackground {\n    enrich(genes: $genes, filterTerm: $filterTerm, offset: $offset, first: $first) {\n      nodes {\n        pvalue\n        adjPvalue\n        oddsRatio\n        nOverlap\n        geneSet {\n          id\n          term\n          nGeneIds\n          geneSetPmcsById(first: 1) {\n            nodes {\n              pmcInfoByPmcid {\n                pmcid\n                title\n                __typename\n              }\n              __typename\n            }\n            __typename\n          }\n          __typename\n        }\n        __typename\n      }\n      totalCount\n      __typename\n    }\n    __typename\n  }\n}\n"
+    }
+
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(url, data=json.dumps(query), headers=headers)
+
+    if response.status_code == 200:
+        res = response.json()
+        formatted = res['data']['currentBackground']['enrich']['nodes']
+
+        data = []
+        for result in formatted:
+            data.append([result['geneSet']['id'], result['geneSet']['term'], result['geneSet']['geneSetPmcsById']['nodes'][0]['pmcInfoByPmcid']['pmcid'], result['geneSet']['geneSetPmcsById']
+                        ['nodes'][0]['pmcInfoByPmcid']['title'], result['geneSet']['nGeneIds'], result['pvalue'], result['adjPvalue'], result['oddsRatio'], result['nOverlap']])
+        df = pd.DataFrame(data=data, columns=[
+                          'id', 'term', 'pmcid', 'title', 'nGenes', 'pvalue', 'adjPvalue', 'oddsRatio', 'nOverlap'])
+        return df
+    else:
+        return pd.DataFrame()
+
+
+def extract_abstracts(pmcids, abstract):
+    pmc_abstracts = {}
+    pmc_abstracts['submitted_geneset'] = abstract
+    for j in range(10):
+        try:
+            ids_string = ','.join(pmcids)
+            url = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&retmode=json&retype=abstract&id={ids_string}&api_key=dbbbce12360a328c17ea022c2d56961ddd08'
+            res = requests.get(url)
+            root = ET.fromstring(res.text)
+            for paper, pmcid in zip(root.iter('article'), ids_string.split(',')):
+                abs_clean = ''
+                for abstract in paper.iter("abstract"):
+                    abs_clean += ' '.join(' '.join(list(abstract.itertext())
+                                                   ).split()).replace('\n', '').strip() + ' '
+                pmc_abstracts[pmcid] = abs_clean
+            break
+        except Exception as e:
+            print(e, 'iteration', j)
+    return pmc_abstracts
+
+
+def get_rummagene_overlap(id, geneset):
+    url = "https://rummagene.com/graphql"
+
+    query = {
+        "operationName": "OverlapQuery",
+        "variables": {
+            "id": id,
+            "genes": geneset
+        },
+        "query": "query OverlapQuery($id: UUID!, $genes: [String]!) {\n  geneSet(id: $id) {\n    overlap(genes: $genes) {\n      nodes {\n        symbol\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n"
+    }
+
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    }
+    response = requests.post(url, data=json.dumps(query), headers=headers)
+
+    genes_overlap = []
+    if response.status_code == 200:
+        res = response.json()
+        data = res['data']['geneSet']['overlap']['nodes']
+        for g in data:
+            genes_overlap.append(g['symbol'])
+    return genes_overlap
+
+
+def get_rummagene_gs(id):
+    url = "https://rummagene.com/graphql"
+    query = {
+        "operationName": "ViewGeneSet",
+        "variables": {
+            "id": id
+        },
+        "query": "query ViewGeneSet($id: UUID!) {\n  geneSet(id: $id) {\n    genes {\n      nodes {\n        symbol\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}\n"
+    }
+
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    }
+    response = requests.post(url, data=json.dumps(query), headers=headers)
+    geneset = []
+
+    if response.status_code == 200:
+        res = response.json()
+        data = res['data']['geneSet']['genes']['nodes']
+        for g in data:
+            geneset.append(g['symbol'])
+    return geneset

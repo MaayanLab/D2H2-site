@@ -61,9 +61,9 @@ def singlegene_home():
 def geneset_home():
     return render_template("geneset.html", base_path=BASE_PATH, numstudies=numstudies)
 
-@app.route(f'{ROOT_PATH}/scg', methods=['GET', 'POST'])
-def scg():
-	return render_template('scg.html', base_path=BASE_PATH, numstudies=numstudies)
+@app.route(f'{ROOT_PATH}/hypotheses', methods=['GET', 'POST'])
+def hypotheses():
+	return render_template('hypotheses.html', base_path=BASE_PATH, numstudies=numstudies)
 
 @app.route(f'{ROOT_PATH}/resources', methods=['GET', 'POST'])
 def resources():
@@ -377,8 +377,6 @@ def submit_contribution_form():
 	keywords = ','.join(keywords.strip().split(','))
 	authors = '|'.join(authors.strip().split('\n'))
 	data_for_sheet = [title,pmid, geo, conditions, model, platform, keywords, authors, email]
-	print(data_for_sheet)
-	print(request.get_json())
 	status = log_suggested_study(data_for_sheet)
 	if status == 'success':
 		message = "Thank you for suggesting the study: \"{}\"".format(title)
@@ -1024,6 +1022,52 @@ def metadata_search():
 								gses_identified['scrna'][cat][gse]['species'] = species_dict[cat.split('_')[0]]
 
 		return gses_identified
+	
+
+@app.route('/api/get_prediction', methods=['GET'])
+def get_prediction():
+	return get_current_predictions()
+
+@app.route('/api/get_row_prediction', methods=['GET', 'POST'])
+def get_row_prediction():
+	if request.method == "POST":
+		n = request.get_json()['row_n']
+	return get_prediction_row_n(n)
+
+@app.route('/api/rummagene_hypothesis', methods=['GET', 'POST'])
+def rummagene_hypothesis():
+	if request.method == "POST":
+		geneset = request.get_json()['geneset'].split(',')
+		abstract = request.get_json()['abstract']
+	enrich_df = get_rummagene_res(geneset)
+	if (enrich_df.empty):
+		return {'error': 'No results found'}
+	try:
+		pmcids = list(set(enrich_df['pmcid'])) 
+		abstract_dict = extract_abstracts(pmcids, abstract)
+		cosine_sim_dict = compute_tf_idf_vecs(abstract_dict)
+		enrich_df['cosine similarity'] = enrich_df['pmcid'].map(lambda pmcid: cosine_sim_dict[pmcid])
+	except Exception as e:
+		print(e)
+		return {'error': 'An error occurred while retrieving abstracts and computing cosine similarity'}
+	return enrich_df.to_dict('records')
+
+@app.route('/api/rummagene_geneset', methods=['GET', 'POST'])
+def rummagene_geneset():
+	genes = []
+	if request.method == "POST":
+		id = request.get_json()['id']
+		genes = get_rummagene_gs(id)
+	return {'genes': genes}
+
+@app.route('/api/rummagene_overlap', methods=['GET', 'POST'])
+def rummagene_overlap():
+	genes = []
+	if request.method == "POST":
+		geneset = request.get_json()['geneset'].split(',')
+		id = request.get_json()['id']
+		genes = get_rummagene_overlap(id, geneset)
+	return {'genes': genes}
 
 #######################################################
 #######################################################

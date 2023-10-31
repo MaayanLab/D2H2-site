@@ -160,6 +160,16 @@
                     </a>
                   </td>
                   <td class="nav-link-text">
+                    <a href="{{ url_for('hypotheses') }}"
+                      style="color: black !important;">
+                      <div class="nav-link-div">
+                        <img src="{{ url_for('static', filename='img/lightbulb.png') }}"
+                          title="Hypotheses" height="30px">
+                        <p class="m-0">Hypotheses</p>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="nav-link-text">
                     <a href="{{ url_for('resources') }}" style="color: black !important;">
                       <div class="nav-link-div">
                         <img src="{{ url_for('static', filename='img/resourcesthumbnail.png') }}" title="Resources"
@@ -254,6 +264,15 @@
               <img class="mr-4 ml-4" src="{{ url_for('static', filename='img/singlecellthumbnail.png') }}"
                 alt="scRNA-seq Studies" title="scRNA-seq Studies" height="20px"
                 onclick='localStorage.setItem("no_splash", true)'> scRNA-seq Studies
+            </a>
+          </li>
+          <li class="nav-item menu nav-link-text">
+            <a class="nav-link hover-underline-animation"
+              href="{{ url_for('hypotheses') }}" id="hypotheses"
+              style="color: black !important;">
+              <img class="mr-4 ml-4" src="{{ url_for('static', filename='img/lightbulb.png') }}"
+                alt="" title="Hypotheses" height="20px"
+                onclick='localStorage.setItem("no_splash", true)'> Hypotheses
             </a>
           </li>
           <li class="nav-item menu nav-link-text">
