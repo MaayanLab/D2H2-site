@@ -987,7 +987,8 @@ def get_rummagene_res(geneset):
 
 def extract_abstracts(pmcids, abstract):
     pmc_abstracts = {}
-    pmc_abstracts['submitted_geneset'] = abstract
+    if len(abstract) > 0:
+        pmc_abstracts['submitted_geneset'] = abstract
     for j in range(10):
         try:
             ids_string = ','.join(pmcids)

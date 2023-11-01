@@ -175,7 +175,6 @@ def infer_gene(gene):
         print(response)
         gs = response.split(',')
         gs = list(map(lambda x: x.strip(), gs))
-        print(gs)
         return {'genes': gs}
     except:
         return {'option': 'busy'}
@@ -198,7 +197,6 @@ def identify_search_term(query):
         )
 
         response = tag_line['choices'][0]['message']['content'].strip()
-        print(response)
         return {'term': response}
     except:
         return {'option': 'busy'}
@@ -226,7 +224,6 @@ def determine_association(user_query):
         )
 
         response = tag_line['choices'][0]['message']['content'].strip()
-        print(response)
         return {'term': response}
     except:
         return {'option': 'busy'}
@@ -257,7 +254,35 @@ def select_args(query):
         )
 
         response = tag_line['choices'][0]['message']['content'].strip()
-        print(response)
         return {'term': response}
     except:
         return {'option': 'busy'}
+
+@lru_cache()
+def generate_hypthesis(desc, abstract, term, pmc_abstract):
+    if len(desc.strip()) == 0:
+        desc = "User submitted gene set"
+
+    prompt = f"""Here are two gene sets that highly overlap. The first is from a user-submmited gene set.
+    The second is a gene set extracted from a open source PMC article. Based upon the term names for the two gene sets as well as the abstracts corresponding to each abstract hypothesize why a high overlap between the gene sets exists.
+    Gene set term 1: {desc}
+    "up" or "dn" in this term name indicates if the genes were upregulated or downregulated in the signature
+    abstract of paper for gene set term 1: {abstract}
+
+    Gene set term 2: {term}
+    abstract of paper for gene set term 2: {pmc_abstract}
+    """
+    try:
+        tag_line = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+        {"role": "system", "content": "You are a biologist who attempts to create a hypothesis about why two gene sets,\
+            which are lists of genes, may have a high overlap despite being associated with very dissimlar abstracts"},
+        {"role": "user", "content": prompt}
+            ],
+        temperature=.25,
+        )
+        response = tag_line['choices'][0]['message']['content']
+        return response
+    except:
+        return "The OpenAI endpoint is currently overloaded. Please try again later."
