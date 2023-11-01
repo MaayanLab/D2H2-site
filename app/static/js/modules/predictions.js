@@ -35,7 +35,7 @@ export async function get_curr_prediction() {
         contentType: 'application/json',
         type: "GET"
     })
-    console.log(response)
+
     const date_options = response['date_options']
     const dates = Object.keys(date_options)
     dates.reverse()

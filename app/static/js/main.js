@@ -719,6 +719,36 @@ function fillSet2(id, descid, count_id) {
     });
 }
 
+function fillSet3(id, descid, count_id) {
+    $.ajax({
+        url: "getexample3",
+        type: "POST",
+        data: {},
+        dataType: 'json',
+    }).done(function (response) {
+
+        const desc = response['description']
+        const genes = response['genes']
+
+        document.getElementById(id).value = genes;
+        if (descid != '') {
+            document.getElementById(descid).value = desc;
+        }
+        geneCount(genes, count_id)
+    });
+}
+
+async function fillAbstract(id) {
+    const response = await $.ajax({
+        url: "getexampleabstract",
+        type: "POST",
+        data: {},
+        dataType: 'json',
+    })
+    const abstract = response['abstract']
+    document.getElementById(id).value = abstract;
+}
+
 function setGene(gene) {
     localStorage.setItem('gene', gene)
 }

@@ -232,6 +232,21 @@ def getexample2():
 
 	return {'genes': text, 'description': "My gene set"}
 
+@app.route(f'{ROOT_PATH}/getexample3',  methods=['GET','POST'])
+def getexample3():
+
+	with open('static/data/example_abstract_geneset.txt') as f:
+		text = f.read()
+
+	return {'genes': text, 'description': "Premature aging C0231341 human GSE10123 sample 55 from Disease_Perturbations_from_GEO_down"}
+@app.route(f'{ROOT_PATH}/getexampleabstract',  methods=['GET','POST'])
+def getexampleabstract():
+
+	with open('static/data/example_abstract.txt') as f:
+		text = f.read()
+
+	return {'abstract': text}
+
 
 
 @app.route(f'{ROOT_PATH}/dgeapi',  methods=['GET','POST'])

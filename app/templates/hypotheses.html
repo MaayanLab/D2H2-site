@@ -101,8 +101,11 @@
                             </form>
                             <label class="mt-1 mr-1" for="desc1">Enter gene set description (optional): </label>
                             <input class="form-control-md" id="desc1" type="text">
-                            <textarea class="input-form mt-2" name="list" rows="4" id="abstract-input"
+                            <textarea class="input-form mt-2" name="list" rows="6" id="abstract-input" style="width: 80%;"
                                 placeholder="Paste an abstract to compare similarity to enriched terms from PMC"></textarea>
+                            <div class="text-center">
+                                <a id="examplefillabstract" style="color: rgb(10, 13, 149)">Try an example abstract</a>
+                            </div>
                             <p class="mt-2">Perform enrichment analysis on hundreds of thousands gene sets
                                 extracted from supporting tables of over one hundred thousand articles
                                 to find the most similar gene sets that match your query.
@@ -217,7 +220,11 @@
     });
 
     $('#examplefill').click(function () {
-        fillSet('text-area4', 'desc1', 4)
+        fillSet3('text-area4', 'desc1', 4)
+    });
+
+    $('#examplefillabstract').click(function () {
+        fillAbstract('abstract-input')
     });
 
     const modal = document.getElementById('geneset-modal');
