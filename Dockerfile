@@ -12,6 +12,7 @@ RUN set -x \
     && rm -rf /var/lib/apt/lists/* \
     && pip3 install --no-cache-dir --upgrade pip
 
+
 RUN mkdir D2H2
 
 COPY requirements.txt /D2H2
@@ -19,6 +20,12 @@ COPY requirements.txt /D2H2
 WORKDIR /D2H2
 
 RUN pip3 install -r requirements.txt
+
+RUN python -m nltk.downloader punkt
+
+RUN python -m nltk.downloader stopwords
+
+RUN python -m nltk.downloader wordnet
 
 COPY . .
 

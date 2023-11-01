@@ -35,7 +35,6 @@ import nltk
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-nltk.download('punkt')
 
 
 endpoint = os.environ.get('ENDPOINT', 'https://d2h2.s3.amazonaws.com/')
