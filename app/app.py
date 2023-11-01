@@ -1026,7 +1026,21 @@ def metadata_search():
 
 @app.route('/api/get_prediction', methods=['GET'])
 def get_prediction():
-	return get_current_predictions()
+	preds = get_current_predictions()
+	sig = preds['curr_prediction'][1]
+	gse = preds['curr_prediction'][1].split('-')[0]
+	if 'human' in sig:
+		species = 'human'
+	else:
+		species = 'mouse'
+	try:
+		title = gse_metadata[species][gse]['title'][0]
+	except:
+		tile = "No title found"
+
+	preds['gse_title'] = title
+	preds['gse_sig'] = ' '.join(preds['curr_prediction'][1].split('-')[1:])
+	return preds
 
 @app.route('/api/get_row_prediction', methods=['GET', 'POST'])
 def get_row_prediction():
