@@ -51,7 +51,6 @@ def get_prediction_dates():
   date_dict = {}
   for i, date in enumerate(all_dates):
     date_dict[date] = i + 2
-  print(all_dates)
   return date_dict
 
 def get_current_predictions():

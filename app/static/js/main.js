@@ -476,12 +476,29 @@ function on_change(el) {
 
 }
 
+const today = new Date();
+const yyyy = today.getFullYear();
+let mm = today.getMonth() + 1; // Months start at 0!
+let dd = today.getDate();
+
+if (dd < 10) dd = '0' + dd;
+if (mm < 10) mm = '0' + mm;
+
+const formattedToday = mm + '-' + dd + '-' + yyyy;
+
 
 async function get_prediction_date(el) {
 
     const hypothesis_div = document.getElementById('gpt-hypothesis')
     const row_num = el.options[el.selectedIndex].value
-
+    const date = el.options[el.selectedIndex].innerText
+    console.log
+    if (date == formattedToday) {
+        document.getElementById("gpt-hypothesis-title").innerText = `Todays' Hypothesis ${date}`
+    } else {
+        document.getElementById("gpt-hypothesis-title").innerText = `Hypothesis from ${date}`
+    }
+    
     var data = JSON.stringify({ 'row_n': row_num })
     var response = await $.ajax({
         url: "api/get_row_prediction",

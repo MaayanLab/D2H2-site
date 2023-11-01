@@ -34,17 +34,29 @@
     <div class="col-10 justify-content-center mx-auto banner">
         <div class="row justify-content-center mb-3  mt-2">
             <div class=" text-center col-lg-12 justify-items-center mt-4">
-                <h3 style="font-size: 35px; font-weight: 300;">D2H2 Automated Hypothesis Each and Every Day (AHEAED)</h3>
+                <h3 style="font-size: 35px; font-weight: 300;">D2H2 Automated Hypothesis Each and Every Day (AHEAED)
+                </h3>
             </div>
         </div>
         <div class="col-10 mx-auto">
-        <p>
-            To form novel hypotheses, each day we query the D2H2 gene sets created from the collection of bulk RNA-seq studies against >600,000 gene sets extracted from the supporting materials of research publications listed in PubMed Central (see rummagene.com). We then identify studies that have high overlap with the D2H2 gene set and low abstract similarity. We then pass the two dissimilar abstracts to GPT4 for hypothesis generation. The LLM model attempts to reason about possible explanation of why the studies with such dissimilar abstracts have such similar gene sets.
-        </p>
+            <p>
+                To form novel hypotheses, each day we query the D2H2 gene sets created from the collection of bulk
+                RNA-seq studies against >600,000 gene sets extracted from the supporting materials of research
+                publications listed in PubMed Central (see rummagene.com). We then identify studies that have high
+                overlap with the D2H2 gene set and low abstract similarity. We then pass the two dissimilar abstracts to
+                GPT4 for hypothesis generation. The LLM model attempts to reason about possible explanation of why the
+                studies with such dissimilar abstracts have such similar gene sets.
+            </p>
         </div>
         <div class="col-10 custom-col mx-auto mb-3 text-center flex p-2" style="overflow: hidden;">
             <img src="{{ url_for('static', filename='img/hypothesis.png') }}" class="m-2 p-2"
                 alt="Automated daily hypothesis art" style="width: 100px;" />
+
+            <div class="row justify-content-center text-center">
+                <p id="gpt-hypothesis-title" class="text-center justify-content-center" style="font-weight: bold; font-size: x-large;">
+                    Today's Hypothesis
+                </p>
+            </div>
 
             <div class="row justify-content-center text-center">
                 <div id="gpt-hypothesis-selector" class="text-center justify-content-center"></div>
@@ -52,6 +64,7 @@
             <div id="gpt-hypothesis" class="text-left mr-4 ml-4 pr-3 pl-3">
 
             </div>
+
 
             <div class="text-center mt-5">**These hypotheses are generated using GPT4 and abstracts of the corresponding
                 studies. Please use caution when interpreting the results.**</div>
@@ -61,7 +74,8 @@
             <div class="container mt-2" id="Rummagene-analysis">
                 <div class="row justify-content-center justify-items-center" id="[Rummagene]">
                     <div class="question mt-3 p-2 justify-content-center row text-center">
-                        <h4>In which extacted gene sets from PubMed Central is my gene set enriched when the abstracts dissimlar? </h4>
+                        <h4>In which extacted gene sets from PubMed Central is my gene set enriched when the abstracts
+                            dissimlar? </h4>
                     </div>
 
                     <div class="row mt-4 justify-content-center" style="flex-wrap: wrap;">

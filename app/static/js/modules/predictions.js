@@ -56,11 +56,12 @@ export async function get_curr_prediction() {
     gse_gene_viewer.push(gse)
     gse_gene_viewer = gse_gene_viewer.join('/')
 
-    
+    document.getElementById("gpt-hypothesis-title").innerText = `Today's Hypothesis ${dates[0]}`
+
     const gse_link = `<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=${gse}" target="_blank"  rel="noopener noreferrer">${gse}</a> `
     const pmc_link = `<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/${curr_pred[4]}" target="_blank"  rel="noopener noreferrer">${curr_pred[4]}</a> `
     var curr_pred_str = "<div class='text-center text-bold'>"
-    curr_pred_str += `${gse_link + curr_pred[1].split('-').slice(1).join(' ')} (${curr_pred[2]}),<br> ${pmc_link + curr_pred[3].split('-').slice(1).join(' ')} (${curr_pred[5]}) (${curr_pred[6]})<br>`
+    curr_pred_str += `${gse_link + curr_pred[1].split('-').slice(1).join(' ').replaceAll('_', ' ')} (${curr_pred[2]}),<br> ${pmc_link + curr_pred[3].split('-').slice(1).join(' ').replaceAll('_', ' ')} (${curr_pred[5]}) (${curr_pred[6]})<br>`
     curr_pred_str += `P-value: ${parseFloat(curr_pred[7]).toExponential(2)}, Adj. P-value: ${parseFloat(curr_pred[8]).toExponential(2)}, Odds ratio: ${parseFloat(curr_pred[9]).toFixed(2)}, Overlap: ${curr_pred[10]}<br>`
     curr_pred_str += `<a href="${gse_gene_viewer}"><button class="btn btn-primary btn-group-sm mt-2 mb-2">${gse} Gene Viewer</button></a>`
     
