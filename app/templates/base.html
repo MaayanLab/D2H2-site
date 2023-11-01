@@ -156,7 +156,7 @@
                       <div class="nav-link-div">
                         <img src="{{ url_for('static', filename='img/bulk.png') }}"
                           title="Microarray and Bulk RNA-seq Studies" height="30px">
-                        <p class="m-0">Microarray & Bulk RNA-seq Studies</p>
+                        <p class="m-0">Bulk Studies</p>
                       </div>
                     </a>
                   </td>
@@ -166,7 +166,17 @@
                       <div class="nav-link-div">
                         <img src="{{ url_for('static', filename='img/singlecellthumbnail.png') }}"
                           title="scRNA-seq Studies " height="30px">
-                        <p class="m-0">scRNA-seq Studies</p>
+                        <p class="m-0">Single Cell Studies</p>
+                      </div>
+                    </a>
+                  </td>
+                  <td class="nav-link-text">
+                    <a href="{{ url_for('hypotheses') }}"
+                      style="color: black !important;">
+                      <div class="nav-link-div">
+                        <img src="{{ url_for('static', filename='img/lightbulb.png') }}"
+                          title="Hypotheses" height="30px">
+                        <p class="m-0">Hypotheses</p>
                       </div>
                     </a>
                   </td>
@@ -194,7 +204,7 @@
                       <div class="nav-link-div">
                         <img src=" {{ url_for('static', filename='img/thumbnail_contribute.png' ) }}" title="Contribute"
                           height="30px">
-                        <p class="m-0">Contribution</p>
+                        <p class="m-0">Contribute</p>
                       </div>
                     </a>
                   </td>
@@ -265,7 +275,7 @@
               style="color: black !important;">
               <img class="mr-4 ml-4" src="{{ url_for('static', filename='img/bulk.png') }}"
                 alt="Bulk RNA-seq and Microarray Studies" title="Bulk RNA-seq and Microarray Studies" height="20px"
-                onclick='localStorage.setItem("no_splash", true)'> Bulk RNA-seq and Microarray Studies
+                onclick='localStorage.setItem("no_splash", true)'> Bulk Studies
             </a>
           </li>
           <li class="nav-item menu nav-link-text">
@@ -274,7 +284,16 @@
               style="color: black !important;">
               <img class="mr-4 ml-4" src="{{ url_for('static', filename='img/singlecellthumbnail.png') }}"
                 alt="scRNA-seq Studies" title="scRNA-seq Studies" height="20px"
-                onclick='localStorage.setItem("no_splash", true)'> scRNA-seq Studies
+                onclick='localStorage.setItem("no_splash", true)'> Single Cell Studies
+            </a>
+          </li>
+          <li class="nav-item menu nav-link-text">
+            <a class="nav-link hover-underline-animation"
+              href="{{ url_for('hypotheses') }}" id="hypotheses"
+              style="color: black !important;">
+              <img class="mr-4 ml-4" src="{{ url_for('static', filename='img/lightbulb.png') }}"
+                alt="" title="Hypotheses" height="20px"
+                onclick='localStorage.setItem("no_splash", true)'> Hypotheses
             </a>
           </li>
 
@@ -301,7 +320,7 @@
               style="color: black !important;">
               <img class="mr-4 ml-4" src="{{ url_for('static', filename='img/thumbnail_contribute.png') }}"
                 alt="Community Contribution" title='Community Contribution' height="20px"
-                onclick='localStorage.setItem("no_splash", true)'> Community Contribution
+                onclick='localStorage.setItem("no_splash", true)'> Contribute
             </a>
           </li>
 

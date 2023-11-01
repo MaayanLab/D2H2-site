@@ -1,6 +1,6 @@
 
 async function explore_dge(gse, species) {
-    var data = JSON.stringify({'gse': gse, 'species': species})
+    var data = JSON.stringify({ 'gse': gse, 'species': species })
     const options = await $.ajax({
         url: "api/precomputed_dge_options",
         contentType: 'application/json',
@@ -32,13 +32,13 @@ async function explore_dge(gse, species) {
         precomputed_sig = document.getElementById(`precomputed-dge-conditions-${gse}`)
         precomputed_sig.addEventListener("change", (event) => {
             if (precomputed_sig.value != '') {
-                fill_precomputed_dge_table(precomputed_sig.value, species,`precomputed-dge-res-${gse}`)
+                fill_precomputed_dge_table(precomputed_sig.value, species, `precomputed-dge-res-${gse}`)
             } else {
                 document.getElementById(`precomputed-dge-res-${gse}`).innerHTML = "";
             }
         });
     } else {
-        selecter =  `
+        selecter = `
             <p>No precomputed signatures are currently available for this study. You can compute differential gene
             expression on the gene viewer page.
             </p>
@@ -50,7 +50,7 @@ async function explore_dge(gse, species) {
 
 async function fill_precomputed_dge_table(sig, species, id) {
     const precomputed_res = document.getElementById(id)
-    var gsedata = JSON.stringify({'sig': sig, 'species': species});
+    var gsedata = JSON.stringify({ 'sig': sig, 'species': species });
     $.ajax({
         url: "api/precomputed_dge",
         contentType: 'application/json',
@@ -96,7 +96,7 @@ async function fill_precomputed_dge_table(sig, species, id) {
         genes_list = genes_list.map(x => x.replace(/<\/?[^>]+(>|$)/g, ""))
 
         var genelist_buttons =
-        `<div class="row justify-content-center mx-auto text-center">
+            `<div class="row justify-content-center mx-auto text-center">
             <div class="h7">Submit the top</div>
             <input class="" id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2'
                 style='width: 50px; height: 30px; margin-left: 10px; margin-right: 10px;' />
@@ -142,10 +142,10 @@ async function get_enrichr_geneset(term, library) {
         method: 'GET',
     })
     const results = await res.json()
-    const vals = Object.entries(results)           
+    const vals = Object.entries(results)
     if (vals) {
         const [description, genes] = vals[0]
-        return {description: `${description} (${library})`, genes: genes}
+        return { description: `${description} (${library})`, genes: genes }
     }
 }
 
@@ -168,6 +168,64 @@ async function show_geneset_modal(library, term) {
 
 
     modal.showModal()
+}
+
+async function get_rummagene_geneset(id) {
+    var data = JSON.stringify({ 'id': id });
+    const res = await $.ajax({
+        url: "api/rummagene_geneset",
+        contentType: 'application/json',
+        type: "POST",
+        dataType: 'json',
+        data: data,
+    })
+    return res['genes']
+}
+
+async function get_rummagene_overlap(id) {
+    const genesString = document.getElementById('curr-geneset').innerText
+    var data = JSON.stringify({ 'id': id, 'geneset': genesString });
+    const res = await $.ajax({
+        url: "api/rummagene_overlap",
+        contentType: 'application/json',
+        type: "POST",
+        dataType: 'json',
+        data: data,
+    })
+    return res['genes']
+}
+
+async function show_geneset_modal_rummagene(id, term, operation) {
+    const modal = document.getElementById('geneset-modal');
+    const textfield = document.getElementById('geneset-modal-text');
+    const modalTitle = document.getElementById('geneset-modal-title');
+    const queryButton = document.getElementById('geneset-modal-queries');
+    const genesetDownload = document.getElementById('geneset-modal-download');
+    if (operation == 'geneset') {
+        const res = await get_rummagene_geneset(id);
+        textfield.value = res.join('\r\n')
+        queryButton.setAttribute('onclick', `setGenes('${res.join('&')}')`)
+        modalTitle.innerText = `${term} (${res.length})`
+
+        // Create a blog object with the file content which you want to add to the file
+        const file = new Blob([`${term}\t${res.join('\t')}`], { type: 'text/plain' });
+        // Add file content in the object URL
+        genesetDownload.href = URL.createObjectURL(file);
+        genesetDownload.download = `${term}.txt`;
+        modal.showModal()
+    } else {
+        const res = await get_rummagene_overlap(id);
+        textfield.value = res.join('\r\n')
+        queryButton.setAttribute('onclick', `setGenes('${res.join('&')}')`)
+        modalTitle.innerText = `${term} (${res.length})`
+
+        // Create a blog object with the file content which you want to add to the file
+        const file = new Blob([`${term}\t${res.join('\t')}`], { type: 'text/plain' });
+        // Add file content in the object URL
+        genesetDownload.href = URL.createObjectURL(file);
+        genesetDownload.download = `${term}_overlap.txt`;
+        modal.showModal()
+    }
 }
 
 function up_down_toggle(chatnum) {
@@ -208,7 +266,7 @@ function chatN(side, chatNum, color, content) {
             ${content}
         </div>
     </div>
-    `   
+    `
     const placeholder = document.createElement("div");
     placeholder.innerHTML = chathtml;
     const node = placeholder.firstElementChild;
@@ -264,7 +322,7 @@ function filter_genes_sigs(genelist, adjpvals, pvals, logfc) {
             }
         }
     }
-    
+
     return genes_valid
 }
 
@@ -350,22 +408,22 @@ function geneCount(gene_list, num) {
 
 function clear_home() {
     try {
-    document.getElementById("result").innerHTML = "";
-    document.getElementById("selector").style.display = "none";
-    document.getElementById("output").innerText = "";
-    document.getElementById("description").innerText = "";
-    document.getElementById("actions").innerHTML = "";
-    document.getElementById("enter-geneset").style.display = "none";
-    document.getElementById("enter-geneset-up-down").style.display = "none";
-    document.getElementById("toggle").style.display = "none";
-    document.getElementById("submit_single_gene").style.display = "none";
-    document.getElementById("submit_gene_set").style.display = "none";
+        document.getElementById("result").innerHTML = "";
+        document.getElementById("selector").style.display = "none";
+        document.getElementById("output").innerText = "";
+        document.getElementById("description").innerText = "";
+        document.getElementById("actions").innerHTML = "";
+        document.getElementById("enter-geneset").style.display = "none";
+        document.getElementById("enter-geneset-up-down").style.display = "none";
+        document.getElementById("toggle").style.display = "none";
+        document.getElementById("submit_single_gene").style.display = "none";
+        document.getElementById("submit_gene_set").style.display = "none";
     } catch {
-    document.getElementById('[Signatures]result').innerHTML = "";
-    document.getElementById('[TFs]result').innerHTML = "";
-    document.getElementById('[Traits]result').innerHTML = "";
-    document.getElementById('[Knockout]result').innerHTML = "";
-    document.getElementById('[Correlation]result').innerHTML = "";
+        document.getElementById('[Signatures]result').innerHTML = "";
+        document.getElementById('[TFs]result').innerHTML = "";
+        document.getElementById('[Traits]result').innerHTML = "";
+        document.getElementById('[Knockout]result').innerHTML = "";
+        document.getElementById('[Correlation]result').innerHTML = "";
     }
 }
 
@@ -415,6 +473,64 @@ function on_change(el) {
         document.getElementById(el.options[i].value).style.display = 'none';
     }
     document.getElementById(el.options[el.selectedIndex].value).style.display = 'block'; // Show el
+
+}
+
+const today = new Date();
+const yyyy = today.getFullYear();
+let mm = today.getMonth() + 1; // Months start at 0!
+let dd = today.getDate();
+
+if (dd < 10) dd = '0' + dd;
+if (mm < 10) mm = '0' + mm;
+
+const formattedToday = mm + '-' + dd + '-' + yyyy;
+
+
+async function get_prediction_date(el) {
+
+    const hypothesis_div = document.getElementById('gpt-hypothesis')
+    const row_num = el.options[el.selectedIndex].value
+    const date = el.options[el.selectedIndex].innerText
+    console.log
+    if (date == formattedToday) {
+        document.getElementById("gpt-hypothesis-title").innerText = `Todays' Hypothesis ${date}`
+    } else {
+        document.getElementById("gpt-hypothesis-title").innerText = `Hypothesis from ${date}`
+    }
+    
+    var data = JSON.stringify({ 'row_n': row_num })
+    var response = await $.ajax({
+        url: "api/get_row_prediction",
+        contentType: 'application/json',
+        type: "POST",
+        dataType: 'json',
+        data: data
+    })
+    const curr_pred = response['curr_prediction']
+
+    const gse = curr_pred[1].split('-')[0]
+
+    const currentUrl = window.location.href
+    var gse_gene_viewer = currentUrl.split('/')
+    gse_gene_viewer = gse_gene_viewer.slice(0, currentUrl.length - 1)
+    gse_gene_viewer.push(gse)
+    gse_gene_viewer = gse_gene_viewer.join('/')
+
+
+    const gse_link = `<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=${gse}" target="_blank"  rel="noopener noreferrer">${gse}</a> `
+    const pmc_link = `<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/${curr_pred[4]}" target="_blank"  rel="noopener noreferrer">${curr_pred[4]}</a> `
+    var curr_pred_str = "<div class='text-center text-bold'>"
+    curr_pred_str += `${gse_link + curr_pred[1].split('-').slice(1).join(' ')} (${curr_pred[2]}),<br> ${pmc_link + curr_pred[3].split('-').slice(1).join(' ')} (${curr_pred[5]}) (${curr_pred[6]})<br>`
+    curr_pred_str += `P-value: ${parseFloat(curr_pred[7]).toExponential(2)}, Adj. P-value: ${parseFloat(curr_pred[8]).toExponential(2)}, Odds ratio: ${parseFloat(curr_pred[9]).toFixed(2)}, Overlap: ${curr_pred[10]}<br><br>`
+    curr_pred_str += `<a href="${gse_gene_viewer}"><button class="btn btn-primary btn-group-sm">${gse} Gene Viewer</button></a>`
+
+    curr_pred_str += "</div>"
+    curr_pred_str += "<div class='p-3' style='background-color: rgb(247, 243, 248); border-radius: 1rem;'>"
+    curr_pred_str += curr_pred[11].replaceAll('\n', '<br>')
+    curr_pred_str += "</div>"
+
+    hypothesis_div.innerHTML = curr_pred_str;
 
 }
 
@@ -575,7 +691,7 @@ function fillSet(id, descid, count_id) {
 
         const desc = response['description']
         const genes = response['genes']
-        
+
         document.getElementById(id).value = genes;
         if (descid != '') {
             document.getElementById(descid).value = desc;
@@ -601,6 +717,36 @@ function fillSet2(id, descid, count_id) {
         geneCount(genes, count_id)
 
     });
+}
+
+function fillSet3(id, descid, count_id) {
+    $.ajax({
+        url: "getexample3",
+        type: "POST",
+        data: {},
+        dataType: 'json',
+    }).done(function (response) {
+
+        const desc = response['description']
+        const genes = response['genes']
+
+        document.getElementById(id).value = genes;
+        if (descid != '') {
+            document.getElementById(descid).value = desc;
+        }
+        geneCount(genes, count_id)
+    });
+}
+
+async function fillAbstract(id) {
+    const response = await $.ajax({
+        url: "getexampleabstract",
+        type: "POST",
+        data: {},
+        dataType: 'json',
+    })
+    const abstract = response['abstract']
+    document.getElementById(id).value = abstract;
 }
 
 function setGene(gene) {
@@ -1699,7 +1845,7 @@ $(document).ready(function () {
         var gse = document.getElementById("gse").innerText
         var species = document.getElementById("species").innerText
         var method = document.getElementById("method").value
-        var norms = { 'logCPM': false, 'log': false, 'q': false, 'z': false}
+        var norms = { 'logCPM': false, 'log': false, 'q': false, 'z': false }
 
 
         var gsedata = JSON.stringify({ 'gse': gse, 'control': control_condition, 'perturb': perturb_condition, 'method': method, 'species': species, 'norms': norms });
@@ -1792,7 +1938,7 @@ $(document).ready(function () {
             genes = genes.map(x => x.replace(/<\/?[^>]+(>|$)/g, ""))
 
             var genelist_buttons =
-            `<div class="row justify-content-center mx-auto text-center">
+                `<div class="row justify-content-center mx-auto text-center">
                 <div class="h7">Submit the top</div>
                 <input class="" id='numgenes' type='number' step='1' value='100' pattern='[0-9]' min='1' class='m-2'
                     style='width: 50px; height: 30px; margin-left: 10px; margin-right: 10px;' />

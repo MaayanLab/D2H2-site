@@ -28,8 +28,9 @@ try:
   creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict,scope)
   client = gspread.authorize(creds)
   sheet = client.open('Chat logs').sheet1
+  predictions = client.open('GPT Predictions').sheet1
   entries = sheet.get_all_records()
-  print('Sucessfully loaded chat logs')
+  print('Sucessfully Authorized Google Drive')
 except:
   print('Error Authorizing Google Drive')
 
@@ -44,3 +45,19 @@ def log_chat(user_query, response, userid):
     print(e)
     print('Error adding to chat data to log')
     return
+  
+def get_prediction_dates():
+  all_dates = predictions.col_values(1)[1:]
+  date_dict = {}
+  for i, date in enumerate(all_dates):
+    date_dict[date] = i + 2
+  return date_dict
+
+def get_current_predictions():
+  date_dict = get_prediction_dates()
+  curr_prediction = predictions.row_values(len(date_dict) + 1)
+  return {'curr_prediction': curr_prediction, 'date_options': date_dict}
+
+def get_prediction_row_n(n):
+  prediction = predictions.row_values(n)
+  return {'curr_prediction': prediction}

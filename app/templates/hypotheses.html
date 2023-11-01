@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+
+<dialog data-modal id="geneset-modal" style="margin: auto;">
+    <div class="text-center justify-content-center">
+        <p id="geneset-modal-title"></p>
+        <textarea id="geneset-modal-text" class="text-center"
+            style="height: 20rem; overflow-y: scroll; white-space: pre-wrap;" readonly>
+        </textarea>
+    </div>
+    <div class="flex text-center">
+        <button type="button"
+            onclick="navigator.clipboard.writeText(document.getElementById('geneset-modal-text').value)"
+            class="btn btn-primary btn-group-sm m-2 ">
+            Copy to clipboard
+        </button>
+        <a id="geneset-modal-queries" href="{{ url_for('geneset_home') }}" onclick="" target='_blank'
+            style="text-decoration: none">
+            <button type="button" class="btn btn-primary btn-group-sm m-2">
+                Open in Geneset Queries
+            </button>
+        </a>
+        <a id="geneset-modal-download" href="" style="text-decoration: none">
+            <button type="button" class="btn btn-primary btn-group-sm m-2">
+                Download
+            </button>
+        </a>
+    </div>
+</dialog>
+
+<div class="justify-content-center">
+    <div class="col-10 justify-content-center mx-auto banner">
+        <div class="row justify-content-center mb-3  mt-2">
+            <div class=" text-center col-lg-12 justify-items-center mt-4">
+                <h3 style="font-size: 35px; font-weight: 300;">D2H2 Automated Hypothesis Each and Every Day (AHEAED)
+                </h3>
+            </div>
+        </div>
+        <div class="col-10 mx-auto">
+            <p>
+                To form novel hypotheses, each day we query the D2H2 gene sets created from the collection of bulk
+                RNA-seq studies against >600,000 gene sets extracted from the supporting materials of research
+                publications listed in PubMed Central (see rummagene.com). We then identify studies that have high
+                overlap with the D2H2 gene set and low abstract similarity. We then pass the two dissimilar abstracts to
+                GPT4 for hypothesis generation. The LLM model attempts to reason about possible explanation of why the
+                studies with such dissimilar abstracts have such similar gene sets.
+            </p>
+        </div>
+        <div class="col-10 custom-col mx-auto mb-3 text-center flex p-2" style="overflow: hidden;">
+            <img src="{{ url_for('static', filename='img/hypothesis.png') }}" class="m-2 p-2"
+                alt="Automated daily hypothesis art" style="width: 100px;" />
+
+            <div class="row justify-content-center text-center">
+                <p id="gpt-hypothesis-title" class="text-center justify-content-center" style="font-weight: bold; font-size: x-large;">
+                    Today's Hypothesis
+                </p>
+            </div>
+
+            <div class="row justify-content-center text-center">
+                <div id="gpt-hypothesis-selector" class="text-center justify-content-center"></div>
+            </div>
+            <div id="gpt-hypothesis" class="text-left mr-4 ml-4 pr-3 pl-3">
+
+            </div>
+
+
+            <div class="text-center mt-5">**These hypotheses are generated using GPT4 and abstracts of the corresponding
+                studies. Please use caution when interpreting the results.**</div>
+        </div>
+
+        <div class="col-10 custom-col mx-auto mt-3 mb-5 text-center flex" style="overflow: visible;">
+            <div class="container mt-2" id="Rummagene-analysis">
+                <div class="row justify-content-center justify-items-center" id="[Rummagene]">
+                    <div class="question mt-3 p-2 justify-content-center row text-center">
+                        <h4>Find studies with similar gene sets to your input gene set but with dissimilar abstracts</h4>
+                    </div>
+
+                    <div class="row mt-4 justify-content-center" style="flex-wrap: wrap;">
+                        <div class="col-md-5 col-sm-7 col-lg-4 text-center mr-5 mt-4">
+                            <textarea class="input-form" name="list" rows="8" id="text-area4"
+                                placeholder="Paste a set of valid Entrez gene symbols (e.g. STAT3) on each row in the text-box"
+                                onkeyup="geneCount($(this).val(), 4)" onchange="geneCount($(this).val(), 4)"
+                                onfocus="geneCount($(this).val(), 4)"></textarea>
+                            <div class="mt-1">
+                                <span id="gene-count4"> 0 </span> gene(s) entered
+                            </div>
+                            <div class="text-center">
+                                <a id="examplefill" style="color: rgb(10, 13, 149)">Try an example gene set</a>
+                            </div>
+
+                        </div>
+                        <div class="col-md-7 col-sm-7 col-lg-6 text-center mr-3"
+                            style="overflow-y: visible !important;">
+                            <p>
+                                File formats accepted: csv, tsv, txt file with Entrez gene symbols on each line
+                            </p>
+                            <form action="/action_page.php" style="flex-wrap: wrap;">
+                                <input type="file" id="gene-file4" name="filename">
+                            </form>
+                            <label class="mt-1 mr-1" for="desc1">Enter gene set description (optional): </label>
+                            <input class="form-control-md" id="desc1" type="text">
+                            <textarea class="input-form mt-2" name="list" rows="6" id="abstract-input" style="width: 80%;"
+                                placeholder="Paste an abstract to compare similarity to enriched terms from PMC"></textarea>
+                            <div class="text-center">
+                                <a id="examplefillabstract" style="color: rgb(10, 13, 149)">Try an example abstract</a>
+                            </div>
+                            <p class="mt-2">Perform enrichment analysis on hundreds of thousands gene sets
+                                extracted from supporting tables of over one hundred thousand articles
+                                to find the most similar gene sets that match your query.
+                                The top 100 are returned and are ranked by cosine similarity based upon your entered
+                                abstract and those of the enriched gene sets.
+                            </p>
+
+                        </div>
+                    </div>
+                    <div class="row mt-0">
+
+                    </div>
+                </div>
+            </div>
+            <div class="justify-content-center row text-center mt-1">
+                <a id="Rummagene">
+                    <button type="button" class="btn btn-primary btn-group-sm mt-3 mb-3"> Submit to Rummagene
+                        <img src="{{ url_for('static', filename='img/rummagene_logo.png') }}" class="img-fluid mr-3"
+                            style="width: 45px" alt="Enrichr">
+                    </button>
+                </a>
+            </div>
+            <div id="rummagene-abstract-res" class="mb-3" style="white-space: break-spaces;">
+
+            </div>
+        </div>
+    </div>
+    <div id="curr-geneset" hidden></div>
+</div>
+
+{% endblock %}
+
+{% block footer %}
+<script type="module">
+    import { get_curr_prediction } from '../static/js/modules/predictions.js';
+    import { loading } from '../static/js/modules/constants.js';
+    document.getElementById('gpt-hypothesis').innerHTML = loading;
+    get_curr_prediction()
+
+
+    $('#Rummagene').click(async function () {
+        var inputvalue = document.getElementById("text-area4").value;
+        var abstract_text = document.getElementById("abstract-input").value;
+        var file = document.getElementById("gene-file4").value;
+        var section = "gene-file4";
+
+        if (inputvalue) {
+            inputvalue = inputvalue.split('\n').join(',')
+        }
+
+        if (file) {
+            inputvalue = await loadFileAsText(section, ",");
+        }
+
+
+        if ((inputvalue.length > 0) && (abstract_text.length > 0)) {
+
+            document.getElementById('rummagene-abstract-res').innerHTML = loading;
+            document.getElementById('curr-geneset').innerText = inputvalue
+
+            var data = JSON.stringify({ 'geneset': inputvalue, 'abstract': abstract_text });
+            $.ajax({
+                url: "api/rummagene_hypothesis",
+                contentType: 'application/json',
+                type: "POST",
+                dataType: 'json',
+                data: data
+            }).done(async function (response) {
+                const data = response
+
+                if (data.hasOwnProperty("error")) {
+                    document.getElementById('rummagene-abstract-res').innerHTML = data['error']
+                    return;
+                }
+
+                var tabletext = "<table id='table-rummagene-abstracts' class='styled-table mb-2'><thead><tr><th style='width: 10px'>Term</th><th>Title</th><th>Gene set size</th><th>P-value</th><th>Adj. P-value</th><th>Odds Ratio</th><th>n Overlap</th><th>Abstract Cosine Similarity</th></tr><tbody>";
+                for (var k = 0; k < data.length; k++) {
+                    const row = data[k]
+                    const pmc_link = `<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/${row['pmcid']}" target="_blank"  rel="noopener noreferrer" class="pmclink">${row['pmcid']}</a> `
+                    var term = row['term'].split('-').slice(1)
+                    term = term.join(' ').replaceAll('_', ' ')
+                    term = term.replaceAll(',', ' ')
+
+                    const nGenes = `<a class='pmclink' onclick="show_geneset_modal_rummagene('${row['id']}', '${row['term']}', 'geneset')">${parseInt(row['nGenes'])}</a>`
+                    const nOverlap = `<a class='pmclink' onclick="show_geneset_modal_rummagene('${row['id']}', '${row['term']}', 'overlap')">${parseInt(row['nOverlap'])}</a>`
+
+                    tabletext += `<tr><td>${pmc_link + term}</td><td>${row['title']}</td><td>${nGenes}</td><td>${parseFloat(row['pvalue']).toExponential(2)}</td>`;
+                    tabletext += `<td>${parseFloat(row['adjPvalue']).toExponential(2)}</td><td>${parseFloat(row['oddsRatio']).toFixed(2)}</td>`;
+                    tabletext += `<td>${nOverlap}</td><td>${parseFloat(row['cosine similarity']).toFixed(3)}</td></tr>`;
+
+                }
+                tabletext += "</tbody></table>";
+
+                document.getElementById('rummagene-abstract-res').innerHTML = tabletext
+
+
+                $('#table-rummagene-abstracts').DataTable({
+                    order: [[7, 'asc']],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'copy', { extend: 'csv', title: `rummagene-abstract-enrichment` }
+
+                    ],
+                    responsive: true,
+                });
+
+            });
+        }
+        else {
+            alert('Please first enter a gene set and abstract of interest.');
+        }
+    });
+
+    $('#examplefill').click(function () {
+        fillSet3('text-area4', 'desc1', 4)
+    });
+
+    $('#examplefillabstract').click(function () {
+        fillAbstract('abstract-input')
+    });
+
+    const modal = document.getElementById('geneset-modal');
+    modal.addEventListener("click", e => {
+        const dialogDimensions = modal.getBoundingClientRect()
+        if (
+            e.clientX < dialogDimensions.left ||
+            e.clientX > dialogDimensions.right ||
+            e.clientY < dialogDimensions.top ||
+            e.clientY > dialogDimensions.bottom
+        ) {
+            modal.close()
+        }
+    })
+</script>
+{% endblock %}
