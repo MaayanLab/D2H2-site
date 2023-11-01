@@ -42,7 +42,7 @@
             To form novel hypotheses, each day we query the D2H2 gene sets created from the collection of bulk RNA-seq studies against >600,000 gene sets extracted from the supporting materials of research publications listed in PubMed Central (see rummagene.com). We then identify studies that have high overlap with the D2H2 gene set and low abstract similarity. We then pass the two dissimilar abstracts to GPT4 for hypothesis generation. The LLM model attempts to reason about possible explanation of why the studies with such dissimilar abstracts have such similar gene sets.
         </p>
         </div>
-        <div class="col-10 custom-col mx-auto mb-3 text-center flex p-2" style="overflow: scroll;">
+        <div class="col-10 custom-col mx-auto mb-3 text-center flex p-2" style="overflow: hidden;">
             <img src="{{ url_for('static', filename='img/hypothesis.png') }}" class="m-2 p-2"
                 alt="Automated daily hypothesis art" style="width: 100px;" />
 
