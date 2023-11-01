@@ -4,31 +4,29 @@
 {% block body %}
 
 <dialog data-modal id="geneset-modal" style="margin: auto;">
-    <div style="width: 50%;">
-        <div class="text-center justify-content-center">
-            <p id="geneset-modal-title"></p>
-            <textarea id="geneset-modal-text" class="text-center"
-                style="height: 20rem; overflow-y: scroll; white-space: pre-wrap;" readonly>
+    <div class="text-center justify-content-center">
+        <p id="geneset-modal-title"></p>
+        <textarea id="geneset-modal-text" class="text-center"
+            style="height: 20rem; overflow-y: scroll; white-space: pre-wrap;" readonly>
         </textarea>
-        </div>
-        <div class="flex text-center">
-            <button type="button"
-                onclick="navigator.clipboard.writeText(document.getElementById('geneset-modal-text').value)"
-                class="btn btn-primary btn-group-sm m-2 ">
-                Copy to clipboard
+    </div>
+    <div class="flex text-center">
+        <button type="button"
+            onclick="navigator.clipboard.writeText(document.getElementById('geneset-modal-text').value)"
+            class="btn btn-primary btn-group-sm m-2 ">
+            Copy to clipboard
+        </button>
+        <a id="geneset-modal-queries" href="{{ url_for('geneset_home') }}" onclick="" target='_blank'
+            style="text-decoration: none">
+            <button type="button" class="btn btn-primary btn-group-sm m-2">
+                Open in Geneset Queries
             </button>
-            <a id="geneset-modal-queries" href="{{ url_for('geneset_home') }}" onclick="" target='_blank'
-                style="text-decoration: none">
-                <button type="button" class="btn btn-primary btn-group-sm m-2">
-                    Open in Geneset Queries
-                </button>
-            </a>
-            <a id="geneset-modal-download" href="" style="text-decoration: none">
-                <button type="button" class="btn btn-primary btn-group-sm m-2">
-                    Download
-                </button>
-            </a>
-        </div>
+        </a>
+        <a id="geneset-modal-download" href="" style="text-decoration: none">
+            <button type="button" class="btn btn-primary btn-group-sm m-2">
+                Download
+            </button>
+        </a>
     </div>
 </dialog>
 
@@ -153,7 +151,7 @@
                     </button>
                 </a>
             </div>
-            
+
         </div>
         <div id="rummagene-abstract-res" class="mb-3" style="white-space: break-spaces; overflow-x: scroll !important;">
 
