@@ -1004,6 +1004,29 @@ def extract_abstracts(pmcids, abstract):
             break
         except Exception as e:
             print(e, 'iteration', j)
+    pmc_abstracts = extract_titles(pmc_abstracts)
+    return pmc_abstracts
+
+def extract_titles(pmc_abstracts):
+    pmcids_to_fetch = []
+    for pmcid in pmc_abstracts:
+        if len(pmc_abstracts[pmcid].strip()) == 0:
+            pmcids_to_fetch.append(pmcid)
+    if len(pmcids_to_fetch) == 0:
+        return pmc_abstracts
+    for j in range(10):
+        try:
+            ids_string = ",".join([re.sub(r"^PMC(\d+)$", r"\1", id) for id in pmcids_to_fetch])
+            res = requests.get(f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pmc&retmode=json&id={ids_string}')
+            ids_info = res.json()
+            for id in ids_info['result']['uids']:
+                pmc_abstracts[f"PMC{id}"] = ids_info['result'][id]['title']
+            break
+        except Exception as e:
+            print('Error resolving info. Retrying...')
+            j += 1
+            if j >= 10:
+                break
     return pmc_abstracts
 
 

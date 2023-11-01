@@ -56,7 +56,11 @@ export async function get_curr_prediction() {
     gse_gene_viewer.push(gse)
     gse_gene_viewer = gse_gene_viewer.join('/')
 
-    document.getElementById("gpt-hypothesis-title").innerText = `Today's Hypothesis ${dates[0]}`
+    if (dates[0] == formattedToday) {
+        document.getElementById("gpt-hypothesis-title").innerText = `Todays' Hypothesis ${dates[0]}`
+    } else {
+        document.getElementById("gpt-hypothesis-title").innerText = `Hypothesis from ${dates[0]}`
+    }
 
     const gse_link = `<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=${gse}" target="_blank"  rel="noopener noreferrer">${gse}</a> `
     const pmc_link = `<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/${curr_pred[4]}" target="_blank"  rel="noopener noreferrer">${curr_pred[4]}</a> `
