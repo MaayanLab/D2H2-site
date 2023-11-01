@@ -4,11 +4,23 @@ export async function get_prediction_studies() {
         contentType: 'application/json',
         type: "GET",
     })
-    console.log(response)
+
     const curr_pred = response['curr_prediction'];
     const gse = curr_pred[1].split('-')[0]
-    document.getElementById('study1').innerHTML = `<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=${gse}" target="_blank"  rel="noopener noreferrer">${gse}</a>`
-    document.getElementById('study2').innerHTML = `<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/${curr_pred[4]}" target="_blank"  rel="noopener noreferrer">${curr_pred[4]}</a>`
+    document.getElementById('study1').innerHTML = `<p class="tooltip ml-2" style="margin-block-start: 0em !important; display: inline; font-size: 1rem;">
+        <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=${gse}" target="_blank" rel="noopener noreferrer">${gse}</a>
+        <span class="tooltiptext mt-4 text-left">
+            Title: ${response['gse_title']}<br><br>
+            Signature: ${response['gse_sig']}
+        </span></p>`
+    document.getElementById('study2').innerHTML = `<p class="tooltip ml-2" style="margin-block-start: 0em !important; display: inline; font-size: 1rem;">
+    <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/${curr_pred[4]}" target="_blank"  rel="noopener noreferrer">${curr_pred[4]}</a>
+    <span class="tooltiptext mt-4 text-left">
+    ${curr_pred[5]}
+    </span></p>`
+    
+    
+    
 
 }
 

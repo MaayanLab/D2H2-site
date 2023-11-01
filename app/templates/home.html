@@ -46,11 +46,12 @@
         <div class="row flex-wrap justify-content-center mx-auto">
 
             <div id="chat-div" class="col-lg-5 col-md-10 col-sm-10 mt-3 ml-5">
-                <div class="custom-col mb-4">
+                <div class="custom-col mb-4" style="overflow: visible;">
                     <div class="row text-center justify-content-center">
-                        <h3 id="chatbot-title" class="mt-3 ml-2 text-center" style="font-size: 1.50rem;">
-                            <img src="{{ url_for('static', filename='img/hypothesis.png') }}" class="m-2"
-                                alt="Automated daily hypothesis art" style="width: 75px;" />
+                        <img src="{{ url_for('static', filename='img/hypothesis.png') }}" class="m-2 p-2"
+                                alt="Automated daily hypothesis art" style="width: 80px;" />
+                        <h3 id="chatbot-title" class="mt-4 ml-2 text-center p-3" style="font-size: 1.50rem;">
+                            
                             D2H2 Automated Daily Hypothesis
                             <h3>
                     </div>
@@ -61,7 +62,7 @@
                                 Loading...</p> despite highly dissimilar abstracts.
                             Read more about a plausible explanation about why such a high overlap exists.
                         </div>
-                        <div class="col-3">
+                        <div class="col-3 p-2">
                             <a class="nav-link hover-underline-animation"
                                 href="{{ url_for('hypotheses') }}">
                                 <button class="btn btn-primary mt-3">
@@ -76,8 +77,6 @@
                         <img class="rounded" src="{{ url_for('static', filename='img/gpt-calculator.png') }}"
                             height="80px" onclick='localStorage.setItem("no_splash", true)' />
                         <h3 id="chatbot-title" class="mt-3 ml-2 text-center" style="font-size: 1.50rem;">D2H2 Chatbot
-                            <img class="ml-2 mb-3" src="{{ url_for('static', filename='img/chatbot.png') }}"
-                                height="40px" onclick='localStorage.setItem("no_splash", true)'>
                         </h3>
                     </div>
                 </div>
