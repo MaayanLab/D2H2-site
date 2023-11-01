@@ -1120,7 +1120,7 @@ def rummagene_hypothesis():
 	except Exception as e:
 		print(e)
 		return {'error': 'An error occurred while retrieving abstracts and computing cosine similarity'}
-	return enrich_df.to_dict('records')
+	return enrich_df.sort_values('cosine similarity').to_dict('records')
 
 @app.route('/api/rummagene_geneset', methods=['GET', 'POST'])
 def rummagene_geneset():
@@ -1138,6 +1138,23 @@ def rummagene_overlap():
 		id = request.get_json()['id']
 		genes = get_rummagene_overlap(id, geneset)
 	return {'genes': genes}
+
+@app.route('/api/hypothesis_gen', methods=['POST'])
+def hypothesis_gen():
+	if request.method == "POST":
+		data = request.get_json()
+		term = data['term']
+		pmcid = term.split('-')[0]
+		abstract = data['abstract']
+		title = data['title']
+		desc = data['desc']
+		pmc_abs = extract_abstracts([pmcid], '')[pmcid]
+		if len(pmc_abs) < 1:
+			pmc_abs = title
+		hypothesis = generate_hypthesis(desc, abstract, term, pmc_abs)
+	return {'hypothesis': hypothesis}
+
+
 
 #######################################################
 #######################################################

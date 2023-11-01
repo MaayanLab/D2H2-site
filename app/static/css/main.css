@@ -1182,6 +1182,7 @@ nav select {
 
 .modal {
   color: black;
+  width: 50%;
 }
 
 dialog::backdrop {

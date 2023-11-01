@@ -170,6 +170,43 @@ async function show_geneset_modal(library, term) {
     modal.showModal()
 }
 
+async function fetch_hypothesis(desc, abstract, term, title) {
+
+    const modal = document.getElementById('hypothesis-modal');
+    const textfield = document.getElementById('hypothesis-modal-text');
+    const modalTitle = document.getElementById('hypothesis-modal-title');
+    const downloadButton = document.getElementById('hypothesis-modal-download');
+    modalTitle.innerText ="Your hypothesis is generating... This process can take up to 1 minute."
+    textfield.innerHTML = "<div class='loadingspinner'><div id='square1'></div><div id='square2'></div><div id='square3'></div><div id='square4'></div><div id='square5'></div></div>";
+    modal.showModal()
+   
+
+    var data = JSON.stringify({ 'desc': desc, 'abstract': abstract, 'term': term, 'title': title });
+    const res = await $.ajax({
+        url: "api/hypothesis_gen",
+        contentType: 'application/json',
+        type: "POST",
+        dataType: 'json',
+        data: data,
+    })
+
+    const hypothesis = res['hypothesis'].replaceAll('\n', '<br>')
+
+    textfield.innerHTML = `<div class='p-3' style='background-color: rgb(247, 243, 248); border-radius: 1rem;'>${hypothesis}</div>`;
+
+    modalTitle.innerText = `${desc} - ${term.replace(/[_-]/g, ' ')} GPT-4 Hypothesis`;
+
+    // Create a blog object with the file content which you want to add to the file
+    const file = new Blob([`${desc} and ${term}\n\n${hypothesis}`], { type: 'text/plain' });
+    // Add file content in the object URL
+    downloadButton.href = URL.createObjectURL(file);
+    downloadButton.download = `${desc}_${term}_hypothesis.txt`;
+
+
+    
+
+}
+
 async function get_rummagene_geneset(id) {
     var data = JSON.stringify({ 'id': id });
     const res = await $.ajax({
