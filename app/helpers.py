@@ -226,7 +226,6 @@ def query_gwas(gene: str):
 
 def sigcom_up_down_genes(up_list, down_list):
     METADATA_API = "https://maayanlab.cloud/sigcom-lincs/metadata-api/"
-    DATA_API = "https://maayanlab.cloud/sigcom-lincs/data-api/api/v1/"
 
     input_gene_set = {
         "up_genes": up_list,
