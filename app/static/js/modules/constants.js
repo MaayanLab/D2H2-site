@@ -167,6 +167,7 @@ export function geneset_buttons_up_down(chatnum){
 <div class="text-center justify-content-center row mb-5">
     <button class='btn btn-primary btn-group-sm text-center mr-3' id="toggle${chatnum}" onclick="up_down_toggle('${chatnum}')">Singe Gene Set</button>
     <button class='btn btn-primary btn-group-sm text-center' id="submit_gene_set${chatnum}">Submit</button>
+    <button class='btn btn-primary btn-group-sm text-center ml-3' id="cancel${chatnum}">Cancel</button>
 </div>`
 }
 

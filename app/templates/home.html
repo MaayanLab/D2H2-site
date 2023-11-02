@@ -57,7 +57,7 @@
                     </div>
                     <div id="gpt-hypothesis" class="row">
                         <div class="col-7 ml-5 mb-3">
-                            D2H2 found high overlap between gene sets from<p id="study1" style="display: inline;">
+                            D2H2 identified a significant overlap between gene sets extracted from<p id="study1" style="display: inline;">
                              ... </p>and<p id="study2" style="display: inline;"> ... </p>despite highly dissimilar abstracts.
                             Read more about a plausible explanation about why such a high overlap exists.
                         </div>
@@ -451,6 +451,12 @@
             if (file) {
                 geneset = await loadFileAsText(section, ",");
             }
+
+            if (geneset.length == 0) {
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "It appears that you did not enter a gene set. Please enter your gene set or you can reset the chat using the button in the bottom right corner."));
+                await $(`#chat-${chat_num}`).fadeIn(2000);
+                return;
+            }
         } else {
             var inputvalue_up = document.getElementById(`text-area-up${chat_num}`).value;
             var inputvalue_down = document.getElementById(`text-area-down${chat_num}`).value;
@@ -473,13 +479,16 @@
             if (file_down) {
                 geneset_down = await loadFileAsText(section_down, ",");
             }
+
+            if (geneset_up.length == 0 | geneset_down.length == 0) {
+                document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "It appears that you did not enter a gene set. Please enter your gene set or you can reset the chat using the button in the bottom right corner."));
+                await $(`#chat-${chat_num}`).fadeIn(2000);
+                return;
+            }
+            
         }
 
-        if (geneset.length == 0 & geneset_up.length == 0 & geneset_down.length == 0) {
-            document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', "It appears that you did not enter a gene set. Please enter your gene set or you can reset the chat using the button in the bottom right corner."));
-            await $(`#chat-${chat_num}`).fadeIn(2000);
-            return;
-        }
+        
 
         process_info['geneset'] = geneset;
         process_info['up'] = geneset_up;
