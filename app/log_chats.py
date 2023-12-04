@@ -49,7 +49,7 @@ def log_chat(user_query, response, userid):
 def get_prediction_dates():
   all_dates = predictions.col_values(1)[1:]
   date_dict = {}
-  for i, date in enumerate(all_dates):
+  for i, date in enumerate(all_dates[15:]):
     date_dict[date] = i + 2
   return date_dict
 

@@ -550,7 +550,7 @@ async function get_prediction_date(el) {
 
     const currentUrl = window.location.href
     var gse_gene_viewer = currentUrl.split('/')
-    gse_gene_viewer = gse_gene_viewer.slice(0, currentUrl.length - 1)
+    gse_gene_viewer = gse_gene_viewer.filter((x) => x != 'hypotheses')
     gse_gene_viewer.push(gse)
     gse_gene_viewer = gse_gene_viewer.join('/')
 
