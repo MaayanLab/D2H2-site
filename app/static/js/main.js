@@ -525,11 +525,10 @@ const formattedToday = mm + '-' + dd + '-' + yyyy;
 
 
 async function get_prediction_date(el) {
-
     const hypothesis_div = document.getElementById('gpt-hypothesis')
     const row_num = el.options[el.selectedIndex].value
     const date = el.options[el.selectedIndex].innerText
-    console.log
+
     if (date == formattedToday) {
         document.getElementById("gpt-hypothesis-title").innerText = `Todays' Hypothesis ${date}`
     } else {
@@ -560,7 +559,7 @@ async function get_prediction_date(el) {
     var curr_pred_str = "<div class='text-center text-bold'>"
     curr_pred_str += `${gse_link + curr_pred[1].split('-').slice(1).join(' ')} (${curr_pred[2]}),<br> ${pmc_link + curr_pred[3].split('-').slice(1).join(' ')} (${curr_pred[5]}) (${curr_pred[6]})<br>`
     curr_pred_str += `P-value: ${parseFloat(curr_pred[7]).toExponential(2)}, Adj. P-value: ${parseFloat(curr_pred[8]).toExponential(2)}, Odds ratio: ${parseFloat(curr_pred[9]).toFixed(2)}, Overlap: ${curr_pred[10]}<br><br>`
-    curr_pred_str += `<a href="${gse_gene_viewer}"><button class="btn btn-primary btn-group-sm">${gse} Gene Viewer</button></a>`
+    curr_pred_str += `<a href="${gse_gene_viewer}"><button class="btn btn-primary btn-group-sm mb-2">${gse} Gene Viewer</button></a>`
 
     curr_pred_str += "</div>"
     curr_pred_str += "<div class='p-3' style='background-color: rgb(247, 243, 248); border-radius: 1rem;'>"
@@ -570,6 +569,55 @@ async function get_prediction_date(el) {
     hypothesis_div.innerHTML = curr_pred_str;
 
 }
+
+async function get_prediction_date_search(row_num, date) {
+    const hypothesis_div = document.getElementById('gpt-hypothesis')
+
+    document.getElementById("gpt-hypothesis-selector").value = "0";
+
+    if (date == formattedToday) {
+        document.getElementById("gpt-hypothesis-title").innerText = `Todays' Hypothesis ${date}`
+    } else {
+        document.getElementById("gpt-hypothesis-title").innerText = `Hypothesis from ${date}`
+    }
+    
+    var data = JSON.stringify({ 'row_n': row_num })
+    var response = await $.ajax({
+        url: "api/get_row_prediction",
+        contentType: 'application/json',
+        type: "POST",
+        dataType: 'json',
+        data: data
+    })
+    const curr_pred = response['curr_prediction']
+
+    const gse = curr_pred[1].split('-')[0]
+
+    const currentUrl = window.location.href
+    var gse_gene_viewer = currentUrl.split('/')
+    gse_gene_viewer = gse_gene_viewer.filter((x) => x != 'hypotheses')
+    gse_gene_viewer.push(gse)
+    gse_gene_viewer = gse_gene_viewer.join('/')
+
+
+    const gse_link = `<a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=${gse}" target="_blank"  rel="noopener noreferrer">${gse}</a> `
+    const pmc_link = `<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/${curr_pred[4]}" target="_blank"  rel="noopener noreferrer">${curr_pred[4]}</a> `
+    var curr_pred_str = "<div class='text-center text-bold'>"
+    curr_pred_str += `${gse_link + curr_pred[1].split('-').slice(1).join(' ')} (${curr_pred[2]}),<br> ${pmc_link + curr_pred[3].split('-').slice(1).join(' ')} (${curr_pred[5]}) (${curr_pred[6]})<br>`
+    curr_pred_str += `P-value: ${parseFloat(curr_pred[7]).toExponential(2)}, Adj. P-value: ${parseFloat(curr_pred[8]).toExponential(2)}, Odds ratio: ${parseFloat(curr_pred[9]).toFixed(2)}, Overlap: ${curr_pred[10]}<br><br>`
+    curr_pred_str += `<a href="${gse_gene_viewer}"><button class="btn btn-primary btn-group-sm mb-2">${gse} Gene Viewer</button></a>`
+
+    curr_pred_str += "</div>"
+    curr_pred_str += "<div class='p-3' style='background-color: rgb(247, 243, 248); border-radius: 1rem;'>"
+    curr_pred_str += curr_pred[11].replaceAll('\n', '<br>')
+    curr_pred_str += "</div>"
+
+    hypothesis_div.innerHTML = curr_pred_str;
+
+    
+    document.getElementById("gpt-hypothesis-title").scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 
 
 async function parseCsv(file) {

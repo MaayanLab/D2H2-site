@@ -1113,6 +1113,18 @@ def hypothesis_gen():
 		hypothesis = generate_hypthesis(desc, abstract, term, pmc_abs)
 	return {'hypothesis': hypothesis}
 
+@app.route('/api/query_hypotheses', methods=['POST'])
+def query_hypotheses():
+	if request.method == "POST":
+		try:
+			data = request.get_json()
+			text = data['text']
+			df_masked_records = query_predictions(text)
+			return {'result': df_masked_records}
+		except Exception as e:
+			print(e)
+			return {'error': 'An error occurred while querying the database'}
+
 
 
 #######################################################

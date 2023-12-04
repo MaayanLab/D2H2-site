@@ -1188,3 +1188,11 @@ nav select {
 dialog::backdrop {
   backdrop-filter: blur(3px);
 }
+
+.search {
+  border-width: 1px;
+  height: 2.2em;
+  border-radius: 2rem;
+  align-items: center;
+  padding: 20px 20px;
+}
