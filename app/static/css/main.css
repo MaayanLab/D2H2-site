@@ -1189,7 +1189,7 @@ dialog::backdrop {
   backdrop-filter: blur(3px);
 }
 
-.search {
+.search-bar {
   border-width: 1px;
   height: 2.2em;
   border-radius: 2rem;
