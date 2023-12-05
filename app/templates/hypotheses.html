@@ -73,12 +73,20 @@
                 alt="Automated daily hypothesis art" style="width: 100px;" />
 
 
-            <div id="studies-table_filter" class="flex-wrap mb-5">
+            <div id="studies-table_filter" class="flex-wrap mb-1">
                 <div class="mr-3 mb-2">Search Previous Hypotheses:</div>
                 <input type="search" id="search-val" class="text-left search" placeholder="" aria-controls="studies-table">
                 <button id="search_hypotheses" class="btn btn-primary" style="padding: 3px;">
                     Search
                 </button>
+            </div>
+            <div class="flex-row" id="example-search">
+                <p>
+                    Try an example:
+                    <a class="chat-option">pancreas</a>,
+                    <a class="chat-option">aging</a>,
+                    <a class="chat-option">adipose</a>
+                </p>
             </div>
 
             <div class="m-2 mb-4 mt-2" id="hypotheses-search-table"></div>
@@ -339,7 +347,13 @@
         fillAbstract('abstract-input')
     });
 
-
+    var examples = document.getElementsByClassName("chat-option");
+    for (var i = 0; i < examples.length; i++) {
+        examples[i].addEventListener('click', function () {
+            document.getElementById("search-val").value = this.innerText;
+            query_hypotheses(this.innerText);
+        });
+    }
 
 
     const modal = document.getElementById('geneset-modal');
