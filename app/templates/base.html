@@ -114,7 +114,7 @@
                 </tr>
                 <tr class="spaceSides m-0">
                   <td class="nav-link-text">
-                    <a href="{{ url_for('home') }}" style="color: black !important;">
+                    <a href="{{ url_for('home') }}" onclick="localStorage.setItem('open-chat', true)" style="color: black !important;">
                       <div class="nav-link-div">
                         <img src="{{ url_for('static', filename='img/chatbot.png') }}" title="Chatbot" height="30px">
                         <p class="m-0">Chatbot</p>
@@ -227,7 +227,7 @@
       <div class="collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto menu">
           <li class="nav-item menu nav-link-text"><a class="nav-link hover-underline-animation" href="{{ url_for('home') }}"
-              style="color: black !important;" onclick='localStorage.setItem("no_splash", true)'>
+              style="color: black !important;" onclick='localStorage.setItem("open-chat", true)'>
               <img class="mr-4 ml-4" src="{{ url_for('static', filename='img/chatbot.png') }}" alt="Chatbot"
                 title="Chatbot" height="20px" onclick='localStorage.setItem("no_splash", true)'> Chatbot</a>
           </li>
