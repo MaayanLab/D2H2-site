@@ -365,10 +365,12 @@ function filter_genes_sigs(genelist, adjpvals, pvals, logfc) {
 
 
 function generate_single_plots() {
-    // This function will generate the umap, tsne, and pca plots for each indivdual study for a specific condition
+    // This function will generate the umap, tsne, and pca plots for each indivdual study for a specific condition and include the plot of the cell type distribution
+    const basepath = 'https://d2h2.s3.amazonaws.com/data/'
     document.getElementById("umap-plot").innerHTML = "";
     document.getElementById("tsne-plot").innerHTML = "";
     document.getElementById("pca-plot").innerHTML = "";
+    document.getElementById('cellplot').innerHTML = "";
 
     // document.getElementById("singleplots-loading").innerHTML = "<div class='loader justify-content-center'></div>";
     $('#singleplots-loading').addClass('loader justify-content-center');
@@ -394,8 +396,10 @@ function generate_single_plots() {
         window.Bokeh.embed.embed_item(umap_plot)
         window.Bokeh.embed.embed_item(pca_plot)
         window.Bokeh.embed.embed_item(tsne_plot)
+        document.getElementById('cellplot').innerHTML = `<img src="${basepath+species+'/'+gse+'/'+response['cellplotpath']}" style="width:100%">`
     });
     $("#boxplot").attr("data-url-plot", `/api/plot_single/${gse}/${condition_group}`)
+    
 }
 
 

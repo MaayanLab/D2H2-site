@@ -203,10 +203,13 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
     # Getting the same number of samples from each cluster to use for diffrential gene expression.
     f = read_anndata_h5(expr_file)
 
-    clus_numbers = f["var/leiden/codes"][:]
-    leiden_data_vals = list(map(lambda x: "Cluster " + str(x), clus_numbers))
+    # clus_numbers = f["var/leiden/codes"][:]
+    # leiden_data_vals = list(map(lambda x: "Cluster " + str(x), clus_numbers))
+    cell_type_cats = f["var/Cell_types/categories"][:].astype(str)
+    cell_type_indices = f["var/Cell_types/codes"][:]
+    cell_names = [cell_type_cats[i] for i in cell_type_indices]
 
-    metadata_dict_counts = pd.Series(leiden_data_vals).value_counts()
+    metadata_dict_counts = pd.Series(cell_names).value_counts()
     genes = np.array(f['obs/gene_symbols'][:].astype(str))
     cells = f['var/column_names'][:].astype(str)
     cluster_list = []
@@ -215,10 +218,12 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
         list_of_adata = []
         for cls in metadata_dict_counts.keys():
 
-            leiden_data_vals = pd.Series(leiden_data_vals)
-            cls_leiden_vals = leiden_data_vals[leiden_data_vals == cls]
+            # leiden_data_vals = pd.Series(leiden_data_vals)
+            # cls_leiden_vals = leiden_data_vals[leiden_data_vals == cls]
+            cell_names_vals = pd.Series(cell_names)
+            cls_celltype_vals = cell_names_vals[cell_names_vals == cls]
             idx = list(sorted(random.sample(
-                list(cls_leiden_vals.index.values), k=num_to_sample)))
+                list(cls_celltype_vals.index.values), k=num_to_sample)))
             adata_sample = pd.DataFrame(
                 f['raw/X'][:, idx], index=genes, columns=cells[idx])
 
@@ -287,7 +292,7 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
 
 def compute_dge_single(expr_file, diff_gex_method, enrichment_groupby, meta_class_column_name, clustergroup, agg):
 
-    meta_class_column_name = "leiden"
+    meta_class_column_name = "Cell_types"
     classes = [clustergroup]
     bool_cluster = True
 

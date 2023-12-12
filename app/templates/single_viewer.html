@@ -107,7 +107,7 @@
                 </select>
             </div>
             <div id="change-loading" class="m-3"></div>
-            <div class="h4 pl-2 mt-4 mb-4 text-center">PCA, tSNE, and UMAP Visualizations Labeled by Clusters:</div>
+            <div class="h4 pl-2 mt-4 mb-4 text-center">PCA, tSNE, and UMAP Visualizations Labeled by Cell Types:</div>
 
             <div id="singleplots-loading" class="m-3"></div>
             <div class="row justify-content-center mt-4 singleplotclass centered">
@@ -137,6 +137,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="row justify-content-center mt-4 centered custom-col" id="cellplot">
             </div>
 
 
@@ -198,7 +201,8 @@
                             <thead>
                                 <tr>
 
-                                    <th>Clusters</th>
+                                    <!-- <th>Clusters</th> -->
+                                    <th>Cell Types</th>
                                     <th>Cell Samples</th>
                                 </tr>
                             </thead>

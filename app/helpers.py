@@ -745,7 +745,7 @@ def str_to_int(string, mod):
     return int(hashlib.sha256(byte_string).hexdigest(), base=16) % mod
 
 
-def make_single_visialization_plot(plot_df, values_dict, type, option_list, sample_names, caption_text, category_list_dict=None, location='right', category=True, dropdown=False, additional_info=None):
+def make_single_visialization_plot(plot_df, values_dict, type, option_list, sample_names, caption_text, category_list_dict=None, location='right', category=True, dropdown=False, additional_info=None, factor_list= None, palette_list = None):
 
     # init plot
     if additional_info is not None:
@@ -770,32 +770,36 @@ def make_single_visialization_plot(plot_df, values_dict, type, option_list, samp
         for option in option_list:
             unique_category_dict[option] = sorted(
                 list(set(values_dict[option])))
+        if factor_list != None and palette_list != None:
+            color_mapper = CategoricalColorMapper(
+                factors=factor_list, palette= palette_list)
+        else:
+            # map category to color
+            # color is mapped by its category name
+            # if a color is used by other categories, use another color
+            factors_dict = dict()
+            colors_dict = dict()
+            for key in values_dict.keys():
+                unused_color = list(Category20[20])
+                factors_dict[key] = category_list_dict[key]
+                colors_dict[key] = list()
+                for category_name in factors_dict[key]:
+                    color_for_category = Category20[20][str_to_int(
+                        category_name, 20)]
 
-        # map category to color
-        # color is mapped by its category name
-        # if a color is used by other categories, use another color
-        factors_dict = dict()
-        colors_dict = dict()
-        for key in values_dict.keys():
-            unused_color = list(Category20[20])
-            factors_dict[key] = category_list_dict[key]
-            colors_dict[key] = list()
-            for category_name in factors_dict[key]:
-                color_for_category = Category20[20][str_to_int(
-                    category_name, 20)]
+                    if color_for_category not in unused_color:
+                        if len(unused_color) > 0:
+                            color_for_category = unused_color[0]
+                        else:
+                            color_for_category = Category20[20][19]
 
-                if color_for_category not in unused_color:
-                    if len(unused_color) > 0:
-                        color_for_category = unused_color[0]
-                    else:
-                        color_for_category = Category20[20][19]
+                    colors_dict[key].append(color_for_category)
+                    if color_for_category in unused_color:
+                        unused_color.remove(color_for_category)
 
-                colors_dict[key].append(color_for_category)
-                if color_for_category in unused_color:
-                    unused_color.remove(color_for_category)
-
-        color_mapper = CategoricalColorMapper(
-            factors=factors_dict[option_list[0]], palette=colors_dict[option_list[0]])
+            color_mapper = CategoricalColorMapper(
+                factors=factors_dict[option_list[0]], palette=colors_dict[option_list[0]])
+            
         legend = Legend()
 
         plot.add_layout(legend, location)
