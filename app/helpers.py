@@ -770,9 +770,11 @@ def make_single_visialization_plot(plot_df, values_dict, type, option_list, samp
         for option in option_list:
             unique_category_dict[option] = sorted(
                 list(set(values_dict[option])))
+        #Passing in both the factors and the colors in order to map the colormapper manually
         if factor_list != None and palette_list != None:
             color_mapper = CategoricalColorMapper(
                 factors=factor_list, palette= palette_list)
+        # Defining the color mapper automatically.
         else:
             # map category to color
             # color is mapped by its category name

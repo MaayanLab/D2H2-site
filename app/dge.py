@@ -291,7 +291,7 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
 
 
 def compute_dge_single(expr_file, diff_gex_method, enrichment_groupby, meta_class_column_name, clustergroup, agg):
-
+    # meta_class_column_name = "leiden"
     meta_class_column_name = "Cell_types"
     classes = [clustergroup]
     bool_cluster = True

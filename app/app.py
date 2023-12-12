@@ -324,7 +324,7 @@ def makesingleplots():
 	gse = response_json['gse']
 	species = response_json['species']
 	condition_group = response_json['conditiongroup']
-	print('Hello')
+	print('in pca, tsne, umap singleplots function')
 	print(condition_group)
 	metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=gse, base_url=base_url),'r')
 	metadict = json.load(metajson)
@@ -337,16 +337,12 @@ def makesingleplots():
 	pca_df = pd.DataFrame(data=f['varm/X_pca'][:,:2], columns = ['x', 'y'])
 	umap_df = pd.DataFrame(data=f['varm/X_umap'][:], columns = ['x', 'y'])
 	tsne_df = pd.DataFrame(data=f['varm/X_tsne'][:,:2], columns = ['x', 'y'])
-	clus_numbers = f["var/leiden/codes"][:]
+	# Leiden clustering cell labeling method
+	# clus_numbers = f["var/leiden/codes"][:]
 	# leiden_values = list(map(lambda x: "Cluster " + str(x), clus_numbers))
 	# values_dict = {"Cluster": leiden_values}
 	# category_list_dict = {"Cluster": list(sorted(set(leiden_values)))}
 	# leiden_values = list(map(lambda x: "Cluster " + str(x), clus_numbers))
-
-	# cell_cats = f["var/Cell_types/categories"][:].astype(str)
-	# cell_indices = f["var/Cell_types/codes"][:]
-	# values_dict = {"Cell Types": [cell_cats[i] for i in cell_indices]}
-	# category_list_dict = {"Cell Types": list(sorted(set(f["var/Cell_types/categories"][:].astype(str))))}
 
 	cell_type_cats = f["var/Cell_types/categories"][:].astype(str)
 	cell_type_indices = f["var/Cell_types/codes"][:]
@@ -393,22 +389,17 @@ def getclusterinfo():
 	expression_file = base_url + '/' + species + '/' + gse + '/' + base_expression_filename
 	adata = read_anndata_h5(expression_file)
 	# #Stores the list of cluster names. 
-	leiden_data = adata["var/leiden/categories"][:].astype(str)
-	clus_numbers = adata["var/leiden/codes"][:]
-	leiden_data_vals = list(map(lambda x: "Cluster " + str(x), clus_numbers))
-	classes = sorted(leiden_data)
-	classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
-	#Stores the number of of cells correlated to each cluster. 
-	metadata_dict_counts = pd.Series(leiden_data_vals).value_counts().to_dict()
-	print(classes)
-	print(metadata_dict_counts)
+	# leiden_data = adata["var/leiden/categories"][:].astype(str)
+	# clus_numbers = adata["var/leiden/codes"][:]
+	# leiden_data_vals = list(map(lambda x: "Cluster " + str(x), clus_numbers))
+	# classes = sorted(leiden_data)
+	# classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
+	# #Stores the number of of cells correlated to each cluster. 
+	# metadata_dict_counts = pd.Series(leiden_data_vals).value_counts().to_dict()
 	#Switched to using cell types for getting cluster information
 	classes = list(adata["var/Cell_types/categories"][:].astype(str))
 	cell_indices = adata["var/Cell_types/codes"][:]
 	metadata_dict_counts =  pd.Series([classes[i] for i in cell_indices]).value_counts().to_dict()
-	print(len(classes))
-	print(classes)
-	print(metadata_dict_counts)
 
 	return {"classes":classes, "metadict":metadata_dict_counts}
 
@@ -662,18 +653,18 @@ def species_or_viewerpg(studies_or_gse):
 		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + expression_base_name
 		adata = read_anndata_h5(expression_file)
 		# #Stores the list of cluster names. 
-		leiden_data = adata["var/leiden/categories"][:].astype(str)
-		clus_numbers = adata["var/leiden/codes"][:]
-		leiden_data_vals = list(map(lambda x: "Cluster " + str(x), clus_numbers))
-		cluster_labels = sorted(leiden_data)
-		cluster_labels = sorted(cluster_labels, key=lambda x: int(x.replace("Cluster ", "")))
+		# leiden_data = adata["var/leiden/categories"][:].astype(str)
+		# clus_numbers = adata["var/leiden/codes"][:]
+		# leiden_data_vals = list(map(lambda x: "Cluster " + str(x), clus_numbers))
+		# cluster_labels = sorted(leiden_data)
+		# cluster_labels = sorted(cluster_labels, key=lambda x: int(x.replace("Cluster ", "")))
 		# #Stores the number of of cells correlated to each cluster. 
 		# metadata_dict_counts = pd.Series(leiden_data_vals).value_counts().to_dict()
 		# meta_file.close()
 		classes = adata["var/Cell_types/categories"][:].astype(str)
 		cell_indices = adata["var/Cell_types/codes"][:]
 		metadata_dict_counts =  pd.Series([classes[i] for i in cell_indices]).value_counts().to_dict()
-		return render_template('single_viewer.html', study_conditions = list_of_conditions, metadata_dict=classes, metadata_dict_samples=metadata_dict_counts, geo_accession=geo_accession, gse_metadata_single=gse_metadata_single, species=species, species_mapping=species_mapping, gse_metadata=gse_metadata, numstudies=numstudies,  month_dict=month_dict, diff_gene_cluster_labels=cluster_labels)
+		return render_template('single_viewer.html', study_conditions = list_of_conditions, metadata_dict=classes, metadata_dict_samples=metadata_dict_counts, geo_accession=geo_accession, gse_metadata_single=gse_metadata_single, species=species, species_mapping=species_mapping, gse_metadata=gse_metadata, numstudies=numstudies,  month_dict=month_dict) #, diff_gene_cluster_labels=cluster_labels
 	else:
 		return render_template('error.html', base_path=BASE_PATH, gse_metadata=gse_metadata, species_mapping=species_mapping, numstudies=numstudies)
 
@@ -768,14 +759,12 @@ def plot_api_single(geo_accession, condition):
 
 	genes = np.array(f['obs/gene_symbols'][:].astype(str))
 
-	clus_numbers = f["var/leiden/codes"][:]
-
-	leiden_values = list(map(lambda x: "Cluster " + str(x), clus_numbers))
-
+	# clus_numbers = f["var/leiden/codes"][:]
+	# leiden_values = list(map(lambda x: "Cluster " + str(x), clus_numbers))
+	#Using the cell type labels for the x axis of the plots
 	classes = f["var/Cell_types/categories"][:].astype(str)
 	cell_indices = f["var/Cell_types/codes"][:]
 	cell_values =  [classes[i] for i in cell_indices]
-	# metadata_dict_counts =  pd.Series([classes[i] for i in cell_indices]).value_counts().to_dict()
 
 	try:
 		idx = np.where(genes == gene_symbol)[0][0]
