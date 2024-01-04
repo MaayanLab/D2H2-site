@@ -43,8 +43,8 @@
                 </div>
             </div>
             <div class="custom-col p-2 mb-5">
-                <h4 class="mb-2">Description (from GEO)</h4>
-                <p class="text-br-red font-weight-bold">Submission Date: <span class="font-weight-normal"
+                <h4 class="mb-2 ml-2">Description (from GEO)</h4>
+                <p class="text-br-red font-weight-bold ml-2">Submission Date: <span class="font-weight-normal"
                         style="color:#212529">{{
                         (gse_metadata_single[species][geo_accession].get('submission_date')[0][:-5]
                         + ',' + gse_metadata_single[species][geo_accession].get('submission_date')[0][-5:])|safe
@@ -52,13 +52,13 @@
                 </p>
                 {% for paragraph in gse_metadata_single[species][geo_accession].get('summary', ['Summary Not Found']) %}
                 {% if loop.first %}
-                <p class="text-br-red font-weight-bold">Summary: <span class="font-weight-normal"
+                <p class="text-br-red font-weight-bold ml-2">Summary: <span class="font-weight-normal"
                         style="color:#212529">{{ paragraph|safe }}</span></p>
                 {% else %}
                 <p>{{ paragraph|safe }}</p>
                 {% endif %}
                 {% endfor %}
-                <p class="text-br-red font-weight-bold">GEO Accession ID: <a class="font-weight-normal"
+                <p class="text-br-red font-weight-bold ml-2">GEO Accession ID: <a class="font-weight-normal"
                         style="color: #0e63c4"
                         href="{{ gse_metadata_single[species][geo_accession].get('gse_link', ['#'])[0]|safe }}"
                         target="_blank" rel="noopener noreferrer">{{
@@ -68,13 +68,13 @@
                 {% if gse_metadata_single[species][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe != 'No
                 Pubmed
                 ID' %}
-                <p class="text-br-red font-weight-bold">PMID: <a class="font-weight-normal" style="color: #0e63c4"
+                <p class="text-br-red font-weight-bold ml-2">PMID: <a class="font-weight-normal" style="color: #0e63c4"
                         href="{{ gse_metadata_single[species][geo_accession].get('pubmed_link', ['#'])[0]|safe }}"
                         target="_blank" rel="noopener noreferrer">{{
                         gse_metadata_single[species][geo_accession].get('pubmed_id', ['No Pubmed ID'])[0]|safe }}</a>
                 </p>
                 {% else %}
-                <p class="text-br-red font-weight-bold">PMID: <span class="font-weight-normal"
+                <p class="text-br-red font-weight-bold ml-2">PMID: <span class="font-weight-normal"
                         style="color:#212529">N/A</span></p>
                 {% endif %}
             </div>
@@ -95,11 +95,14 @@
                         steps of processing followed the <a href="https://satijalab.org/seurat/articles/pbmc3k_tutorial" target="_blank" rel="noopener noreferrer">Seurat vignette</a>. Cells and genes with no expression or very low expression were 
                         removed from the dataset based on a predefined threshold. The data was then normalized across the expression within the cells and log normalized. The top 2000 highly variable genes were extracted to be used for downstream analysis. 
                         For each of these aggregated data matrices, the clusters were computed using the <a href="https://www.nature.com/articles/s41598-019-41695-z" target="_blank" rel="noopener noreferrer">leiden algorithm</a>. Scanpy was then used to compute the PCA, t-SNE, and UMAPs.
+                        The points in the plots are labelled by their appropraiate cell type labels. The cell type labels were computed using the <a href="https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.rank_genes_groups.html" target="_blank" rel="noopener noreferrer">wilcoxon</a> method as the differntial gene expression method.
+                        The top 250 genes were then used for enrichment analysis against the <a href="https://academic.oup.com/nar/article/51/D1/D870/6775381" target="_blank" rel="noopener noreferrer">CellMarker</a> library in order to determine the most appropriate cell type label with the lowest p-value.
                     </span>
                 </div>
             </div>
 
             <div class="row justify-items-center justify-content-center mb-3 mt-3 text-center">
+                <!-- style="max-width: 800px;word-wrap: break-word;white-space: normal;" -->
                 <select name="Select Method" id="methodsingle" class="libpicker">
                     {% for cond in study_conditions %}
                     <option value="{{cond}}">{{cond}}</option>
@@ -212,7 +215,7 @@
                                 <tr>
 
                                     <td class="p-0 ml-3 border"><button
-                                            style="background-color: #ECEFF1; color: black; width: max-content;"
+                                            style="background-color: #ECEFF1; color: black; width: 150px;word-wrap: break-word;white-space: normal;"
                                             class="btn m-0 rounded-0 py-0 condition-btn active plotted "
                                             data-toggle="button" autocomplete="off"
                                             data-group_label="{{ condition }}">{{ condition|safe }} </button>

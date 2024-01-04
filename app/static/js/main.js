@@ -1493,7 +1493,7 @@ $(document).ready(function () {
             for (var k = 0; k < classes.length; k++) {
                 tabletext += `<tr>
                             <td class="p-0 ml-3 border"><button
-                                    style="background-color: #ECEFF1; color: black; width: max-content;"
+                                    style="background-color: #ECEFF1; color: black; width: 150px;word-wrap: break-word;white-space: normal;"
                                     class="btn m-0 rounded-0 py-0 condition-btn active plotted " data-toggle="button"
                                     autocomplete="off"
                                     data-group_label="${classes[k]}">${classes[k]}</button>
