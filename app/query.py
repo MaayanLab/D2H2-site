@@ -1,11 +1,13 @@
-import openai
 import os
-from dotenv import load_dotenv
+
 from functools import lru_cache
 import json
+from openai import OpenAI
 
-
+from dotenv import load_dotenv
 load_dotenv()
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 with open('static/data/processes.json') as f:
     processes = json.load(f)
@@ -19,7 +21,6 @@ gene_process_descs = "\n".join(map(lambda output: f'[Gene]->{output} - {processe
 geneset_process_descs = "\n".join(map(lambda output: f'[GeneSet]->{output} - {processes["[GeneSet]"][output]["gpt_desc"]}', list(processes["[GeneSet]"].keys())))
 
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
 
 def determine_valid(query):
     prompt = f"""
@@ -36,18 +37,14 @@ def determine_valid(query):
     [Type]
     """
     try:
-        tag_line = openai.ChatCompletion.create(
-        model="gpt-4",
+        tag_line = client.chat.completions.create(model="gpt-4",
         messages=[
         {"role": "system", "content": "You are an assitant meant to process a user query and decide what type of input the user is specifiying"},
         {"role": "user", "content": prompt}
             ],
         max_tokens =20,
-        temperature=.3,
-        )
-
-        response = tag_line['choices'][0]['message']['content']
-        print(response)
+        temperature=.3)
+        response = tag_line.choices[0].message.content
         if '[Gene]' in response:
             return (True, '[Gene]')
         elif '[GeneSet]' in response:
@@ -58,7 +55,8 @@ def determine_valid(query):
             return (True, '[Study Metadata]')
         else: 
             return (False, '[None]')
-    except:
+    except Exception as e:
+        print(e)
         return (True, 'busy')
     
 
@@ -102,17 +100,15 @@ def find_process(query):
     [Input]->[Output]
     """
     try:
-        tag_line = openai.ChatCompletion.create(
-        model="gpt-4",
+        tag_line = client.chat.completions.create(model="gpt-4",
         messages=[
         {"role": "system", "content": "You are an assitant meant to process a user query and pick the relevant input type from the provided list of options."},
         {"role": "user", "content": prompt}
             ],
         max_tokens =20,
-        temperature=.1,
-        )
+        temperature=.1)
 
-        response = tag_line['choices'][0]['message']['content']
+        response = tag_line.choices[0].message.content
         response = response.replace('(|)', '')
         try:
             input, output = response.split('->')
@@ -133,17 +129,15 @@ def select_option(response, options):
     If the user response does not match one of the options or if they are asking an additional question then respond: "None"
     """
     try:
-        tag_line = openai.ChatCompletion.create(
-        model="gpt-4",
+        tag_line = client.chat.completions.create(model="gpt-4",
         messages=[
         {"role": "system", "content": "You are an assitant meant to process a user response and pick from a predefined list of options"},
         {"role": "user", "content": prompt}
             ],
         max_tokens =20,
-        temperature=0,
-        )
+        temperature=0)
 
-        response = tag_line['choices'][0]['message']['content']
+        response = tag_line.choices[0].message.content
         if '"' in response:
             response = response.split('"')[1]
         response = response.replace(".", "")
@@ -161,18 +155,15 @@ def infer_gene(gene):
     Based on text from the user: "{gene}"
     Respond with three comma-separated valid Entrez gene symbols (either human or mouse) that most closely resemble them the user's original input. Only include the three gene symbols with no other text or reasoning."""
     try:
-        tag_line = openai.ChatCompletion.create(
-        model="gpt-4",
+        tag_line = client.chat.completions.create(model="gpt-4",
         messages=[
         {"role": "system", "content": "You are an assitant meant to predict which gene a user was asking for based on a misspelled or unrecognized entry"},
         {"role": "user", "content": prompt}
             ],
         max_tokens =20,
-        temperature=0,
-        )
+        temperature=0)
 
-        response = tag_line['choices'][0]['message']['content']
-        print(response)
+        response = tag_line.choices[0].message.content
         gs = response.split(',')
         gs = list(map(lambda x: x.strip(), gs))
         return {'genes': gs}
@@ -186,17 +177,15 @@ def identify_search_term(query):
     Respond with the biomedical term(s) the user included in their question. Only include the term which should be used to serach with and no other text or reasoning. Genes or geneset are general terms and should not be included.
     d2h2 or D2H2 is on a functional term and should not be included. Do not include the species such as mouse/mice, or human/humans."""
     try:
-        tag_line = openai.ChatCompletion.create(
-        model="gpt-4",
+        tag_line = client.chat.completions.create(model="gpt-4",
         messages=[
         {"role": "system", "content": "You are an assitant meant to select the biomedical term from the user's query"},
         {"role": "user", "content": prompt}
             ],
         max_tokens =20,
-        temperature=0,
-        )
+        temperature=0)
 
-        response = tag_line['choices'][0]['message']['content'].strip()
+        response = response = tag_line.choices[0].message.content.strip()
         return {'term': response}
     except:
         return {'option': 'busy'}
@@ -213,19 +202,18 @@ def determine_association(user_query):
         ```{user_query}``` 
     """
     try:
-        tag_line = openai.ChatCompletion.create(
-        model="gpt-4",
+        tag_line = client.chat.completions.create(model="gpt-4",
         messages=[
         {"role": "system", "content": "You are an assitant meant to select the biomedical term from the user's query"},
         {"role": "user", "content": prompt}
             ],
         max_tokens =20,
-        temperature=0,
-        )
+        temperature=0)
 
-        response = tag_line['choices'][0]['message']['content'].strip()
+        response = tag_line.choices[0].message.content.strip()
         return {'term': response}
-    except:
+    except Exception as e:
+        print(e)
         return {'option': 'busy'}
 
 
@@ -243,17 +231,15 @@ def select_args(query):
     ```{query}```
     """
     try:
-        tag_line = openai.ChatCompletion.create(
-        model="gpt-4",
+        tag_line = client.chat.completions.create(model="gpt-4",
         messages=[
         {"role": "system", "content": "You are an assitant meant to select the biomedical term from the user's query"},
         {"role": "user", "content": prompt}
             ],
         max_tokens =20,
-        temperature=0,
-        )
+        temperature=0)
 
-        response = tag_line['choices'][0]['message']['content'].strip()
+        response = tag_line.choices[0].message.content.strip()
         return {'term': response}
     except:
         return {'option': 'busy'}
@@ -273,16 +259,14 @@ def generate_hypthesis(desc, abstract, term, pmc_abstract):
     abstract of paper for gene set term 2: {pmc_abstract}
     """
     try:
-        tag_line = openai.ChatCompletion.create(
-        model="gpt-4",
+        tag_line = client.chat.completions.create(model="gpt-4",
         messages=[
         {"role": "system", "content": "You are a biologist who attempts to create a hypothesis about why two gene sets,\
             which are lists of genes, may have a high overlap despite being associated with very dissimlar abstracts"},
         {"role": "user", "content": prompt}
             ],
-        temperature=.25,
-        )
-        response = tag_line['choices'][0]['message']['content']
+        temperature=.25)
+        response = tag_line.choices[0].message.content.strip()
         return response
     except:
         return "The OpenAI endpoint is currently overloaded. Please try again later."
