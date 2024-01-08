@@ -115,15 +115,29 @@
                             <div id="reset"><img id="reset-arrow" src="static/img/reset-arrow.png" alt="reset"
                                     style="width: 20px;" /></div>
                         </div>
+                        <div class="text-right pr-3 pb-1">
+                            <div id="speak">
+                                <img id="speakon-img" src="static/img/listen.png" alt="listen to responses"
+                                    style="width: 20px;" hidden/>
+                                <img id="speakoff-img" src="static/img/listenoff.png" alt="listen to responses"
+                                style="width: 20px;" />
+                            </div>
+    
+                        </div>
                     </div>
 
 
                     <div id="query-section" class="col m-2 mx-right mb-5">
                         <div class="vertical">
+                            <div id="loading-speech"></div>
                             <div class="input-wrapper row mt-3" style="flex-wrap: nowrap;">
                                 <input id="gpt-query" style="right: 0rem; width: 100rem;" type="text"
                                     placeholder="Ask D2H2 any question to form hypotheses in T2D research..."
                                     name="text" class="input pr-0 mr-0">
+                                    <button id="record-query" class="pl-0 ml-0 recorder"
+                                    style="width: 40px; min-width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
+                                    <img src="static/img/mic.png" style="width: 60%" alt="Query">
+                                    </button>
                                 <button id="gpt-query-button" class="pl-0 ml-0 query-submit"
                                     style="width: 40px; min-width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
                                     <img src="static/img/doublearrow.png" style="width: 60%" alt="Query">
@@ -367,9 +381,10 @@
 
 {% block footer %}
 <script type="module">
-    import { human_list, mouse_list, processes, geneset_entries, geneset_buttons, geneset_buttons_up_down, geneset_up_down_entries } from '../static/js/modules/constants.js';
+    import { human_list, mouse_list, processes, geneset_entries, geneset_buttons, geneset_buttons_up_down, geneset_up_down_entries, loading_dots } from '../static/js/modules/constants.js';
     import { parse_gene, infer_gene, select_option, runFindQuery, run_process_gene, log_chat } from '../static/js/modules/query.js';
     import { get_prediction_studies } from '../static/js/modules/predictions.js';
+    import { play_message, start_recording, stop_recording} from '../static/js/modules/voice.js';
 
     const process_dict = await processes;
 
@@ -379,6 +394,7 @@
     var process_info = {};
     var curr_arg = '';
     var options = [];
+    var speak = false;
 
     var options_str = "<br>";
     const options_dict = {}
@@ -405,7 +421,12 @@
         userid = localStorage.getItem('userid')
     }
 
-
+    function log_chat_speak(query, d2h2_response, userid) {
+        log_chat(query, d2h2_response, userid);
+        if (speak) {
+            play_message(d2h2_response);
+        }
+    }
 
     function find_number(q) {
         var r = /\d+/g;
@@ -516,7 +537,7 @@
                 document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                 await $(`#chat-${chat_num}`).fadeIn(2000);
                 chat_num++;
-                log_chat(query, d2h2_response, userid);
+                log_chat_speak(query, d2h2_response, userid);
 
                 var gs = await infer_gene(query)
                 gs = gs.map((x) => `<a class="chat-option" id="option-${x}-${chat_num}" value="${x}">${x}</a>`).join(", ");
@@ -531,7 +552,7 @@
                             make_option(chat_num, elt.innerText);
                             $(`#chat-${chat_num}`).fadeIn(2000);
                             chat_num++;
-                            log_chat(query, elt.innerText, userid);
+                            log_chat_speak(query, elt.innerText, userid);
                             ask_questions(elt.innerText)
                         }
                     });
@@ -552,14 +573,14 @@
                 document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                 await $(`#chat-${chat_num}`).fadeIn(2000);
                 chat_num++;
-                log_chat(query, d2h2_response, userid);
+                log_chat_speak(query, d2h2_response, userid);
                 return;
             } else if (res == 'busy') {
                 d2h2_response = "I'm sorry, the OpenAPI endpoint is currently overloaded. Please try again in a few seconds.";
                 document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                 await $(`#chat-${chat_num}`).fadeIn(2000);
                 chat_num++;
-                log_chat(query, d2h2_response, userid);
+                log_chat_speak(query, d2h2_response, userid);
                 return;
             } else process_info[curr_arg] = res;
         }
@@ -582,14 +603,14 @@
                             make_option(chat_num, elt.innerText);
                             $(`#chat-${chat_num}`).fadeIn(2000);
                             chat_num++;
-                            log_chat(query, elt.innerText, userid);
+                            log_chat_speak(query, elt.innerText, userid);
                             ask_questions(elt.innerText)
                         }
                     });
                 }
                 );
 
-                log_chat(query, d2h2_response, userid);
+                log_chat_speak(query, d2h2_response, userid);
 
                 curr_arg = qs[i].arg;
                 options = qs[i].options;
@@ -631,7 +652,7 @@
                         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                         await $(`#chat-${chat_num}`).fadeIn(2000);
                         chat_num++;
-                        log_chat(q, d2h2_response, userid);
+                        log_chat_speak(q, d2h2_response, userid);
                         return;
                     } else if (response['error'] == 'input') {
                         var options_str = "<br>";
@@ -648,7 +669,7 @@
                         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                         await $(`#chat-${chat_num}`).fadeIn(2000);
                         chat_num++;
-                        log_chat(q, d2h2_response, userid);
+                        log_chat_speak(q, d2h2_response, userid);
                         process_number = true;
                         return;
                     } else {
@@ -656,7 +677,7 @@
                         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                         await $(`#chat-${chat_num}`).fadeIn(2000);
                         chat_num++;
-                        log_chat(q, d2h2_response, userid);
+                        log_chat_speak(q, d2h2_response, userid);
                         return;
                     }
                 }
@@ -668,7 +689,7 @@
                         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                         await $(`#chat-${chat_num}`).fadeIn(2000);
                         chat_num++;
-                        log_chat(q, d2h2_response, userid);
+                        log_chat_speak(q, d2h2_response, userid);
                     } else {
                         document.getElementById('gpt-query').value = '';
                         ask_questions(q);
@@ -677,14 +698,14 @@
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', process_dict[response['input']][response['output']].text))
                     await $(`#chat-${chat_num}`).fadeIn(2000);
                     chat_num++;
-                    log_chat(q, process_dict[response['input']][response['output']].text, userid);
+                    log_chat_speak(q, process_dict[response['input']][response['output']].text, userid);
                     if (response['output'] == '[Kinases]') {
                         d2h2_response = "Input a list of proteins:";
                     } else d2h2_response = "Please enter your gene set:";
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                     await $(`#chat-${chat_num}`).fadeIn(2000)
                     chat_num++;
-                    log_chat(q, d2h2_response, userid);
+                    log_chat_speak(q, d2h2_response, userid);
                     if (process_dict[response.input][response.output].args.includes('up')) {
                         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_up_down_entries(chat_num + 1) + geneset_buttons_up_down(chat_num + 1)))
                     } else document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries(chat_num + 1) + geneset_buttons(chat_num + 1)))
@@ -706,12 +727,12 @@
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                     await $(`#chat-${chat_num}`).fadeIn(2000)
                     chat_num++;
-                    log_chat(q, d2h2_response, userid);
+                    log_chat_speak(q, d2h2_response, userid);
                     d2h2_response = process_dict[response['input']][response['output']].text
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                     await $(`#chat-${chat_num}`).fadeIn(2000)
                     chat_num++;
-                    log_chat(q, d2h2_response, userid);
+                    log_chat_speak(q, d2h2_response, userid);
                     document.getElementById('gpt-query').value = '';
                     ask_questions(q);
                 } else if (response['input'] == '[Study Metadata]') {
@@ -719,7 +740,7 @@
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                     await $(`#chat-${chat_num}`).fadeIn(2000)
                     chat_num++;
-                    log_chat(q, d2h2_response, userid);
+                    log_chat_speak(q, d2h2_response, userid);
                     document.getElementById('gpt-query').value = '';
                     ask_questions(q);
                 }
@@ -794,6 +815,31 @@
         $('#chat-icons').addClass('row')
         $('#chatbot-title').addClass('mt-3')
     });
+
+    document.getElementById('record-query').addEventListener("click", function () {
+        start_recording()
+        document.getElementById('loading-speech').innerHTML = loading_dots;
+        document.getElementById('gpt-query').value = "Listening...";
+        setTimeout(async () => {
+            document.getElementById('gpt-query').value = "Transcribing...";
+            const transcription = await stop_recording()
+            console.log(transcription)
+            document.getElementById('loading-speech').innerHTML = ""
+            document.getElementById('gpt-query').value = transcription.text;
+        }, 10000);
+    });
+
+    document.getElementById('speak').addEventListener("click", function () {
+       speak = !speak;
+         if (speak) {
+              document.getElementById('speakon-img').removeAttribute("hidden")
+              document.getElementById('speakoff-img').setAttribute("hidden", true)
+         } else {
+              document.getElementById('speakoff-img').removeAttribute("hidden")
+              document.getElementById('speakon-img').setAttribute("hidden", true)
+         }
+    });
+
 
     const countupEls = document.querySelectorAll('.countup');
     countupEls.forEach(animateCountUp);
