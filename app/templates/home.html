@@ -610,7 +610,7 @@
                 }
                 );
 
-                log_chat_speak(query, d2h2_response, userid);
+                log_chat_speak(query, d2h2_response.replaceAll(/<a\b[^>]*>(.*?)<\/a>/gi, '$1'), userid);
 
                 curr_arg = qs[i].arg;
                 options = qs[i].options;

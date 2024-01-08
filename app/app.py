@@ -1131,9 +1131,7 @@ async def speak_message():
 	if request.method == "POST":
 		try:
 			request_json = request.get_json()
-			print(request_json)
 			mp3_content = await speak(request_json['text'])
-			print(mp3_content)
 			return Response(mp3_content, mimetype="audio/mpeg")
 		except Exception as e:
 			print(e)
