@@ -49,21 +49,22 @@
                 <div class="custom-col mb-4" style="overflow: visible;">
                     <div class="row text-center justify-content-center">
                         <img src="{{ url_for('static', filename='img/hypothesis.png') }}" class="m-2 p-2"
-                                alt="Automated daily hypothesis art" style="width: 80px;" />
+                            alt="Automated daily hypothesis art" style="width: 80px;" />
                         <h3 id="chatbot-title" class="mt-4 ml-2 text-center p-3" style="font-size: 1.50rem;">
-                            
+
                             D2H2 Automated Daily Hypothesis
                             <h3>
                     </div>
                     <div id="gpt-hypothesis" class="row">
                         <div class="col-7 ml-5 mb-3">
-                            D2H2 identified a significant overlap between gene sets extracted from<p id="study1" style="display: inline;">
-                             ... </p>and<p id="study2" style="display: inline;"> ... </p>despite highly dissimilar abstracts.
+                            D2H2 identified a significant overlap between gene sets extracted from<p id="study1"
+                                style="display: inline;">
+                                ... </p>and<p id="study2" style="display: inline;"> ... </p>despite highly dissimilar
+                            abstracts.
                             Read more about a plausible explanation about why such a high overlap exists.
                         </div>
                         <div class="col-3 p-2">
-                            <a class="nav-link hover-underline-animation"
-                                href="{{ url_for('hypotheses') }}">
+                            <a class="nav-link hover-underline-animation" href="{{ url_for('hypotheses') }}">
                                 <button class="btn btn-primary mt-3">
                                     Learn more...
                                 </button>
@@ -118,11 +119,11 @@
                         <div class="text-right pr-3 pb-1">
                             <div id="speak">
                                 <img id="speakon-img" src="static/img/listen.png" alt="listen to responses"
-                                    style="width: 20px;" hidden/>
+                                    style="width: 20px;" hidden />
                                 <img id="speakoff-img" src="static/img/listenoff.png" alt="listen to responses"
-                                style="width: 20px;" />
+                                    style="width: 20px;" />
                             </div>
-    
+
                         </div>
                     </div>
 
@@ -134,10 +135,10 @@
                                 <input id="gpt-query" style="right: 0rem; width: 100rem;" type="text"
                                     placeholder="Ask D2H2 any question to form hypotheses in T2D research..."
                                     name="text" class="input pr-0 mr-0">
-                                    <button id="record-query" class="pl-0 ml-0 recorder"
+                                <button id="record-query" class="pl-0 ml-0 recorder"
                                     style="width: 40px; min-width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
                                     <img src="static/img/mic.png" style="width: 60%" alt="Query">
-                                    </button>
+                                </button>
                                 <button id="gpt-query-button" class="pl-0 ml-0 query-submit"
                                     style="width: 40px; min-width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
                                     <img src="static/img/doublearrow.png" style="width: 60%" alt="Query">
@@ -384,7 +385,7 @@
     import { human_list, mouse_list, processes, geneset_entries, geneset_buttons, geneset_buttons_up_down, geneset_up_down_entries, loading_dots } from '../static/js/modules/constants.js';
     import { parse_gene, infer_gene, select_option, runFindQuery, run_process_gene, log_chat } from '../static/js/modules/query.js';
     import { get_prediction_studies } from '../static/js/modules/predictions.js';
-    import { play_message, start_recording, stop_recording} from '../static/js/modules/voice.js';
+    import { play_message, start_recording, stop_recording } from '../static/js/modules/voice.js';
 
     const process_dict = await processes;
 
@@ -395,7 +396,7 @@
     var curr_arg = '';
     var options = [];
     var speak = false;
-    
+
 
     var options_str = "<br>";
     const options_dict = {}
@@ -507,10 +508,10 @@
                 await $(`#chat-${chat_num}`).fadeIn(2000);
                 return;
             }
-            
+
         }
 
-        
+
 
         process_info['geneset'] = geneset;
         process_info['up'] = geneset_up;
@@ -616,7 +617,7 @@
                 curr_arg = qs[i].arg;
                 options = qs[i].options;
                 return;
-            } 
+            }
         }
         let process_info_copy = { ...process_info };
         let chat_num_copy = chat_num.valueOf()
@@ -817,31 +818,44 @@
         $('#chatbot-title').addClass('mt-3')
     });
 
-    document.getElementById('record-query').addEventListener("click", function () {
-        start_recording()
-        document.getElementById('loading-speech').innerHTML = loading_dots;
-        document.getElementById('gpt-query').value = "Listening...";
-        setTimeout(async () => {
-            document.getElementById('gpt-query').value = "Transcribing...";
+    var recording = false;
+    document.getElementById('record-query').addEventListener("click", async function () {
+        if (!recording) {
+            recording = true;
+            start_recording()
+            document.getElementById('loading-speech').innerHTML = loading_dots;
+            document.getElementById('gpt-query').value = "Listening...";
+            setTimeout(async () => {
+                const transcription = await stop_recording()
+                document.getElementById('loading-speech').innerHTML = ""
+                recording = false;
+                if ('text' in transcription) { 
+                    document.getElementById('gpt-query').value = transcription.text
+                }
+                
+            }, 10000);
+            speak = true;
+            document.getElementById('speakon-img').removeAttribute("hidden")
+            document.getElementById('speakoff-img').setAttribute("hidden", true)
+        } else {
             const transcription = await stop_recording()
-            console.log(transcription)
             document.getElementById('loading-speech').innerHTML = ""
-            document.getElementById('gpt-query').value = transcription.text;
-        }, 10000);
-        speak = true;
-        document.getElementById('speakon-img').removeAttribute("hidden")
-        document.getElementById('speakoff-img').setAttribute("hidden", true)
-    });
+            if ('text' in transcription) { 
+                document.getElementById('gpt-query').value = transcription.text
+            }
+            recording = false;
+        }}
+        );
 
     document.getElementById('speak').addEventListener("click", function () {
-       speak = !speak;
-         if (speak) {
-              document.getElementById('speakon-img').removeAttribute("hidden")
-              document.getElementById('speakoff-img').setAttribute("hidden", true)
-         } else {
-              document.getElementById('speakoff-img').removeAttribute("hidden")
-              document.getElementById('speakon-img').setAttribute("hidden", true)
-         }
+        speak = !speak;
+        if (speak) {
+            document.getElementById('speakon-img').removeAttribute("hidden")
+            document.getElementById('speakoff-img').setAttribute("hidden", true)
+        } else {
+            document.getElementById('speakoff-img').removeAttribute("hidden")
+            document.getElementById('speakon-img').setAttribute("hidden", true)
+        }
     });
 
 
