@@ -89,7 +89,7 @@
             "args": [
                 "geneset"
             ],
-            "text": "I can perform enrichement analysis through Enrichr with your gene set agasint our curated Diabetes gene set library. Any overlapping gene can be submitted to the Single Gene Queries page and the sets of overlapping genes can be submitted to the Gene Set Queries page.",
+            "text": "I can perform enrichement analysis through Enrichr with your gene set against our curated Diabetes gene set library. Any overlapping gene can be submitted to the Single Gene Queries page and the sets of overlapping genes can be submitted to the Gene Set Queries page.",
             "questions": []
         },
         "[Enrichment]": {
