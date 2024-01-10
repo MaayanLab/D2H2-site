@@ -29,8 +29,8 @@
     </div>
 </dialog>
 
-<div class="justify-content-center container-fluid p-0 m-0">
-    <div class="row text-center justify-content-center" style="display: flexbox;">
+<div  class="justify-content-center container-fluid p-0 m-0">
+    <div id="title-div" class="row text-center justify-content-center" style="display: flexbox;">
         <div class="col p-4 pb-0 mb-0 text-center mt-4">
             <h2 style="color: black; text-align: center !important;">Diabetes Data and Hypothesis Hub (D2H2)</h2>
             <h5 class="m-2 mb-0" style="color: black;"> A platform that facilitates data-driven
@@ -46,7 +46,7 @@
         <div class="row flex-wrap justify-content-center mx-auto">
 
             <div id="chat-div" class="col-lg-5 col-md-10 col-sm-10 mt-3">
-                <div class="custom-col mb-4" style="overflow: visible;">
+                <div id="hypothesis-div" class="custom-col mb-4" style="overflow: visible;">
                     <div class="row text-center justify-content-center">
                         <img src="{{ url_for('static', filename='img/hypothesis.png') }}" class="m-2 p-2"
                             alt="Automated daily hypothesis art" style="width: 80px;" />
@@ -198,7 +198,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row justify-content-center text-center">
+                <div id="studies-div" class="row justify-content-center text-center">
 
                     <div class="m-2 pt-0 mt-0 text-center col-lg-5 col-sm-6">
                         <p>
@@ -792,6 +792,12 @@
                 scrollTop: $(`#chat-${chat_num}`).offset().top
             }, 1000);
         }
+        $('#hypothesis-div').hide();
+        $('#studies-div').hide();
+        $('#features-div').hide();
+        $('#title-div').hide();
+        
+
     }
 
     function fillQuery(q) {
