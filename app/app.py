@@ -21,6 +21,7 @@ from query import *
 from log_chats import *
 from log_suggested_study import *
 from voice import *
+from avatar import *
 
 #Added the route for s3 bucket
 endpoint = os.environ.get('ENDPOINT', 'https://d2h2.s3.amazonaws.com/')
@@ -1150,7 +1151,56 @@ async def transcribe_message():
 			print(e)
 			return jsonify({'error': 'An error occurred while transcribing the audio file'})
 		
+@app.route('/api/createstream', methods=['GET'])
+async def createstream():
+	res = create_stream()
+	return res
 
+@app.route('/api/startstream', methods=['POST'])
+async def startstream():
+	if request.method == "POST":
+		res = request.get_json()
+		stream_id = res['stream_id']
+		session_id = res['session_id']
+		answer = res['answer']
+
+	res = start_stream(stream_id, session_id, answer)
+	return res
+
+@app.route('/api/submitnetwork', methods=['POST'])
+async def submitnetwork():
+	if request.method == "POST":
+		res = request.get_json()
+		stream_id = res['stream_id']
+		session_id = res['session_id']
+		candidate = res['candidate']
+		sdpMid = res['sdpMid']
+		sdpMLineIndex = res['sdpMLineIndex']
+
+	res = submit_network(stream_id, session_id, candidate, sdpMid, sdpMLineIndex)
+	return res
+
+@app.route('/api/createtalkstream', methods=['POST'])
+async def createtalkstream():
+	if request.method == "POST":
+		res = request.get_json()
+		stream_id = res['stream_id']
+		session_id = res['session_id']
+		text = res['text']
+
+	res = create_talk_stream(stream_id, session_id, text)
+	return res
+
+@app.route('/api/destroystream', methods=['POST'])
+async def destroystream():
+	if request.method == "POST":
+		res = request.get_json()
+		stream_id = res['stream_id']
+		session_id = res['session_id']
+
+	res = destroy_stream(stream_id, session_id)
+	return res
+		
 #######################################################
 #######################################################
 ########## 3. Run App

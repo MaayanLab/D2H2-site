@@ -29,7 +29,7 @@
     </div>
 </dialog>
 
-<div  class="justify-content-center container-fluid p-0 m-0">
+<div class="justify-content-center container-fluid p-0 m-0">
     <div id="title-div" class="row text-center justify-content-center" style="display: flexbox;">
         <div class="col p-4 pb-0 mb-0 text-center mt-4">
             <h2 style="color: black; text-align: center !important;">Diabetes Data and Hypothesis Hub (D2H2)</h2>
@@ -79,6 +79,38 @@
                         <h3 id="chatbot-title" class="mt-3 ml-2 text-center" style="font-size: 1.50rem;">D2H2 Chatbot
                         </h3>
                     </div>
+                    <div id="video-wrapper" style="position: fixed; display: none; z-index: 10000;">
+                        <div class="rounded">
+                            <video id="talk-video"
+                                style="border-radius: 5rem; position: absolute; z-index: 49; right: 30rem;" width="120"
+                                height="120" autoplay>
+                            </video>
+                            <video id="idle-video"
+                                style="border-radius: 5rem; position: absolute; z-index: 48; right: 30rem;" width="120"
+                                height="120" autoplay loop muted>
+                                <source src="../static/data/idleVideo.mp4" type="video/mp4" />
+                            </video>
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <!-- added div#buttons -->
+                    <div id="avatar-buttons" style="position: absolute; top: 125px; left: 100px; display: none;">
+                        <button id="connect-button" class="btn btn-primary">Connect Avatar</button>
+                        <!--  <button id="talk-button" class="btn btn-primary">Start</button> -->
+                        <button id="destroy-button" class="btn btn-primary">Disconnect</button>
+                    </div>
+
+                    <!-- added div#status -->
+                    <div id="status" hidden>
+                        <!-- removed the wrapping <div> tags -->
+                        ICE gathering status: <label id="ice-gathering-status-label"></label><br />
+                        ICE status: <label id="ice-status-label"></label><br />
+                        Peer connection status: <label id="peer-status-label"></label><br />
+                        Signaling status: <label id="signaling-status-label"></label><br />
+                        Streaming status: <label id="streaming-status-label"></label><br />
+                    </div>
                 </div>
                 <div class="justify-content-center p-0 m-0 text-center" style="flex-wrap: wrap;">
 
@@ -123,7 +155,6 @@
                                 <img id="speakoff-img" src="static/img/listenoff.png" alt="listen to responses"
                                     style="width: 20px;" />
                             </div>
-
                         </div>
                     </div>
 
@@ -386,6 +417,7 @@
     import { parse_gene, infer_gene, select_option, runFindQuery, run_process_gene, log_chat } from '../static/js/modules/query.js';
     import { get_prediction_studies } from '../static/js/modules/predictions.js';
     import { play_message, start_recording, stop_recording } from '../static/js/modules/voice.js';
+    import * as DId from '../static/js/modules/avatar.js';
 
     const process_dict = await processes;
 
@@ -396,6 +428,7 @@
     var curr_arg = '';
     var options = [];
     var speak = false;
+    var avatar = false;
 
 
     var options_str = "<br>";
@@ -425,7 +458,11 @@
 
     async function log_chat_speak(query, d2h2_response, userid) {
         log_chat(query, d2h2_response, userid);
-        if (speak) {
+        if (avatar) {
+            const res = await DId.talk(d2h2_response)
+            console.log(res)
+            $("#idle-loop").hide();
+        } else if (speak) {
             play_message(d2h2_response)
         }
     }
@@ -796,7 +833,8 @@
         $('#studies-div').hide();
         $('#features-div').hide();
         $('#title-div').hide();
-        
+        $('#avatar-buttons').show();
+
 
     }
 
@@ -835,10 +873,10 @@
                 const transcription = await stop_recording()
                 document.getElementById('loading-speech').innerHTML = ""
                 recording = false;
-                if ('text' in transcription) { 
+                if ('text' in transcription) {
                     document.getElementById('gpt-query').value = transcription.text
                 }
-                
+
             }, 10000);
             speak = true;
             document.getElementById('speakon-img').removeAttribute("hidden")
@@ -846,12 +884,13 @@
         } else {
             const transcription = await stop_recording()
             document.getElementById('loading-speech').innerHTML = ""
-            if ('text' in transcription) { 
+            if ('text' in transcription) {
                 document.getElementById('gpt-query').value = transcription.text
             }
             recording = false;
-        }}
-        );
+        }
+    }
+    );
 
     document.getElementById('speak').addEventListener("click", function () {
         speak = !speak;
@@ -879,6 +918,19 @@
             modal.close()
         }
     })
+
+    const destroyButton = document.getElementById('destroy-button');
+    destroyButton.onclick = async () => {
+        avatar = false;
+        DId.destroyStream();
+        $("#video-wrapper").hide();
+    }
+    const connectButton = document.getElementById('connect-button');
+    connectButton.onclick = async () => {
+        await DId.connect();
+        avatar = true;
+        $("#video-wrapper").show();
+    };
 
     get_prediction_studies()
 </script>
