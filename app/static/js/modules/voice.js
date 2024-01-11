@@ -58,6 +58,9 @@ export async function play_message(message) {
             const formData = new FormData();
             formData.append("file", blob);
             console.log(blob)
+            if (blob.size < 10) {
+                return {}
+            }
             const response = await fetch("api/transcribe_message",
                 {
                     method: 'POST',
