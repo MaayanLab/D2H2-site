@@ -88,7 +88,7 @@
                     <div id="video-wrapper" style="position: fixed; display: none; z-index: 10000;">
                         <div class="rounded">
                             <video id="talk-video"
-                            style="border-radius: 5rem; position: fixed; z-index: 48; left: 0.5rem;" width="120"
+                            style="border-radius: 5rem; position: fixed; z-index: 49; left: 0.5rem;" width="120"
                                 height="120" autoplay>
                             </video>
                             <video id="idle-video"
@@ -924,6 +924,7 @@
     const destroyButton = document.getElementById('destroy-button');
     destroyButton.onclick = async () => {
         avatar = false;
+        speak = false;
         DId.destroyStream();
         $("#video-wrapper").hide();
     }
@@ -932,6 +933,7 @@
         document.getElementById('loading-avatar').innerHTML = loading_dots;
         await DId.connect();
         avatar = true;
+        speak = true;
         document.getElementById('loading-avatar').innerHTML = "";
         $("#video-wrapper").show();
     };
