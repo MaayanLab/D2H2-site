@@ -8,6 +8,7 @@ from functools import lru_cache
 
 D_ID_API_KEY = os.environ.get('D_ID_API_KEY')
 SOURCE_URL = os.environ.get('SOURCE_URL')
+
 def create_stream():
     """Starts the stream of the avatar"""
     url = "https://api.d-id.com/talks/streams"

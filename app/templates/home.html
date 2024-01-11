@@ -78,15 +78,21 @@
                             height="80px" onclick='localStorage.setItem("no_splash", true)' />
                         <h3 id="chatbot-title" class="mt-3 ml-2 text-center" style="font-size: 1.50rem;">D2H2 Chatbot
                         </h3>
+                        <div id="avatar-buttons" style="position: relative; display: none;">
+                            <button id="connect-button" class="btn btn-primary">Connect Avatar</button>
+                            <!--  <button id="talk-button" class="btn btn-primary">Start</button> -->
+                            <button id="destroy-button" class="btn btn-primary">Disconnect</button>
+                        </div>
+                        <div id="loading-avatar"></div>
                     </div>
                     <div id="video-wrapper" style="position: fixed; display: none; z-index: 10000;">
                         <div class="rounded">
                             <video id="talk-video"
-                                style="border-radius: 5rem; position: absolute; z-index: 49; right: 30rem;" width="120"
+                            style="border-radius: 5rem; position: fixed; z-index: 48; left: 0.5rem;" width="120"
                                 height="120" autoplay>
                             </video>
                             <video id="idle-video"
-                                style="border-radius: 5rem; position: absolute; z-index: 48; right: 30rem;" width="120"
+                            style="border-radius: 5rem; position: fixed; z-index: 48; left: 0.5rem;" width="120"
                                 height="120" autoplay loop muted>
                                 <source src="../static/data/idleVideo.mp4" type="video/mp4" />
                             </video>
@@ -96,14 +102,10 @@
                     <br />
 
                     <!-- added div#buttons -->
-                    <div id="avatar-buttons" style="position: absolute; top: 125px; left: 100px; display: none;">
-                        <button id="connect-button" class="btn btn-primary">Connect Avatar</button>
-                        <!--  <button id="talk-button" class="btn btn-primary">Start</button> -->
-                        <button id="destroy-button" class="btn btn-primary">Disconnect</button>
-                    </div>
+                    
 
                     <!-- added div#status -->
-                    <div id="status" hidden>
+                    <div id="status" style="position: absolute;" hidden>
                         <!-- removed the wrapping <div> tags -->
                         ICE gathering status: <label id="ice-gathering-status-label"></label><br />
                         ICE status: <label id="ice-status-label"></label><br />
@@ -927,8 +929,10 @@
     }
     const connectButton = document.getElementById('connect-button');
     connectButton.onclick = async () => {
+        document.getElementById('loading-avatar').innerHTML = loading_dots;
         await DId.connect();
         avatar = true;
+        document.getElementById('loading-avatar').innerHTML = "";
         $("#video-wrapper").show();
     };
 
