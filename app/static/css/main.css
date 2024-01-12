@@ -1238,3 +1238,15 @@ dialog::backdrop {
 .progress:nth-child(3) {
   animation-delay: 1.7s;
 }
+
+.mt-3-5 {
+  margin-top: 2.3rem;
+}
+
+.blue-border {
+  border: 3px solid #087ecc;
+}
+
+.green-border {
+  border: 3px solid rgb(21, 197, 62);
+}
