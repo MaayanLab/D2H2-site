@@ -41,8 +41,14 @@
     type="text/css">
 
   <!-- Added for the NIDDK KG PART -->
+  <!-- <link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.6/dist/css/autoComplete.02.min.css"> -->
   <link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.6/dist/css/autoComplete.02.min.css">
+      href="{{url_for('static', filename='css/deps/autoComplete.css')}}">
+  <link rel="stylesheet"
+      href="{{url_for('static', filename='css/deps/autoComplete.01.css')}}">
+  <link rel="stylesheet"
+      href="{{url_for('static', filename='css/deps/autoComplete.02.css')}}">
   
   <link rel="stylesheet" href="{{url_for('static', filename='css/deps/leaflet.css')}}" />
 
@@ -125,7 +131,7 @@
                 </tr>
                 <tr class="spaceSides m-0">
                   <td class="nav-link-text">
-                    <a href="{{ url_for('home') }}" style="color: black !important;">
+                    <a href="{{ url_for('home') }}" onclick="localStorage.setItem('open-chat', true)" style="color: black !important;">
                       <div class="nav-link-div">
                         <img src="{{ url_for('static', filename='img/chatbot.png') }}" title="Chatbot" height="30px">
                         <p class="m-0">Chatbot</p>
@@ -248,7 +254,7 @@
       <div class="collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto menu">
           <li class="nav-item menu nav-link-text"><a class="nav-link hover-underline-animation" href="{{ url_for('home') }}"
-              style="color: black !important;" onclick='localStorage.setItem("no_splash", true)'>
+              style="color: black !important;" onclick='localStorage.setItem("open-chat", true)'>
               <img class="mr-4 ml-4" src="{{ url_for('static', filename='img/chatbot.png') }}" alt="Chatbot"
                 title="Chatbot" height="20px" onclick='localStorage.setItem("no_splash", true)'> Chatbot</a>
           </li>
@@ -400,10 +406,11 @@
 
   <script src=" {{ url_for('static', filename='js/deps/cytoscape.min.js') }}"></script>
   <script src=" {{ url_for('static', filename='js/deps/d3.v7.min.js') }}"></script>
+  
   <script src="https://d3js.org/d3-hexbin.v0.2.min.js"></script>
   <script src="https://unpkg.com/topojson@3"></script>
   <script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
-<script src="https://cdn.jsdelivr.net/npm/d3-geo@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-geo@3"></script>
   
 
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>

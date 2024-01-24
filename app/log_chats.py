@@ -2,7 +2,12 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import os
 import datetime
+import pandas as pd
+import numpy as np
+from dotenv import load_dotenv
 #Authorize the API
+
+load_dotenv()
 
 scope = [
     'https://www.googleapis.com/auth/drive',
@@ -52,6 +57,21 @@ def get_prediction_dates():
   for i, date in enumerate(all_dates[15:]):
     date_dict[date] = i + 2
   return date_dict
+
+def get_all_prediction_sigs():
+  all_dates = predictions.col_values(1)[1:]
+  date_dict = {}
+  for i, date in enumerate(all_dates[15:]):
+    date_dict[date] = i + 2
+  return date_dict
+
+def query_predictions(text):
+  cols_to_search = ["d2h2-sig", "term", "title", "pmcid", "GPT hypothesis"]
+  rows = predictions.get_all_records()
+  df = pd.DataFrame.from_dict(rows)
+  mask = np.column_stack([df[col].str.contains(text, na=False, regex=True, case=False) for col in cols_to_search])
+  df_masked = df.loc[mask.any(axis=1)].reset_index()
+  return df_masked.to_dict('records')
 
 def get_current_predictions():
   date_dict = get_prediction_dates()

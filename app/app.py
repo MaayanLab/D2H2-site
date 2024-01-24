@@ -99,14 +99,15 @@ def load_card_data():
 			for file in all_pngs:
 				if 'card' in file:
 					dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+file])
-				elif 'thumbnail' not in file:
-					dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+ 'thumbnail_' + file])
+				#Removed the thumbnail files as of now that represented the plotted information
+				# elif 'thumbnail' not in file:
+				# 	dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+ 'thumbnail_' + file])
 				
 			print('matched')
 			print(dict_with_data['png_paths'])
 			return dict_with_data
 
-
+	#Case where researcher name is not there
 	all_pngs = os.listdir(base_path+'/ORIGINAL-CARD-TITLES')
 	all_pngs = sorted(all_pngs)
 	dict_with_data = {'png_paths':[]}
@@ -115,8 +116,8 @@ def load_card_data():
 		if '.png' in file:
 			if 'card' in file:
 				dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+file])
-			else:
-				dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+file])
+			# else:
+			# 	dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+file])
 	print(dict_with_data['png_paths'])
 	return dict_with_data
 
@@ -1153,6 +1154,18 @@ def hypothesis_gen():
 			pmc_abs = title
 		hypothesis = generate_hypthesis(desc, abstract, term, pmc_abs)
 	return {'hypothesis': hypothesis}
+
+@app.route('/api/query_hypotheses', methods=['POST'])
+def query_hypotheses():
+	if request.method == "POST":
+		try:
+			data = request.get_json()
+			text = data['text']
+			df_masked_records = query_predictions(text)
+			return {'result': df_masked_records}
+		except Exception as e:
+			print(e)
+			return {'error': 'An error occurred while querying the database'}
 
 
 
