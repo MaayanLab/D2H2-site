@@ -95,7 +95,7 @@
                         steps of processing followed the <a href="https://satijalab.org/seurat/articles/pbmc3k_tutorial" target="_blank" rel="noopener noreferrer">Seurat vignette</a>. Cells and genes with no expression or very low expression were 
                         removed from the dataset based on a predefined threshold. The data was then normalized across the expression within the cells and log normalized. The top 2000 highly variable genes were extracted to be used for downstream analysis. 
                         For each of these aggregated data matrices, the clusters were computed using the <a href="https://www.nature.com/articles/s41598-019-41695-z" target="_blank" rel="noopener noreferrer">leiden algorithm</a>. Scanpy was then used to compute the PCA, t-SNE, and UMAPs.
-                        The points in the plots are labelled by their appropraiate cell type labels. The cell type labels were computed using the <a href="https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.rank_genes_groups.html" target="_blank" rel="noopener noreferrer">wilcoxon</a> method as the differntial gene expression method.
+                        The points in the plots are labelled by their appropraiate cell type labels. The cell type labels were computed using the <a href="https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.rank_genes_groups.html" target="_blank" rel="noopener noreferrer">wilcoxon</a> method as the differential gene expression method.
                         The top 250 genes were then used for enrichment analysis against the <a href="https://academic.oup.com/nar/article/51/D1/D870/6775381" target="_blank" rel="noopener noreferrer">CellMarker</a> library in order to determine the most appropriate cell type label with the lowest p-value.
                     </span>
                 </div>
@@ -103,7 +103,7 @@
 
             <div class="row justify-items-center justify-content-center mb-3 mt-3 text-center">
                 <!-- style="max-width: 800px;word-wrap: break-word;white-space: normal;" -->
-                <select name="Select Method" id="methodsingle" class="libpicker">
+                <select name="Select Method" id="methodsingle" class="libpicker" style="max-width: 1100px;word-wrap: break-word;white-space: normal;">
                     {% for cond in study_conditions %}
                     <option value="{{cond}}">{{cond}}</option>
                     {% endfor %}
@@ -247,7 +247,7 @@
                 <div class="tooltip ml-2">
                     <img src="../static/img/more_info.png" alt="Info" style="width: 20px;"/>
                     <span class="tooltiptext">
-                        Differential gene expression can be computed for a single leiden cluster versus the rest using three different methods. 
+                        Differential gene expression can be computed for a single cell type labeled group of cells vs the rest. 
                         These include <a href="https://www.sciencedirect.com/topics/medicine-and-dentistry/wilcoxon-signed-ranks-test" target="_blank" rel="noopener noreferrer">wilcoxon</a>,
                         <a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-014-0550-8" target="_blank" rel="noopener noreferrer">DESeq2,</a> or <a href="https://pubmed.ncbi.nlm.nih.gov/24650281/" target="_blank" rel="noopener noreferrer">characteristic direction</a>.
                     </span>
