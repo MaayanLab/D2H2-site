@@ -37,8 +37,19 @@ export async function get_curr_prediction() {
     })
 
     const date_options = response['date_options']
-    const dates = Object.keys(date_options)
-    dates.reverse()
+
+    var dates = []
+    Object.keys(date_options).forEach((date) => {
+        dates.push([date, date_options[date]])
+    })
+
+    dates.sort(function(a, b) {
+        return b[1] - a[1];
+    });
+
+    dates = dates.map((x) => x[0])
+
+
     var selecter = `<div class='text-center'><p class='mb-1 text-bold'>View previous hypotheses: </p><select class="m-2 libpicker" data-style="btn-primary" onchange="get_prediction_date(this)" data-width="500px">`
     for (var i = 0; i < dates.length; i++) {
         var row_num = date_options[dates[i]];

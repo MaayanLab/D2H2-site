@@ -13,3 +13,4 @@ app/static/output_images/
 __pycache__*
 ETL/metadata_analysis/studies/
 predictions
+ETL/D2H2_signatures*

@@ -959,7 +959,7 @@ def get_rummagene_res(geneset):
             "first": 100,
             "genes": geneset
         },
-        "query": "query EnrichmentQuery($genes: [String]!, $filterTerm: String = \"\", $offset: Int = 0, $first: Int = 10) {\n  currentBackground {\n    enrich(genes: $genes, filterTerm: $filterTerm, offset: $offset, first: $first) {\n      nodes {\n        pvalue\n        adjPvalue\n        oddsRatio\n        nOverlap\n        geneSet {\n          id\n          term\n          nGeneIds\n          geneSetPmcsById(first: 1) {\n            nodes {\n              pmcInfoByPmcid {\n                pmcid\n                title\n                __typename\n              }\n              __typename\n            }\n            __typename\n          }\n          __typename\n        }\n        __typename\n      }\n      totalCount\n      __typename\n    }\n    __typename\n  }\n}\n"
+        "query": "query EnrichmentQuery($genes: [String]!, $filterTerm: String = \"\", $offset: Int = 0, $first: Int = 10) {\n  currentBackground {\n    enrich(genes: $genes, filterTerm: $filterTerm, offset: $offset, first: $first) {\n      nodes {\n        geneSetHash\n        pvalue\n        adjPvalue\n        oddsRatio\n        nOverlap\n        geneSets {\n          nodes {\n            id\n            term\n            description\n            nGeneIds\n            geneSetPmcsById(first: 1) {\n              nodes {\n                pmcInfoByPmcid {\n                  pmcid\n                  title\n                  __typename\n                }\n                __typename\n              }\n              __typename\n            }\n            __typename\n          }\n          totalCount\n          __typename\n        }\n        __typename\n      }\n      totalCount\n      __typename\n    }\n    __typename\n  }\n}\n"
     }
 
     headers = {
@@ -975,8 +975,7 @@ def get_rummagene_res(geneset):
 
         data = []
         for result in formatted:
-            data.append([result['geneSet']['id'], result['geneSet']['term'], result['geneSet']['geneSetPmcsById']['nodes'][0]['pmcInfoByPmcid']['pmcid'], result['geneSet']['geneSetPmcsById']
-                        ['nodes'][0]['pmcInfoByPmcid']['title'], result['geneSet']['nGeneIds'], result['pvalue'], result['adjPvalue'], result['oddsRatio'], result['nOverlap']])
+           data.append([result['geneSets']['nodes'][0]['term'], result['geneSets']['nodes'][0]['geneSetPmcsById']['nodes'][0]['pmcInfoByPmcid']['pmcid'], result['geneSets']['nodes'][0]['geneSetPmcsById']['nodes'][0]['pmcInfoByPmcid']['title'], result['geneSets']['nodes'][0]['nGeneIds'], result['pvalue'], result['adjPvalue'], result['oddsRatio'], result['nOverlap']])
         df = pd.DataFrame(data=data, columns=[
                           'id', 'term', 'pmcid', 'title', 'nGenes', 'pvalue', 'adjPvalue', 'oddsRatio', 'nOverlap'])
         return df

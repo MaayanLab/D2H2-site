@@ -55,7 +55,7 @@ def log(data):
 
 
 def get_precomputed_dge(sig, species):
-    dge_df = pd.read_csv(s3.open(f't2d-datasets/{species}/{sig}'), sep='\t', index_col=0, compression='gzip')
+    dge_df = pd.read_csv(s3.open(f't2d-datasets/{species}/{sig.replace(".tsv", "")}.tsv'), sep='\t', index_col=0, compression='gzip')
     return dge_df
 
 def get_precomputed_dge_options(gse, species):

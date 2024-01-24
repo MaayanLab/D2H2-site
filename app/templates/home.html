@@ -30,7 +30,7 @@
 </dialog>
 
 <div class="justify-content-center container-fluid p-0 m-0">
-    <div class="row text-center justify-content-center" style="display: flexbox;">
+    <div id="title-div" class="row text-center justify-content-center" style="display: flexbox;">
         <div class="col p-4 pb-0 mb-0 text-center mt-4">
             <h2 style="color: black; text-align: center !important;">Diabetes Data and Hypothesis Hub (D2H2)</h2>
             <h5 class="m-2 mb-0" style="color: black;"> A platform that facilitates data-driven
@@ -46,24 +46,24 @@
         <div class="row flex-wrap justify-content-center mx-auto">
 
             <div id="chat-div" class="col-lg-5 col-md-10 col-sm-10 mt-3">
-                <div class="custom-col mb-4" style="overflow: visible;">
+                <div id="hypothesis-div" class="custom-col mb-4" style="overflow: visible;">
                     <div class="row text-center justify-content-center">
                         <img src="{{ url_for('static', filename='img/hypothesis.png') }}" class="m-2 p-2"
-                                alt="Automated daily hypothesis art" style="width: 80px;" />
-                        <h3 id="chatbot-title" class="mt-4 ml-2 text-center p-3" style="font-size: 1.50rem;">
-                            
+                            alt="Automated daily hypothesis art" style="width: 80px;" />
+                        <div id="hypothesis-title" class="mt-4 ml-2 text-center p-3" style="font-size: 1.50rem;">
                             D2H2 Automated Daily Hypothesis
-                            <h3>
+                        </div>
                     </div>
                     <div id="gpt-hypothesis" class="row">
                         <div class="col-7 ml-5 mb-3">
-                            D2H2 identified a significant overlap between gene sets extracted from<p id="study1" style="display: inline;">
-                             ... </p>and<p id="study2" style="display: inline;"> ... </p>despite highly dissimilar abstracts.
+                            D2H2 identified a significant overlap between gene sets extracted from<p id="study1"
+                                style="display: inline;">
+                                ... </p>and<p id="study2" style="display: inline;"> ... </p>despite highly dissimilar
+                            abstracts.
                             Read more about a plausible explanation about why such a high overlap exists.
                         </div>
                         <div class="col-3 p-2">
-                            <a class="nav-link hover-underline-animation"
-                                href="{{ url_for('hypotheses') }}">
+                            <a class="nav-link hover-underline-animation" href="{{ url_for('hypotheses') }}">
                                 <button class="btn btn-primary mt-3">
                                     Learn more...
                                 </button>
@@ -73,10 +73,43 @@
                 </div>
                 <div class="row justify-content-center justify-items-center">
                     <div id="chat-icons" class="row text-center pt-3">
-                        <img class="rounded" src="{{ url_for('static', filename='img/gpt-calculator.png') }}"
-                            height="80px" onclick='localStorage.setItem("no_splash", true)' />
-                        <h3 id="chatbot-title" class="mt-3 ml-2 text-center" style="font-size: 1.50rem;">D2H2 Chatbot
-                        </h3>
+                        <div id="video-wrapper" class="flex flex-col" style="z-index: 10000; position: relative; width: fit-content;">
+                            <div id="video-round" class="rounded flex" style="height: 100px; width: 100px;">
+                                <video id="talk-video" class="mx-auto"
+                                style="border-radius: 5rem; z-index: 49; position: relative; display: block;" width="100%"
+                                    height="100%" autoplay>
+                                </video>
+                                <video id="idle-video" class="border mx-auto"
+                                style="border-radius: 5rem; z-index: 48; position: relative; display: block; bottom: 100px" width="100%"
+                                    height="100%" autoplay loop muted>
+                                    <source src="../static/data/idleVideo.mp4" type="video/mp4" />
+                                </video>
+                            </div>
+                        </div>
+                        <div id="chatbot-title" class="mt-3-5 ml-2 text-center" style="font-size: 1.50rem;">D2H2 Chatbot
+                        </div>
+                        <div id="avatar-buttons" style="position: relative; display: none;">
+                            <button id="connect-button" class="btn btn-primary">Connect Avatar</button>
+                            <!--  <button id="talk-button" class="btn btn-primary">Start</button> -->
+                            <button id="destroy-button" class="btn btn-primary">Disconnect</button>
+                        </div>
+                        <div id="loading-avatar"></div>
+                    </div>
+                    
+
+                    <br />
+
+                    <!-- added div#buttons -->
+                    
+
+                    <!-- added div#status -->
+                    <div id="status" style="position: absolute;" hidden>
+                        <!-- removed the wrapping <div> tags -->
+                        ICE gathering status: <label id="ice-gathering-status-label"></label><br />
+                        ICE status: <label id="ice-status-label"></label><br />
+                        Peer connection status: <label id="peer-status-label"></label><br />
+                        Signaling status: <label id="signaling-status-label"></label><br />
+                        Streaming status: <label id="streaming-status-label"></label><br />
                     </div>
                 </div>
                 <div class="justify-content-center p-0 m-0 text-center" style="flex-wrap: wrap;">
@@ -93,7 +126,7 @@
                     </div>
 
                     <div class="vertical mt-4" id="chat-section"
-                        style="border-style: solid; border-radius: 2rem; border-color: rgb(184, 184, 184); width: 100%; overflow: auto; text-align: left;">
+                        style="border-style: solid; border-radius: 2rem; border-color: rgb(184, 184, 184); width: 100%; overflow: auto; text-align: left; max-height: 35rem; overflow-y: scroll;">
 
                         <div id="chat-bubbles-section" style="overflow: auto;">
                             <div class="chat chat-start mb-2" id="chat-intro" style="display: none;">
@@ -115,15 +148,28 @@
                             <div id="reset"><img id="reset-arrow" src="static/img/reset-arrow.png" alt="reset"
                                     style="width: 20px;" /></div>
                         </div>
+                        <div class="text-right pr-3 pb-1">
+                            <div id="speak">
+                                <img id="speakon-img" src="static/img/listen.png" alt="listen to responses"
+                                    style="width: 20px;" hidden />
+                                <img id="speakoff-img" src="static/img/listenoff.png" alt="listen to responses"
+                                    style="width: 20px;" />
+                            </div>
+                        </div>
                     </div>
 
 
                     <div id="query-section" class="col m-2 mx-right mb-5">
                         <div class="vertical">
+                            <div id="loading-speech"></div>
                             <div class="input-wrapper row mt-3" style="flex-wrap: nowrap;">
                                 <input id="gpt-query" style="right: 0rem; width: 100rem;" type="text"
                                     placeholder="Ask D2H2 any question to form hypotheses in T2D research..."
                                     name="text" class="input pr-0 mr-0">
+                                <button id="record-query" class="pl-0 ml-0 recorder"
+                                    style="width: 40px; min-width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
+                                    <img src="static/img/mic.png" style="width: 60%" alt="Query">
+                                </button>
                                 <button id="gpt-query-button" class="pl-0 ml-0 query-submit"
                                     style="width: 40px; min-width: 40px; height: 55px; top: 0rem; left: .2rem; font-size: xx-large; position: relative">
                                     <img src="static/img/doublearrow.png" style="width: 60%" alt="Query">
@@ -183,7 +229,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row justify-content-center text-center">
+                <div id="studies-div" class="row justify-content-center text-center">
 
                     <div class="m-2 pt-0 mt-0 text-center col-lg-5 col-sm-6">
                         <p>
@@ -367,9 +413,11 @@
 
 {% block footer %}
 <script type="module">
-    import { human_list, mouse_list, processes, geneset_entries, geneset_buttons, geneset_buttons_up_down, geneset_up_down_entries } from '../static/js/modules/constants.js';
+    import { human_list, mouse_list, processes, geneset_entries, geneset_buttons, geneset_buttons_up_down, geneset_up_down_entries, loading_dots } from '../static/js/modules/constants.js';
     import { parse_gene, infer_gene, select_option, runFindQuery, run_process_gene, log_chat } from '../static/js/modules/query.js';
     import { get_prediction_studies } from '../static/js/modules/predictions.js';
+    import { play_message, start_recording, stop_recording } from '../static/js/modules/voice.js';
+    import * as DId from '../static/js/modules/avatar.js';
 
     const process_dict = await processes;
 
@@ -379,6 +427,9 @@
     var process_info = {};
     var curr_arg = '';
     var options = [];
+    var speak = false;
+    var avatar = false;
+
 
     var options_str = "<br>";
     const options_dict = {}
@@ -405,7 +456,16 @@
         userid = localStorage.getItem('userid')
     }
 
-
+    async function log_chat_speak(query, d2h2_response, userid) {
+        log_chat(query, d2h2_response, userid);
+        if (avatar) {
+            const res = await DId.talk(d2h2_response)
+            console.log(res)
+            $("#idle-loop").hide();
+        } else if (speak) {
+            play_message(d2h2_response)
+        }
+    }
 
     function find_number(q) {
         var r = /\d+/g;
@@ -485,10 +545,10 @@
                 await $(`#chat-${chat_num}`).fadeIn(2000);
                 return;
             }
-            
+
         }
 
-        
+
 
         process_info['geneset'] = geneset;
         process_info['up'] = geneset_up;
@@ -516,7 +576,7 @@
                 document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                 await $(`#chat-${chat_num}`).fadeIn(2000);
                 chat_num++;
-                log_chat(query, d2h2_response, userid);
+                log_chat_speak(query, d2h2_response, userid);
 
                 var gs = await infer_gene(query)
                 gs = gs.map((x) => `<a class="chat-option" id="option-${x}-${chat_num}" value="${x}">${x}</a>`).join(", ");
@@ -552,14 +612,14 @@
                 document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                 await $(`#chat-${chat_num}`).fadeIn(2000);
                 chat_num++;
-                log_chat(query, d2h2_response, userid);
+                log_chat_speak(query, d2h2_response, userid);
                 return;
             } else if (res == 'busy') {
                 d2h2_response = "I'm sorry, the OpenAPI endpoint is currently overloaded. Please try again in a few seconds.";
                 document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                 await $(`#chat-${chat_num}`).fadeIn(2000);
                 chat_num++;
-                log_chat(query, d2h2_response, userid);
+                log_chat_speak(query, d2h2_response, userid);
                 return;
             } else process_info[curr_arg] = res;
         }
@@ -589,12 +649,12 @@
                 }
                 );
 
-                log_chat(query, d2h2_response, userid);
+                log_chat_speak(query, d2h2_response.replaceAll(/<a\b[^>]*>(.*?)<\/a>/gi, '$1'), userid);
 
                 curr_arg = qs[i].arg;
                 options = qs[i].options;
                 return;
-            } 
+            }
         }
         let process_info_copy = { ...process_info };
         let chat_num_copy = chat_num.valueOf()
@@ -631,7 +691,7 @@
                         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                         await $(`#chat-${chat_num}`).fadeIn(2000);
                         chat_num++;
-                        log_chat(q, d2h2_response, userid);
+                        log_chat_speak(q, d2h2_response, userid);
                         return;
                     } else if (response['error'] == 'input') {
                         var options_str = "<br>";
@@ -648,7 +708,7 @@
                         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                         await $(`#chat-${chat_num}`).fadeIn(2000);
                         chat_num++;
-                        log_chat(q, d2h2_response, userid);
+                        log_chat_speak(q, d2h2_response, userid);
                         process_number = true;
                         return;
                     } else {
@@ -656,7 +716,7 @@
                         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response));
                         await $(`#chat-${chat_num}`).fadeIn(2000);
                         chat_num++;
-                        log_chat(q, d2h2_response, userid);
+                        log_chat_speak(q, d2h2_response, userid);
                         return;
                     }
                 }
@@ -668,7 +728,7 @@
                         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                         await $(`#chat-${chat_num}`).fadeIn(2000);
                         chat_num++;
-                        log_chat(q, d2h2_response, userid);
+                        log_chat_speak(q, d2h2_response, userid);
                     } else {
                         document.getElementById('gpt-query').value = '';
                         ask_questions(q);
@@ -677,14 +737,14 @@
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', process_dict[response['input']][response['output']].text))
                     await $(`#chat-${chat_num}`).fadeIn(2000);
                     chat_num++;
-                    log_chat(q, process_dict[response['input']][response['output']].text, userid);
+                    log_chat_speak(q, process_dict[response['input']][response['output']].text, userid);
                     if (response['output'] == '[Kinases]') {
                         d2h2_response = "Input a list of proteins:";
                     } else d2h2_response = "Please enter your gene set:";
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                     await $(`#chat-${chat_num}`).fadeIn(2000)
                     chat_num++;
-                    log_chat(q, d2h2_response, userid);
+                    log_chat_speak(q, d2h2_response, userid);
                     if (process_dict[response.input][response.output].args.includes('up')) {
                         document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_up_down_entries(chat_num + 1) + geneset_buttons_up_down(chat_num + 1)))
                     } else document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', geneset_entries(chat_num + 1) + geneset_buttons(chat_num + 1)))
@@ -706,12 +766,12 @@
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                     await $(`#chat-${chat_num}`).fadeIn(2000)
                     chat_num++;
-                    log_chat(q, d2h2_response, userid);
+                    log_chat_speak(q, d2h2_response, userid);
                     d2h2_response = process_dict[response['input']][response['output']].text
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                     await $(`#chat-${chat_num}`).fadeIn(2000)
                     chat_num++;
-                    log_chat(q, d2h2_response, userid);
+                    log_chat_speak(q, d2h2_response, userid);
                     document.getElementById('gpt-query').value = '';
                     ask_questions(q);
                 } else if (response['input'] == '[Study Metadata]') {
@@ -719,7 +779,7 @@
                     document.getElementById("chat-bubbles-section").appendChild(chatN('start', chat_num, '#d3d3d3', d2h2_response))
                     await $(`#chat-${chat_num}`).fadeIn(2000)
                     chat_num++;
-                    log_chat(q, d2h2_response, userid);
+                    log_chat_speak(q, d2h2_response, userid);
                     document.getElementById('gpt-query').value = '';
                     ask_questions(q);
                 }
@@ -760,7 +820,7 @@
         $('#features-div').addClass('col-lg-6')
         $('#chat-icons').removeClass('row')
         $('#chat-icons').addClass('block')
-        $('#chatbot-title').removeClass('mt-3')
+       
         await $("#chat-section").fadeIn(1000);
         setTimeout(() => $("#chat-intro").fadeIn(), 1500)
         $("#chat-intro").fadeIn(2000)
@@ -769,6 +829,14 @@
                 scrollTop: $(`#chat-${chat_num}`).offset().top
             }, 1000);
         }
+        $("#video-wrapper").css('left', '2.2rem');
+        $('#hypothesis-div').hide();
+        $('#studies-div').hide();
+        $('#features-div').hide();
+        $('#title-div').hide();
+        //$('#avatar-buttons').show();
+        $('#chatbot-title').attr('class', 'mt-1')
+        $("#talk-video").addClass('blue-border')
     }
 
     function fillQuery(q) {
@@ -788,12 +856,52 @@
 
     document.getElementById('reset').addEventListener("click", function () {
         reset_chat();
-        $('#chat-div').removeClass('col-lg-10')
-        $('#features-div').removeClass('col-lg-6')
-        $('#chat-icons').removeClass('block')
-        $('#chat-icons').addClass('row')
-        $('#chatbot-title').addClass('mt-3')
     });
+
+    var recording = false;
+    document.getElementById('record-query').addEventListener("click", async function () {
+        if (!avatar) {
+            connectAvatar()
+        }
+        if (!recording) {
+            recording = true;
+            start_recording()
+            document.getElementById('loading-speech').innerHTML = loading_dots;
+            document.getElementById('gpt-query').value = "Listening...";
+            setTimeout(async () => {
+                const transcription = await stop_recording()
+                document.getElementById('loading-speech').innerHTML = ""
+                recording = false;
+                if ('text' in transcription) {
+                    document.getElementById('gpt-query').value = transcription.text
+                }
+
+            }, 10000);
+            speak = true;
+            document.getElementById('speakon-img').removeAttribute("hidden")
+            document.getElementById('speakoff-img').setAttribute("hidden", true)
+        } else {
+            const transcription = await stop_recording()
+            document.getElementById('loading-speech').innerHTML = ""
+            if ('text' in transcription) {
+                document.getElementById('gpt-query').value = transcription.text
+            }
+            recording = false;
+        }
+    }
+    );
+
+    document.getElementById('speak').addEventListener("click", function () {
+        speak = !speak;
+        if (speak) {
+            document.getElementById('speakon-img').removeAttribute("hidden")
+            document.getElementById('speakoff-img').setAttribute("hidden", true)
+        } else {
+            document.getElementById('speakoff-img').removeAttribute("hidden")
+            document.getElementById('speakon-img').setAttribute("hidden", true)
+        }
+    });
+
 
     const countupEls = document.querySelectorAll('.countup');
     countupEls.forEach(animateCountUp);
@@ -809,6 +917,24 @@
             modal.close()
         }
     })
+
+    const destroyButton = document.getElementById('destroy-button');
+    destroyButton.onclick = async () => {
+        avatar = false;
+        speak = false;
+        DId.destroyStream();
+        $("#video-wrapper").hide();
+    }
+    async function connectAvatar() {
+        document.getElementById('loading-avatar').innerHTML = loading_dots;
+        await DId.connect();
+        $("#talk-video").removeClass('blue-border')
+        $("#talk-video").addClass('green-border')
+        avatar = true;
+        speak = true;
+        document.getElementById('loading-avatar').innerHTML = "";
+        $("#video-wrapper").show();
+    };
 
     get_prediction_studies()
 </script>
