@@ -37,7 +37,7 @@ def determine_valid(query):
     [Type]
     """
     try:
-        tag_line = client.chat.completions.create(model="gpt-4",
+        tag_line = client.chat.completions.create(model="gpt-4-1106-preview",
         messages=[
         {"role": "system", "content": "You are an assitant meant to process a user query and decide what type of input the user is specifiying"},
         {"role": "user", "content": prompt}
@@ -100,7 +100,7 @@ def find_process(query):
     [Input]->[Output]
     """
     try:
-        tag_line = client.chat.completions.create(model="gpt-4",
+        tag_line = client.chat.completions.create(model="gpt-4-1106-preview",
         messages=[
         {"role": "system", "content": "You are an assitant meant to process a user query and pick the relevant input type from the provided list of options."},
         {"role": "user", "content": prompt}
@@ -129,7 +129,7 @@ def select_option(response, options):
     If the user response does not match one of the options or if they are asking an additional question then respond: "None"
     """
     try:
-        tag_line = client.chat.completions.create(model="gpt-4",
+        tag_line = client.chat.completions.create(model="gpt-4-1106-preview",
         messages=[
         {"role": "system", "content": "You are an assitant meant to process a user response and pick from a predefined list of options"},
         {"role": "user", "content": prompt}
@@ -155,7 +155,7 @@ def infer_gene(gene):
     Based on text from the user: "{gene}"
     Respond with three comma-separated valid Entrez gene symbols (either human or mouse) that most closely resemble them the user's original input. Only include the three gene symbols with no other text or reasoning."""
     try:
-        tag_line = client.chat.completions.create(model="gpt-4",
+        tag_line = client.chat.completions.create(model="gpt-4-1106-preview",
         messages=[
         {"role": "system", "content": "You are an assitant meant to predict which gene a user was asking for based on a misspelled or unrecognized entry"},
         {"role": "user", "content": prompt}
@@ -177,7 +177,7 @@ def identify_search_term(query):
     Respond with the biomedical term(s) the user included in their question. Only include the term which should be used to serach with and no other text or reasoning. Genes or geneset are general terms and should not be included.
     d2h2 or D2H2 is on a functional term and should not be included. Do not include the species such as mouse/mice, or human/humans."""
     try:
-        tag_line = client.chat.completions.create(model="gpt-4",
+        tag_line = client.chat.completions.create(model="gpt-4-1106-preview",
         messages=[
         {"role": "system", "content": "You are an assitant meant to select the biomedical term from the user's query"},
         {"role": "user", "content": prompt}
@@ -202,7 +202,7 @@ def determine_association(user_query):
         ```{user_query}``` 
     """
     try:
-        tag_line = client.chat.completions.create(model="gpt-4",
+        tag_line = client.chat.completions.create(model="gpt-4-1106-preview",
         messages=[
         {"role": "system", "content": "You are an assitant meant to select the biomedical term from the user's query"},
         {"role": "user", "content": prompt}
@@ -231,7 +231,7 @@ def select_args(query):
     ```{query}```
     """
     try:
-        tag_line = client.chat.completions.create(model="gpt-4",
+        tag_line = client.chat.completions.create(model="gpt-4-1106-preview",
         messages=[
         {"role": "system", "content": "You are an assitant meant to select the biomedical term from the user's query"},
         {"role": "user", "content": prompt}
@@ -259,7 +259,7 @@ def generate_hypthesis(desc, abstract, term, pmc_abstract):
     abstract of paper for gene set term 2: {pmc_abstract}
     """
     try:
-        tag_line = client.chat.completions.create(model="gpt-4",
+        tag_line = client.chat.completions.create(model="gpt-4-1106-preview",
         messages=[
         {"role": "system", "content": "You are a biologist who attempts to create a hypothesis about why two gene sets,\
             which are lists of genes, may have a high overlap despite being associated with very dissimlar abstracts"},
