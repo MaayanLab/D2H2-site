@@ -203,8 +203,7 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
     # Getting the same number of samples from each cluster to use for diffrential gene expression.
     f = read_anndata_h5(expr_file)
 
-    # clus_numbers = f["var/leiden/codes"][:]
-    # leiden_data_vals = list(map(lambda x: "Cluster " + str(x), clus_numbers))
+
     cell_type_cats = f["var/Cell_types/categories"][:].astype(str)
     cell_type_indices = f["var/Cell_types/codes"][:]
     cell_names = [cell_type_cats[i] for i in cell_type_indices]
@@ -217,9 +216,6 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
         num_to_sample = min(min(metadata_dict_counts), 15)
         list_of_adata = []
         for cls in metadata_dict_counts.keys():
-
-            # leiden_data_vals = pd.Series(leiden_data_vals)
-            # cls_leiden_vals = leiden_data_vals[leiden_data_vals == cls]
             cell_names_vals = pd.Series(cell_names)
             cls_celltype_vals = cell_names_vals[cell_names_vals == cls]
             idx = list(sorted(random.sample(

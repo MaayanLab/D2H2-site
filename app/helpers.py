@@ -745,7 +745,7 @@ def str_to_int(string, mod):
     return int(hashlib.sha256(byte_string).hexdigest(), base=16) % mod
 
 
-def make_single_visialization_plot(plot_df, values_dict, type, option_list, sample_names, caption_text, category_list_dict=None, location='right', category=True, dropdown=False, additional_info=None, factor_list= None, palette_list = None):
+def make_single_visialization_plot(plot_df, values_dict, type, option_list, sample_names, caption_text, category_list_dict=None, location='below', category=True, dropdown=False, additional_info=None, factor_list= None, palette_list = None):
 
     # init plot
     if additional_info is not None:
@@ -763,7 +763,7 @@ def make_single_visialization_plot(plot_df, values_dict, type, option_list, samp
     if location == 'right':
         plot = figure(plot_width=700, plot_height=600)
     else:
-        plot = figure(plot_width=1000, plot_height=1000+20 *
+        plot = figure(plot_width=600, plot_height=600+20 *
                       len(category_list_dict[option_list[0]]))
     if category == True:
         unique_category_dict = dict()
