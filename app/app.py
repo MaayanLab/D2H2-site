@@ -328,9 +328,11 @@ def makesingleplots():
 	condition_group = response_json['conditiongroup']
 	print('in pca, tsne, umap singleplots function')
 	print(condition_group)
+	#metajson file that stores the group/condition pairing to point to the expression h5 file
 	metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=gse, base_url=base_url),'r')
 	metadict = json.load(metajson)
 	base_expression_filename = metadict[condition_group]['filename']
+	#image path for pulling the distribution plot from s3
 	base_name_for_cell_type_dist = base_expression_filename.split('.h5')[0]
 	base_name_for_cell_type_dist = base_name_for_cell_type_dist + '.png'
 	expr_file = '{base_url}/{species}/{gse}/{file}'.format(species=species, gse=gse, base_url=base_url, file=base_expression_filename)
@@ -339,12 +341,7 @@ def makesingleplots():
 	pca_df = pd.DataFrame(data=f['varm/X_pca'][:,:2], columns = ['x', 'y'])
 	umap_df = pd.DataFrame(data=f['varm/X_umap'][:], columns = ['x', 'y'])
 	tsne_df = pd.DataFrame(data=f['varm/X_tsne'][:,:2], columns = ['x', 'y'])
-	# Leiden clustering cell labeling method
-	# clus_numbers = f["var/leiden/codes"][:]
-	# leiden_values = list(map(lambda x: "Cluster " + str(x), clus_numbers))
-	# values_dict = {"Cluster": leiden_values}
-	# category_list_dict = {"Cluster": list(sorted(set(leiden_values)))}
-	# leiden_values = list(map(lambda x: "Cluster " + str(x), clus_numbers))
+
 
 	cell_type_cats = f["var/Cell_types/categories"][:].astype(str)
 	cell_type_indices = f["var/Cell_types/codes"][:]
@@ -368,6 +365,17 @@ def makesingleplots():
 
 
 	cells = f['var/column_names'][:].astype(str)
+	# Leiden clustering cell labeling method
+	# clus_numbers = f["var/leiden/codes"][:]
+	# leiden_values = list(map(lambda x: "Cluster " + str(x), clus_numbers))
+	# values_dict = {"Cluster": leiden_values}
+	# category_list_dict = {"Cluster": list(sorted(set(leiden_values)))}
+	# leiden_values = list(map(lambda x: "Cluster " + str(x), clus_numbers))
+	# cells = f['var/column_names'][:].astype(str)
+	# jsonplotumap = make_single_visialization_plot(umap_df, values_dict,'umap', ["Cluster"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict, category=True, dropdown=False)
+	# jsonplottsne = make_single_visialization_plot(tsne_df, values_dict,'tsne', ["Cluster"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict, category=True, dropdown=False)
+	# jsonplotpca = make_single_visialization_plot(pca_df, values_dict,'pca', ["Cluster"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict, category=True, dropdown=False)
+
 	
 	jsonplotumap = make_single_visialization_plot(umap_df, values_dict_cell_types,'umap', ["Cell Types"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict_cell_type, category=True, dropdown=False, factor_list=factors_for_mapper, palette_list=palette_for_mapper)
 	jsonplottsne = make_single_visialization_plot(tsne_df, values_dict_cell_types,'tsne', ["Cell Types"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict_cell_type, category=True, dropdown=False, factor_list=factors_for_mapper, palette_list=palette_for_mapper)

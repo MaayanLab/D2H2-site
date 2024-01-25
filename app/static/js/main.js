@@ -371,6 +371,8 @@ function generate_single_plots() {
     document.getElementById("tsne-plot").innerHTML = "";
     document.getElementById("pca-plot").innerHTML = "";
     document.getElementById('cellplot').innerHTML = "";
+    document.getElementById('cellplot_holder').style.display = "none";
+
 
     // document.getElementById("singleplots-loading").innerHTML = "<div class='loader justify-content-center'></div>";
     $('#singleplots-loading').addClass('loader justify-content-center');
@@ -396,7 +398,8 @@ function generate_single_plots() {
         window.Bokeh.embed.embed_item(umap_plot)
         window.Bokeh.embed.embed_item(pca_plot)
         window.Bokeh.embed.embed_item(tsne_plot)
-        document.getElementById('cellplot').innerHTML = `<img src="${basepath+species+'/'+gse+'/'+response['cellplotpath']}" style="width:100%">`
+        document.getElementById('cellplot_holder').style.display = "block";
+        document.getElementById('cellplot').innerHTML = `<img src="${basepath+species+'/'+gse+'/'+response['cellplotpath']}" style="width:100%;height:100%">`
     });
     $("#boxplot").attr("data-url-plot", `/api/plot_single/${gse}/${condition_group}`)
     
