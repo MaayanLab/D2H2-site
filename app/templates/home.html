@@ -73,7 +73,7 @@
                 </div>
                 <div class="row justify-content-center justify-items-center">
                     <div id="chat-icons" class="row text-center pt-3">
-                        <div id="video-wrapper" class="flex flex-col" style="z-index: 10000; position: relative; width: fit-content;">
+                        <!-- <div id="video-wrapper" class="flex flex-col" style="z-index: 10000; position: relative; width: fit-content;">
                             <div id="video-round" class="rounded flex" style="height: 100px; width: 100px;">
                                 <video id="talk-video" class="mx-auto"
                                 style="border-radius: 5rem; z-index: 49; position: relative; display: block;" width="100%"
@@ -85,7 +85,10 @@
                                     <source src="../static/data/idleVideo.mp4" type="video/mp4" />
                                 </video>
                             </div>
-                        </div>
+                        </div> -->
+                        <img class="rounded" src="{{ url_for('static', filename='img/gpt-calculator.png') }}"
+                            height="80px" onclick='localStorage.setItem("no_splash", true)' />
+
                         <div id="chatbot-title" class="mt-3-5 ml-2 text-center" style="font-size: 1.50rem;">D2H2 Chatbot
                         </div>
                         <div id="avatar-buttons" style="position: relative; display: none;">
@@ -417,7 +420,7 @@
     import { parse_gene, infer_gene, select_option, runFindQuery, run_process_gene, log_chat } from '../static/js/modules/query.js';
     import { get_prediction_studies } from '../static/js/modules/predictions.js';
     import { play_message, start_recording, stop_recording } from '../static/js/modules/voice.js';
-    import * as DId from '../static/js/modules/avatar.js';
+    //import * as DId from '../static/js/modules/avatar.js';
 
     const process_dict = await processes;
 
@@ -428,7 +431,7 @@
     var curr_arg = '';
     var options = [];
     var speak = false;
-    var avatar = false;
+    //var avatar = false;
 
 
     var options_str = "<br>";
@@ -458,13 +461,14 @@
 
     async function log_chat_speak(query, d2h2_response, userid) {
         log_chat(query, d2h2_response, userid);
-        if (avatar) {
+        /* if (avatar) {
             const res = await DId.talk(d2h2_response)
             console.log(res)
             $("#idle-loop").hide();
-        } else if (speak) {
+        } else */ if (speak) {
             play_message(d2h2_response)
         }
+        console.log(speak)
     }
 
     function find_number(q) {
@@ -860,9 +864,9 @@
 
     var recording = false;
     document.getElementById('record-query').addEventListener("click", async function () {
-        if (!avatar) {
-            connectAvatar()
-        }
+        //if (!avatar) {
+        //    connectAvatar()
+        //}
         if (!recording) {
             recording = true;
             start_recording()
