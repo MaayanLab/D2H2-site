@@ -285,8 +285,9 @@ def dgesingle():
 	metadict = json.load(metajson)
 	base_expression_filename = metadict[condition_group]['filename']
 	expr_file = '{base_url}/{species}/{gse}/{file}'.format(species=species, gse=gse, base_url=base_url, file=base_expression_filename)
-	
-	data_dict = compute_dge_single(expr_file, method, 'Cluster', 'leiden',cluster_group, True)
+
+	data_dict = compute_dge_single(expr_file, method, 'Cluster', 'Cell_types',cluster_group, True)
+
 
 	jsonplot = None
 	string_data = None
@@ -324,28 +325,50 @@ def makesingleplots():
 	gse = response_json['gse']
 	species = response_json['species']
 	condition_group = response_json['conditiongroup']
+	print('in pca, tsne, umap singleplots function')
+	print(condition_group)
+	#metajson file that stores the group/condition pairing to point to the expression h5 file
 	metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=gse, base_url=base_url),'r')
 	metadict = json.load(metajson)
 	base_expression_filename = metadict[condition_group]['filename']
+	#image path for pulling the distribution plot from s3
+	base_name_for_cell_type_dist = base_expression_filename.split('.h5')[0]
+	base_name_for_cell_type_dist = base_name_for_cell_type_dist + '.png'
 	expr_file = '{base_url}/{species}/{gse}/{file}'.format(species=species, gse=gse, base_url=base_url, file=base_expression_filename)
-	#The data is originally in genesxcells so transpose to make it cells x genes
 
 	f = read_anndata_h5(expr_file)
 	pca_df = pd.DataFrame(data=f['varm/X_pca'][:,:2], columns = ['x', 'y'])
 	umap_df = pd.DataFrame(data=f['varm/X_umap'][:], columns = ['x', 'y'])
 	tsne_df = pd.DataFrame(data=f['varm/X_tsne'][:,:2], columns = ['x', 'y'])
-	clus_numbers = f["var/leiden/codes"][:]
-	leiden_values = list(map(lambda x: "Cluster " + str(x), clus_numbers))
-	values_dict = {"Cluster": leiden_values}
-	category_list_dict = {"Cluster": list(sorted(set(leiden_values)))}
+
+
+	cell_type_cats = f["var/Cell_types/categories"][:].astype(str)
+	cell_type_indices = f["var/Cell_types/codes"][:]
+	values_dict_cell_types = {"Cell Types": [cell_type_cats[i] for i in cell_type_indices]}
+	cell_names = [cell_type_cats[i] for i in cell_type_indices]
+	category_list_dict_cell_type = {"Cell Types": list(sorted(set(f["var/Cell_types/categories"][:].astype(str))))}
+
+	cell_colors = f["var/cell_color_names/categories"][:].astype(str)
+	cell_color_indices = f["var/cell_color_names/codes"][:]
+	values_dict_cell_colors = {"Color Types": [cell_colors[i] for i in cell_color_indices]}
+	cell_cols = [cell_colors[i] for i in cell_color_indices]
+	category_list_dict_cell_color = {"Color Types": list(sorted(set(f["var/cell_color_names/categories"][:].astype(str))))}
+
+	paired = zip(cell_names, cell_cols)
+	paired_set = set(paired)
+	factors_for_mapper = []
+	palette_for_mapper = []
+	for cell_name, cell_color in paired_set:
+		factors_for_mapper.append(cell_name)
+		palette_for_mapper.append(cell_color)
 	cells = f['var/column_names'][:].astype(str)
-	
-	jsonplotumap = make_single_visialization_plot(umap_df, values_dict,'umap', ["Cluster"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict, category=True, dropdown=False)
-	jsonplottsne = make_single_visialization_plot(tsne_df, values_dict,'tsne', ["Cluster"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict, category=True, dropdown=False)
-	jsonplotpca = make_single_visialization_plot(pca_df, values_dict,'pca', ["Cluster"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict, category=True, dropdown=False)
+
+	jsonplotumap = make_single_visialization_plot(umap_df, values_dict_cell_types,'umap', ["Cell Types"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict_cell_type, category=True, dropdown=False, factor_list=factors_for_mapper, palette_list=palette_for_mapper)
+	jsonplottsne = make_single_visialization_plot(tsne_df, values_dict_cell_types,'tsne', ["Cell Types"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict_cell_type, category=True, dropdown=False, factor_list=factors_for_mapper, palette_list=palette_for_mapper)
+	jsonplotpca = make_single_visialization_plot(pca_df, values_dict_cell_types,'pca', ["Cell Types"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict_cell_type, category=True, dropdown=False, factor_list=factors_for_mapper, palette_list=palette_for_mapper)
 
 
-	return json.dumps({'umapplot': jsonplotumap, 'tsneplot':jsonplottsne, 'pcaplot':jsonplotpca })
+	return json.dumps({'umapplot': jsonplotumap, 'tsneplot':jsonplottsne, 'pcaplot':jsonplotpca, 'cellplotpath': base_name_for_cell_type_dist })
 
 #This function gets the different computed leiden clusters from the expression matrix and returns it as json dict for the cluster table on the single viewer page that is called when a new condition-profile is clicked.
 @app.route('/getclusterdata', methods=['GET', 'POST'])
@@ -358,16 +381,13 @@ def getclusterinfo():
 	metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=gse, base_url=base_url),'r')
 	metadict = json.load(metajson)
 	base_expression_filename = metadict[condition_group]['filename']
+	print(base_expression_filename)
 	expression_file = base_url + '/' + species + '/' + gse + '/' + base_expression_filename
 	adata = read_anndata_h5(expression_file)
-	#Stores the list of cluster names. 
-	leiden_data = adata["var/leiden/categories"][:].astype(str)
-	clus_numbers = adata["var/leiden/codes"][:]
-	leiden_data_vals = list(map(lambda x: "Cluster " + str(x), clus_numbers))
-	classes = sorted(leiden_data)
-	classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
-	#Stores the number of of cells correlated to each cluster. 
-	metadata_dict_counts = pd.Series(leiden_data_vals).value_counts().to_dict()
+	#Switched to using cell types for getting cluster information
+	classes = list(adata["var/Cell_types/categories"][:].astype(str))
+	cell_indices = adata["var/Cell_types/codes"][:]
+	metadata_dict_counts =  pd.Series([classes[i] for i in cell_indices]).value_counts().to_dict()
 
 	return {"classes":classes, "metadict":metadata_dict_counts}
 
@@ -620,16 +640,10 @@ def species_or_viewerpg(studies_or_gse):
 		expression_base_name = metadata_json[default_condition]['filename']
 		expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + expression_base_name
 		adata = read_anndata_h5(expression_file)
-		#Stores the list of cluster names. 
-		leiden_data = adata["var/leiden/categories"][:].astype(str)
-		clus_numbers = adata["var/leiden/codes"][:]
-		leiden_data_vals = list(map(lambda x: "Cluster " + str(x), clus_numbers))
-		classes = sorted(leiden_data)
-		classes = sorted(classes, key=lambda x: int(x.replace("Cluster ", "")))
-		#Stores the number of of cells correlated to each cluster. 
-		metadata_dict_counts = pd.Series(leiden_data_vals).value_counts().to_dict()
-		meta_file.close()
-		return render_template('single_viewer.html', study_conditions = list_of_conditions, metadata_dict=classes, metadata_dict_samples=metadata_dict_counts, geo_accession=geo_accession, gse_metadata_single=gse_metadata_single, species=species, species_mapping=species_mapping, gse_metadata=gse_metadata, numstudies=numstudies,  month_dict=month_dict)
+		classes = adata["var/Cell_types/categories"][:].astype(str)
+		cell_indices = adata["var/Cell_types/codes"][:]
+		metadata_dict_counts =  pd.Series([classes[i] for i in cell_indices]).value_counts().to_dict()
+		return render_template('single_viewer.html', study_conditions = list_of_conditions, metadata_dict=classes, metadata_dict_samples=metadata_dict_counts, geo_accession=geo_accession, gse_metadata_single=gse_metadata_single, species=species, species_mapping=species_mapping, gse_metadata=gse_metadata, numstudies=numstudies,  month_dict=month_dict) #, diff_gene_cluster_labels=cluster_labels
 	else:
 		return render_template('error.html', base_path=BASE_PATH, gse_metadata=gse_metadata, species_mapping=species_mapping, numstudies=numstudies)
 
@@ -714,7 +728,6 @@ def plot_api_single(geo_accession, condition):
 	metadata_json = json.load(meta_file)
 	base_expression_name = metadata_json[condition]['filename']
 	expression_file = base_url + '/' + species_folder + '/' + geo_accession + '/' + base_expression_name
-	#expression_adata = read_anndata_raw(expression_file)
 	data = request.json
 	gene_symbol = data['gene_symbol']
 
@@ -724,9 +737,11 @@ def plot_api_single(geo_accession, condition):
 
 	genes = np.array(f['obs/gene_symbols'][:].astype(str))
 
-	clus_numbers = f["var/leiden/codes"][:]
+	#Using the cell type labels for the x axis of the plots
+	classes = f["var/Cell_types/categories"][:].astype(str)
+	cell_indices = f["var/Cell_types/codes"][:]
+	cell_values =  [classes[i] for i in cell_indices]
 
-	leiden_values = list(map(lambda x: "Cluster " + str(x), clus_numbers))
 	try:
 		idx = np.where(genes == gene_symbol)[0][0]
 	except:
@@ -735,7 +750,7 @@ def plot_api_single(geo_accession, condition):
 	vals = f['raw/X'][idx,:]
 
 	# Create a new dataframe that maps each sample to its condition
-	melted_dataframe = pd.DataFrame(data=[vals, leiden_values]).T
+	melted_dataframe = pd.DataFrame(data=[vals, cell_values]).T
 	melted_dataframe.columns = ['expr_vals', 'Condition']
 	
 	# Get plot dataframe

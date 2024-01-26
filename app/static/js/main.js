@@ -365,10 +365,14 @@ function filter_genes_sigs(genelist, adjpvals, pvals, logfc) {
 
 
 function generate_single_plots() {
-    // This function will generate the umap, tsne, and pca plots for each indivdual study for a specific condition
+    // This function will generate the umap, tsne, and pca plots for each indivdual study for a specific condition and include the plot of the cell type distribution
+    const basepath = 'https://d2h2.s3.amazonaws.com/data/'
     document.getElementById("umap-plot").innerHTML = "";
     document.getElementById("tsne-plot").innerHTML = "";
     document.getElementById("pca-plot").innerHTML = "";
+    document.getElementById('cellplot').innerHTML = "";
+    document.getElementById('cellplot_holder').style.display = "none";
+
 
     // document.getElementById("singleplots-loading").innerHTML = "<div class='loader justify-content-center'></div>";
     $('#singleplots-loading').addClass('loader justify-content-center');
@@ -394,8 +398,11 @@ function generate_single_plots() {
         window.Bokeh.embed.embed_item(umap_plot)
         window.Bokeh.embed.embed_item(pca_plot)
         window.Bokeh.embed.embed_item(tsne_plot)
+        document.getElementById('cellplot_holder').style.display = "block";
+        document.getElementById('cellplot').innerHTML = `<img src="${basepath+species+'/'+gse+'/'+response['cellplotpath']}" style="width:100%;height:100%">`
     });
     $("#boxplot").attr("data-url-plot", `/api/plot_single/${gse}/${condition_group}`)
+    
 }
 
 
@@ -1489,7 +1496,7 @@ $(document).ready(function () {
             for (var k = 0; k < classes.length; k++) {
                 tabletext += `<tr>
                             <td class="p-0 ml-3 border"><button
-                                    style="background-color: #ECEFF1; color: black; width: max-content;"
+                                    style="background-color: #ECEFF1; color: black; width: 150px;word-wrap: break-word;white-space: normal;"
                                     class="btn m-0 rounded-0 py-0 condition-btn active plotted " data-toggle="button"
                                     autocomplete="off"
                                     data-group_label="${classes[k]}">${classes[k]}</button>
