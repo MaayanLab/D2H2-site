@@ -203,10 +203,12 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
     # Getting the same number of samples from each cluster to use for diffrential gene expression.
     f = read_anndata_h5(expr_file)
 
-    clus_numbers = f["var/leiden/codes"][:]
-    leiden_data_vals = list(map(lambda x: "Cluster " + str(x), clus_numbers))
 
-    metadata_dict_counts = pd.Series(leiden_data_vals).value_counts()
+    cell_type_cats = f["var/Cell_types/categories"][:].astype(str)
+    cell_type_indices = f["var/Cell_types/codes"][:]
+    cell_names = [cell_type_cats[i] for i in cell_type_indices]
+    #using the keys as the cell type labels and values as the counts for it
+    metadata_dict_counts = pd.Series(cell_names).value_counts()
     genes = np.array(f['obs/gene_symbols'][:].astype(str))
     cells = f['var/column_names'][:].astype(str)
     cluster_list = []
@@ -214,21 +216,22 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
         num_to_sample = min(min(metadata_dict_counts), 15)
         list_of_adata = []
         for cls in metadata_dict_counts.keys():
-
-            leiden_data_vals = pd.Series(leiden_data_vals)
-            cls_leiden_vals = leiden_data_vals[leiden_data_vals == cls]
+            cell_names_vals = pd.Series(cell_names)
+            cls_celltype_vals = cell_names_vals[cell_names_vals == cls]
             idx = list(sorted(random.sample(
-                list(cls_leiden_vals.index.values), k=num_to_sample)))
+                list(cls_celltype_vals.index.values), k=num_to_sample)))
+            #Creating a dataframe of gene expression values that correlate to the sampled number of cells
             adata_sample = pd.DataFrame(
                 f['raw/X'][:, idx], index=genes, columns=cells[idx])
 
             cluster_list += [cls]*num_to_sample
             list_of_adata.append(adata_sample)
-
+        #Concatenate across the columns so that the matrix is sampled version of genes x cells
         full_adata = pd.concat(list_of_adata, axis=1)
         # Need to repeat for the normalized data.
         expr_df = full_adata
         raw_expr_df = full_adata
+        #Will be used to get the column indices for the cluster vs rest
         cluster_list = pd.Series(cluster_list)
 
     signatures = dict()
@@ -256,6 +259,7 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
                 condition_labels = ['C'] * expr_df.loc[:, non_cls1_sample_ids].shape[1] + ['RS'] *  expr_df.loc[:, cls1_sample_ids].shape[1]
                 sample_names = expr_df.loc[:, non_cls1_sample_ids].columns.tolist() + expr_df.loc[:, cls1_sample_ids].columns.tolist()
                 metadata = pd.DataFrame({'Sample': sample_names, 'Condition': condition_labels}).set_index("Sample")
+                #Deseq2 implementation takes the data in samples x genes
                 dds = DeseqDataSet(
                     counts=expr_df[non_cls1_sample_ids + cls1_sample_ids].T,
                     clinical=metadata,
@@ -274,6 +278,7 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
                 dataset.raw = dataset_raw.T
                 if 'log1p' in dataset.uns.keys():
                     del dataset.uns['log1p']
+                #Calculate the wilcoxon dge method and then obtain the specific signature dataframe correlated to the class and add to dictionary
                 sc.tl.rank_genes_groups(
                     dataset, meta_class_column_name, method='wilcoxon', use_raw=True)
                 dedf = sc.get.rank_genes_groups_df(dataset, group=cls1).set_index(
@@ -286,8 +291,9 @@ def get_signatures_single(classes, expr_file, method, meta_class_column_name, cl
 
 
 def compute_dge_single(expr_file, diff_gex_method, enrichment_groupby, meta_class_column_name, clustergroup, agg):
-
-    meta_class_column_name = "leiden"
+    # meta_class_column_name = "leiden"
+    #Changed the DGE so that it computes based off calculated cell types instead of the leiden clusters. 
+    meta_class_column_name = "Cell_types"
     classes = [clustergroup]
     bool_cluster = True
 
