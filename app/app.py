@@ -1215,7 +1215,7 @@ async def destroystream():
 
 	res = destroy_stream(stream_id, session_id)
 	return res
-		
+
 #######################################################
 #######################################################
 ########## 3. Run App
