@@ -1,0 +1,50 @@
+[
+    {
+        "data": {
+            "kind": ":Researcher",
+            "color": "#a1c9f4",
+            "affiliation": "White Group",
+            "id": "Owen White",
+            "label": "Owen White"
+        }
+    },
+    {
+        "data": {
+            "kind": ":Affiliation",
+            "color": "#a1c9f4",
+            "label": "White Group",
+            "id": "White Group"
+        }
+    },
+    {
+        "data": {
+            "kind": ":Researcher",
+            "color": "#ffb482",
+            "affiliation": "Foster Group",
+            "id": "Ian Foster",
+            "label": "Ian Foster"
+        }
+    },
+    {
+        "data": {
+            "kind": ":Affiliation",
+            "color": "#ffb482",
+            "label": "Foster Group",
+            "id": "Foster Group"
+        }
+    },
+    {
+        "data": {
+            "kind": "relation",
+            "source": "Owen White",
+            "target": "White Group"
+        }
+    },
+    {
+        "data": {
+            "kind": "relation",
+            "source": "Ian Foster",
+            "target": "Foster Group"
+        }
+    }
+]

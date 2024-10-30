@@ -110,17 +110,17 @@ def load_card_data():
 			return dict_with_data
 
 	#Case where researcher name is not there
-	all_pngs = os.listdir(base_path+'/ORIGINAL-CARD-TITLES')
-	all_pngs = sorted(all_pngs)
+	# all_pngs = os.listdir(base_path+'/ORIGINAL-CARD-TITLES')
+	# all_pngs = sorted(all_pngs)
 	dict_with_data = {'png_paths':[]}
-	full_path = base_path+'/ORIGINAL-CARD-TITLES'
-	for file in all_pngs:
-		if '.png' in file:
-			if 'card' in file:
-				dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+file])
-			# else:
-			# 	dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+file])
-	print(dict_with_data['png_paths'])
+	# full_path = base_path+'/ORIGINAL-CARD-TITLES'
+	# for file in all_pngs:
+	# 	if '.png' in file:
+	# 		if 'card' in file:
+	# 			dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+file])
+	# 		# else:
+	# 		# 	dict_with_data['png_paths'].append(['../'+full_path+'/'+file, '../'+full_path+'/'+file])
+	# print(dict_with_data['png_paths'])
 	return dict_with_data
 
 

@@ -1328,6 +1328,12 @@ div.scroll {
 	width: 1.5em;
 	height: 1.5em;
 }
+
+/* 
+.tooltip_researchers {
+  position: absolute;
+}  */
+
 .btn-default {
 	color: #333;
 	background-color: #ddd;
@@ -1342,3 +1348,5 @@ div.scroll {
 .svg-icon rect {
 	fill: #333;
 }
+
+

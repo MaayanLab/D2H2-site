@@ -928,9 +928,32 @@ function search_researcher(name) {
     .then(response => response.json())
     .then((data) => {
         console.log(typeof(data))
+        console.log(data)
         if (data.length == 0){
+            console.log('ZERO DATA SO MAKING NEW')
             document.getElementById('researcher-network').innerText = "No connections to other Researchers";
+            document.getElementById('researcher-cy-network').style.display = 'block';
+            network_div = document.getElementById('researcher-cy-network');
+            // const new_data = 
+            // var cy = cytoscape({
+
+            //     container: network_div, // container to render in
+              
+            //     elements: new_data,
+              
+            //     style : ,
+              
+            //     layout: {
+            //       name: 'cose'
+            //     }
+              
+            //   });
+            //   var svgContent = cy.svg({scale: 1, full: true, bg: '#ffffff'});
+            //   var blob = new Blob([svgContent], {type:"image/svg+xml;charset=utf-8"});
+            //   console.log('here')
+            //   saveAs(blob, "demo.svg");
         }else{
+            // Main issue is the tables don't allow to go to the next page if more than 10 items if there are multiple tabs. If only one tab, the table works as intended.
             document.getElementById('researcher-network-title').innerText = `Researcher Subnetwork for ${name}`;
             document.getElementById('subnetworkOptionsHolder').style.display = 'block';
             // Get both the tab div and the element holding the content
@@ -957,7 +980,8 @@ function search_researcher(name) {
                         subnetworkTabList.innerHTML += `<button class="nav-link active" id="${htmlId}-tab" data-toggle="tab" data-target="#${htmlId}" type="button" role="tab" aria-controls="nav-home" aria-selected="true">${dataKind}</button>`
                         subnetworkTabListContent.innerHTML += `<div class="tab-pane fade show active" id="${htmlId}" role="tabpanel" aria-labelledby="${htmlId}-tab"></div>`
                         researchernetworkDict[data[i]['data']['kind']] = new Set();
-                    } else if (!(dataKind in researchernetworkDict)){
+                    } 
+                    else if (!(dataKind in researchernetworkDict)){
                         subnetworkTabList.innerHTML += `<button class="nav-link" id="${htmlId}-tab" data-toggle="tab" data-target="#${htmlId}" type="button" role="tab" aria-controls="nav-home" aria-selected="true">${dataKind}</button>`;
                         subnetworkTabListContent.innerHTML += `<div class="tab-pane fade show" id="${htmlId}" role="tabpanel" aria-labelledby="${htmlId}-tab"></div>`;
                         researchernetworkDict[dataKind] = new Set();
@@ -1113,13 +1137,28 @@ function search_researcher(name) {
                 }
               
               });
-              console.log(document.getElementById('change-layout-button').value);
-              document.getElementById('change-layout-button').addEventListener('change',function(){
+            var svgContent = cy.svg({scale: 1, full: true, bg: '#ffffff'});
+			var blob = new Blob([svgContent], {type:"image/svg+xml;charset=utf-8"});
+            console.log('here')
+			// saveAs(blob, "demo.svg");
+            var saveAsSvg = function(filename) {
+                var svgContent = cy.svg({scale: 1, full: true, bg: '#ffff00'});
+                var blob = new Blob([svgContent], {type:"image/svg+xml;charset=utf-8"});
+                saveAs(blob, "demo.svg");
+			};
+			var getSvgUrl = function() {
+				var svgContent = cy.svg({scale: 1, full: true, bg: '#ffff00'});
+				var blob = new Blob([svgContent], {type:"image/svg+xml;charset=utf-8"});
+				var url = URL.createObjectURL(blob);
+				return url;
+			};
+            console.log(document.getElementById('change-layout-button').value);
+            document.getElementById('change-layout-button').addEventListener('change',function(){
                 let optionchange = document.getElementById('change-layout-button').value
                 cy.layout({name:optionchange}).run();
-              })
+            })
 
-              document.getElementById('change-connection-size-button').addEventListener('change',function(){
+            document.getElementById('change-connection-size-button').addEventListener('change',function(){
                 let optionchange = document.getElementById('change-connection-size-button').value
                 console.log('Hello');
                 route_for_kg_connections = `http://localhost:3000/api/knowledge_graph?start=Principal Investigator&start_term=${name}&start_field=label&limit=${optionchange}&end=Principal Investigator&relation=PI Gene,PI Diseases`
@@ -1524,8 +1563,9 @@ async function makeUSAMapZoom(){
     let tooltip = d3
     .select("body")
     .append("div")
-    .attr("class", 'tooltip')
+    .attr("class", 'tooltip_researchers')
     .attr("id", "researchertooltiplist")
+    .style('position', 'absolute')
     .style('border-style', 'solid')
     .style('border-radius', '10px')
     .style('box-shadow', '3px 4px 5px black')
@@ -1535,8 +1575,9 @@ async function makeUSAMapZoom(){
     let tooltip_hover = d3
     .select("body")
     .append("div")
-    .attr("class", 'tooltip')
+    .attr("class", 'tooltip_researchers')
     .attr("id", "researcherhovertooltiplist")
+    .style('position', 'absolute')
     .style('border-style', 'solid')
     .style('border-radius', '10px')
     .style('background-color', '#ddd')
@@ -1654,7 +1695,7 @@ async function makeUSAMapZoom(){
 //       let neoX = w/2 - (neoScale * ((lt[0]+rb[0])/2))
 //       let neoY = h/2 - (neoScale * ((lt[1]+rb[1])/2))
 
-//       // TRANSLATE FIRST!  then scale.
+//       // TRANSLATE FIRST  then scale.
 //       t = d3.zoomIdentity.translate(neoX,neoY).scale(neoScale)
 //       svg.transition().duration(1000).call(ztrans, t)
 //     }

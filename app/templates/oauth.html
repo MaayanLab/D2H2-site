@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<div class="justify-content-center container">
+    <div class="col-12 justify-content-center mx-auto banner">
+        <!-- <div class="row justify-content-center mb-3 mt-4">
+            <div class=" text-center col-10">
+                <h2>Contribute Potential Studies</h2>
+                <p> Fill in the form below with study information related to diabetes in order to suggest additional studies that may be added to the database.</p>
+                <h4 class="mb-0"><strong>Why you should consider contributing your data?</strong></h4>
+                <p>There are thousands of high-quality datasets in GEO, but there is little re-use. Our mission is to elevate the visibility of these and other high-quality large datasets via a user-friendly interface. If you contribute your data, other scientists will be able to find it and extract valuable and potentially actionable insights from it.</p>
+            </div>
+        </div> -->
+
+
+
+        
+        <div class="custom-col col-3 p-3 mb-2 justify-content-center mx-auto" id="downloads" >
+            <div class="text-center" style="width: 95%;">
+                <button class="btn btn-outline" id="orcid-btn">
+                  <div>
+                    <a href="/login/orcid">Sign in with ORCID</a>
+                  </div>
+                </button>
+            </div>
+
+            <!-- <script src="https://accounts.google.com/gsi/client" async></script> -->
+            <div id="g_id_onload"
+                data-client_id="785403554603-oq4ou2njh868dksl49606rg82icgijne.apps.googleusercontent.com"
+                data-login_uri="https://df18-2600-4041-5b04-2e00-319d-19c2-e2cd-a8a4.ngrok-free.app/googlelogin"
+                data-auto_prompt="false">
+            </div>
+            <div class=" p-3 justify-content-center mx-auto" id="downloads" >
+                <div class="g_id_signin text-center"
+                data-type="standard"
+                data-size="large"
+                data-theme="outline"
+                data-text="sign_in_with"
+                data-shape="rectangular"
+                data-logo_alignment="left" style="width: 95%;">
+                
+            </div>
+            </div>
+
+            <!-- <form id="contribute-form">
+                <div class="form-group">
+                  <label for="studyTitle">Title of Study</label>
+                  <input type="text" class="form-control" id="studyTitle" placeholder="Enter title of Study" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="studyPMID">Pubmed ID (PMID)</label>
+                        <input type="text" class="form-control" id="studyPMID" placeholder="PMID">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="studyGEO">GEO ID</label>
+                        <input type="text" class="form-control" id="studyGEO" placeholder="GEO ID">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="studyConditions">Contrast Condition(s)</label>
+                    <textarea type="text" class="form-control" id="studyConditions" placeholder="Please enter the different conditions of the study separated by a new line (e.g., gene knockout, knock-in, strain-background, treatments)" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="studyModel">Model System</label>
+                    <input type="text" class="form-control" id="studyModel" placeholder="Enter the model being studied (e.g., animal model, tissue, tissue culture cell line)" required>
+                </div>
+                <div class="form-group">
+                    <label for="studyPlatform">Analysis Platform</label>
+                    <input type="text" class="form-control" id="studyPlatform" placeholder="Enter the Analysis platform (e.g. RNA-seq, microarray)" required>
+                </div>
+                <div class="form-group">
+                    <label for="studyKeywords">Keywords</label>
+                    <input type="text" class="form-control" id="studyKeywords" placeholder="Enter keywords for the study followed by commas" required>
+                </div>
+                <div class="form-group">
+                    <label for="studyAuthors">Authors</label>
+                    <textarea type="text" class="form-control" id="studyAuthors" placeholder="Please enter the different authors followed by a new line" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="studyEmail">Contact Email</label>
+                    <input type="email" class="form-control" id="studyEmail" aria-describedby="emailHelp" placeholder="Please enter your email">
+                  </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form> -->
+        </div>
+    </div>
+
+
+
+</div>
+
+
+
+
+{% endblock %}
+
+
+{% block footer %}
+<script>
+// var form = document.getElementById('contribute-form');
+</script>
+
+{% endblock %}
