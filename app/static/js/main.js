@@ -405,6 +405,36 @@ function generate_single_plots() {
     
 }
 
+function generate_deconv_plots() {
+    // This function will generate the deconvolution plots if they are avaibale for the study of interest
+    const basepath = 'https://d2h2.s3.amazonaws.com/data/'
+    document.getElementById('deconv_plots').style.display = "none";
+    var gse = document.getElementById("gse").innerText
+    var species = document.getElementById("species").innerText
+    const img = document.getElementById('bulkGroupDist')
+    img.onload = function (){
+        document.getElementById('deconv_plots').style.display = "flex";
+        img.style.cssText = "max-width: 60%;max-height:100%"
+        document.getElementById('bulkCellDist').src = `${basepath+species+'/'+gse+'/'+gse+"_Cell_Dist.png"}`
+        document.getElementById('bulkCellDist').style.cssText =  "max-width: 80%;max-height:100%"
+        document.getElementById('bulkCellDistDiv').style.display = 'flex'
+    }
+    img.onerror = function (){
+        document.getElementById('deconv_plots').style.display = "none";
+    }
+    img.src = `${basepath+species+'/'+gse+'/'+gse+"_Group_Dist.png"}`
+
+    const targetimage = document.getElementById('bulkTarget')
+    targetimage.onload = function (){
+        targetimage.style.cssText = "max-width:60%;max-height:100%"
+        document.getElementById('bulkTargetDiv').style.display = 'flex'
+    }
+    targetimage.onerror = function (){
+        document.getElementById('bulkTargetDiv').style.display = "none";
+    }
+    targetimage.src = `${basepath+species+'/'+gse+'/'+gse+"_Cell_Surface_Targets.png"}`
+    
+}
 
 ///////// anitmated number counters /////////////
 // How long you want the animation to take, in ms

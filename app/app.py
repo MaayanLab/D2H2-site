@@ -622,7 +622,17 @@ def species_or_viewerpg(studies_or_gse):
 			filtered_samps = list(filter(lambda x: x in gses, metadata_dict_samples[key]))
 			sample_dict[key] = {'samples': filtered_samps, 'count': len(filtered_samps)}
 		dge_precomputed = get_precomputed_dge_options(geo_accession, species)
-		return render_template('viewer.html', metadata_dict=metadata_dict, metadata_dict_samples=sample_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping, numstudies=numstudies,  month_dict=month_dict, dge_precomputed=dge_precomputed)
+
+		base_path = 'static/precomputed_deconv_outputs'
+
+		precomputed_images = os.listdir(base_path)
+		precomputed_gse = False
+		for name in precomputed_images:
+			print(name)
+			if geo_accession in name:
+				print('in if')
+				precomputed_gse = True
+		return render_template('viewer.html', metadata_dict=metadata_dict, metadata_dict_samples=sample_dict, geo_accession=geo_accession, gse_metadata=gse_metadata, species=species, species_mapping=species_mapping, numstudies=numstudies,  month_dict=month_dict, dge_precomputed=dge_precomputed, is_pre_computed=precomputed_gse)
 	
 	#Check for the single study individual viewer page
 	elif studies_or_gse in study_to_species_single:
