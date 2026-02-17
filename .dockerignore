@@ -4,5 +4,6 @@ env
 .DS_Store
 app/__pycache__/
 *.env
+app/.env
 ETL
 predictions
