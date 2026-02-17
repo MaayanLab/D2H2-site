@@ -29,8 +29,8 @@ endpoint = os.environ.get('ENDPOINT', 'https://d2h2.s3.amazonaws.com/')
 base_url = os.environ.get('BASE_URL', 'data')
 ROOT_PATH = os.environ.get('ROOT_PATH', '/')
 BASE_PATH = os.environ.get('BASE_PATH', 'maayanlab.cloud')
-DEBUG = os.environ.get('DEBUG', True).lower() in ('true', '1', 't')
-UPDATE_STUDIES = os.environ.get('UPDATE_STUDIES', False).lower() in ('true', '1', 't')
+DEBUG = os.environ.get('DEBUG', 'true').lower() in ('true', '1', 't')
+UPDATE_STUDIES = os.environ.get('UPDATE_STUDIES', 'false').lower() in ('true', '1', 't')
 
 s3 = s3fs.S3FileSystem(anon=True, client_kwargs={'endpoint_url': endpoint})
 
