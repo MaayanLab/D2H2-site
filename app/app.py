@@ -87,7 +87,7 @@ def downloads():
 @app.route(f'{ROOT_PATH}/queryexpression', methods=['GET','POST'])
 def query_expression():
 
-    gene = urllib.parse.urlencode(request.form['gene'])
+    gene = urllib.parse.quote(request.form['gene'], safe='')
 
     result = query_generanger(gene)
 
@@ -96,7 +96,7 @@ def query_expression():
 @app.route(f'{ROOT_PATH}/getgwas', methods=['GET','POST'])
 def get_gwas():
 
-    gene = urllib.parse.urlencode(request.form['gene'])
+    gene = urllib.parse.quote(request.form['gene'], safe='')
 
     if gene == '':
         return {'GWAS_Catalog':[]}
@@ -107,7 +107,7 @@ def get_gwas():
 
 @app.route(f'{ROOT_PATH}/getkomp', methods=['GET','POST'])
 def get_mgi():
-    gene = urllib.parse.urlencode(request.form['gene'])
+    gene = urllib.parse.quote(request.form['gene'], safe='')
     result = query_mgi(gene)
     return result
 
@@ -155,7 +155,7 @@ def getchea3():
 
 @app.route(f'{ROOT_PATH}/gettfs',  methods=['GET','POST'])
 def gettfs():
-	gene = urllib.parse.urlencode(request.form['gene'])
+	gene = urllib.parse.quote(request.form['gene'], safe='')
 
 	if gene.strip() == '':
 		return {'data': []}
@@ -259,8 +259,8 @@ def dge():
 	perturb = response_json['perturb']
 	control = response_json['control']
 	method = response_json['method']
-	gse = urllib.parse.urlencode(response_json['gse'])
-	species = urllib.parse.urlencode(response_json['species'])
+	gse = urllib.parse.quote(response_json['gse'], safe='')
+	species = urllib.parse.quote(response_json['species'], safe='')
 	norms = response_json['norms']
 	expr_file = '{base_url}/{species}/{gse}/{gse}_Expression.tsv'.format(species=species, gse=gse, base_url=base_url)
 	meta_file = '{base_url}/{species}/{gse}/{gse}_Metadata.tsv'.format(species=species, gse=gse, base_url=base_url)
@@ -277,14 +277,14 @@ def dge():
 def dgesingle():
 	response_json = request.get_json()
 	method = response_json['method']
-	gse = urllib.parse.urlencode(response_json['gse'])
-	species = urllib.parse.urlencode(response_json['species'])
+	gse = urllib.parse.quote(response_json['gse'], safe='')
+	species = urllib.parse.quote(response_json['species'], safe='')
 	condition_group = response_json['conditiongroup']
 	cluster_group = response_json['diffcluster']
 
 	metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=gse, base_url=base_url),'r')
 	metadict = json.load(metajson)
-	base_expression_filename = urllib.parse.urlencode(metadict[condition_group]['filename'])
+	base_expression_filename = urllib.parse.quote(metadict[condition_group]['filename'], safe='')
 	expr_file = '{base_url}/{species}/{gse}/{file}'.format(species=species, gse=gse, base_url=base_url, file=base_expression_filename)
 
 	data_dict = compute_dge_single(expr_file, method, 'Cluster', 'Cell_types',cluster_group, True)
@@ -305,16 +305,16 @@ def dgesingle():
 @app.route('/api/precomputed_dge',  methods=['GET','POST'])
 def fetch_precomputed_dge():
 	response_json = request.get_json()
-	sig = urllib.parse.urlencode(response_json['sig'])
-	species = urllib.parse.urlencode(response_json['species'])
+	sig = urllib.parse.quote(response_json['sig'], safe='')
+	species = urllib.parse.quote(response_json['species'], safe='')
 	dge_tab = get_precomputed_dge(sig, species)
 	return dge_tab.to_json(orient='index')
 
 @app.route('/api/precomputed_dge_options',  methods=['GET','POST'])
 def fetch_precomputed_dge_options():
 	response_json = request.get_json()
-	gse = urllib.parse.urlencode(response_json['gse'])
-	species = urllib.parse.urlencode(response_json['species'])
+	gse = urllib.parse.quote(response_json['gse'], safe='')
+	species = urllib.parse.quote(response_json['species'], safe='')
 	return get_precomputed_dge_options(gse, species)
 
 
@@ -323,15 +323,15 @@ def fetch_precomputed_dge_options():
 @app.route('/singleplots',  methods=['GET','POST'])
 def makesingleplots():
 	response_json = request.get_json()
-	gse = urllib.parse.urlencode(response_json['gse'])
-	species = urllib.parse.urlencode(response_json['species'])
+	gse = urllib.parse.quote(response_json['gse'], safe='')
+	species = urllib.parse.quote(response_json['species'], safe='')
 	condition_group = response_json['conditiongroup']
 	print('in pca, tsne, umap singleplots function')
 	print(condition_group)
 	#metajson file that stores the group/condition pairing to point to the expression h5 file
 	metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=gse, base_url=base_url),'r')
 	metadict = json.load(metajson)
-	base_expression_filename =urllib.parse.urlencode(metadict[condition_group]['filename'])
+	base_expression_filename =urllib.parse.quote(metadict[condition_group]['filename'], safe='')
 	#image path for pulling the distribution plot from s3
 	base_name_for_cell_type_dist = base_expression_filename.split('.h5')[0]
 	base_name_for_cell_type_dist = base_name_for_cell_type_dist + '.png'
@@ -376,8 +376,8 @@ def makesingleplots():
 def getclusterinfo():
 	#The json below holds information about the conditiongroup that we are looking at for this data as well the specific species. 
 	response_json = request.get_json()
-	gse = urllib.parse.urlencode(response_json['gse'])
-	species = urllib.parse.urlencode(response_json['species'])
+	gse = urllib.parse.quote(response_json['gse'], safe='')
+	species = urllib.parse.quote(response_json['species'], safe='')
 	condition_group = response_json['conditiongroup']
 	metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=gse, base_url=base_url),'r')
 	metadict = json.load(metajson)
@@ -858,8 +858,8 @@ def plot_api(geo_accession):
 
 @app.route(f'{ROOT_PATH}/api/volcano', methods=['GET', 'POST'])
 def plot_volcano_api():
-	gene = urllib.parse.urlencode(request.form["gene"])
-	species = urllib.parse.urlencode(request.form["species"])
+	gene = urllib.parse.quote(request.form["gene"], safe='')
+	species = urllib.parse.quote(request.form["species"], safe='')
 	try:
 		json_item_plot = send_plot(species, gene)
 	except Exception as e:
@@ -913,10 +913,10 @@ def samples_api(geo_accession):
 def get_study_data():
 
 	response_json = request.get_json()
-	geo_accession = urllib.parse.urlencode(response_json['gse'])
+	geo_accession = urllib.parse.quote(response_json['gse'], safe='')
 	control = response_json['control']
 	perturb = response_json['perturb']
-	species = urllib.parse.urlencode(response_json['species'])
+	species = urllib.parse.quote(response_json['species'], safe='')
 
 	metadata_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.tsv'
 	expression_file = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Expression.tsv'
@@ -950,8 +950,8 @@ def get_study_data():
 @app.route(f'{ROOT_PATH}/api/bulksampvis',  methods=['GET', 'POST'])
 def visualize_samps():
 	response_json = request.get_json()
-	geo_accession = urllib.parse.urlencode(response_json['gse'])
-	species = urllib.parse.urlencode(response_json['species'])
+	geo_accession = urllib.parse.quote(response_json['gse'], safe='')
+	species = urllib.parse.quote(response_json['species'], safe='')
 	meta_df = base_url + '/' + species + '/' + geo_accession + '/' + geo_accession + '_Metadata.tsv'
 	
 	meta_df = pd.read_csv(s3.open(meta_df), sep='\t', index_col=0)
@@ -984,7 +984,7 @@ def query_options():
 @app.route(f'{ROOT_PATH}/api/query_genes',  methods=['GET', 'POST'])
 def query_genes():
 	response_json = request.get_json()
-	g = urllib.parse.urlencode(response_json['gene'])
+	g = urllib.parse.quote(response_json['gene'], safe='')
 	res = infer_gene(g)
 	return res
 
