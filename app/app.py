@@ -284,7 +284,7 @@ def dgesingle():
 
 	metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=gse, base_url=base_url),'r')
 	metadict = json.load(metajson)
-	base_expression_filename = urllib.parse.quote(metadict[condition_group]['filename'], safe='')
+	base_expression_filename = metadict[condition_group]['filename']
 	expr_file = '{base_url}/{species}/{gse}/{file}'.format(species=species, gse=gse, base_url=base_url, file=base_expression_filename)
 
 	data_dict = compute_dge_single(expr_file, method, 'Cluster', 'Cell_types',cluster_group, True)
@@ -331,7 +331,7 @@ def makesingleplots():
 	#metajson file that stores the group/condition pairing to point to the expression h5 file
 	metajson = s3.open('{base_url}/{species}/{gse}/{gse}_metasep.json'.format(species=species, gse=gse, base_url=base_url),'r')
 	metadict = json.load(metajson)
-	base_expression_filename =urllib.parse.quote(metadict[condition_group]['filename'], safe='')
+	base_expression_filename = metadict[condition_group]['filename']
 	#image path for pulling the distribution plot from s3
 	base_name_for_cell_type_dist = base_expression_filename.split('.h5')[0]
 	base_name_for_cell_type_dist = base_name_for_cell_type_dist + '.png'
@@ -369,7 +369,7 @@ def makesingleplots():
 	jsonplotpca = make_single_visialization_plot(pca_df, values_dict_cell_types,'pca', ["Cell Types"], cells, "Scatter plot of the samples. Each dot represents a sample and it is colored by ", category_list_dict=category_list_dict_cell_type, category=True, dropdown=False, factor_list=factors_for_mapper, palette_list=palette_for_mapper)
 
 
-	return json.dumps({'umapplot': jsonplotumap, 'tsneplot':jsonplottsne, 'pcaplot':jsonplotpca, 'cellplotpath': base_name_for_cell_type_dist })
+	return json.dumps({'umapplot': jsonplotumap, 'tsneplot':jsonplottsne, 'pcaplot':jsonplotpca, 'cellplotpath': urllib.parse.quote(base_name_for_cell_type_dist, safe='') })
 
 #This function gets the different computed leiden clusters from the expression matrix and returns it as json dict for the cluster table on the single viewer page that is called when a new condition-profile is clicked.
 @app.route('/getclusterdata', methods=['GET', 'POST'])
