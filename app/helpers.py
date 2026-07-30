@@ -86,9 +86,9 @@ def enrichr_id(genes, desc=''):
 @lru_cache()
 def query_enricher(gene):
     ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/genemap'
-    query_string = '?json=true&setup=true&gene=%s'
+    params = dict(json='true', setup='true', gene=gene)
 
-    response = requests.get(ENRICHR_URL + query_string % gene)
+    response = requests.get(ENRICHR_URL, params=params)
     if not response.ok:
         raise Exception('Error finding gene')
 
@@ -126,12 +126,9 @@ def query_enricher_diabetes(genelist, description):
     listid = data["userListId"]
 
     ENRICHR_URL = 'https://maayanlab.cloud/Enrichr/enrich'
-    query_string = '?userListId=%s&backgroundType=%s'
-    user_list_id = listid
     gene_set_library = 'Diabetes_Perturbations_GEO_2022'
-    response = requests.get(
-        ENRICHR_URL + query_string % (user_list_id, gene_set_library)
-    )
+    params = dict(userListId=listid, backgroundType=gene_set_library)
+    response = requests.get(ENRICHR_URL, params=params)
     if not response.ok:
         raise Exception('Error fetching enrichment results')
 
@@ -147,8 +144,9 @@ def query_enricher_diabetes(genelist, description):
 def query_komp(gene: str):
 
     gene = gene[0].upper() + (gene[1:]).lower()
-    KOMP_URL = "https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select?q=marker_symbol:" + gene
-    response = requests.get(KOMP_URL)
+    KOMP_URL = "https://www.ebi.ac.uk/mi/impc/solr/genotype-phenotype/select"
+    params = dict(q="marker_symbol:" + gene)
+    response = requests.get(KOMP_URL, params=params)
     if not response.ok:
         raise Exception('Error analyzing retrieving information')
     data = json.loads(response.text)
